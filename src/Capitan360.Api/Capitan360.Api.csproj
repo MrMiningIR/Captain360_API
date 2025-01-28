@@ -19,4 +19,6 @@
     <ProjectReference Include="..\Capitan360.Infrastructure\Capitan360.Infrastructure.csproj" />
   </ItemGroup>
 
+ 
+
 </Project>

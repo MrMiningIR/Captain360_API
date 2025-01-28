@@ -10,13 +10,17 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Capitan360.Application\Capitan360.Application.csproj" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <Folder Include="Repositories\" />
     <Folder Include="Persistence\" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Capitan360.Application\Capitan360.Application.csproj" />
   </ItemGroup>
 
 </Project>
