@@ -1,0 +1,33 @@
+﻿using Capitan360.Domain.Entities.CompanyEntity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Capitan360.Infrastructure.Configurations.CompanyConfig
+{
+    internal class UserCompanyConfigurations:IEntityTypeConfiguration<UserCompany>
+    {
+        public void Configure(EntityTypeBuilder<UserCompany> builder)
+        {
+            builder.HasKey(uc => new { uc.UserId, uc.CompanyId });
+
+            builder.HasOne(uc => uc.User)
+                .WithMany(u => u.UserCompanies)
+                .HasForeignKey(uc => uc.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+           builder
+                .HasOne(uc => uc.Company)
+                .WithMany(c => c.UserCompanies)
+                .HasForeignKey(uc => uc.CompanyId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+           builder.Property(uc=>uc.JoinDate).HasDefaultValueSql("GETDATE()")
+                .ValueGeneratedOnAdd();
+
+                builder
+               .HasIndex(uc => uc.UserId)
+               .IsUnique();
+
+        }
+    }
+}
