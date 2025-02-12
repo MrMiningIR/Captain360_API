@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.AuthorizationConfig;
+namespace Capitan360.Infrastructure.Configurations.AuthorizationConfigs;
 
 internal class GroupPermissionConfigurations : IEntityTypeConfiguration<GroupPermission>
 {

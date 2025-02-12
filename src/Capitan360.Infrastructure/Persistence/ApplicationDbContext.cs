@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Abstractions;
 using System.Data;
+using Capitan360.Domain.Entities.AddressEntity;
 using Capitan360.Domain.Exceptions;
 
 namespace Capitan360.Infrastructure.Persistence;
@@ -25,6 +26,16 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     public DbSet<TokenBlacklist> TokenBlacklists { get; set; }
     public DbSet<UserCompany> UserCompanies { get; set; }
     public DbSet<CompanyUri> CompanyUris { get; set; }
+
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Area> Areas { get; set; }
+    public DbSet<CompanyAddress> CompanyAddresses { get; set; }
+
+    public DbSet<CompanyCommissions> CompanyCommissions { get; set; }
+    public DbSet<CompanyPreferences> CompanyPreferences { get; set; }
+    public DbSet<CompanySmsPatterns> CompanySmsPatterns { get; set; }
+
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -59,4 +70,6 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
 
         }
     }
+
+    
 }

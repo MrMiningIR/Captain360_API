@@ -1,10 +1,9 @@
-﻿
-using Capitan360.Domain.Entities.UserEntity;
+﻿using Capitan360.Domain.Entities.UserEntity;
 using Capitan360.Infrastructure.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.UserConfig;
+namespace Capitan360.Infrastructure.Configurations.UserConfigs;
 
 internal class UserConfigurations : IEntityTypeConfiguration<User>
 {

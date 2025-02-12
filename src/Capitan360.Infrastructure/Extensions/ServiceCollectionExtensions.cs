@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
         {
 
             options.UseSqlServer(configurationManager.GetConnectionString("DefaultConnection") ??
-                                 throw new Exception("ConString"))
+                                 throw new Exception("ConString"),x=>x.UseNetTopologySuite())
                 .EnableSensitiveDataLogging();
         });
 

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.UserConfig;
+namespace Capitan360.Infrastructure.Configurations.UserConfigs;
 
 internal class UserFinanceConfigurations : IEntityTypeConfiguration<UserFinancialInfo>
 {

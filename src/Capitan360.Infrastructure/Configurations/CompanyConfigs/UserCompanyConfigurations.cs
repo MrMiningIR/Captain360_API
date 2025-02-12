@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.CompanyConfig
+namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
 {
     internal class UserCompanyConfigurations:IEntityTypeConfiguration<UserCompany>
     {
