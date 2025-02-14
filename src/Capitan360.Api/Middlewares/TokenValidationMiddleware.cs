@@ -1,30 +1,30 @@
 ﻿using Capitan360.Domain.Repositories.PermissionRepository;
+using System.Threading;
 
 namespace Capitan360.Api.Middlewares
 {
-    public class TokenValidationMiddleware(RequestDelegate next, ITokenBlacklistsRepository blacklistsRepository)
+    public class TokenValidationMiddleware(ITokenBlacklistsRepository blacklistsRepository) : IMiddleware
     {
-   
 
-
-        public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var token = context.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
 
             if (!string.IsNullOrEmpty(token))
             {
-                var blacklistedToken = await blacklistsRepository.GetByTokenAsync(token, cancellationToken);
+                var blacklistedToken = await blacklistsRepository.GetByTokenAsync(token);
 
                 if (blacklistedToken != null && blacklistedToken.ExpiryDate > DateTime.UtcNow)
 
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("Token is revoked.", cancellationToken: cancellationToken);
+                    await context.Response.WriteAsync("Token is revoked.");
                     return;
                 }
             }
-
             await next(context);
         }
     }
 }
+
+

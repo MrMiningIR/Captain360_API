@@ -44,9 +44,13 @@ public static class WebApplicationBuilderExtensions
 
         });
 
+        builder.Services.AddScoped<ErrorHandlingMiddleware>();
+        builder.Services.AddScoped<RequestTimeLoggingMiddleware>();
         builder.Services.AddScoped<PermissionMiddleware>();
 
         builder.Services.AddScoped<PermissionMiddleware>();
+        builder.Services.AddScoped<TokenValidationMiddleware>();
+
 
 
 

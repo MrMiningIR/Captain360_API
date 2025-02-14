@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Capitan360.Application\Capitan360.Application.csproj" />
     <ProjectReference Include="..\Capitan360.Infrastructure\Capitan360.Infrastructure.csproj" />
   </ItemGroup>

@@ -19,6 +19,8 @@ internal class UserConfigurations : IEntityTypeConfiguration<User>
         // for testing purposes
         builder.Property(u => u.Active).HasDefaultValue(true);
         builder.Property(u => u.ActivationCode).IsRequired(false).HasMaxLength(6);
+        builder.Property(u => u.ActiveSessionId).IsRequired(false).HasMaxLength(36);
+        builder.Property(u => u.CapitanCargoCode).IsRequired(false);
 
 
 

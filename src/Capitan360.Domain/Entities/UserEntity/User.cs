@@ -13,7 +13,7 @@ public class User : IdentityUser
     public string ActivationCode { get; set; }
     public DateTime ActivationCodeExpireTime { get; set; }
 
-    public string ActiveSessionId { get; set; }
+    public string? ActiveSessionId { get; set; }
 
 
 

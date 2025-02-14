@@ -16,6 +16,8 @@ using Capitan360.Infrastructure.Repositories;
 using Capitan360.Infrastructure.Repositories.UserRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Infrastructure.Seeders;
+
 namespace Capitan360.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -101,6 +103,9 @@ public static class ServiceCollectionExtensions
         service.AddScoped<IPermissionRepository, PermissionRepository>();
         service.AddScoped<ITokenBlacklistsRepository, TokenBlacklistsRepository>();
 
+        // Registering Seeders
+
+        service.AddScoped<IPrimaryInformationSeeder, PrimaryInformationSeeder>();
 
 
 
