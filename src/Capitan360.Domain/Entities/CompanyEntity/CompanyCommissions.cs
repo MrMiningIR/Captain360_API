@@ -5,12 +5,12 @@ namespace Capitan360.Domain.Entities.CompanyEntity;
 public class CompanyCommissions : Entity
 {
 
-    public long Captain360CommissionFromCaptainCargoWebSite { get; set; }
-    public long Captain360CommissionFromCompanyWebSite { get; set; }
-    public long Captain360CommissionFromCaptainCargoWebService { get; set; }
-    public long Captain360CommissionFromCompanyWebService { get; set; }
-    public long Captain360CommissionFromCaptainCargoPanel { get; set; }
-    public long Captain360CommissionFromCaptainCargoDesktop { get; set; }
+    public decimal CommissionFromCaptainCargoWebSite { get; set; }
+    public decimal CommissionFromCompanyWebSite { get; set; }
+    public decimal CommissionFromCaptainCargoWebService { get; set; }
+    public decimal CommissionFromCompanyWebService { get; set; }
+    public decimal CommissionFromCaptainCargoPanel { get; set; }
+    public decimal CommissionFromCaptainCargoDesktop { get; set; }
 
     // Navigation Properties
     public int CompanyId { get; set; }
