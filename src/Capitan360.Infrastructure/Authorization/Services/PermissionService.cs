@@ -1,4 +1,6 @@
-﻿using Capitan360.Infrastructure.Persistence;
+﻿using Capitan360.Domain.Entities.AuthorizationEntity;
+using Capitan360.Infrastructure.Authorization.Requirements;
+using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -54,9 +56,9 @@ internal class PermissionService(ApplicationDbContext context) : IPermissionServ
         // Check if the required permission exists
         return allPermissions.Contains(permission);
     }
-    public async Task LoadPoliciesAsync(IServiceCollection services ,CancellationToken cancellationToken)
+    public async Task LoadPoliciesAsync(IServiceCollection services, CancellationToken cancellationToken)
     {
-        if (await context.Database.CanConnectAsync(cancellationToken) && 
+        if (await context.Database.CanConnectAsync(cancellationToken) &&
             await context.Permissions.AnyAsync(cancellationToken: cancellationToken))
         {
 
@@ -65,10 +67,15 @@ internal class PermissionService(ApplicationDbContext context) : IPermissionServ
             var authorizationBuilder = services.AddAuthorizationBuilder();
             foreach (var permission in permissions)
             {
+                //authorizationBuilder
+                //    .AddPolicy(permission.Name, policy =>
+                //        policy.RequireClaim("Permission", permission.Name));
                 authorizationBuilder
                     .AddPolicy(permission.Name, policy =>
-                        policy.RequireClaim("Permission", permission.Name));
+                        policy.Requirements.Add(new PermissionRequirement(permission.Name)));
             }
         }
     }
 }
+
+

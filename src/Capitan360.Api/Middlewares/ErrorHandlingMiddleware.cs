@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Capitan360.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Api.Middlewares;
 
@@ -13,9 +14,34 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         {
             await next.Invoke(context);
         }
+
+        catch (UnExpectedException unExpectedException)
+        {
+            await HandleExceptionAsync(context, unExpectedException, logger, HttpStatusCode.InternalServerError);
+
+        }
+        catch (ConflictException conflictException)
+        {
+            await HandleExceptionAsync(context, conflictException, logger, HttpStatusCode.Conflict);
+        }
+        catch (UnAuthorizedException authorizedException)
+        {
+            await HandleExceptionAsync(context, authorizedException, logger, HttpStatusCode.Unauthorized);
+        }
+        catch (UserAlreadyExistsException alreadyExistsException)
+        {
+
+            await HandleExceptionAsync(context, alreadyExistsException, logger, HttpStatusCode.Conflict);
+        }
         catch (NotFoundException notFoundExceptions)
         {
             await HandleExceptionAsync(context, notFoundExceptions, logger, HttpStatusCode.NotFound);
+        }
+        catch (DbUpdateException dbUpdateException)
+        {
+
+            await HandleExceptionAsync(context, dbUpdateException, logger, HttpStatusCode.InternalServerError);
+
         }
         catch (Exception ex)
         {
@@ -37,6 +63,17 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         context.Response.StatusCode = (int)httpStatusCode;
         return context.Response.WriteAsync(result);
     }
+
+    //TODO: Handle Unique Constraint Exception
+    //    if (ex.InnerException?.Message.Contains("IX_Users_PhoneNumber") == true)
+    //    {
+    //        Console.WriteLine("Phone number must be unique.");
+    //    }
+    //else
+    //{
+    //    throw;
+    //}
+    // CK_User_PhoneNumber_Length
 
 }
 

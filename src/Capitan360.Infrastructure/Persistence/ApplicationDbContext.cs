@@ -11,7 +11,7 @@ using Capitan360.Domain.Exceptions;
 
 namespace Capitan360.Infrastructure.Persistence;
 
-internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) //Todo : Must Change to Internal
     : IdentityDbContext<User, Role, string>(options), IUnitOfWork
 {
     public DbSet<Company> Companies { get; set; }
@@ -22,7 +22,6 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
-    public DbSet<UserFinancialInfo> UserFinancialInfos { get; set; }
     public DbSet<TokenBlacklist> TokenBlacklists { get; set; }
     public DbSet<UserCompany> UserCompanies { get; set; }
     public DbSet<CompanyUri> CompanyUris { get; set; }
@@ -34,6 +33,8 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     public DbSet<CompanyCommissions> CompanyCommissions { get; set; }
     public DbSet<CompanyPreferences> CompanyPreferences { get; set; }
     public DbSet<CompanySmsPatterns> CompanySmsPatterns { get; set; }
+
+    public DbSet<RefreshToken?> RefreshTokens { get; set; }
 
 
 
@@ -71,5 +72,5 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
         }
     }
 
-    
+
 }

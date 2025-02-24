@@ -107,6 +107,7 @@ namespace Capitan360.Infrastructure.Seeders
                 { "Manager", new List<string> { "EditorGroup" } },
                 { "User", new List<string> { "ViewerGroup" } }
             };
+           
 
             // Seed Roles with Groups
             foreach (var roleEntry in rolesWithGroups)
@@ -142,32 +143,44 @@ namespace Capitan360.Infrastructure.Seeders
                 { "manager", "Manager" },
                 { "user", "User" }
             };
-
+            List<string>phoneNumbers = new List<string> { "09155165067", "09155165068", "09155165069" };
+            int i = 0;
             // Seed Users with Roles
             foreach (var userEntry in usersWithRoles)
             {
                 var username = userEntry.Key;
                 var roleName = userEntry.Value;
-
+               
                 var dbUser = await userManager.FindByNameAsync(username);
                 if (dbUser == null)
                 {
                     var user = new User
                     {
                         UserName = username,
+                        PhoneNumber = phoneNumbers[i],
                         Email = $"{username}@example.com",
                         FullName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(username)
                     };
 
-                    var result = await userManager.CreateAsync(user, $"{username}@123A");
+                    var result = await userManager.CreateAsync(user, phoneNumbers[i]);
+                  //  var result = await userManager.CreateAsync(user, $"{username}@123A");
                     if (result.Succeeded)
                     {
                         await userManager.AddToRoleAsync(user, roleName);
                     }
+
+                    var group = await dbContext.Groups
+                        .Include(g => g.RoleGroups)
+                        .ThenInclude(rg => rg.Role)
+                        .FirstOrDefaultAsync(g => g.RoleGroups.Any(rg => rg.Role.Name == roleName), cancellationToken);
+
+
+                    await dbContext.UserGroups.AddAsync(new UserGroup() { User = user, GroupId =group!.Id  }, cancellationToken);
+                    i++;
                 }
             }
 
-
+            //TODO:Log Errors of InsertData of Identity
 
 
 

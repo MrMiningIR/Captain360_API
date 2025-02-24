@@ -1,12 +1,8 @@
 using Capitan360.Api.Extensions;
 using Capitan360.Api.Middlewares;
 using Capitan360.Application.Extensions;
-using Capitan360.Domain.Entities.AuthorizationEntity;
-using Capitan360.Domain.Entities.UserEntity;
-using Capitan360.Infrastructure.Authorization.Services;
 using Capitan360.Infrastructure.Extensions;
 using Capitan360.Infrastructure.Seeders;
-using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,7 +47,7 @@ catch (Exception ex)
 
 
 //var scope = app.Services.CreateScope();
-//var seeder = scope.ServiceProvider.GetRequiredService<IRestaurantSeeders>();
+//var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
 //await seeder.SeedData();
 
 
@@ -69,6 +65,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll"); // Must Be here to allow the CORS before the Authentication!
+
 
 app.UseAuthentication();
 app.UseMiddleware<TokenValidationMiddleware>(); // TODO : needs to review!

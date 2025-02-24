@@ -10,20 +10,25 @@ internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
     {
         builder.HasKey(up => up.Id);
 
-        builder.Property(up => up.TelegramPhoneNumber).HasMaxLength(11);
-        builder.Property(up => up.TellNumber).HasMaxLength(30);
+        builder.Property(up => up.TelegramPhoneNumber).HasMaxLength(11).IsRequired(false);
+        builder.Property(up => up.TellNumber).HasMaxLength(30).IsRequired(false);
 
-        builder.Property(up => up.NationalCode).HasMaxLength(50);
-        builder.Property(up => up.EconomicCode).HasMaxLength(50);
-        builder.Property(up => up.NationalId).HasMaxLength(50);
-        builder.Property(up => up.RegistrationId).HasMaxLength(50);
+        builder.Property(up => up.NationalCode).HasMaxLength(50).IsRequired(false);
+        builder.Property(up => up.EconomicCode).HasMaxLength(50).IsRequired(false);
+        builder.Property(up => up.NationalId).HasMaxLength(50).IsRequired(false);
+        builder.Property(up => up.RegistrationId).HasMaxLength(50).IsRequired(false);
 
-        builder.Property(up => up.Description).HasMaxLength(1500);
-        builder.Property(up => up.MoadianFactorType);
-        builder.Property(up => up.IsBikeDelivery);
+        builder.Property(up => up.Description).HasMaxLength(1500).IsRequired(false);
+        builder.Property(up => up.MoadianFactorType).IsRequired();
+        builder.Property(up => up.IsBikeDelivery).HasDefaultValue(false);
 
         builder.Property(up => up.RecoveryPasswordCode);
         builder.Property(up => up.RecoveryPasswordCodeExpireTime);
+
+        // for testing purposes
+        builder.Property(uf => uf.Credit).HasColumnType("decimal(18,2)").HasPrecision(18, 2)
+            .HasDefaultValue(0);
+        builder.Property(uf => uf.HasCredit).HasDefaultValue(false);
 
         // Navigation Property
         builder.HasOne(up => up.User)

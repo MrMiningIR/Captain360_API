@@ -3,7 +3,7 @@ using Capitan360.Domain.Repositories.PermissionRepository;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Capitan360.Infrastructure.Repositories;
+namespace Capitan360.Infrastructure.Repositories.Identity;
 
 internal class PermissionRepository(ApplicationDbContext dbContext) : IPermissionRepository
 {

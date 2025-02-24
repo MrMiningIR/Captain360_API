@@ -36,23 +36,27 @@ public static class WebApplicationBuilderExtensions
             });
         });
 
-
         builder.Host.UseSerilog((context, loggerConfiguration) =>
         {
-
             loggerConfiguration.ReadFrom.Configuration(context.Configuration);
-
         });
 
         builder.Services.AddScoped<ErrorHandlingMiddleware>();
         builder.Services.AddScoped<RequestTimeLoggingMiddleware>();
         builder.Services.AddScoped<PermissionMiddleware>();
-
         builder.Services.AddScoped<PermissionMiddleware>();
         builder.Services.AddScoped<TokenValidationMiddleware>();
 
-
-
+        // Add CORS policy
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", corsPolicyBuilder =>
+            {
+                corsPolicyBuilder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            });
+        });
 
         return builder;
     }

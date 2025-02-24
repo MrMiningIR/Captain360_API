@@ -12,10 +12,11 @@ using Capitan360.Domain.Repositories.PermissionRepository;
 using Capitan360.Infrastructure.Constants;
 using Capitan360.Infrastructure.Authorization.Requirements;
 using Capitan360.Infrastructure.Authorization.Services;
-using Capitan360.Infrastructure.Repositories;
 using Capitan360.Infrastructure.Repositories.UserRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Repositories.Identity;
+using Capitan360.Infrastructure.Repositories.Identity;
 using Capitan360.Infrastructure.Seeders;
 
 namespace Capitan360.Infrastructure.Extensions;
@@ -46,6 +47,8 @@ public static class ServiceCollectionExtensions
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -69,25 +72,7 @@ public static class ServiceCollectionExtensions
             };
         });
 
-        #region Comment
-        // Authorization Policies
-        //service.AddAuthorization(options =>
-        //{
-
-        //    foreach (var permission in Enum.GetValues(typeof(Permissions)))
-        //    {
-        //        options.AddPolicy(permission.ToString(), policy => policy.RequireClaim("Permission", permission.ToString()));
-        //    }
-        //}); 
-
-        //var authorizationBuilder = service.AddAuthorizationBuilder();
-
-        //foreach (var permission in Enum.GetValues(typeof(Permissions)))
-        //{
-        //    authorizationBuilder.AddPolicy(permission.ToString(), policy =>
-        //        policy.RequireClaim("Permission", permission.ToString()));
-        //}
-        #endregion
+       
 
 
 
@@ -102,6 +87,11 @@ public static class ServiceCollectionExtensions
         // registering repositories
         service.AddScoped<IPermissionRepository, PermissionRepository>();
         service.AddScoped<ITokenBlacklistsRepository, TokenBlacklistsRepository>();
+        service.AddScoped<IIdentityRepository, IdentityRepository>();
+        service.AddScoped<IGroupRepository, GroupRepository>();
+        service.AddScoped<IUserGroupRepository, UserGroupRepository>();
+        service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        service.AddScoped<ITokenService, TokenService>();
 
         // Registering Seeders
 

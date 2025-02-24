@@ -1,4 +1,4 @@
-﻿namespace Capitan360.Application.Users;
+﻿namespace Capitan360.Application.Services.Identity.Users;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -23,6 +23,7 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         var mobile = user.FindFirstValue(ClaimTypes.MobilePhone);
         var roles = user.FindAll(ClaimTypes.Role).Select(x => x.Value);
+        //TODO : Needs to be changed to Permission
         var permissions = user.FindAll("Permission").Select(x => x.Value);
 
         return new CurrentUser(userId!, mobile!, roles, permissions);

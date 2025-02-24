@@ -1,5 +1,4 @@
-﻿
-namespace Capitan360.Application.Users;
+﻿namespace Capitan360.Application.Services.Identity.Users;
 
 public record CurrentUser(string Id, string Mobile, IEnumerable<string> Roles, IEnumerable<string> Permissions)
 {
