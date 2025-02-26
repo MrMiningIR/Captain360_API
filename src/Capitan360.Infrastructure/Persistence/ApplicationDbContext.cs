@@ -8,6 +8,7 @@ using Capitan360.Domain.Abstractions;
 using System.Data;
 using Capitan360.Domain.Entities.AddressEntity;
 using Capitan360.Domain.Exceptions;
+using Microsoft.Data.SqlClient;
 
 namespace Capitan360.Infrastructure.Persistence;
 
@@ -56,6 +57,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entityBuilder.Property<bool>("Deleted").HasDefaultValue(false);
         }
     }
+
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         try
@@ -70,7 +73,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             throw new ConcurrencyException("Concurrency exception occurred.", ex);
 
         }
+        catch (Exception exception)
+        {
+            throw new Exception("An error occurred while saving changes.", exception);
+        }
+        //catch (DbUpdateException ex)
+        //{
+        //    throw new DbUpdateException("Database update exception occurred.", ex);
+
+        //}
+        //catch (SqlException ex)
+        //{
+        //    throw new Exception("An error occurred while saving changes.", ex);
+
+        //}
+
+
     }
-
-
 }

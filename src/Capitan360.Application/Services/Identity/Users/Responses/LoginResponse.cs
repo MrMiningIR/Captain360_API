@@ -1,4 +1,4 @@
-﻿namespace Capitan360.Application.Services.Identity.Users.Queries;
+﻿namespace Capitan360.Application.Services.Identity.Users.Responses;
 
 public class LoginResponse
 {

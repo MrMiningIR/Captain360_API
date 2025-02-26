@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Constants;
 using FluentValidation;
 
-namespace Capitan360.Application.Services.Identity.Users.Commands;
+namespace Capitan360.Application.Services.Identity.Users.Commands.CreateUser;
 
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {

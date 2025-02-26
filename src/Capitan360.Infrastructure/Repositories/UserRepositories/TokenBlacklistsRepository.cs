@@ -22,4 +22,9 @@ internal class TokenBlacklistsRepository(ApplicationDbContext dbContext) : IToke
 
 
     }
+
+    public async Task AddAsync(TokenBlacklist tokenBlacklist, CancellationToken cancellationToken = default)
+    {
+        await dbContext.TokenBlacklists.AddAsync(tokenBlacklist, cancellationToken);
+    }
 }

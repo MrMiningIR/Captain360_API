@@ -1,0 +1,8 @@
+﻿namespace Capitan360.Application.Services.Identity.Users.Queries.LogOut;
+
+public record LogOutQuery(string userId, string sessionId, string token)
+{
+    public string UserId { get; } = userId;
+    public string SessionId { get; } = sessionId;
+    public string Token { get; } = token;
+}

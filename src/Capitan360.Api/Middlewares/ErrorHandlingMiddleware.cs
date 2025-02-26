@@ -53,12 +53,12 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMiddleware> logger, HttpStatusCode httpStatusCode)
     {
         if (httpStatusCode == HttpStatusCode.NotFound)
-            logger.LogWarning("{exception}", exception.Message);
+            logger.LogWarning("{exception}", exception.InnerException?.InnerException?.Message ?? exception.Message);
         if (httpStatusCode == HttpStatusCode.InternalServerError)
-            logger.LogError("{exception}", exception.Message);
+            logger.LogError("{exception}", exception.InnerException?.InnerException?.Message ?? exception.Message);
 
 
-        var result = JsonSerializer.Serialize(new { error = exception.Message });
+        var result = JsonSerializer.Serialize(new { error = exception.InnerException?.InnerException?.Message ?? exception.Message });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)httpStatusCode;
         return context.Response.WriteAsync(result);

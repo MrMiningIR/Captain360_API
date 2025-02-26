@@ -18,16 +18,13 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
         return user != null;
     }
 
-    public async Task<bool> CreateUserAsync(User user, CancellationToken cancellationToken)
+    public async Task<IdentityResult?> CreateUserAsync(User user, string password, CancellationToken cancellationToken)
     {
+        //user.UserName = user.PhoneNumber;
+        var result = await userManager.CreateAsync(user, password);
+       
 
-        var result = await userManager.CreateAsync(user);
-        if (!result.Succeeded)
-            return false;
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return true;
+        return result;
 
 
     }
@@ -42,4 +39,29 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
     {
         return await dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber, cancellationToken: cancellationToken);
     }
+
+    public async Task<IReadOnlyList<User>> GetUsersByCompanyAsync(int companyId, CancellationToken cancellationToken)
+    {
+       return await dbContext.UserCompanies
+            .Where(uc => uc.CompanyId == companyId)
+            .Select(uc => uc.User)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<User?> GetUserByCompanyAsync(string userId, int companyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.UserCompanies
+            .Where(uc => uc.CompanyId == companyId && uc.UserId == userId)
+            .Select(uc => uc.User)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<IdentityResult?> CreateUserByCompanyAsync(User user, string password)
+    {
+
+       return  await userManager.CreateAsync(user, password);
+
+
+    }
 }
+

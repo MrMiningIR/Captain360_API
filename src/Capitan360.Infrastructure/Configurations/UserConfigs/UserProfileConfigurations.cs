@@ -24,6 +24,9 @@ internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
 
         builder.Property(up => up.RecoveryPasswordCode);
         builder.Property(up => up.RecoveryPasswordCodeExpireTime);
+        builder.Property(u => u.CapitanCargoCode).IsUnicode(false).IsRequired().HasMaxLength(50);
+        builder.Property(u => u.Active).HasDefaultValue(true);
+        builder.Property(u => u.CapitanCargoCode).IsRequired(false);
 
         // for testing purposes
         builder.Property(uf => uf.Credit).HasColumnType("decimal(18,2)").HasPrecision(18, 2)
@@ -32,7 +35,7 @@ internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
 
         // Navigation Property
         builder.HasOne(up => up.User)
-            .WithOne(u => u.Profile)
+            .WithOne(u => u.UserProfile)
             .HasForeignKey<UserProfile>(up => up.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
