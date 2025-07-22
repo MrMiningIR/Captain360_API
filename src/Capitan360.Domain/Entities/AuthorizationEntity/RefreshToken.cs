@@ -5,8 +5,8 @@ namespace Capitan360.Domain.Entities.AuthorizationEntity;
 
 public class RefreshToken : Entity
 {
-    public string Token { get; set; } 
-    public byte[] IV { get; set; } 
+    public string Token { get; set; }
+    public byte[] IV { get; set; }
     public DateTime IssuedAt { get; set; }
     public DateTime Expires { get; set; }
     public bool IsRevoked { get; set; }

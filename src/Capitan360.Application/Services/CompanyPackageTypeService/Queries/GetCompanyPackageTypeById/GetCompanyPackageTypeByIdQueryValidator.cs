@@ -1,0 +1,12 @@
+﻿using FluentValidation;
+
+namespace Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
+
+public class GetCompanyPackageTypeByIdQueryValidator : AbstractValidator<GetCompanyPackageTypeByIdQuery>
+{
+    public GetCompanyPackageTypeByIdQueryValidator()
+    {
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه نوع محتوا باید بزرگ‌تر از صفر باشد");
+    }
+}

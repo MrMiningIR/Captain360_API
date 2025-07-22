@@ -9,9 +9,12 @@ namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
         public void Configure(EntityTypeBuilder<CompanyPreferences> builder)
         {
             builder.HasKey(x => x.Id);
-
-            builder.Property(x => x.Admin).HasDefaultValue(false);
-            builder.Property(x => x.Type).IsRequired();
+            builder.Property(ca => ca.CaptainCargoName).HasMaxLength(30);
+            builder.Property(ca => ca.CaptainCargoCode).HasMaxLength(30);
+            builder.Property(c => c.EconomicCode).IsRequired().HasMaxLength(50);
+            builder.Property(c => c.NationalId).IsRequired().HasMaxLength(50);
+            builder.Property(c => c.RegistrationId).IsRequired().HasMaxLength(50);
+            builder.Property(c => c.Tax).HasColumnType("decimal(5, 2)");
             builder.Property(x => x.ActiveIssueDomesticWaybill).HasDefaultValue(false);
             builder.Property(x => x.ActiveShowInSearchEngine).HasDefaultValue(false);
             builder.Property(x => x.ActiveInWebServiceSearchEngine).HasDefaultValue(false);

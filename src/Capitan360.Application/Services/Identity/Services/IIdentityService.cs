@@ -1,0 +1,69 @@
+﻿using Capitan360.Application.Common;
+using Capitan360.Application.Services.Dtos;
+using Capitan360.Application.Services.Identity.Commands.AddUserGroup;
+using Capitan360.Application.Services.Identity.Commands.ChangePassword;
+using Capitan360.Application.Services.Identity.Commands.ChangeUserActivity;
+using Capitan360.Application.Services.Identity.Commands.CreateUser;
+using Capitan360.Application.Services.Identity.Commands.UpdateUser;
+using Capitan360.Application.Services.Identity.Dtos;
+using Capitan360.Application.Services.Identity.Queries.GetUserGroup;
+using Capitan360.Application.Services.Identity.Queries.LoginUser;
+using Capitan360.Application.Services.Identity.Queries.LogOut;
+using Capitan360.Application.Services.Identity.Queries.RefreshToken;
+using Capitan360.Application.Services.Identity.Responses;
+using Capitan360.Application.Services.UserCompany.Commands.Create;
+using Capitan360.Application.Services.UserCompany.Commands.Update;
+using Capitan360.Application.Services.UserCompany.Queries.GetUserByCompany;
+using Capitan360.Application.Services.UserCompany.Queries.GetUserById;
+using Capitan360.Application.Services.UserCompany.Queries.GetUsersByCompany;
+
+namespace Capitan360.Application.Services.Identity.Services;
+
+public interface IIdentityService
+{
+    Task<bool> ExistPhone(string phone, CancellationToken cancellationToken);
+    Task<ApiResponse<string>> RegisterUser(CreateUserCommand createUserCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<string>> UpdateUser(UpdateUserCommand updateUserCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<LoginResponse>> LoginUser(LoginUserQuery loginUserQuery, CancellationToken cancellationToken);
+
+    Task<ApiResponse<TokenResponse>> RefreshToken(RefreshTokenQuery refreshTokenQuery,
+        CancellationToken cancellationToken);
+
+    Task LogOutUser(LogOutQuery logOutQuery, CancellationToken cancellationToken);
+
+    Task AddUserToGroup(AddUserGroupCommand addUserGroupCommand, CancellationToken cancellationToken);
+
+    Task RemoveUserFromGroup(GetUserGroupQuery userGroupQuery, CancellationToken cancellationToken);
+
+
+
+    // User By Company Operations
+    Task<ApiResponse<PagedResult<UserDto>>> GetUsersByCompany(GetUsersByCompanyQuery getUserByCompanyQuery, CancellationToken cancellationToken);
+    Task<ApiResponse<UserDto>> GetUserByCompany(GetUserByCompanyQuery getUsersByCompanyQuery,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<UserDto>> GetUserById(GetUserByIdQuery getUserByIdQuery,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<int>> CreateUserByCompany(CreateUserCompanyCommand createUserByCompanyCommand, CancellationToken cancellationToken);
+    Task UpdateUserCompany(UpdateUserCompanyCommand updateUserCompanyCommand, CancellationToken cancellationToken);
+
+
+    ApiResponse<PagedResult<UserKindItemDto>> GetUserKindList();
+    ApiResponse<PagedResult<MoadianItemDto>> GeMoadianList();
+    ApiResponse<PagedResult<EntranceTypeDto>> GetEntranceTypeList();
+    ApiResponse<PagedResult<PathStructTypeDto>> GetPathStructTypeList();
+    ApiResponse<PagedResult<WeightTypeDto>> GetWeightTypeList(List<int>? shouldRemove = null);
+    ApiResponse<PagedResult<RateDto>> GetRateList();
+
+    Task<ApiResponse<PagedResult<RoleDto>>> GetRoles(CancellationToken cancellationToken);
+    Task<ApiResponse<List<CompanyItemDto>>> GetCompaniesList(CancellationToken cancellationToken);
+
+    Task<ApiResponse<string>> ChangePassword(ChangePasswordCommand changePasswordCommand);
+    Task<ApiResponse<string>> SetUserActivityStatus(ChangeUserActivityCommand activityCommand, CancellationToken cancellationToken);
+
+
+
+
+
+}

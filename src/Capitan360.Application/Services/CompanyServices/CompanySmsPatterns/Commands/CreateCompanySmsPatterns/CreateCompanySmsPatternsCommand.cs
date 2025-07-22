@@ -1,0 +1,25 @@
+﻿namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Commands.CreateCompanySmsPatterns;
+
+public record CreateCompanySmsPatternsCommand(
+    int CompanyId,
+    string? PatternSmsIssueSender,
+    string? PatternSmsIssueReceiver,
+    string? PatternSmsIssueCompany,
+    string? PatternSmsSendSenderPeakSender,
+    string? PatternSmsSendSenderPeakReceiver,
+    string? PatternSmsPackageInCompanySender,
+    string? PatternSmsPackageInCompanyReceiver,
+    string? PatternSmsManifestSender,
+    string? PatternSmsManifestReceiver,
+    string? PatternSmsReceivedInReceiverCompanySender,
+    string? PatternSmsReceivedInReceiverCompanyReceiver,
+    string? PatternSmsSendReceiverPeakSender,
+    string? PatternSmsSendReceiverPeakReceiver,
+    string? PatternSmsDeliverSender,
+    string? PatternSmsDeliverReceiver,
+    string? PatternSmsCancelSender,
+    string? PatternSmsCancelReceiver,
+    string? PatternSmsCancelByCustomerSender,
+    string? PatternSmsCancelByCustomerReceiver,
+    string? PatternSmsCancelByCustomerCompany,
+    string? PatternSmsSendManifestReceiverCompany);

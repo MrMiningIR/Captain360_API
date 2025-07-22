@@ -1,0 +1,40 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.ContentEntity;
+
+namespace Capitan360.Domain.Entities.CompanyEntity;
+
+public class CompanyInsuranceChargePaymentContentType : Entity
+{
+
+
+
+
+
+    [ForeignKey(nameof(CompanyInsuranceCharge))]
+    public int CompanyInsuranceChargeId { get; set; }
+    public CompanyInsuranceCharge? CompanyInsuranceCharge { get; set; }
+
+
+    public Rate Rate { get; set; }
+
+
+    [ForeignKey(nameof(ContentType))]
+    public int ContentId { get; set; }
+    public ContentType? ContentType { get; set; }
+
+     public decimal RateSettlement { get; set; }
+
+     public bool IsPercentRateSettlement { get; set; }
+     public decimal RateDiff { get; set; }
+     public bool IsPercentDiff { get; set; }
+
+
+
+
+
+
+
+
+}

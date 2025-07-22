@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Services.CompanyServices.CompanyInsurance.CompanyInsurance.Commands.DeleteCompanyInsurance;
+
+public record DeleteCompanyInsuranceCommand(int Id);

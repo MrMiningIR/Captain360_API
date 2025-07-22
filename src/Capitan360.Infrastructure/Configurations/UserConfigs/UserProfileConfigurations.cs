@@ -8,9 +8,13 @@ internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
 {
     public void Configure(EntityTypeBuilder<UserProfile> builder)
     {
-        builder.HasKey(up => up.Id);
+
+        builder.HasKey(uc => uc.Id);
+
+        
 
         builder.Property(up => up.TelegramPhoneNumber).HasMaxLength(11).IsRequired(false);
+        builder.Property(up => up.UserId).HasMaxLength(450).IsRequired(true);
         builder.Property(up => up.TellNumber).HasMaxLength(30).IsRequired(false);
 
         builder.Property(up => up.NationalCode).HasMaxLength(50).IsRequired(false);
@@ -22,11 +26,8 @@ internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
         builder.Property(up => up.MoadianFactorType).IsRequired();
         builder.Property(up => up.IsBikeDelivery).HasDefaultValue(false);
 
-        builder.Property(up => up.RecoveryPasswordCode);
+        builder.Property(up => up.RecoveryPasswordCode).IsRequired(false);
         builder.Property(up => up.RecoveryPasswordCodeExpireTime);
-        builder.Property(u => u.CapitanCargoCode).IsUnicode(false).IsRequired().HasMaxLength(50);
-        builder.Property(u => u.Active).HasDefaultValue(true);
-        builder.Property(u => u.CapitanCargoCode).IsRequired(false);
 
         // for testing purposes
         builder.Property(uf => uf.Credit).HasColumnType("decimal(18,2)").HasPrecision(18, 2)
@@ -35,9 +36,15 @@ internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
 
         // Navigation Property
         builder.HasOne(up => up.User)
-            .WithOne(u => u.UserProfile)
+            .WithOne(u => u.Profile)
             .HasForeignKey<UserProfile>(up => up.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+        .HasIndex(uc => new { uc.UserId })
+        .HasDatabaseName("IX_UserProfile_Active")
+        .IsUnique()
+        .HasFilter("[Deleted] = 0");
 
 
 

@@ -1,0 +1,19 @@
+﻿using AutoMapper;
+using Capitan360.Application.Services.CompanyServices.CompanyType.Commands.CreateCompanyType;
+using Capitan360.Application.Services.CompanyServices.CompanyType.Commands.UpdateCompanyType;
+using Capitan360.Application.Services.CompanyServices.CompanyType.Dtos;
+
+namespace Capitan360.Application.Services.CompanyServices.CompanyType.MapperProfiles;
+
+public class CompanyTypeProfile : Profile
+{
+    public CompanyTypeProfile()
+    {
+        CreateMap<CreateCompanyTypeCommand, Domain.Entities.CompanyEntity.CompanyType>();
+        CreateMap<UpdateCompanyTypeCommand, Domain.Entities.CompanyEntity.CompanyType>()
+            .ForMember(dest => dest.TypeName, opt => opt.Condition(src => src.TypeName != null))
+            .ForMember(dest => dest.DisplayName, opt => opt.Condition(src => src.DisplayName != null))
+            .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null));
+        CreateMap<Domain.Entities.CompanyEntity.CompanyType, CompanyTypeDto>();
+    }
+}

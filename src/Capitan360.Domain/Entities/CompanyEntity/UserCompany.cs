@@ -1,8 +1,9 @@
-﻿using Capitan360.Domain.Entities.UserEntity;
+﻿using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Entities.UserEntity;
 
 namespace Capitan360.Domain.Entities.CompanyEntity
 {
-    public class UserCompany
+    public class UserCompany:Entity
     {
        
 

@@ -1,71 +1,62 @@
-﻿using Capitan360.Application.Services.Identity;
-using Capitan360.Application.Services.UserCompany;
+﻿using Capitan360.Application.Common;
+using Capitan360.Application.Services.Identity.Dtos;
+using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Application.Services.UserCompany.Commands.Create;
 using Capitan360.Application.Services.UserCompany.Commands.Update;
-using Capitan360.Application.Services.UserCompany.Queries;
-using Microsoft.AspNetCore.Http;
+using Capitan360.Application.Services.UserCompany.Queries.GetUserByCompany;
+using Capitan360.Application.Services.UserCompany.Queries.GetUsersByCompany;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers
 {
-    [Route("api/[controller]/{companyId}/users")]
+    [Route("api/[controller]/{companyId}/users/")]
     [ApiController]
-    public class AdminController(IIdentityService identityService) : ControllerBase
+    public class AdminController(IIdentityService identityService, IUserContext userContext) : ControllerBase
     {
-
-       
-        [HttpGet("users")]
-        public async Task<ActionResult<IReadOnlyList<UserDto>>> GetUsers([FromRoute] int companyId, CancellationToken cancellationToken)
+        [HttpGet("GetAllUsers")]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<UserDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<UserDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>> GetUsers([FromQuery] GetUsersByCompanyQuery query, CancellationToken cancellationToken,
+         [FromRoute] int companyId = 0)
         {
+            query.CompanyId = companyId;
 
-            var getUsersByCompanyQuery = new GetUsersByCompanyQuery(companyId);
-
-            var users = await identityService.GetUsersByCompany(getUsersByCompanyQuery, cancellationToken);
+            var users = await identityService.GetUsersByCompany(query, cancellationToken);
 
             return Ok(users);
         }
-      
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<UserDto>> GetUserById([FromRoute] int companyId, [FromRoute] string userId, CancellationToken cancellationToken)
-        {
-            var getUsersByCompanyQuery = new GetUserByCompanyQuery(userId, companyId);
-            var user = await identityService.GetUserByCompany(getUsersByCompanyQuery, cancellationToken);
 
-            return Ok(user);
+        [HttpGet("GetUserByIdAndCompanyId/{userId}")]
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ApiResponse<UserDto>>> GetUserByIdAndCompanyId([FromRoute] int companyId,
+    [FromRoute] string userId, CancellationToken cancellationToken)
+        {
+            var query = new GetUserByCompanyQuery { CompanyId = companyId, UserId = userId };
+
+            var response = await identityService.GetUserByCompany(query, cancellationToken);
+            return StatusCode(response.StatusCode, response);
         }
-      
+
         [HttpPost("users")]
-        public IActionResult CreateUser([FromRoute] int companyId , CreateUserCompanyCommand createUserByCompanyCommand, CancellationToken cancellationToken)
+        public IActionResult CreateUser([FromRoute] int companyId, CreateUserCompanyCommand createUserByCompanyCommand, CancellationToken cancellationToken)
         {
             createUserByCompanyCommand.CompanyId = companyId;
             var userId = identityService.CreateUserByCompany(createUserByCompanyCommand, cancellationToken);
 
-            
-            return CreatedAtAction(nameof(GetUserById), new { companyId, userId }, null);
+            return CreatedAtAction(nameof(GetUserByIdAndCompanyId), new { companyId, userId }, null);
         }
-       
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] int companyId, [FromRoute] string userId ,UpdateUserCompanyCommand updateUserCompanyCommand ,CancellationToken cancellationToken)
-        {
 
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int companyId, [FromRoute] string userId, [FromBody] UpdateUserCompanyCommand updateUserCompanyCommand, CancellationToken cancellationToken)
+        {
             updateUserCompanyCommand.UserId = userId;
             updateUserCompanyCommand.CompanyId = companyId;
 
             await identityService.UpdateUserCompany(updateUserCompanyCommand, cancellationToken);
 
-
             return NoContent();
         }
-     
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteUser(int id)
-        //{
-        //    return Ok();
-        //}
-
     }
-
-
-
-
 }

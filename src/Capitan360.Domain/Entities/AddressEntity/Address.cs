@@ -1,20 +1,12 @@
 ﻿using Capitan360.Domain.Abstractions;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.CompanyEntity;
-using NetTopologySuite.Geometries;
 
 namespace Capitan360.Domain.Entities.AddressEntity;
 
 public class Address : Entity
 {
-
-    public int CountryId { get; set; }
-
-    public int ProvinceId { get; set; }
-
-    public int CityId { get; set; }
-
+    public int CompanyId { get; set; } 
 
     public string AddressLine { get; set; } = default!;
 
@@ -33,17 +25,24 @@ public class Address : Entity
 
     public string? Description { get; set; }
 
-
-    public Point? Coordinates { get; set; }
-
-
-    public ICollection<CompanyAddress> CompanyAddresses { get; set; } = [];
+    public AddressType AddressType { get; set; }
 
 
-    // Navigation Properties
+    //public Point? Coordinates { get; set; }
 
-    public Area Country { get; set; } = null!;
-    public Area Province { get; set; } = null!;
-    public Area City { get; set; } = null!;
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+
+    public bool Active { get; set; }
+
+    public int OrderAddress { get; set; }
+
+    public Company Company { get; set; }
+
+    //  public ICollection<CompanyAddress> CompanyAddresses { get; set; } = [];
+
+
+
+
 
 }

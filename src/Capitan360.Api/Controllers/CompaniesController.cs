@@ -1,0 +1,85 @@
+﻿using Capitan360.Application.Attributes.Authorization;
+using Capitan360.Application.Common;
+using Capitan360.Application.Services.CompanyServices.Company.Commands.CreateCompany;
+using Capitan360.Application.Services.CompanyServices.Company.Commands.DeleteCompany;
+using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateCompany;
+using Capitan360.Application.Services.CompanyServices.Company.Dtos;
+using Capitan360.Application.Services.CompanyServices.Company.Queries.GetAllCompanies;
+using Capitan360.Application.Services.CompanyServices.Company.Queries.GetCompanyById;
+using Capitan360.Application.Services.CompanyServices.Company.Services;
+using Capitan360.Application.Services.Identity.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Capitan360.Api.Controllers;
+
+[Route("api/Companies")]
+[ApiController]
+[PermissionFilter("بخش شرکت ها")]
+public class CompaniesController(ICompanyService companyService, IUserContext userContext) : ControllerBase
+{
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status400BadRequest)]
+    [PermissionFilter("دریافت لیست شرکت ها")]
+    public async Task<ActionResult<ApiResponse<PagedResult<CompanyDto>>>> GetAllCompanies(
+        [FromQuery] GetAllCompanyQuery getAllCompanyQuery, CancellationToken cancellationToken)
+    {
+        var user = userContext.GetCurrentUser();
+
+        var response = await companyService.GetAllCompanies(getAllCompanyQuery, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
+    [PermissionFilter("دریافت شرکت")]
+    public async Task<ActionResult<ApiResponse<CompanyDto>>> GetCompanyById(
+        [FromRoute] int id, [FromQuery] int userCompanyTypeId, CancellationToken cancellationToken)
+    {
+        var response = await companyService.GetCompanyByIdAsync(new GetCompanyByIdQuery(id, userCompanyTypeId), cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [PermissionFilter("ایجاد شرکت")]
+    public async Task<ActionResult<ApiResponse<int>>> CreateCompany(
+        [FromBody] CreateCompanyCommand companyCommand, CancellationToken cancellationToken)
+    {
+        var response = await companyService.CreateCompanyAsync(companyCommand, cancellationToken);
+
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [PermissionFilter("حذف شرکت")]
+    public async Task<ActionResult<ApiResponse<object>>> DeleteCompany(
+        [FromRoute] int id, CancellationToken cancellationToken)
+    {
+        var response = await companyService.DeleteCompanyAsync(new DeleteCompanyCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
+    [PermissionFilter("آپدیت شرکت")]
+    public async Task<ActionResult<ApiResponse<CompanyDto>>> UpdateCompany([FromRoute] int id,
+
+        [FromBody] UpdateCompanyCommand updateCompanyCommand,
+        CancellationToken cancellationToken)
+    {
+        updateCompanyCommand.Id = id;
+
+        var response = await companyService.UpdateCompanyAsync(updateCompanyCommand, cancellationToken);
+
+        return StatusCode(response.StatusCode, response);
+    }
+}

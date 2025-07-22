@@ -1,22 +1,19 @@
-﻿using Capitan360.Domain.Repositories.Identity;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.UserEntity;
+using Capitan360.Domain.Repositories.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Capitan360.Domain.Entities.AuthorizationEntity;
-using Capitan360.Domain.Entities.UserEntity;
 
 namespace Capitan360.Infrastructure.Repositories.Identity;
 
-public class TokenService()
+public class TokenService(IUserCompanyRepository UserCompanyRepository)
     : ITokenService
 {
-
-
-    public (string resultToken, DateTime validTo) GenerateAccessToken(User user, List<Claim> claims,string jwtKey,string issuer, string audience)
+    public (string resultToken, DateTime validTo) GenerateAccessToken(List<Claim> claims, string jwtKey, string issuer,
+        string audience)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -40,7 +37,6 @@ public class TokenService()
         return Convert.ToBase64String(randomNumber);
     }
 
-    
     public (string EncryptedToken, byte[] IV) EncryptRefreshToken(string token, string encryptionKey)
     {
         var key = Encoding.UTF8.GetBytes(encryptionKey.PadRight(32, '\0')); // مطمئن شو کلید 32 بایته
@@ -65,23 +61,26 @@ public class TokenService()
         return Encoding.UTF8.GetString(decrypted);
     }
 
-
-    public List<Claim> ClaimsGenerator(User user, IReadOnlyList<string> userGroups, IReadOnlyList<string> roles, string newSessionId)
+    public List<Claim> ClaimsGenerator(User user, string permissionVersionControl, IReadOnlyList<string> roles,
+        string newSessionId, List<string> permissions)
     {
-
+        var userCompanyId = user.UserCompanies.FirstOrDefault()?.CompanyId ?? 0;
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.MobilePhone, user.PhoneNumber!),
-            new(ClaimTypes.Name, user.FullName!),
-         
+            new(ClaimTypes.Name, user.FullName!) ,
+            new(ConstantNames.CompanyId,  userCompanyId.ToString()),
+            new(ConstantNames.CompanyType,  user.CompanyType.ToString()),
+            new(ConstantNames.Permissions,  string.Join(',',permissions))
         };
-        if(!string.IsNullOrEmpty(newSessionId))
-            claims.Add(new Claim("SessionId", newSessionId));
-      
-        if (userGroups.Any())
-            foreach (var groupId in userGroups)
-                claims.Add(new Claim("GroupId", groupId));
+
+        if (!string.IsNullOrEmpty(newSessionId))
+            claims.Add(new Claim(ConstantNames.SessionId, newSessionId));
+
+        if (!string.IsNullOrEmpty(permissionVersionControl))
+
+            claims.Add(new Claim(ConstantNames.Pvc, permissionVersionControl));
 
         if (roles.Any())
             foreach (var role in roles)

@@ -1,59 +1,108 @@
-﻿using Capitan360.Domain.Entities.AuthorizationEntity;
+﻿using Capitan360.Application.Attributes.Authorization;
+using Capitan360.Application.Common;
+using Capitan360.Application.Services.Dtos;
+using Capitan360.Application.Services.Identity.Commands.ChangePassword;
+using Capitan360.Application.Services.Identity.Commands.ChangeUserActivity;
+using Capitan360.Application.Services.Identity.Commands.CreateUser;
+using Capitan360.Application.Services.Identity.Commands.UpdateUser;
+using Capitan360.Application.Services.Identity.Dtos;
+using Capitan360.Application.Services.Identity.Queries.LoginUser;
+using Capitan360.Application.Services.Identity.Queries.LogOut;
+using Capitan360.Application.Services.Identity.Queries.RefreshToken;
+using Capitan360.Application.Services.Identity.Responses;
+using Capitan360.Application.Services.Identity.Services;
+using Capitan360.Application.Services.UserCompany.Commands.Create;
+using Capitan360.Application.Services.UserCompany.Queries.GetUserById;
+using Capitan360.Domain.Entities.AuthorizationEntity;
 using Capitan360.Domain.Entities.UserEntity;
-using Microsoft.AspNetCore.Authorization;
+using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Capitan360.Application.Services.Identity;
-using Capitan360.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Capitan360.Infrastructure.Constants;
-using Capitan360.Application.Services.Identity.Users.Commands.CreateUser;
-using Capitan360.Application.Services.Identity.Users.Queries.LoginUser;
-using Capitan360.Application.Services.Identity.Users.Queries.LogOut;
-using Capitan360.Application.Services.Identity.Users.Queries.RefreshToken;
-using Capitan360.Application.Services.Identity.Users.Commands.AddUserGroup;
-using Capitan360.Application.Services.Identity.Users.Queries.GetUserGroup;
 
 namespace Capitan360.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[PermissionFilter("بخش کاربران")]
 public class IdentityController(UserManager<User> userManager,
     RoleManager<Role> roleManager,
   IConfiguration configuration,
-    IIdentityService identityService) : ControllerBase
+    IIdentityService identityService, IMultiTenantContextAccessor<TenantInfo> tenantContext) : ControllerBase
 
 {
-    // POST: api/identity/register
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] CreateUserCommand createUserCommand, CancellationToken cancellationToken)
+    [HttpPost("Register")]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
+    [PermissionFilter("ثبت کاربر")]
+    public async Task<ActionResult<ApiResponse<string>>> Register([FromBody] CreateUserCommand createUserCommand, CancellationToken cancellationToken)
     {
-
-        await identityService.RegisterUser(createUserCommand, StringValues.UserRole, cancellationToken);
-        return Ok(new { Message = "User registered successfully." });
+        var response = await identityService.RegisterUser(createUserCommand, cancellationToken);
+        return StatusCode(response.StatusCode, response);
     }
-    // POST: api/identity/login
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserQuery loginUserQuery, CancellationToken cancellationToken)
+
+    [HttpPut("UpdateUser")]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
+    [PermissionFilter("آپدیت کاربر")]
+    public async Task<ActionResult<ApiResponse<string>>> UpdateUser([FromBody] UpdateUserCommand updateUserCommand, CancellationToken cancellationToken)
     {
-
-        var result = await identityService.LoginUser(loginUserQuery, cancellationToken);
-
-        return Ok(result);
-
+        var response = await identityService.UpdateUser(updateUserCommand, cancellationToken);
+        return StatusCode(response.StatusCode, response);
     }
-    // POST: api/identity/login
-    [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(RefreshTokenQuery refreshTokenQuery, CancellationToken cancellationToken)
+
+    [HttpPut("ChangePassword")]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
+    [PermissionFilter("تغییر پسورد کاربر")]
+    public async Task<ActionResult<ApiResponse<string>>> ChangePassword([FromBody] ChangePasswordCommand command)
     {
+        var response = await identityService.ChangePassword(command);
+        return StatusCode(response.StatusCode, response);
+    }
 
-        var result = await identityService.RefreshToken(refreshTokenQuery, cancellationToken);
+    [HttpPost("ChangeUserActiveStatus")]
+    [PermissionFilter("تغییر وضعیت کاربر")]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<string>>> ChangeUserActiveStatus([FromBody] ChangeUserActivityCommand command, CancellationToken cancellationToken)
+    {
+        var response = await identityService.SetUserActivityStatus(command, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
 
-        return Ok(result);
+    [HttpPost("Login")]
+    [ExcludeFromPermission]
+    [ProducesResponseType(typeof(ApiResponse<LoginResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<LoginResponse>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<LoginResponse>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<LoginResponse>>> Login([FromBody] LoginUserQuery loginUserQuery, CancellationToken cancellationToken)
+    {
+        var tenant = tenantContext?.MultiTenantContext?.TenantInfo?.Id;
 
+        var response = await identityService.LoginUser(loginUserQuery, cancellationToken);
+
+        return StatusCode(response.StatusCode, response);
+    }
+
+    // POST: api/identity/login
+    [HttpPost("Refresh")]
+    [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status500InternalServerError)]
+    [ExcludeFromPermission]
+    public async Task<ActionResult<TokenResponse>> Refresh(RefreshTokenQuery refreshTokenQuery, CancellationToken cancellationToken)
+    {
+        var response = await identityService.RefreshToken(refreshTokenQuery, cancellationToken);
+
+        return StatusCode(response.StatusCode, response);
     }
 
     [HttpPost("logout")]
+    [ExcludeFromPermission]
     public async Task<IActionResult> Logout([FromBody] LogOutQuery logOutQuery, CancellationToken cancellationToken)
     {
         await identityService.LogOutUser(logOutQuery, cancellationToken);
@@ -61,106 +110,38 @@ public class IdentityController(UserManager<User> userManager,
         return Ok(new { Message = "User logged out successfully." });
     }
 
-    // GET: api/identity/users
-    //[HttpGet("users")]
-    //[Authorize(Roles = "Admin")]
-    //public async Task<IActionResult> GetUsers()
-    //{
-    //    var users = await userManager.Users
-    //        .Select(u => new
-    //        {
-    //            u.Id,
-    //            u.Email,
-    //            u.FullName,
-    //            u.CapitanCargoCode,
-    //            u.Active,
-    //            Roles = userManager.GetRolesAsync(u).Result
-    //        })
-    //        .ToListAsync();
-
-    //    return Ok(users);
-    //}
-
-    //// PUT: api/identity/users/{id}/activate
-    //[HttpPut("users/{id}/activate")]
-    //[Authorize(Roles = "Admin")]
-    //public async Task<IActionResult> ActivateUser(string id)
-    //{
-    //    var user = await userManager.FindByIdAsync(id);
-    //    if (user == null)
-    //    {
-    //        return NotFound(new { Message = "User not found." });
-    //    }
-
-    //    user.Active = true;
-    //    await userManager.UpdateAsync(user);
-
-    //    return Ok(new { Message = "User activated successfully." });
-    //}
-
-    //// DELETE: api/identity/users/{id}
-    //[HttpDelete("users/{id}")]
-    //[Authorize(Roles = "Admin")]
-    //public async Task<IActionResult> DeleteUser(string id)
-    //{
-    //    var user = await userManager.FindByIdAsync(id);
-    //    if (user == null)
-    //    {
-    //        return NotFound(new { Message = "User not found." });
-    //    }
-
-    //    var result = await userManager.DeleteAsync(user);
-    //    if (!result.Succeeded)
-    //    {
-    //        return BadRequest(result.Errors);
-    //    }
-
-    //    return Ok(new { Message = "User deleted successfully." });
-    //}
-
-    //// POST: api/identity/roles
-    //[HttpPost("roles")]
-    //[Authorize(Roles = "Admin")]
-    //public async Task<IActionResult> CreateRole([FromBody] string roleName)
-    //{
-    //    if (string.IsNullOrWhiteSpace(roleName))
-    //    {
-    //        return BadRequest(new { Message = "Role name is required." });
-    //    }
-
-    //    if (await roleManager.RoleExistsAsync(roleName))
-    //    {
-    //        return Conflict(new { Message = "Role already exists." });
-    //    }
-
-    //    var role = new Role { Name = roleName };
-    //    var result = await roleManager.CreateAsync(role);
-
-    //    if (!result.Succeeded)
-    //    {
-    //        return BadRequest(result.Errors);
-    //    }
-
-    //    return Ok(new { Message = "Role created successfully." });
-    //}
-
-
-    [HttpPost("addusertogroup")]
-    public async Task<IActionResult> AddUserToGroup([FromBody] AddUserGroupCommand addUserGroupCommand, CancellationToken cancellationToken)
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ExcludeFromPermission]
+    public async Task<ActionResult<ApiResponse<int>>> CreateArea(
+    [FromBody] CreateUserCompanyCommand command, CancellationToken cancellationToken)
     {
+        var response = await identityService.CreateUserByCompany(command, cancellationToken);
 
-        await identityService.AddUserToGroup(addUserGroupCommand, cancellationToken);
-
-        return Ok(new { Message = "User added to the group successfully." });
-
-
+        return StatusCode(response.StatusCode, response);
     }
-    [HttpPost("removeuserfromgroup")]
-    public async Task<IActionResult> RemoveUserFromGroup([FromBody] GetUserGroupQuery getUserGroupQuery, CancellationToken cancellationToken)
-    {
-        await identityService.RemoveUserFromGroup(getUserGroupQuery, cancellationToken);
 
-        return Ok(new { Message = "User removed from the group successfully." });
+    [HttpGet("GetUserById")]
+    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
+    [PermissionFilter("دریافت کاربر")]
+
+    public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById([FromQuery] GetUserByIdQuery query, CancellationToken cancellationToken)
+    {
+        var response = await identityService.GetUserById(query, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpGet("GetRoles")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<RoleDto>>), StatusCodes.Status200OK)]
+    [PermissionFilter("دریافت نقش ها")]
+    public async Task<ActionResult<ApiResponse<PagedResult<RoleDto>>>> GetRoles(CancellationToken cancellationToken)
+    {
+        var response = await identityService.GetRoles(cancellationToken);
+
+        return StatusCode(response.StatusCode, response);
     }
 
 

@@ -1,6 +1,8 @@
-﻿namespace Capitan360.Domain.Entities.AuthorizationEntity;
+﻿using Capitan360.Domain.Abstractions;
 
-public class RolePermission
+namespace Capitan360.Domain.Entities.AuthorizationEntity;
+
+public class RolePermission : Entity
 {
     public string RoleId { get; set; }
     public Role Role { get; set; }

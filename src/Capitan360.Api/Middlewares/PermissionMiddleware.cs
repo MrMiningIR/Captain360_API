@@ -1,129 +1,152 @@
-﻿using Capitan360.Domain.Entities.UserEntity;
+﻿using Capitan360.Application.Attributes.Authorization;
+using Capitan360.Application.Services.Identity.Services;
+using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.UserEntity;
+using Capitan360.Domain.Exceptions;
+using Capitan360.Domain.Repositories.PermissionRepository;
 using Capitan360.Infrastructure.Authorization.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace Capitan360.Api.Middlewares;
 
-public class PermissionMiddleware : IMiddleware
+public class PermissionMiddleware(UserManager<User> userManager,
+    IPermissionService permissionService,
+    IUserPermissionVersionControlRepository permissionVersionControlRepository
+    , IUserContext userContext)
+    : IMiddleware
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IPermissionService _permissionService;
-
-    public PermissionMiddleware(UserManager<User> userManager, IPermissionService permissionService)
-    {
-        _userManager = userManager;
-        _permissionService = permissionService;
-    }
-
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var user = context.User;
-        if (user.Identity is { IsAuthenticated: true })
-        {
-            var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var sessionId = user.Claims.FirstOrDefault(c => c.Type == "SessionId")?.Value;
+        var cancellationToken = context.RequestAborted;
+        var currentUser = userContext.GetCurrentUser();
 
-            // چک کردن Session
-            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(sessionId))
+        if (currentUser is not null)
+        {
+            bool hasPermission = false;
+            bool hasControllerPermission = false;
+
+            if (string.IsNullOrWhiteSpace(currentUser.GetPermissionVersionControl()))
+                throw new ForbiddenForceLogoutException(ConstantNames.UserNotValidMessage);
+
+            if (string.IsNullOrEmpty(currentUser.Id) || string.IsNullOrEmpty(currentUser.GetSessionId()))
+                throw new ForbiddenForceLogoutException(ConstantNames.UserNotValidMessage);
+
+            var dbUser = await userManager.FindByIdAsync(currentUser.Id);
+
+            //if (!string.IsNullOrEmpty(dbUser!.ActiveSessionId))
+            //{
+            //    if (dbUser.ActiveSessionId != currentUser.GetSessionId())
+            //    {
+            //        dbUser.ActiveSessionId = null;
+            //        await userManager.UpdateAsync(dbUser);
+            //        throw new ForbiddenForceLogoutException(ConstantNames.UserAlreadyLoggined);
+
+            //    }
+            //}
+
+            if (!dbUser!.Active)
+                throw new ForbiddenForceLogoutException(ConstantNames.DeactivatedAccountMessage);
+
+            var savedUserPvc = await permissionVersionControlRepository.GetUserPermissionVersionString(currentUser.Id, cancellationToken);
+
+            if (string.IsNullOrEmpty(savedUserPvc))
+                throw new ForbiddenForceLogoutException(ConstantNames.UserNotValidMessage);
+
+            if (savedUserPvc != currentUser.GetPermissionVersionControl())
             {
-                var dbUser = await _userManager.FindByIdAsync(userId);
-                if (dbUser == null || dbUser.ActiveSessionId != sessionId)
-                {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("Session expired or invalid.");
-                    return;
-                }
+                //  identityService.LogOutUser(new LogOutQuery(userId,sessionId,),cancellationToken);
+
+                throw new ForbiddenForceLogoutException(ConstantNames.ChangedAccessMessage);
             }
-            else
+
+            // Getting Permissions from (Role, Group, UserPermission)
+            // var userPermissions = await permissionService.GetUserPermissionsAsync(userId);
+
+            // Checking Groups
+            //var groupIds = user.Claims.Where(c => c.Type == "GroupId").Select(c => int.Parse(c.Value)).ToList();
+            //if (!groupIds.Any() && !userPermissions.Any())
+            //if (!userPermissions.Any())
+
+            // Check CompanyId
+
+            if ((userContext.GetCurrentUser()!.IsUser() && (string.IsNullOrEmpty(currentUser.CompanyId.ToString()) || currentUser.CompanyId <= 0)))
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("User ID or Session ID missing.");
-                return;
+                throw new ForbiddenForceLogoutException(ConstantNames.UserNotValidMessage);
             }
-            // چک کردن گروه‌ها (اختیاری - اگه هنوز لازم داری)
-            var groupIds = user.Claims.Where(c => c.Type == "GroupId").Select(c => int.Parse(c.Value)).ToList();
-            if (!groupIds.Any())
+
+            // Check Permission
+            if (!await permissionService.HasAnyPermissionAsync(currentUser.Id) && currentUser.IsUser())
             {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("User is not assigned to any group.");
-                return;
+                throw new ForbiddenForceLogoutException(ConstantNames.UserHasNoAccessMessage);
             }
-            // چک کردن مجوزها بر اساس Policyهای روت
+
+            // Checking Permissions for each endpoint
+
             var endpoint = context.GetEndpoint();
             if (endpoint != null)
             {
-                var authorizeData = endpoint.Metadata.GetOrderedMetadata<IAuthorizeData>() ?? [];
+                #region Comment
+
+                //var authorizeData = endpoint.Metadata.GetOrderedMetadata<IAuthorizeData>() ?? [];
+                //foreach (var data in authorizeData)
+                //{
+                //    if (!string.IsNullOrEmpty(data.Policy))
+                //    {
+                //        //var hasPermission = permissionService.HasPermissionAsync(data.Policy, userPermissions);
+                //        var hasPermission = await permissionService.HasPermissionAsync(userId, data.Policy);
+                //        if (!hasPermission)
+                //        {
+                //            throw new ForbiddenException($"Permission '{data.Policy}' denied.");
+
+                //        }
+                //    }
+                //}
+
+                #endregion Comment
+
+                var authorizeData = endpoint.Metadata.GetOrderedMetadata<PermissionFilterAttribute>() ?? [];
+                var hasAllowAnonymous = endpoint.Metadata.Any(em => em is AllowAnonymousAttribute);
+                var hasExcludeFromPermission = endpoint.Metadata.Any(em => em is ExcludeFromPermissionAttribute);
+
+                if (hasExcludeFromPermission || hasAllowAnonymous || authorizeData.Any(data => data.AllowAll) || currentUser.IsSuperAdmin())
+                {
+                    await next(context);
+                    return;
+                }
+                var controllerName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()?.ControllerName;
+                var actionName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()?.ActionName;
+
                 foreach (var data in authorizeData)
                 {
-                    if (!string.IsNullOrEmpty(data.Policy))
+                    if (!string.IsNullOrEmpty(actionName))
                     {
-                        var hasPermission = await _permissionService.HasPermissionAsync(userId, data.Policy);
-                        if (!hasPermission)
+                        hasPermission = await permissionService.HasPermissionAsync(currentUser.Id, actionName);
+                    }
+
+                    if (!string.IsNullOrEmpty(controllerName))
+                    {
+                        hasControllerPermission = await permissionService.HasPermissionAsync(currentUser.Id, controllerName);
+                    }
+
+                    if (!hasPermission)
+                    {
+                        if (!hasControllerPermission)
                         {
-                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                            await context.Response.WriteAsync($"Permission '{data.Policy}' denied.");
-                            return;
+
+                            throw new ForbiddenException($"Permission '{data.DisplayName}' denied.");
                         }
                     }
+                    //if (!hasPermission || !hasControllerPermission)
+                    //{
+                    //    throw new ForbiddenException($"Permission '{data.DisplayName}' denied.");
+                    //}
+
                 }
             }
-
-         
         }
 
         await next(context);
     }
 }
-//public class PermissionMiddleware(UserManager<User> userManager) : IMiddleware
-//{
-//    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-//    {
-//        var user = context.User;
-//        if (user.Identity is { IsAuthenticated: true })
-//        {
-//            var sessionId = user.Claims.FirstOrDefault(c => c.Type == "SessionId")?.Value;
-//            var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-//            var groupIds = user.Claims.Where(c => c.Type == "GroupId").Select(c => int.Parse(c.Value)).ToList();
-//            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(sessionId))
-//            {
-//                var dbUser = await userManager.FindByIdAsync(userId);
-//                if (dbUser == null || dbUser.ActiveSessionId != sessionId)
-//                {
-//                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-//                    await context.Response.WriteAsync("Session expired or invalid.");
-//                    return;
-//                }
-//            }
-//            if (!groupIds.Any())
-//            {
-//                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-//                await context.Response.WriteAsync("User is not assigned to any group.");
-//                return;
-//            }
-//        }
-//        await next(context);
-//    }
-//            // Must Get The route and the permission from the database and check if the user has the permission to access the route 
-//            // This is just a dummy implementation
-
-//            //  var requiredPermission = GetRequiredPermissionForRoute(context.Request.Path);
-//            //  var permissions = user.Claims.Where(c => c.Type == "Permission").Select(c => c.Value).ToList();
-//            //if (!string.IsNullOrEmpty(requiredPermission) && !permissions.Contains(requiredPermission))
-//            //{
-//            //    context.Response.StatusCode = StatusCodes.Status403Forbidden;
-//            //    await context.Response.WriteAsync("Access Denied: You do not have the required permission.");
-//            //    return;
-//            //}
-
-//    //private static string GetRequiredPermissionForRoute(PathString path)
-//    //{
-//    //    var routePermissions = new Dictionary<string, string>
-//    //    {
-//    //        { "/api/users", "ViewUsers" },
-//    //        { "/api/users/edit", "EditUsers" }
-//    //    };
-//    //    return routePermissions.TryGetValue(path, out var permission) ? permission : null;
-//    //}
-//}

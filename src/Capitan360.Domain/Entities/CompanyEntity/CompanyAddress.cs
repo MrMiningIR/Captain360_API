@@ -15,6 +15,5 @@ public class CompanyAddress : Entity
 
     public int OrderAddress { get; set; }
 
-    public string CaptainCargoName { get; set; } = default!;
-    public string CaptainCargoCode { get; set; } = default!;
+   
 }

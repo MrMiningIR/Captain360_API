@@ -6,8 +6,14 @@ public class CompanyPreferences:Entity
 {
 
       
-    public bool Admin { get; set; }
-    public short Type { get; set; }
+    
+    public string EconomicCode { get; set; } = default!;
+    public string NationalId { get; set; } = default!;
+    public string RegistrationId { get; set; } = default!;
+
+    public string CaptainCargoName { get; set; } = default!;
+    public string CaptainCargoCode { get; set; } = default!;
+    public decimal Tax { get; set; }
     public bool ActiveIssueDomesticWaybill { get; set; }
     public bool ActiveShowInSearchEngine { get; set; }
     public bool ActiveInWebServiceSearchEngine { get; set; }

@@ -15,15 +15,18 @@ public class JwtService(IConfiguration configuration)
 
     public string GenerateToken(IEnumerable<Claim> claims)
     {
+        var now = DateTime.UtcNow;
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
+
             issuer: _issuer,
             audience: _audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(_expireMinutes),
-            signingCredentials: credentials
+            expires: now.AddMinutes(_expireMinutes),
+            signingCredentials: credentials,
+            notBefore: now
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);

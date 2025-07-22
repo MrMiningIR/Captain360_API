@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Capitan360.Domain.Abstractions;
-using NetTopologySuite.Geometries;
+﻿using Capitan360.Domain.Abstractions;
 
 namespace Capitan360.Domain.Entities.AddressEntity;
 
@@ -18,7 +14,8 @@ public class Area : Entity
     public string? EnglishName { get; set; }
 
     public string Code { get; set; } = default!;
-    public Point? Coordinates { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     public  Area Parent { get; set; } = null!;
     public virtual ICollection<Area> Children { get; set; } = [];

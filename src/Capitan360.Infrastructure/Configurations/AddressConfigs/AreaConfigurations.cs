@@ -13,7 +13,8 @@ namespace Capitan360.Infrastructure.Configurations.AddressConfigs
             builder.Property(ar => ar.PersianName).IsRequired().HasMaxLength(50).IsUnicode();
             builder.Property(ar => ar.EnglishName).HasMaxLength(50);
             builder.Property(ar => ar.Code).IsRequired().HasMaxLength(10).IsUnicode(false);
-            builder.Property(ar => ar.Coordinates).HasColumnType("geography");
+            builder.Property(a => a.Latitude).HasDefaultValue(0);
+            builder.Property(a => a.Longitude).HasDefaultValue(0);
 
             builder
                 .HasOne(ar => ar.Parent) 

@@ -11,29 +11,21 @@ internal class AddressConfigurations : IEntityTypeConfiguration<Address>
 
         builder.HasKey(a => a.Id);
 
-        builder.Property(a => a.AddressLine).IsRequired().HasMaxLength(500).IsUnicode();
+        builder.Property(a => a.AddressLine).IsRequired().HasMaxLength(200).IsUnicode();
         builder.Property(a => a.Mobile).HasMaxLength(11).IsUnicode(false);
         builder.Property(a => a.Tel1).HasMaxLength(11).IsUnicode(false);
         builder.Property(a => a.Tel2).HasMaxLength(11).IsUnicode(false);
-        builder.Property(a => a.Zipcode).HasMaxLength(5).IsUnicode(false);
-        builder.Property(a => a.Description).HasMaxLength(500).IsUnicode();
-        builder.Property(a => a.Coordinates).HasColumnType("geography");
+        builder.Property(a => a.Zipcode).HasMaxLength(10).IsUnicode(false);
+        builder.Property(a => a.Description).HasMaxLength(200).IsUnicode();
+        builder.Property(a => a.Active).HasDefaultValue(false);
+        builder.Property(a => a.OrderAddress).HasDefaultValue(0);
+        builder.Property(a => a.Latitude).HasDefaultValue(0);
+        builder.Property(a => a.Longitude).HasDefaultValue(0);
 
-        builder.HasOne(a => a.Country)
-            .WithMany()
-            .HasForeignKey(a => a.CountryId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(a => a.Province)
-            .WithMany()
-            .HasForeignKey(a => a.ProvinceId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(a => a.City)
-            .WithMany()
-            .HasForeignKey(a => a.CityId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        builder.HasOne(a => a.Company)
+            .WithMany(c => c.Addresses)
+            .HasForeignKey(a => a.CompanyId)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
     }

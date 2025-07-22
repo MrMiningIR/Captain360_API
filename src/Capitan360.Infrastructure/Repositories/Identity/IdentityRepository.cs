@@ -1,5 +1,8 @@
-﻿using Capitan360.Domain.Abstractions;
+﻿using System.Linq.Expressions;
+using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.AuthorizationEntity;
+using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Entities.UserEntity;
 using Capitan360.Domain.Repositories.Identity;
 using Capitan360.Infrastructure.Persistence;
@@ -22,44 +25,216 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
     {
         //user.UserName = user.PhoneNumber;
         var result = await userManager.CreateAsync(user, password);
-       
+
 
         return result;
 
 
     }
 
-    public async Task AddToRole(User user, Role role)
+    public async Task<IdentityResult?> UpdateUserAsync(User user, CancellationToken ct)
+    {
+        var result = await userManager.UpdateAsync(user);
+        return result;
+    }
+
+    public async Task<IdentityResult?> AddRoleToUser(User user, Role role)
     {
 
-        await userManager.AddToRoleAsync(user, role.NormalizedName!);
+        var result = await userManager.AddToRoleAsync(user, role.NormalizedName!);
+        return result;
+    }
+
+    public async Task RemoveRoleFromUser(User user)
+    {
+        var currentRoles = await userManager.GetRolesAsync(user);
+        if (currentRoles.Any())
+        {
+            await userManager.RemoveFromRolesAsync(user, currentRoles);
+
+        }
+
+
     }
 
     public async Task<User?> FindUserByPhone(string phoneNumber, CancellationToken cancellationToken)
     {
-        return await dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber, cancellationToken: cancellationToken);
+        return await dbContext
+                .Users
+                .Include(u => u.UserCompanies)
+                .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber, cancellationToken: cancellationToken)
+
+            ;
     }
 
     public async Task<IReadOnlyList<User>> GetUsersByCompanyAsync(int companyId, CancellationToken cancellationToken)
     {
-       return await dbContext.UserCompanies
-            .Where(uc => uc.CompanyId == companyId)
-            .Select(uc => uc.User)
-            .ToListAsync(cancellationToken);
+        return await dbContext.UserCompanies
+             .Where(uc => uc.CompanyId == companyId)
+             .Select(uc => uc.User)
+             .ToListAsync(cancellationToken);
     }
 
-    public async Task<User?> GetUserByCompanyAsync(string userId, int companyId, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<User>, int)> GetMatchingAllUsersByCompany(int companyId, int userKind,
+        string? searchPhrase, int pageSize, int pageNumber, string? sortBy,
+        SortDirection sortDirection, CancellationToken cancellationToken)
+    {
+        var searchPhraseLower = searchPhrase?.ToLower();
+
+        #region MyRegion
+        //var baseQuery = dbContext.UserCompanies.AsNoTracking()
+        //    .Include(x => x.User)
+        //        .Where(uc => companyId == 0 || uc.CompanyId == companyId)
+        //    .Select(uc => uc.User)
+        //    .Where(x => x.UserKind == userKind)
+        //.Where(a => searchPhraseLower == null ||
+        //                (a.FullName!.ToLower().Contains(searchPhraseLower) ||
+        //                 a.PhoneNumber!.Contains(searchPhraseLower)));
+
+        //var baseQuery = dbContext.UserCompanies
+        //    .AsNoTracking()
+
+        //    .Where(uc => (companyId == 0 || uc.CompanyId == companyId) &&
+        //                 (userKind == 0 || uc.User.UserKind == userKind) &&
+        //                 (searchPhraseLower == null ||
+        //                  uc.User.FullName!.ToLower().Contains(searchPhraseLower) ||
+        //                  uc.User.PhoneNumber!.Contains(searchPhraseLower)))
+        //    .Select(uc => uc.User); 
+        #endregion
+
+        var baseQuery = dbContext.Users
+            .AsNoTracking()
+            .Include(x => x.Roles)
+            .Include(x => x.UserCompanies)
+            .ThenInclude(x => x.Company)
+            .Where(u => (userKind == 0 || u.UserKind == userKind) &&
+                        (searchPhraseLower == null ||
+                         u.FullName!.ToLower().Contains(searchPhraseLower) ||
+                         u.PhoneNumber!.Contains(searchPhraseLower)) &&
+                        (companyId == 0 || dbContext.UserCompanies.Any(uc => uc.CompanyId == companyId && uc.UserId == u.Id)))
+            .Select(u => u);
+
+
+
+
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        if (sortBy != null)
+        {
+            var columnsSelector = new Dictionary<string, Expression<Func<User, object>>>
+            {
+                { nameof(User.FullName), a => a.FullName ! },
+                { nameof(User.Active), a => a.Active },
+                { nameof(User.LastAccess), a => a.LastAccess }
+            };
+
+            var selectedColumn = columnsSelector[sortBy];
+            baseQuery = sortDirection == SortDirection.Ascending
+                ? baseQuery.OrderBy(selectedColumn)
+                : baseQuery.OrderByDescending(selectedColumn);
+        }
+
+        var users = await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (users, totalCount);
+    }
+
+    public async Task<UserCompany?> GetUserByCompanyAsync(string userId, int companyId, CancellationToken cancellationToken)
     {
         return await dbContext.UserCompanies
+            .AsNoTracking()
             .Where(uc => uc.CompanyId == companyId && uc.UserId == userId)
-            .Select(uc => uc.User)
-            .FirstOrDefaultAsync(cancellationToken);
+            .Include(x => x.Company)
+            .Include(x => x.User).
+            ThenInclude(x => x.Profile)
+            .Include(x => x.User)
+            .ThenInclude(x => x.Roles)
+            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+
+    }
+
+    public async Task<User?> GetUserByIdAsync(string userId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Users
+                .AsNoTracking()
+                .Include(x => x.Profile)
+                .Include(x => x.UserCompanies)
+                .ThenInclude(x => x.Company)
+                .Include(x => x.Roles)
+
+                .SingleOrDefaultAsync(x => x.Id == userId, cancellationToken)
+
+            ;
+    }
+
+    public async Task<User?> GetUserByIdForUpdateAsync(string userId, CancellationToken ct)
+    {
+        return await dbContext.Users
+
+
+            .SingleOrDefaultAsync(x => x.Id == userId, ct);
     }
 
     public async Task<IdentityResult?> CreateUserByCompanyAsync(User user, string password)
     {
 
-       return  await userManager.CreateAsync(user, password);
+        return await userManager.CreateAsync(user, password);
+
+
+    }
+
+    public async Task<User?> GetUserByPhoneNumberAndCompanyType(string phoneNumber, int companyType, CancellationToken cancellationToken)
+    {
+        return await dbContext.Users.SingleOrDefaultAsync(
+            x => x.PhoneNumber == phoneNumber && x.CompanyType == companyType, cancellationToken);
+    }
+
+    public async Task<User?> GetUserByPhoneNumberAndCompanyTypeForUpdateOperation(string phoneNumber, int companyType, string userId,
+        CancellationToken cancellationToken)
+    {
+        var user = await dbContext.Users.AsNoTracking().SingleOrDefaultAsync(x => x.PhoneNumber == phoneNumber && x.CompanyType == companyType, cancellationToken);
+
+        if (user is not null)
+        {
+            if (user.Id != userId)
+            {
+                return user;
+            }
+        }
+        return null;
+
+
+
+    }
+
+    public async Task<User?> GetUserByPhoneNumberAndCompanyId(string phoneNumber, int companyId, CancellationToken cancellationToken)
+    {
+        var user = await dbContext.Users
+         .Include(u => u.UserCompanies)
+         .Where(u => u.PhoneNumber == phoneNumber && u.UserCompanies.Any(uc => uc.CompanyId == companyId))
+         .SingleOrDefaultAsync(cancellationToken);
+        return user;
+    }
+
+    public async Task<User?> GetUserByPhoneNumberAndCompanyIdForUpdateOperation(string phoneNumber, int companyId, string userId,
+        CancellationToken cancellationToken)
+    {
+                var user = await dbContext.Users.AsNoTracking()
+         .Include(u => u.UserCompanies)
+         .Where(u => u.PhoneNumber == phoneNumber && u.UserCompanies.Any(uc => uc.CompanyId == companyId))
+         .SingleOrDefaultAsync(cancellationToken);
+        if (user is not null)
+        {
+            if (user.Id != userId)
+            {
+                return user;
+            }
+        }
+        return null;
 
 
     }

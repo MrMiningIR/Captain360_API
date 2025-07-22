@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Queries;
+
+public record GetCompanyDomesticPathStructPriceByIdQuery(int Id);

@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;
+
+public record GetCompanyContentTypeByIdQuery(int Id);

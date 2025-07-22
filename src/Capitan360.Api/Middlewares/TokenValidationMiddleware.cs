@@ -1,11 +1,9 @@
 ﻿using Capitan360.Domain.Repositories.PermissionRepository;
-using System.Threading;
 
 namespace Capitan360.Api.Middlewares
 {
     public class TokenValidationMiddleware(ITokenBlacklistsRepository blacklistsRepository) : IMiddleware
     {
-
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var token = context.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
@@ -26,5 +24,3 @@ namespace Capitan360.Api.Middlewares
         }
     }
 }
-
-

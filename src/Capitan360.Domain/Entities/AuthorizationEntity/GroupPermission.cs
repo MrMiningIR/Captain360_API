@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using Capitan360.Domain.Abstractions;
+using System.Text.Json.Serialization;
 
 namespace Capitan360.Domain.Entities.AuthorizationEntity
 {
-    public class GroupPermission
+    public class GroupPermission : Entity
     {
         public int GroupId { get; set; }
         [JsonIgnore]

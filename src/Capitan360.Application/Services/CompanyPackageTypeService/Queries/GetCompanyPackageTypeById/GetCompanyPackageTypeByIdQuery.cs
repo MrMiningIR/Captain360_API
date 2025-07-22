@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
+
+public record GetCompanyPackageTypeByIdQuery(int Id);

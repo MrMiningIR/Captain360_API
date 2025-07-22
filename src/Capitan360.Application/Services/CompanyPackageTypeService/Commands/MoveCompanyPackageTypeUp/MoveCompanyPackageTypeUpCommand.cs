@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
+
+public record MoveCompanyPackageTypeUpCommand(int CompanyId, int PackageTypeId);

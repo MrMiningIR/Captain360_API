@@ -1,23 +1,39 @@
-﻿using Capitan360.Domain.Entities.AuthorizationEntity;
+﻿using Capitan360.Application.Services.Identity.CustomIdentityErrorDescriber;
+using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.UserEntity;
-using Capitan360.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Capitan360.Domain.Repositories.AddressRepo;
+using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.CompanyUriRepo;
+using Capitan360.Domain.Repositories.ContentRepo;
+using Capitan360.Domain.Repositories.Identity;
+using Capitan360.Domain.Repositories.PackageRepo;
 using Capitan360.Domain.Repositories.PermissionRepository;
-using Capitan360.Infrastructure.Constants;
+using Capitan360.Domain.Repositories.User;
 using Capitan360.Infrastructure.Authorization.Requirements;
 using Capitan360.Infrastructure.Authorization.Services;
-using Capitan360.Infrastructure.Repositories.UserRepositories;
-using Microsoft.AspNetCore.Authorization;
-using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Repositories.Identity;
+using Capitan360.Infrastructure.Persistence;
+using Capitan360.Infrastructure.Repositories.AddressImpl;
+using Capitan360.Infrastructure.Repositories.CompanyCommissionsImpl;
+using Capitan360.Infrastructure.Repositories.CompanyImpl;
+using Capitan360.Infrastructure.Repositories.ContentTypeImpl;
 using Capitan360.Infrastructure.Repositories.Identity;
+using Capitan360.Infrastructure.Repositories.PackageTypeImpl;
+using Capitan360.Infrastructure.Repositories.UserRepositories;
 using Capitan360.Infrastructure.Seeders;
+using Capitan360.Infrastructure.Services;
+using Capitan360.Infrastructure.Services.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
+using System.Text;
+using Role = Capitan360.Domain.Entities.AuthorizationEntity.Role;
 
 namespace Capitan360.Infrastructure.Extensions;
 
@@ -34,7 +50,7 @@ public static class ServiceCollectionExtensions
         {
 
             options.UseSqlServer(configurationManager.GetConnectionString("DefaultConnection") ??
-                                 throw new Exception("ConString"),x=>x.UseNetTopologySuite())
+                                 throw new Exception("ConString"), x => x.UseNetTopologySuite())
                 .EnableSensitiveDataLogging();
         });
 
@@ -49,9 +65,21 @@ public static class ServiceCollectionExtensions
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
+
+                // Lock Setting
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders().AddErrorDescriber<CustomIdentityErrorDescriberMessage>(); ;
+        //  .AddUserValidator<CustomUserValidator>();
+        // Add User Custom Validator
+
+
+
+
 
         // JWT Authentication Configuration
         service.AddAuthentication(options =>
@@ -68,11 +96,43 @@ public static class ServiceCollectionExtensions
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configurationManager["Jwt:Issuer"],
                 ValidAudience = configurationManager["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationManager["Jwt:Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationManager["Jwt:Key"] ?? throw new NullReferenceException("تنظیماتی در سیستم ست نشده است")))
             };
+            //options.Events = new JwtBearerEvents
+            //{
+            //    OnMessageReceived = context =>
+            //    {
+            //        var encryptedToken = context.Request.Cookies["AccessToken"];
+            //        if (!string.IsNullOrEmpty(encryptedToken))
+            //        {
+            //            var encryptionService = context.HttpContext.RequestServices.GetRequiredService<EncryptionService>();
+            //            context.Token = encryptionService.Decrypt(encryptedToken);
+            //        }
+            //        return Task.CompletedTask;
+            //    }
+            //};
         });
 
-       
+
+        #region Comment
+        // Authorization Policies
+        //service.AddAuthorization(options =>
+        //{
+
+        //    foreach (var permission in Enum.GetValues(typeof(Permissions)))
+        //    {
+        //        options.AddPolicy(permission.ToString(), policy => policy.RequireClaim("Permission", permission.ToString()));
+        //    }
+        //}); 
+
+        //var authorizationBuilder = service.AddAuthorizationBuilder();
+
+        //foreach (var permission in Enum.GetValues(typeof(Permissions)))
+        //{
+        //    authorizationBuilder.AddPolicy(permission.ToString(), policy =>
+        //        policy.RequireClaim("Permission", permission.ToString()));
+        //}
+        #endregion
 
 
 
@@ -92,12 +152,92 @@ public static class ServiceCollectionExtensions
         service.AddScoped<IUserGroupRepository, UserGroupRepository>();
         service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         service.AddScoped<ITokenService, TokenService>();
+        service.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
+
+        service.AddScoped<ICompanyRepository, CompanyRepository>();
+        service.AddScoped<IAddressRepository, AddressRepository>();
+        service.AddScoped<ICompanyAddressRepository, CompanyAddressRepository>();
+        service.AddScoped<ICompanyUriRepository, CompanyUriRepository>();
+        service.AddScoped<ICompanySmsPatternsRepository, CompanySmsPatternsRepository>();
+        service.AddScoped<ICompanyPreferencesRepository, CompanyPreferencesRepository>();
+        service.AddScoped<ICompanyCommissionsRepository, CompanyCommissionsRepository>();
+        service.AddScoped<IContentTypeRepository, ContentTypeRepository>();
+        service.AddScoped<IPackageTypeRepository, PackageTypeRepository>();
+        service.AddScoped<ICompanyDomesticPathsRepository, CompanyDomesticPathsRepository>();
+        service.AddScoped<ICompanyDomesticPathStructPricesRepository, CompanyDomesticPathStructPricesRepository>();
+        service.AddScoped<ICompanyDomesticPathStructPriceMunicipalAreasRepository, CompanyDomesticPathStructPriceMunicipalAreasRepository>();
+        service.AddScoped<ICompanyDomesticPathChargeRepository, CompanyDomesticPathChargeRepository>();
+        service.AddScoped<ICompanyDomesticPathChargeContentTypeRepository, CompanyDomesticPathChargeContentTypeRepository>();
+        service.AddScoped<ICompanyInsuranceRepository, CompanyInsuranceRepository>();
+        service.AddScoped<ICompanyInsuranceChargeRepository, CompanyInsuranceChargeRepository>();
+        service.AddScoped<ICompanyInsuranceChargePaymentRepository, CompanyInsuranceChargePaymentRepository>();
+        service.AddScoped<ICompanyInsuranceChargePaymentContentTypeRepository, CompanyInsuranceChargePaymentContentTypeRepository>();
+        service.AddScoped<IUserCompanyRepository, UserCompanyRepository>();
+        service.AddScoped<IUserPermissionVersionControlRepository, UserPermissionVersionControlRepository>();
+        service.AddScoped<IUserProfileRepository, UserProfileRepository>();
+        service.AddScoped<ICompanyContentTypeRepository, CompanyContentTypeRepository>();
+        service.AddScoped<IUtilsService, UtilsService>();
+        service.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
+        service.AddScoped<ICompanyPackageTypeRepository, CompanyPackageTypesRepository>();
+
+        // service.AddSingleton<IResponseCacheService, ResponseCacheService>();
+
+
+        service.AddScoped<EncryptionService>();
+        service.AddScoped<IAreaRepository, AreaRepository>();
 
         // Registering Seeders
 
         service.AddScoped<IPrimaryInformationSeeder, PrimaryInformationSeeder>();
 
 
+        // 1. پیکربندی Redis
+        //service.AddStackExchangeRedisCache(options =>
+        //{
+        //    options.Configuration = configurationManager.GetConnectionString("Redis")  ?? throw new Exception("Cannot get redis connection string");;
+        //    options.InstanceName = "Cap_";
+        //    options.ConfigurationOptions = new ConfigurationOptions
+        //    {
+        //        ConnectTimeout = 5000,
+        //        SyncTimeout = 1000,
+        //        AbortOnConnectFail = false
+        //    };
+        //});
+        var redisConnectioan = configurationManager.GetConnectionString("Redis");
+        Console.WriteLine($"Redis Connection: {redisConnectioan}");
+        service.AddStackExchangeRedisCache(options =>
+
+{
+    var redisConnection = configurationManager.GetConnectionString("Redis") ?? throw new Exception("Cannot get redis connection string");
+    options.Configuration = redisConnection;
+    options.InstanceName = ConstantNames.CachePrefix;
+    options.ConfigurationOptions = new ConfigurationOptions
+    {
+        EndPoints = { redisConnection.Split(',')[0] }, // استخراج آدرس (مثلاً localhost:6379)
+        ConnectTimeout = 5000,// حداکثر زمانی که StackExchange.Redis برای برقراری اتصال به سرور Redis صبر می‌کنه. 
+        SyncTimeout = 1000, //حداکثر زمانی که StackExchange.Redis برای انجام عملیات همزمان (مثل خواندن یا نوشتن داده در Redis) صبر می‌کنه.
+        // نکته: عملیات غیرهمزمان (async) مثل GetOrCreateAsync تحت تأثیر SyncTimeout نیستن، چون از مدل async استفاده می‌کنن.
+        AbortOnConnectFail = false,
+        Ssl = redisConnection.Contains("ssl=True", StringComparison.OrdinalIgnoreCase),
+
+    };
+});
+
+        // 2. پیکربندی HybridCache
+        service.AddHybridCache(options =>
+        {
+            options.MaximumPayloadBytes = 1024 * 1024; // 1MB
+            options.DefaultEntryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromMinutes(20), // انقضای Redis
+                                                       // Expiration = TimeSpan.FromSeconds(50), // انقضای Redis
+                LocalCacheExpiration = TimeSpan.FromMinutes(10) // انقضای MemoryCache L1
+
+                // LocalCacheExpiration = TimeSpan.FromSeconds(30)
+                //  ,Flags = HybridCacheEntryFlags.DisableLocalCache | HybridCacheEntryFlags.DisableCompression
+
+            };
+        });
 
 
 
