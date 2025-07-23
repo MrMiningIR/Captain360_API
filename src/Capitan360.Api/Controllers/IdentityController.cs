@@ -24,7 +24,7 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[PermissionFilter("بخش کاربران")]
+[PermissionFilter("بخش کاربران", "T")]
 public class IdentityController(UserManager<User> userManager,
     RoleManager<Role> roleManager,
   IConfiguration configuration,
@@ -34,7 +34,7 @@ public class IdentityController(UserManager<User> userManager,
     [HttpPost("Register")]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("ثبت کاربر")]
+    [PermissionFilter("ثبت کاربر", "T1")]
     public async Task<ActionResult<ApiResponse<string>>> Register([FromBody] CreateUserCommand createUserCommand, CancellationToken cancellationToken)
     {
         var response = await identityService.RegisterUser(createUserCommand, cancellationToken);
@@ -44,7 +44,7 @@ public class IdentityController(UserManager<User> userManager,
     [HttpPut("UpdateUser")]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("آپدیت کاربر")]
+    [PermissionFilter("آپدیت کاربر", "T2")]
     public async Task<ActionResult<ApiResponse<string>>> UpdateUser([FromBody] UpdateUserCommand updateUserCommand, CancellationToken cancellationToken)
     {
         var response = await identityService.UpdateUser(updateUserCommand, cancellationToken);
@@ -56,7 +56,7 @@ public class IdentityController(UserManager<User> userManager,
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("تغییر پسورد کاربر")]
+    [PermissionFilter("تغییر پسورد کاربر", "T3")]
     public async Task<ActionResult<ApiResponse<string>>> ChangePassword([FromBody] ChangePasswordCommand command)
     {
         var response = await identityService.ChangePassword(command);
@@ -64,7 +64,7 @@ public class IdentityController(UserManager<User> userManager,
     }
 
     [HttpPost("ChangeUserActiveStatus")]
-    [PermissionFilter("تغییر وضعیت کاربر")]
+    [PermissionFilter("تغییر وضعیت کاربر", "T4")]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
@@ -126,7 +126,7 @@ public class IdentityController(UserManager<User> userManager,
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("دریافت کاربر")]
+    [PermissionFilter("دریافت کاربر", "T9")]
 
     public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById([FromQuery] GetUserByIdQuery query, CancellationToken cancellationToken)
     {
@@ -136,7 +136,7 @@ public class IdentityController(UserManager<User> userManager,
 
     [HttpGet("GetRoles")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<RoleDto>>), StatusCodes.Status200OK)]
-    [PermissionFilter("دریافت نقش ها")]
+    [PermissionFilter("دریافت نقش ها", "T10")]
     public async Task<ActionResult<ApiResponse<PagedResult<RoleDto>>>> GetRoles(CancellationToken cancellationToken)
     {
         var response = await identityService.GetRoles(cancellationToken);

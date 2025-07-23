@@ -13,13 +13,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/CompanyDomesticPaths")]
 [ApiController]
-[PermissionFilter("بخش مسیر")]
+[PermissionFilter("بخش مسیر", "H")]
 public class CompanyDomesticPathsController(ICompanyDomesticPathsService companyDomesticPathsService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDomesticPathDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDomesticPathDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("لیست مسیر")]
+    [PermissionFilter("لیست مسیر", "H1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyDomesticPathDto>>>> GetAllCompanyDomesticPaths(
         [FromQuery] GetAllCompanyDomesticPathsQuery query, CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     [ProducesResponseType(typeof(ApiResponse<CompanyDomesticPathDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDomesticPathDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDomesticPathDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("دریافت مسیر")]
+    [PermissionFilter("دریافت مسیر", "H2")]
     public async Task<ActionResult<ApiResponse<CompanyDomesticPathDto>>> GetCompanyDomesticPathById(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -42,7 +42,7 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("ایجاد مسیر")]
+    [PermissionFilter("ایجاد مسیر", "H3")]
     public async Task<ActionResult<ApiResponse<int>>> CreateCompanyDomesticPath(
         [FromBody] CreateCompanyDomesticPathCommand command, CancellationToken cancellationToken)
     {
@@ -54,7 +54,7 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("حذف مسیر")]
+    [PermissionFilter("حذف مسیر", "H4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompanyDomesticPath(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -66,7 +66,7 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت مسیر")]
+    [PermissionFilter("آپدیت مسیر", "H5")]
     public async Task<ActionResult<ApiResponse<CompanyDomesticPathDto>>> UpdateCompanyDomesticPath(
         [FromRoute] int id, [FromBody] UpdateCompanyDomesticPathCommand command, CancellationToken cancellationToken)
     {

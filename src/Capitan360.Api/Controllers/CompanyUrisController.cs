@@ -14,13 +14,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/CompanyUris")]
 [ApiController]
-[PermissionFilter(displayName: "بخش لینک شرکت")]
+[PermissionFilter(displayName: "بخش لینک شرکت", "P")]
 public class CompanyUrisController(ICompanyUriService companyUriService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyUriDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyUriDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter(displayName: "لیست لینک شرکت")]
+    [PermissionFilter(displayName: "لیست لینک شرکت", "P1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyUriDto>>>> GetAllCompanyUris(
         [FromQuery] GetAllCompanyUrisQuery query, CancellationToken cancellationToken)
     {
@@ -32,7 +32,7 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
     [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter(displayName: "دریافت لینک شرکت")]
+    [PermissionFilter(displayName: "دریافت لینک شرکت", "P2")]
     public async Task<ActionResult<ApiResponse<CompanyUriDto>>> GetCompanyUriById(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter(displayName: "افزودن لینک شرکت")]
+    [PermissionFilter(displayName: "افزودن لینک شرکت", "P3")]
 
     public async Task<ActionResult<ApiResponse<int>>> CreateCompanyUri(
         [FromBody] CreateCompanyUriCommand command, CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter(displayName: "حذف لینک شرکت")]
+    [PermissionFilter(displayName: "حذف لینک شرکت", "P4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompanyUri(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -68,7 +68,7 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
-    [PermissionFilter(displayName: "آپدیت لینک شرکت")]
+    [PermissionFilter(displayName: "آپدیت لینک شرکت", "P5")]
 
     public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyUri(
         [FromRoute] int id, [FromBody] UpdateCompanyUriCommand updateCompanyUriCommand, CancellationToken cancellationToken)

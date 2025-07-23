@@ -4,7 +4,6 @@ using Capitan360.Application.Services.Identity.Commands.CreateUser;
 using Capitan360.Application.Services.Identity.Commands.UpdateUser;
 using Capitan360.Application.Services.Identity.Dtos;
 using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.AuthorizationEntity;
 using Capitan360.Domain.Entities.UserEntity;
 
 namespace Capitan360.Application.Services.Identity.MapperProfiles;
@@ -40,7 +39,7 @@ public class UserMapperProfile : Profile
               .ForMember(dest => dest.CompanyTypeId, opt => opt.MapFrom(src => src.CompanyType))
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles));
 
-        CreateMap<Role, RoleDto>()
+        CreateMap<Domain.Entities.AuthorizationEntity.Role, RoleDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RolePersianName, opt => opt.MapFrom(src => src.PersianName))
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name));

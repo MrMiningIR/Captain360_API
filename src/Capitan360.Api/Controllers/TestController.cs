@@ -12,14 +12,14 @@ namespace Capitan360.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [PermissionFilter("بخش فنی")]
+
     public class TestController(IUserContext userContext, HybridCache cache,
         ILogger<TestController> logger, PermissionCollectorService permissionCollector, IMultiTenantContextAccessor<TenantInfo> tenantContext) : ControllerBase
     {
         [HttpGet]
         //[Authorize(Policy = "CreateRoles")]
         //[Authorize(Roles = "SuperAdmin")]
-        [PermissionFilter("A")]
+
         public async Task<IActionResult> Get(CancellationToken token)
         {
             //string cacheKey = $"product-{5067}";
@@ -73,7 +73,7 @@ namespace Capitan360.Api.Controllers
 
         [HttpGet("Another")]
         //[Authorize(Roles = "Admin")]
-        [PermissionFilter("B")]
+
         public IActionResult AnotherGet()
         {
             var permissions = permissionCollector.GetActionsWithPermissionFilter(Assembly.GetExecutingAssembly());
@@ -81,7 +81,7 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpGet("test-cache/{id}")]
-        [PermissionFilter("C")]
+
         public async Task<IActionResult> TestCache(int id, CancellationToken token)
         {
             string cacheKey = $"product-{id}";
@@ -113,7 +113,7 @@ namespace Capitan360.Api.Controllers
 
         [HttpPost("update-product/{id}")]
         //  [InvalidateCache("products")]
-        [PermissionFilter("D")]
+
         [InvalidateCache("product-{id}")] // تگ پویا با استفاده از پارامتر id
         public async Task<IActionResult> UpdateProduct(int id, CancellationToken token)
         {
@@ -124,7 +124,7 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpPost("invalidate/{id}")]
-        [PermissionFilter("E")]
+
         public async Task<IActionResult> InvalidateCache(int id, CancellationToken token)
         {
             string cacheKey = $"product-{id}";
@@ -134,7 +134,7 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpPost("invalidate-tag/{tag}")]
-        [PermissionFilter("F")]
+
         public async Task<IActionResult> InvalidateTag(string tag, CancellationToken token)
         {
             //await cache.RemoveByTagAsync($"product-{tag}", token);
@@ -164,7 +164,7 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpGet("TestGet")]
-        [PermissionFilter("G")]
+
         public IActionResult TestGet()
         {
             return Ok("Hello World");

@@ -8,6 +8,7 @@ using Capitan360.Infrastructure.Authorization.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Reflection;
 
 namespace Capitan360.Api.Middlewares;
 
@@ -61,13 +62,7 @@ public class PermissionMiddleware(UserManager<User> userManager,
                 throw new ForbiddenForceLogoutException(ConstantNames.ChangedAccessMessage);
             }
 
-            // Getting Permissions from (Role, Group, UserPermission)
-            // var userPermissions = await permissionService.GetUserPermissionsAsync(userId);
 
-            // Checking Groups
-            //var groupIds = user.Claims.Where(c => c.Type == "GroupId").Select(c => int.Parse(c.Value)).ToList();
-            //if (!groupIds.Any() && !userPermissions.Any())
-            //if (!userPermissions.Any())
 
             // Check CompanyId
 
@@ -87,62 +82,27 @@ public class PermissionMiddleware(UserManager<User> userManager,
             var endpoint = context.GetEndpoint();
             if (endpoint != null)
             {
-                #region Comment
-
-                //var authorizeData = endpoint.Metadata.GetOrderedMetadata<IAuthorizeData>() ?? [];
-                //foreach (var data in authorizeData)
-                //{
-                //    if (!string.IsNullOrEmpty(data.Policy))
-                //    {
-                //        //var hasPermission = permissionService.HasPermissionAsync(data.Policy, userPermissions);
-                //        var hasPermission = await permissionService.HasPermissionAsync(userId, data.Policy);
-                //        if (!hasPermission)
-                //        {
-                //            throw new ForbiddenException($"Permission '{data.Policy}' denied.");
-
-                //        }
-                //    }
-                //}
-
-                #endregion Comment
-
-                var authorizeData = endpoint.Metadata.GetOrderedMetadata<PermissionFilterAttribute>() ?? [];
+                // var authorizeData = endpoint.Metadata.GetOrderedMetadata<PermissionFilterAttribute>() ?? [];
                 var hasAllowAnonymous = endpoint.Metadata.Any(em => em is AllowAnonymousAttribute);
                 var hasExcludeFromPermission = endpoint.Metadata.Any(em => em is ExcludeFromPermissionAttribute);
 
-                if (hasExcludeFromPermission || hasAllowAnonymous || authorizeData.Any(data => data.AllowAll) || currentUser.IsSuperAdmin())
+
+                if (hasAllowAnonymous || hasExcludeFromPermission || currentUser.IsSuperAdmin())
                 {
+                    // _logger?.LogInformation("AllowAnonymous or ExcludeFromPermission detected. Skipping permission check.");
                     await next(context);
                     return;
                 }
-                var controllerName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()?.ControllerName;
-                var actionName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()?.ActionName;
 
-                foreach (var data in authorizeData)
+                var action = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
+                var actionPermissionFilter = action!.MethodInfo.GetCustomAttribute<PermissionFilterAttribute>();
+                if (actionPermissionFilter != null && !actionPermissionFilter.AllowAll)
                 {
-                    if (!string.IsNullOrEmpty(actionName))
-                    {
-                        hasPermission = await permissionService.HasPermissionAsync(currentUser.Id, actionName);
-                    }
-
-                    if (!string.IsNullOrEmpty(controllerName))
-                    {
-                        hasControllerPermission = await permissionService.HasPermissionAsync(currentUser.Id, controllerName);
-                    }
-
+                    hasPermission = await permissionService.HasPermissionAsync(currentUser.Id, actionPermissionFilter!.PermissionCode!);
                     if (!hasPermission)
                     {
-                        if (!hasControllerPermission)
-                        {
-
-                            throw new ForbiddenException($"Permission '{data.DisplayName}' denied.");
-                        }
+                        throw new ForbiddenException($"Permission '{actionPermissionFilter.DisplayName}-{action.ActionName}' denied.");
                     }
-                    //if (!hasPermission || !hasControllerPermission)
-                    //{
-                    //    throw new ForbiddenException($"Permission '{data.DisplayName}' denied.");
-                    //}
-
                 }
             }
         }
@@ -150,3 +110,4 @@ public class PermissionMiddleware(UserManager<User> userManager,
         await next(context);
     }
 }
+

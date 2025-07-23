@@ -11,7 +11,7 @@ namespace Capitan360.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [PermissionFilter("بخش نرخنامه")]
+    [PermissionFilter("بخش نرخنامه", "G")]
     public class CompanyDomesticPathChargeController(ICompanyDomesticPathChargeService service) : ControllerBase
     {
         [HttpPost]
@@ -29,7 +29,7 @@ namespace Capitan360.Api.Controllers
         [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status404NotFound)]
-        [PermissionFilter("ثبت نرخنامه")]
+        [PermissionFilter("ثبت نرخنامه", "G2")]
         public async Task<ActionResult<ApiResponse<List<int>>>> UpdateCompanyDomesticPathCharge(
             [FromBody] UpdateCompanyDomesticPathChargeCommand command, CancellationToken cancellationToken)
         {
@@ -40,7 +40,7 @@ namespace Capitan360.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDomesticPathChargeDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDomesticPathChargeDto>>), StatusCodes.Status400BadRequest)]
-        [PermissionFilter("لیست مسیرها")]
+        [PermissionFilter("لیست مسیرها", "G3")]
         [ExcludeFromPermission]
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyDomesticPathChargeDto>>>> GetAllCompanyDomesticPath(
             [FromQuery] GetAllCompanyDomesticPathChargeQuery query, CancellationToken cancellationToken)
@@ -52,7 +52,7 @@ namespace Capitan360.Api.Controllers
         [HttpGet("GetCompanyDomesticPathChargeTableData")]
         [ProducesResponseType(typeof(ApiResponse<List<CompanyDomesticPathChargeService.PathChargeTableDataDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<List<CompanyDomesticPathChargeService.PathChargeTableDataDto>>), StatusCodes.Status400BadRequest)]
-        [PermissionFilter("نمایش نرخنامه-")]
+        [PermissionFilter("نمایش نرخنامه-", "G4")]
         public async Task<ActionResult<ApiResponse<List<CompanyDomesticPathChargeService.PathChargeTableDataDto>>>> GetCompanyDomesticPathChargeTableData(
     [FromQuery] CompanyDomesticPathChargeService.GetCompanyDomesticPathChargeTableDataQuery query, CancellationToken cancellationToken)
         {

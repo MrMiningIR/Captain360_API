@@ -133,16 +133,25 @@ public class PermissionService(IPermissionRepository permissionRepository,
 
     public async Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken)
     {
-        var existedPermissionList = await permissionRepository.GetAllPolicy(cancellationToken);
-
-        foreach (var permission in existedPermissionList)
+        try
         {
-            if (!permissionsData.Any(x => x.PermissionCode == permission.PermissionCode && x.ParentCode == permission.ParentCode))
+
+            var existedPermissionList = await permissionRepository.GetAllPolicy(cancellationToken);
+
+            foreach (var permission in existedPermissionList)
             {
-                permissionRepository.DeletePermission(permission, cancellationToken);
+                if (!permissionsData.Any(x => x.PermissionCode == permission.PermissionCode && x.ParentCode == permission.ParentCode))
+                {
+                    permissionRepository.DeletePermission(permission, cancellationToken);
+                }
             }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<ApiResponse<List<Domain.Entities.AuthorizationEntity.Permission>>> GetDbPermissions(CancellationToken ct)

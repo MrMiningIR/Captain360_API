@@ -15,13 +15,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/PackageTypes")]
 [ApiController]
-[PermissionFilter(displayName: "بخش بسته بندی")]
+[PermissionFilter(displayName: "بخش بسته بندی", "U")]
 public class PackageTypesController(IPackageTypeService packageTypeService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageTypeDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter(displayName: "لیست بسته بندی")]
+    [PermissionFilter(displayName: "لیست بسته بندی", "U1")]
     public async Task<ActionResult<ApiResponse<PagedResult<PackageTypeDto>>>> GetAllPackageTypes(
         [FromQuery] GetAllPackageTypesQuery query, CancellationToken cancellationToken)
     {
@@ -33,7 +33,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter(displayName: "دریافت بسته بندی")]
+    [PermissionFilter(displayName: "دریافت بسته بندی", "U2")]
     public async Task<ActionResult<ApiResponse<PackageTypeDto>>> GetPackageTypeById(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter(displayName: "افزودن بسته بندی")]
+    [PermissionFilter(displayName: "افزودن بسته بندی", "U3")]
     public async Task<ActionResult<ApiResponse<int>>> CreatePackageType(
         [FromBody] CreatePackageTypeCommand command, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter(displayName: "حذف بسته بندی")]
+    [PermissionFilter(displayName: "حذف بسته بندی", "U4")]
     public async Task<ActionResult<ApiResponse<object>>> DeletePackageType(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -69,7 +69,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter(displayName: "آپدیت بسته بندی")]
+    [PermissionFilter(displayName: "آپدیت بسته بندی", "U5")]
     public async Task<ActionResult<ApiResponse<PackageTypeDto>>> UpdatePackageType([FromRoute] int id,
         [FromBody] UpdatePackageTypeCommand updatePackageTypeCommand, CancellationToken cancellationToken)
     {
@@ -80,7 +80,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     }
 
     [HttpPost("MoveUpPackage")]
-    [PermissionFilter("تغییر ترتیب - بالا")]
+    [PermissionFilter("تغییر ترتیب - بالا", "T6")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -91,7 +91,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     }
 
     [HttpPost("MoveDownPackage")]
-    [PermissionFilter("تغییر ترتیب - بالا")]
+    [PermissionFilter("تغییر ترتیب - بالا", "T7")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

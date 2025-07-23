@@ -15,13 +15,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/Addresses")]
 [ApiController]
-[PermissionFilter("بخش آدرس")]
+[PermissionFilter("بخش آدرس", "A")]
 public class AddressesController(IAddressService addressService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<AddressDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<AddressDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("لیست آدرس ها")]
+    [PermissionFilter("لیست آدرس ها", "A1")]
     public async Task<ActionResult<PagedResult<AddressDto>>> GetAllAddresses([FromQuery] GetAllAddressQuery getAllAddressQuery, CancellationToken cancellationToken)
     {
         var response = await addressService.GetAllAddressesByCompany(getAllAddressQuery, cancellationToken);
@@ -33,7 +33,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("گرفتن آدرس")]
+    [PermissionFilter("گرفتن آدرس", "A2")]
     public async Task<ActionResult<AddressDto>> GetAddressById([FromRoute] int id, CancellationToken cancellationToken)
     {
         var response = await addressService.GetAddressByIdAsync(new GetAddressByIdQuery(id), cancellationToken);
@@ -44,7 +44,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("حذف آدرس")]
+    [PermissionFilter("حذف آدرس", "A3")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteAddress([FromRoute] int id, CancellationToken cancellationToken)
     {
         var response = await addressService.DeleteAddressAsync(new DeleteAddressCommand(id), cancellationToken);
@@ -55,7 +55,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت آدرس")]
+    [PermissionFilter("آپدیت آدرس", "A4")]
     public async Task<ActionResult<ApiResponse<AddressDto>>> UpdateAddress([FromRoute] int id, UpdateAddressCommand updateAddressCommand, CancellationToken cancellationToken)
     {
         updateAddressCommand.Id = id;
@@ -67,7 +67,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [HttpPost("AddAddress")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("افزودن آدرس")]
+    [PermissionFilter("افزودن آدرس", "A5")]
     public async Task<ActionResult<ApiResponse<int>>> AddAddress([FromBody] AddNewAddressToCompanyCommand addNewAddressToCompanyCommand, CancellationToken cancellationToken)
     {
 
@@ -79,7 +79,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("تغیر چیدمان- بالا")]
+    [PermissionFilter("تغیر چیدمان- بالا", "A6")]
     public async Task<ActionResult<ApiResponse<object>>> MoveUpAddress(MoveAddressUpCommand moveAddressUpCommand, CancellationToken cancellationToken)
     {
         var response = await addressService.MoveAddressUpAsync(moveAddressUpCommand, cancellationToken);
@@ -87,7 +87,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     }
 
     [HttpPost("MoveDownAddress")]
-    [PermissionFilter("تغیر چیدمان- پایین")]
+    [PermissionFilter("تغیر چیدمان- پایین", "A7")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

@@ -14,12 +14,12 @@ public interface IIdentityRepository
 
 
     Task<IdentityResult?> CreateUserAsync(Entities.UserEntity.User user, string password, CancellationToken ct);
-    Task<IdentityResult?> UpdateUserAsync(Entities.UserEntity.User user,  CancellationToken ct);
-    
+    Task<IdentityResult?> UpdateUserAsync(Entities.UserEntity.User user, CancellationToken ct);
+
 
     Task<IdentityResult?> AddRoleToUser(Entities.UserEntity.User user, Role role);
     Task RemoveRoleFromUser(Entities.UserEntity.User user);
-  
+
 
     Task<Entities.UserEntity.User?> FindUserByPhone(string phoneNumber, CancellationToken ct);
 
@@ -40,7 +40,10 @@ public interface IIdentityRepository
     Task<Entities.UserEntity.User?> GetUserByPhoneNumberAndCompanyTypeForUpdateOperation(string phoneNumber, int companyType,
         string userId, CancellationToken cancellationToken);
     Task<Entities.UserEntity.User?> GetUserByPhoneNumberAndCompanyId(string phoneNumber, int companyId,
-        CancellationToken cancellationToken); 
+        CancellationToken cancellationToken);
     Task<Entities.UserEntity.User?> GetUserByPhoneNumberAndCompanyIdForUpdateOperation(string phoneNumber, int companyId, string userId,
         CancellationToken cancellationToken);
+
+    void DeleteRole(Role role);
+
 }

@@ -17,6 +17,7 @@ using Capitan360.Application.Services.ContentTypeService.Services;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Application.Services.PackageTypeService.Services;
 using Capitan360.Application.Services.Permission.Services;
+using Capitan360.Application.Services.Role;
 using Capitan360.Application.Services.UserPermission.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -53,6 +54,7 @@ public static class ServiceCollectionExtensions
         service.AddScoped<ICompanyPackageTypeService, CompanyPackageTypeService>();
         service.AddScoped<PermissionCollectorService>();
         service.AddScoped<IUserPermissionService, UserPermissionService>();
+        service.AddScoped<IRoleService, RoleService>();
 
         service.AddHttpContextAccessor();
 

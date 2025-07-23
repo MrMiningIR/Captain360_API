@@ -11,7 +11,7 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[PermissionFilter("بخش هزینه ها")]
+[PermissionFilter("بخش هزینه ها", "I")]
 public class CompanyDomesticPathStructPriceController(ICompanyDomesticPathStructPricesService service) : ControllerBase
 {
     [HttpPost]
@@ -29,7 +29,7 @@ public class CompanyDomesticPathStructPriceController(ICompanyDomesticPathStruct
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("ثبت هزینه ها - مبدا،مقصد")]
+    [PermissionFilter("ثبت هزینه ها - مبدا،مقصد", "I2")]
     public async Task<ActionResult<ApiResponse<List<int>>>> UpdateCompanyDomesticPathStructPrice(
         [FromBody] UpdateCompanyDomesticPathListStructPriceCommand command, CancellationToken cancellationToken)
     {
@@ -51,7 +51,7 @@ public class CompanyDomesticPathStructPriceController(ICompanyDomesticPathStruct
     [HttpGet("GetCompanyDomesticPathStructPriceTableData")]
     [ProducesResponseType(typeof(ApiResponse<List<TableDataDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<TableDataDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("نمایش هزینه ها")]
+    [PermissionFilter("نمایش هزینه ها", "I4")]
 
     public async Task<ActionResult<ApiResponse<List<TableDataDto>>>> GetCompanyDomesticPathStructPriceTableData(
         [FromQuery] GetCompanyDomesticPathStructPriceTableDataQuery query, CancellationToken cancellationToken)

@@ -39,14 +39,17 @@ public class PermissionCollectorService(ILogger<PermissionCollectorService> logg
             foreach (var action in actions)
             {
                 var actionFilter = action.GetCustomAttribute<PermissionFilterAttribute>();
-                var displayName = actionFilter is { AllowAll: false }
-                    ? actionFilter.DisplayName
-                    : action.Name;
+                if (actionFilter == null || actionFilter.AllowAll)
+                {
+                    continue;
+                }
+                var displayName = actionFilter.DisplayName;
+                var permissionName = actionFilter.PermissionCode;
 
                 var dto = new PermissionCollectorDto(
                     DisplayName: displayName!,
-                    PermissionName: action.Name,
-                    PermissionCode: Tools.GenerateDeterministicGuid(action.Name),
+                    PermissionName: permissionName!,
+                    PermissionCode: Tools.GenerateDeterministicGuid(permissionName!),
                     Parent: controllerName,
                     ParentCode: Tools.GenerateDeterministicGuid(controller.Name),
                     SourceDisplayName: controllerDisplayName

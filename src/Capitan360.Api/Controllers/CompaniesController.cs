@@ -14,13 +14,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/Companies")]
 [ApiController]
-[PermissionFilter("بخش شرکت ها")]
+[PermissionFilter("بخش شرکت ها", "D")]
 public class CompaniesController(ICompanyService companyService, IUserContext userContext) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("دریافت لیست شرکت ها")]
+    [PermissionFilter("دریافت لیست شرکت ها", "D1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyDto>>>> GetAllCompanies(
         [FromQuery] GetAllCompanyQuery getAllCompanyQuery, CancellationToken cancellationToken)
     {
@@ -34,7 +34,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("دریافت شرکت")]
+    [PermissionFilter("دریافت شرکت", "D2")]
     public async Task<ActionResult<ApiResponse<CompanyDto>>> GetCompanyById(
         [FromRoute] int id, [FromQuery] int userCompanyTypeId, CancellationToken cancellationToken)
     {
@@ -45,7 +45,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("ایجاد شرکت")]
+    [PermissionFilter("ایجاد شرکت", "D3")]
     public async Task<ActionResult<ApiResponse<int>>> CreateCompany(
         [FromBody] CreateCompanyCommand companyCommand, CancellationToken cancellationToken)
     {
@@ -58,7 +58,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("حذف شرکت")]
+    [PermissionFilter("حذف شرکت", "D4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompany(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -70,7 +70,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت شرکت")]
+    [PermissionFilter("آپدیت شرکت", "D5")]
     public async Task<ActionResult<ApiResponse<CompanyDto>>> UpdateCompany([FromRoute] int id,
 
         [FromBody] UpdateCompanyCommand updateCompanyCommand,

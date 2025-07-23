@@ -11,8 +11,9 @@ public class PermissionFilterAttribute : ActionFilterAttribute
 {
     public string? DisplayName { get; }
     public bool AllowAll { get; } = false;
+    public string? PermissionCode { get; }
 
-    public PermissionFilterAttribute(string? displayName, bool allowAll = false)
+    public PermissionFilterAttribute(string? displayName, string permissionCode, bool allowAll = false)
     {
         AllowAll = allowAll;
 
@@ -20,8 +21,13 @@ public class PermissionFilterAttribute : ActionFilterAttribute
         {
             throw new ArgumentException("DisplayName cannot be null or empty when AllowAll is false.", nameof(displayName));
         }
+        if (!allowAll && string.IsNullOrWhiteSpace(permissionCode))
+        {
+            throw new ArgumentException("PermissionCode cannot be null or empty when AllowAll is false.", nameof(permissionCode));
+        }
 
         DisplayName = displayName;
+        PermissionCode = permissionCode;
     }
 
     public override void OnActionExecuting(ActionExecutingContext context)
@@ -58,11 +64,12 @@ public class PermissionFilterAttribute : ActionFilterAttribute
         }
 
 
-        bool hasPermission = currentUser.HasPermission(actionName!) || currentUser.HasPermission(controllerName!);
+        // bool hasPermission = currentUser.HasPermission(actionName!) || currentUser.HasPermission(controllerName!);
+        bool hasPermission = currentUser.HasPermission(PermissionCode!);
         if (!hasPermission)
         {
             context.Result = new UnauthorizedResult();
-            logger?.LogInformation($"User {currentUser.Id} does not have permission for {controllerName}.{actionName}");
+            logger?.LogInformation($"User {currentUser.Id} does not have permission for {controllerName}.{actionName}.{PermissionCode}");
             return;
         }
 

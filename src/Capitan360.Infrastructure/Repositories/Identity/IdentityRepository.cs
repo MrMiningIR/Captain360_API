@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Capitan360.Domain.Abstractions;
+﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.AuthorizationEntity;
 using Capitan360.Domain.Entities.CompanyEntity;
@@ -8,6 +7,7 @@ using Capitan360.Domain.Repositories.Identity;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Identity;
 
@@ -223,10 +223,10 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
     public async Task<User?> GetUserByPhoneNumberAndCompanyIdForUpdateOperation(string phoneNumber, int companyId, string userId,
         CancellationToken cancellationToken)
     {
-                var user = await dbContext.Users.AsNoTracking()
-         .Include(u => u.UserCompanies)
-         .Where(u => u.PhoneNumber == phoneNumber && u.UserCompanies.Any(uc => uc.CompanyId == companyId))
-         .SingleOrDefaultAsync(cancellationToken);
+        var user = await dbContext.Users.AsNoTracking()
+ .Include(u => u.UserCompanies)
+ .Where(u => u.PhoneNumber == phoneNumber && u.UserCompanies.Any(uc => uc.CompanyId == companyId))
+ .SingleOrDefaultAsync(cancellationToken);
         if (user is not null)
         {
             if (user.Id != userId)
@@ -238,5 +238,12 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
 
 
     }
+
+    public void DeleteRole(Role role)
+    {
+        dbContext.Entry(role).Property("Deleted").CurrentValue = true;
+    }
+
+
 }
 

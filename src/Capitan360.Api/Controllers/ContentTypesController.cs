@@ -15,13 +15,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/ContentTypes")]
 [ApiController]
-[PermissionFilter("بخش محتوا")]
+[PermissionFilter("بخش محتوا", "Q")]
 public class ContentTypesController(IContentTypeService contentTypeService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("لیست محتوا")]
+    [PermissionFilter("لیست محتوا", "Q1")]
     public async Task<ActionResult<ApiResponse<PagedResult<ContentTypeDto>>>> GetAllContentTypes(
         [FromQuery] GetAllContentTypesQuery query, CancellationToken cancellationToken)
     {
@@ -33,7 +33,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("دریافت محتوا")]
+    [PermissionFilter("دریافت محتوا", "Q2")]
     public async Task<ActionResult<ApiResponse<ContentTypeDto>>> GetContentTypeById(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("ساخت محتوای جدید")]
+    [PermissionFilter("ساخت محتوای جدید", "Q3")]
     public async Task<ActionResult<ApiResponse<int>>> CreateContentType(
         [FromBody] CreateContentTypeCommand command, CancellationToken cancellationToken)
     {
@@ -56,7 +56,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("حذف محتوا")]
+    [PermissionFilter("حذف محتوا", "Q4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteContentType(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -68,7 +68,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت محتوا")]
+    [PermissionFilter("آپدیت محتوا", "Q5")]
     public async Task<ActionResult<ApiResponse<ContentTypeDto>>> UpdateContentType([FromRoute] int id,
         [FromBody] UpdateContentTypeCommand updateContentTypeCommand, CancellationToken cancellationToken)
     {
@@ -79,7 +79,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     }
 
     [HttpPost("MoveUpContent")]
-    [PermissionFilter("تغییر ترتیب - بالا")]
+    [PermissionFilter("تغییر ترتیب - بالا", "Q6")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -90,7 +90,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     }
 
     [HttpPost("MoveDownContent")]
-    [PermissionFilter("تغییر ترتیب - پایین")]
+    [PermissionFilter("تغییر ترتیب - پایین", "Q7")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

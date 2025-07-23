@@ -13,13 +13,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/CompanyContentType")]
 [ApiController]
-[PermissionFilter("بخش محتوی شرکت")]
+[PermissionFilter("بخش محتوی شرکت", "F")]
 public class CompanyContentTypeController(ICompanyContentTypeService companyContentTypeService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyContentTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyContentTypeDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("لیست محتوی شرکت")]
+    [PermissionFilter("لیست محتوی شرکت", "F1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyContentTypeDto>>>> GetAllCompanyContentTypes(
         [FromQuery] GetAllCompanyContentTypesQuery allCompanyContentTypesQuery, CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [ProducesResponseType(typeof(ApiResponse<CompanyContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<CompanyContentTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("گرفتن محتوی شرکت")]
+    [PermissionFilter("گرفتن محتوی شرکت", "F2")]
     public async Task<ActionResult<ApiResponse<CompanyContentTypeDto>>> GetCompanyContentTypeById(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت محتوی شرکت")]
+    [PermissionFilter("آپدیت محتوی شرکت", "F3")]
     public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyContentType(
         [FromRoute] int id, [FromBody] UpdateCompanyContentTypeCommand command, CancellationToken cancellationToken)
     {
@@ -56,7 +56,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [HttpPost("MoveUpCompanyContentType")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("تغییر چیدمان -بالا")]
+    [PermissionFilter("تغییر چیدمان -بالا", "F4")]
 
     public async Task<ActionResult<ApiResponse<object>>> MoveUpCompanyContentType(
         [FromBody] MoveCompanyContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
@@ -68,7 +68,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [HttpPost("MoveDownCompanyContentType")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("تغییر چیدمان -پایین")]
+    [PermissionFilter("تغییر چیدمان -پایین", "F5")]
     public async Task<ActionResult<ApiResponse<object>>> MoveDownCompanyContentType(
         [FromBody] MoveCompanyContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
     {
@@ -81,7 +81,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت نام محتوی")]
+    [PermissionFilter("آپدیت نام محتوی", "F6")]
     public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyContentTypeName(
         [FromRoute] int id, [FromBody] UpdateCompanyContentTypeNameCommand command, CancellationToken cancellationToken)
     {

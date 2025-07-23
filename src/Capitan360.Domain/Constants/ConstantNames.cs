@@ -54,6 +54,7 @@ public static class ConstantNames
     public const string CompanyType = "CompanyType";
     public const string GroupId = "GroupId";
     public const string Permissions = "Permissions";
+    public const string Permission = "Permission";
 
 
 
