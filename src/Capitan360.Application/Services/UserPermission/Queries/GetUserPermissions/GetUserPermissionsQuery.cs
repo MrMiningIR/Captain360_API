@@ -6,4 +6,4 @@ public record GetUserPermissionsQuery(
 
     [property: DefaultValue("")] string UserId,
     [property: DefaultValue(1)] int PageNumber = 1,
-    [property: DefaultValue(100)] int PageSize = 100);
+    [property: DefaultValue(500)] int PageSize = 500);

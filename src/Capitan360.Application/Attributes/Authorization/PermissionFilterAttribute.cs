@@ -1,9 +1,11 @@
 ﻿using Capitan360.Application.Services.Identity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Capitan360.Application.Attributes.Authorization;
 
@@ -39,6 +41,7 @@ public class PermissionFilterAttribute : ActionFilterAttribute
         var controllerName = context.ActionDescriptor.RouteValues["controller"];
         var actionName = context.ActionDescriptor.RouteValues["action"];
 
+
         bool hasExcludeFromPermission = context.ActionDescriptor.EndpointMetadata
             .Any(em => em is ExcludeFromPermissionAttribute);
         bool hasAllowAnonymous = context.ActionDescriptor.EndpointMetadata
@@ -64,17 +67,55 @@ public class PermissionFilterAttribute : ActionFilterAttribute
         }
 
 
-        // bool hasPermission = currentUser.HasPermission(actionName!) || currentUser.HasPermission(controllerName!);
-        bool hasPermission = currentUser.HasPermission(PermissionCode!);
+
+        string? permissionCodeToCheck = GetPermissionCode(context);
+
+        if (string.IsNullOrWhiteSpace(permissionCodeToCheck))
+        {
+            context.Result = new UnauthorizedResult();
+            logger?.LogInformation($"No valid PermissionFilter found for {controllerName}.{actionName}.");
+            return;
+        }
+        bool hasPermission = currentUser.HasPermission(permissionCodeToCheck!);
         if (!hasPermission)
         {
             context.Result = new UnauthorizedResult();
-            logger?.LogInformation($"User {currentUser.Id} does not have permission for {controllerName}.{actionName}.{PermissionCode}");
+            logger?.LogInformation($"User {currentUser.Id} does not have permission for {controllerName}.{actionName}.{permissionCodeToCheck}");
             return;
         }
 
         logger?.LogInformation($"User {currentUser.Id} has Granted!");
 
         base.OnActionExecuting(context);
+    }
+    private string? GetPermissionCode(ActionExecutingContext context)
+    {
+
+        if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
+        {
+            var methodPermission = controllerActionDescriptor.MethodInfo
+                .GetCustomAttributes<PermissionFilterAttribute>()
+                .FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.PermissionCode))
+                ?.PermissionCode;
+
+            if (!string.IsNullOrWhiteSpace(methodPermission))
+            {
+                return methodPermission;
+            }
+
+
+            var controllerPermission = controllerActionDescriptor.ControllerTypeInfo
+                .GetCustomAttributes<PermissionFilterAttribute>()
+                .FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.PermissionCode))
+                ?.PermissionCode;
+
+            return controllerPermission;
+        }
+
+
+        return context.ActionDescriptor.EndpointMetadata
+            .OfType<PermissionFilterAttribute>()
+            .FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.PermissionCode))
+            ?.PermissionCode;
     }
 }

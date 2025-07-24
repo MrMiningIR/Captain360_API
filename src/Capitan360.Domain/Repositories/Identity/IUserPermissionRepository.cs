@@ -18,8 +18,7 @@ public interface IUserPermissionRepository
 
     Task<List<int>> RemovePermissionsFromUser(List<UserPermission> userPermissions, CancellationToken ct);
 
-    Task<(IReadOnlyList<UserPermission>, int)> GetMatchingAllUserPermissions(string userId, int pageSize,
-        int pageNumber, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<UserPermission>, int total)> GetMatchingAllUserPermissions(string userId, int pageSize, int pageNumber, CancellationToken cancellationToken);
 
     Task<UserPermission?> GetUserPermissionByPermissionIdAndUserId(string userId, int permissionId, CancellationToken cancellationToken);
 }

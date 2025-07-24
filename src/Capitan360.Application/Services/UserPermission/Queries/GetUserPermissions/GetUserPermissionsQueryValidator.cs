@@ -4,7 +4,7 @@ namespace Capitan360.Application.Services.UserPermission.Queries.GetUserPermissi
 
 public class GetUserPermissionsQueryValidator : AbstractValidator<GetUserPermissionsQuery>
 {
-    private int[] _allowPageSizes = [5, 10, 15, 30, 50, 100];
+    private int[] _allowPageSizes = [5, 10, 15, 30, 50, 100, 500];
 
     public GetUserPermissionsQueryValidator()
     {

@@ -37,6 +37,13 @@ namespace Capitan360.Api.Controllers
             var response = await permissionService.GetParentPermissions(cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
+        [HttpGet("GetFullListPermissionParents")]
+        [ProducesResponseType(typeof(ApiResponse<List<ParentPermissionTransfer>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiResponse<List<ParentPermissionTransfer>>>> GetFullListPermissionParents(CancellationToken cancellationToken)
+        {
+            var response = await permissionService.GetParentPermissions(cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
 
         [HttpGet("GetPermissionByParentName")]
         [ProducesResponseType(typeof(ApiResponse<List<IPermissionService.PermissionDto>>), StatusCodes.Status200OK)]

@@ -101,6 +101,7 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
     {
         var baseQuery = dbContext
             .UserPermissions
+            .AsNoTracking()
             .Include(x => x.Permission)
             .Where(x => x.UserId == userId);
 

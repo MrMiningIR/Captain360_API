@@ -16,6 +16,8 @@ public class UserPermissionProfile : Profile
                 opt.MapFrom(x => x.Permission.Name))
             .ForMember(des => des.DisplayPermissionName, opt =>
                 opt.MapFrom(x => x.Permission.DisplayName))
+            .ForMember(des => des.ParentCode, opt =>
+                opt.MapFrom(x => x.Permission.ParentCode))
 
             ;
         //CreateMap<UpdateContentTypeCommand, ContentType>();

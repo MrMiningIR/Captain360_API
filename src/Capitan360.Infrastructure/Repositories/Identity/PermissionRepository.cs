@@ -39,6 +39,11 @@ internal class PermissionRepository(ApplicationDbContext dbContext, IUnitOfWork 
         return await dbContext.Permissions.AsNoTracking().Where(x => x.ParentCode == parentCode).Distinct().ToListAsync(ct);
     }
 
+    public async Task<List<Permission>> GetFullListPermission(CancellationToken ct)
+    {
+        return await dbContext.Permissions.AsNoTracking().Distinct().ToListAsync(ct);
+    }
+
 
     public Task<List<Permission>> GetPermissionsByParentId(int parentQueryParentId, CancellationToken ct)
     {

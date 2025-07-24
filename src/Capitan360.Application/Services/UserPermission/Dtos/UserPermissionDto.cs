@@ -6,4 +6,6 @@ public class UserPermissionDto
     public int PermissionId { get; set; }
     public string? PermissionName { get; set; }
     public string? DisplayPermissionName { get; set; }
+    public Guid ParentCode { get; set; }
+
 }

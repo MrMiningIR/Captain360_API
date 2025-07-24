@@ -13,6 +13,9 @@ public interface IPermissionRepository
     Task<List<Permission>> GetPermissionsByParentName(string parentName, CancellationToken ct);
 
     Task<List<Permission>> GetPermissionsByParentCode(Guid parentCode, CancellationToken ct);
+    Task<List<Permission>> GetFullListPermission(CancellationToken ct);
+
+
 
     Task<(IReadOnlyList<Permission>, int)> GetAllMatchingPermissions(string? searchPhrase,
         int pageSize, int pageNumber, CancellationToken ct);
