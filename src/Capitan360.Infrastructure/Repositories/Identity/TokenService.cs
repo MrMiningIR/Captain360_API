@@ -61,16 +61,16 @@ public class TokenService(IUserCompanyRepository UserCompanyRepository)
         return Encoding.UTF8.GetString(decrypted);
     }
 
-    public List<Claim> ClaimsGenerator(User user, string permissionVersionControl, IReadOnlyList<string> roles,
+    public List<Claim> ClaimsGenerator(User user, int companyId, string permissionVersionControl, IReadOnlyList<string> roles,
         string newSessionId, List<string> permissions)
     {
-        var userCompanyId = user.UserCompanies.FirstOrDefault()?.CompanyId ?? 0;
+
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.MobilePhone, user.PhoneNumber!),
             new(ClaimTypes.Name, user.FullName!) ,
-            new(ConstantNames.CompanyId,  userCompanyId.ToString()),
+            new(ConstantNames.CompanyId,  companyId.ToString()),
             new(ConstantNames.CompanyType,  user.CompanyType.ToString()),
             new(ConstantNames.Permissions,  string.Join(',',permissions))
         };

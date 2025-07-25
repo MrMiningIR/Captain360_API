@@ -12,7 +12,7 @@ public interface ITokenService
     //List<Claim> ClaimsGenerator(Entities.UserEntity.User user, IReadOnlyList<string> userGroups, IReadOnlyList<string> roles,
     //    string newSessionId);
 
-    List<Claim> ClaimsGenerator(Entities.UserEntity.User user, string permissionVersionControl,
+    List<Claim> ClaimsGenerator(Entities.UserEntity.User user, int companyId, string permissionVersionControl,
         IReadOnlyList<string> roles,
         string newSessionId, List<string> permissions);
 }

@@ -29,7 +29,7 @@ public interface IPermissionRepository
 
     Task<bool> HasPermissionAsync(string userId, string permission, CancellationToken cancellationToken);
     Task<bool> HasAnyPermissionAsync(string userId, CancellationToken cancellationToken);
-    Task<List<string>?> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken);
+    //Task<List<string>?> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken);
 
     Task<HashSet<PermissionInfo>> PermissionList(string userId, CancellationToken cancellationToken);
 

@@ -18,14 +18,23 @@ public class UserCompanyRepository(ApplicationDbContext dbContext, IUnitOfWork u
         dbContext.UserCompanies.Add(userCompany);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return userCompany.UserId;
-
     }
 
-    public async Task<UserCompany?> GetUserCompanyByUserId(string userId, CancellationToken cancellationToken)
+    public async Task<UserCompany?> GetUserCompanyByUserId(string userId, CancellationToken cancellationToken,
+        bool tracked = true)
     {
-        var userCompany = await dbContext.UserCompanies.SingleOrDefaultAsync(x => x.UserId == userId,
+        if (tracked)
+        {
+            var userCompany = await dbContext.UserCompanies
+                .SingleOrDefaultAsync(x => x.UserId == userId, cancellationToken: cancellationToken);
+            return userCompany;
+        }
+        else
+        {
+            var userCompany = await dbContext.UserCompanies.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId,
             cancellationToken: cancellationToken);
-        return userCompany;
+            return userCompany;
+        }
     }
 
     public async Task<UserCompany?> GetUserCompanyByCompanyIdAndUserId(string userId, int companyId, CancellationToken cancellationToken)
@@ -39,6 +48,5 @@ public class UserCompanyRepository(ApplicationDbContext dbContext, IUnitOfWork u
     {
         dbContext.UserCompanies.Update(userCompany);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-
     }
 }

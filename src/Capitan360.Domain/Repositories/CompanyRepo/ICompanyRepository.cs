@@ -5,7 +5,7 @@ namespace Capitan360.Domain.Repositories.CompanyRepo;
 
 public interface ICompanyRepository
 {
-    Task<int> CreateCompanyAsync(Company company, string userId, CancellationToken cancellationToken);
+    Task<int> CreateCompanyAsync(Company company, CancellationToken cancellationToken);
     void Delete(Company company, string id);
     Task<IReadOnlyList<Company>> GetAllCompanies(CancellationToken cancellationToken);
     Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, int userCompanyTypeId = 0,

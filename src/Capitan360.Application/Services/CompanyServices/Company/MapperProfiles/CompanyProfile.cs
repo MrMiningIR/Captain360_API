@@ -21,7 +21,7 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.Condition(src => src.PhoneNumber != null))
             .ForMember(dest => dest.Name, opt => opt.Condition(src => src.Name != null))
             .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null))
-            .ForMember(dest => dest.Admin, opt => opt.Condition(src => src.Admin.HasValue))
+            .ForMember(dest => dest.IsParentCompany, opt => opt.Condition(src => src.Admin.HasValue))
             .ForMember(dest => dest.Active, opt => opt.Condition(src => src.Active.HasValue));
     }
 }

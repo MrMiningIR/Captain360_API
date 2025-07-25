@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Capitan360.Application\Capitan360.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Data\" />
     <Folder Include="Repositories\ContentTypeImpl\" />
     <Folder Include="Repositories\Cache\" />
     <Folder Include="Repositories\UserRepositories\" />

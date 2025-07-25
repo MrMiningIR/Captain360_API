@@ -8,8 +8,8 @@ public class LoginResponse
     public string RefreshToken { get; set; } = default!;
     public string SessionId { get; set; } = default!;
 
-    public List<string> Permissions { get; set; } = [];
-    public bool IsSpecialUser { get; set; } = false;
+    public List<string> SystemPermissions { get; set; } = [];
+
 
     public string PermissionVersionControl { get; set; }
 }

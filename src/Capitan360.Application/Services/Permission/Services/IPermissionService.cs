@@ -11,7 +11,7 @@ namespace Capitan360.Application.Services.Permission.Services;
 public interface IPermissionService
 {
     //TODO
-    Task<List<string>?> GetUserPermissions(string userId, CancellationToken cancellationToken);
+    //Task<List<string>?> GetUserPermissions(string userId, CancellationToken cancellationToken);
 
     //----------------------
     Task<ApiResponse<List<ParentPermissionTransfer>>> GetParentPermissions(CancellationToken ct);

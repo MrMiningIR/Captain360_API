@@ -12,7 +12,7 @@ public class Company : Entity
     public string PhoneNumber { get; set; } = default!;
     public string Name { get; set; } = default!;
     public int CompanyTypeId { get; set; }
-    public bool Admin { get; set; }
+    public bool IsParentCompany { get; set; }
     public bool Active { get; set; }
     public int CountryId { get; set; }
 

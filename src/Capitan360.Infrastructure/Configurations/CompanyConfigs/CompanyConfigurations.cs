@@ -15,7 +15,7 @@ internal class CompanyConfigurations : IEntityTypeConfiguration<Company>
         builder.Property(x => x.CompanyTypeId).IsRequired();
         builder.Property(c => c.Active).HasDefaultValue(true);
         builder.Property(c => c.Description).HasMaxLength(500).IsUnicode();
-        builder.Property(x => x.Admin).HasDefaultValue(false);
+        builder.Property(x => x.IsParentCompany).HasDefaultValue(false);
 
 
 

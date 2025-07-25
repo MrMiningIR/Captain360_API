@@ -2,11 +2,11 @@
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 
-public class CompanyPreferences:Entity
+public class CompanyPreferences : Entity
 {
 
-      
-    
+
+
     public string EconomicCode { get; set; } = default!;
     public string NationalId { get; set; } = default!;
     public string RegistrationId { get; set; } = default!;
@@ -42,9 +42,9 @@ public class CompanyPreferences:Entity
     public bool ExitDistributionInTax { get; set; }
     public bool ExitExtraDestinationInTax { get; set; }
 
-    
+
     // Navigation Properties
 
     public int CompanyId { get; set; }
-    public  Company Company { get; set; } = null!;
+    public Company Company { get; set; } = null!;
 }

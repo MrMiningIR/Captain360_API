@@ -40,7 +40,7 @@ public class CompanyService(
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var companyId = await companyRepository.CreateCompanyAsync(companyEntity, Guid.NewGuid().ToString(), cancellationToken);
+        var companyId = await companyRepository.CreateCompanyAsync(companyEntity, cancellationToken);
 
         var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeId(companyCommand.CompanyTypeId, cancellationToken);
         var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeId(companyCommand.CompanyTypeId, cancellationToken);

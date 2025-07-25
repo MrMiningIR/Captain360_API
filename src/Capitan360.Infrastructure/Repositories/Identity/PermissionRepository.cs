@@ -135,51 +135,51 @@ internal class PermissionRepository(ApplicationDbContext dbContext, IUnitOfWork 
         return hasUserPermission || hasRolePermission || hasGroupPermission;
     }
 
-    public async Task<List<string>?> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken)
-    {
-        // 1.Getting UserPermission
-        var userPermissionNames = await dbContext.UserPermissions
-            .Where(up => up.UserId == userId)
-            .Select(up => up.Permission.Name)
-            .ToListAsync(cancellationToken: cancellationToken);
+    //public async Task<List<string>?> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken)
+    //{
+    //    // 1.Getting UserPermission
+    //    var userPermissionNames = await dbContext.UserPermissions
+    //        .Where(up => up.UserId == userId)
+    //        .Select(up => up.Permission.Name)
+    //        .ToListAsync(cancellationToken: cancellationToken);
 
-        // 2. GettingRoles (Role)
-        var userRoles = await dbContext.UserRoles
-            .Where(ur => ur.UserId == userId)
-            .Select(ur => ur.RoleId)
-            .ToListAsync(cancellationToken: cancellationToken);
+    //    // 2. GettingRoles (Role)
+    //    var userRoles = await dbContext.UserRoles
+    //        .Where(ur => ur.UserId == userId)
+    //        .Select(ur => ur.RoleId)
+    //        .ToListAsync(cancellationToken: cancellationToken);
 
-        // 3. Getting RolePermission
-        var rolePermissionNames = userRoles.Any()
-            ? await dbContext.RolePermissions
-                .Where(rp => userRoles.Contains(rp.RoleId))
-                .Select(rp => rp.Permission.Name)
-                .ToListAsync(cancellationToken: cancellationToken)
-            : new List<string>();
+    //    // 3. Getting RolePermission
+    //    var rolePermissionNames = userRoles.Any()
+    //        ? await dbContext.RolePermissions
+    //            .Where(rp => userRoles.Contains(rp.RoleId))
+    //            .Select(rp => rp.Permission.Name)
+    //            .ToListAsync(cancellationToken: cancellationToken)
+    //        : new List<string>();
 
-        // 4. Getting  UserGroups
-        var userGroupIds = await dbContext.UserGroups
-            .Where(ug => ug.UserId == userId)
-            .Select(ug => ug.GroupId)
-            .ToListAsync(cancellationToken: cancellationToken);
+    //    // 4. Getting  UserGroups
+    //    var userGroupIds = await dbContext.UserGroups
+    //        .Where(ug => ug.UserId == userId)
+    //        .Select(ug => ug.GroupId)
+    //        .ToListAsync(cancellationToken: cancellationToken);
 
-        // 5. Getting GroupPermission
-        var groupPermissionNames = userGroupIds.Any()
-            ? await dbContext.GroupPermissions
-                .Where(gp => userGroupIds.Contains(gp.GroupId))
-                .Select(gp => gp.Permission.Name)
-                .ToListAsync(cancellationToken: cancellationToken)
-            : new List<string>();
+    //    // 5. Getting GroupPermission
+    //    var groupPermissionNames = userGroupIds.Any()
+    //        ? await dbContext.GroupPermissions
+    //            .Where(gp => userGroupIds.Contains(gp.GroupId))
+    //            .Select(gp => gp.Permission.Name)
+    //            .ToListAsync(cancellationToken: cancellationToken)
+    //        : new List<string>();
 
-        // 6. Combine all permissions and remove duplicates
-        var allPermissions = userPermissionNames
-            .Concat(rolePermissionNames)
-            .Concat(groupPermissionNames)
-            .Distinct()
-            .ToList();
+    //    // 6. Combine all permissions and remove duplicates
+    //    var allPermissions = userPermissionNames
+    //        .Concat(rolePermissionNames)
+    //        .Concat(groupPermissionNames)
+    //        .Distinct()
+    //        .ToList();
 
-        return allPermissions;
-    }
+    //    return allPermissions;
+    //}
 
     public async Task<HashSet<PermissionInfo>> PermissionList(string userId, CancellationToken cancellationToken)
     {

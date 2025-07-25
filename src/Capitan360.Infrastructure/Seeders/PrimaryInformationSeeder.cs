@@ -2,8 +2,12 @@
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.AuthorizationEntity;
+using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Entities.UserEntity;
+using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Identity;
 using Capitan360.Domain.Repositories.PermissionRepository;
+using Capitan360.Domain.Repositories.User;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,15 +24,15 @@ namespace Capitan360.Infrastructure.Seeders
     internal class PrimaryInformationSeeder(ApplicationDbContext dbContext,
         IUnitOfWork unitOfWork,
         RoleManager<Role> roleManager,
-        UserManager<User> userManager, IPermissionService permissionService, IUserPermissionVersionControlRepository userPermissionVersionControlRepository) : IPrimaryInformationSeeder
+        UserManager<User> userManager, IPermissionService permissionService,
+        IUserPermissionVersionControlRepository userPermissionVersionControlRepository,
+        ICompanyPreferencesRepository companyPreferencesRepository,
+        IUserProfileRepository profileRepository, IUserCompanyRepository userCompanyRepository
+        , ICompanyRepository companyRepository) : IPrimaryInformationSeeder
 
     {
-
         public async Task SeedDataAsync(CancellationToken cancellationToken, Assembly assembly)
         {
-
-
-
             var isDataBaseReady = await dbContext.Database.CanConnectAsync(cancellationToken);
             if (!isDataBaseReady)
                 throw new SystemException("Database is not Ready, Check SqlServer Or Docker!");
@@ -40,24 +44,11 @@ namespace Capitan360.Infrastructure.Seeders
             if (!await dbContext.Database.CanConnectAsync(cancellationToken))
             {
                 throw new Exception("Can't connect to the database");
-
             }
 
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            // Default Permissions
-            #region MyRegion
-            //var permissions = new List<string>
-            //{
-
-            //    ConstantNames.ViewUsers, ConstantNames.EditUsers, ConstantNames.DeleteUsers,
-            //    ConstantNames.CreateRoles, ConstantNames.AssignRoles,
-            //    ConstantNames.ViewProducts, ConstantNames.EditProducts, ConstantNames.DeleteProducts
-            //}; 
-            #endregion
-
             var permissions = permissionService.GetSystemPermissions(assembly);
-
 
             if (!permissions.Success || permissions.Data == null || !permissions.Data.Any())
                 throw new SystemException("there are not any Permissions");
@@ -72,109 +63,6 @@ namespace Capitan360.Infrastructure.Seeders
 
             var dbPermissions = await permissionService.GetDbPermissionsId(cancellationToken);
 
-
-
-            #region MyRegion
-            // Default Groups with Permissions
-            //var groupsWithPermissions = new Dictionary<string, List<string>>
-            //{
-            //    {
-            //        ConstantNames.AdminGroup, [
-            //            ConstantNames.ViewUsers, ConstantNames.EditUsers, ConstantNames.DeleteUsers,
-            //            ConstantNames.CreateRoles, ConstantNames.AssignRoles,
-            //            ConstantNames.ViewProducts, ConstantNames.EditProducts, ConstantNames.DeleteProducts
-            //        ]
-            //    },
-            //    {
-            //        ConstantNames.EditorGroup, [
-            //            ConstantNames.ViewUsers, ConstantNames.EditUsers,
-            //            ConstantNames.ViewProducts, ConstantNames.EditProducts
-            //        ]
-            //    },
-            //    {
-            //        ConstantNames.ViewerGroup, [ConstantNames.ViewProducts]
-            //    }
-            //};
-
-            // Seed Groups with Permissions
-            //foreach (var groupEntry in groupsWithPermissions)
-            //{
-            //    var groupName = groupEntry.Key;
-            //    var groupPermissions = groupEntry.Value;
-
-            //    if (!dbContext.Groups.Any(g => g.Name == groupName))
-            //    {
-            //        var group = new Group { Name = groupName };
-            //        dbContext.Groups.Add(group);
-            //        await dbContext.SaveChangesAsync(cancellationToken);
-
-            //        var allPermissions = await dbContext.Permissions.ToListAsync(cancellationToken);
-            //        foreach (var permissionName in groupPermissions)
-            //        {
-            //            var permission = allPermissions.FirstOrDefault(p => p.Name == permissionName);
-            //            if (permission != null)
-            //            {
-            //                dbContext.GroupPermissions.Add(new GroupPermission
-            //                {
-            //                    GroupId = group.Id,
-            //                    PermissionId = permission.Id
-            //                });
-            //            }
-            //        }
-            //        await dbContext.SaveChangesAsync(cancellationToken);
-            //    }
-            //}
-
-            // Default Roles with Groups
-            //var rolesWithGroups = new Dictionary<string, List<string>>
-            //{
-            //    { ConstantNames.SuperAdminRole, [ConstantNames.AdminGroup] },
-
-            //    { ConstantNames.ManagerRole, [ConstantNames.EditorGroup] },
-            //    { ConstantNames.UserRole, [ConstantNames.ViewerGroup] }
-            //};
-
-
-            // Seed Roles with Groups
-            //foreach (var roleEntry in rolesWithGroups)
-            //{
-            //    var roleName = roleEntry.Key;
-            //    var groupNames = roleEntry.Value;
-
-            //    if (!await roleManager.RoleExistsAsync(roleName))
-            //    {
-            //        var role = new Role { Name = roleName };
-            //        await roleManager.CreateAsync(role);
-
-            //        foreach (var groupName in groupNames)
-            //        {
-            //            var group = await dbContext.Groups.FirstOrDefaultAsync(g => g.Name == groupName, cancellationToken: cancellationToken);
-            //            if (group != null)
-            //            {
-            //                dbContext.RoleGroups.Add(new RoleGroup
-            //                {
-            //                    RoleId = role.Id,
-            //                    GroupId = group.Id
-            //                });
-            //            }
-            //        }
-            //        await dbContext.SaveChangesAsync(cancellationToken);
-            //    }
-            //} 
-
-
-
-            // Default Roles with Groups
-            //var rolesWithGroups = new Dictionary<string, List<string>>
-            //{
-            //    { ConstantNames.SuperAdminRole, [ConstantNames.AdminGroup] },
-
-            //    { ConstantNames.ManagerRole, [ConstantNames.EditorGroup] },
-            //    { ConstantNames.UserRole, [ConstantNames.ViewerGroup] }
-            //};
-
-
-            #endregion
             // Seed Roles with Groups
 
             if (superAdminRole is null || superAdminRole.Name!.ToLower() != ConstantNames.SuperAdminRole.ToLower())
@@ -182,7 +70,6 @@ namespace Capitan360.Infrastructure.Seeders
 
             if (!dbPermissions.Success || dbPermissions.Data == null || !dbPermissions.Data.Any())
                 throw new SystemException("there are not any Permissions in Db");
-
 
             foreach (var permissionId in dbPermissions.Data)
             {
@@ -195,14 +82,8 @@ namespace Capitan360.Infrastructure.Seeders
                         RoleId = superAdminRole.Id,
                         PermissionId = permissionId
                     });
-
-
             }
             await dbContext.SaveChangesAsync(cancellationToken);
-
-
-
-
 
             // Default Users with Roles
             var usersWithRoles = new Dictionary<string, string>
@@ -229,7 +110,8 @@ namespace Capitan360.Infrastructure.Seeders
                         Email = $"{username}@sample.com",
                         FullName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(username),
                         UserKind = (int)UserKind.Special,
-                        CompanyType = 0
+                        CompanyType = 1,
+                        Active = true
                     };
 
                     var result = await userManager.CreateAsync(user, phoneNumbers[i]);
@@ -239,15 +121,51 @@ namespace Capitan360.Infrastructure.Seeders
                         await userManager.AddToRoleAsync(user, roleName);
                         // addUserControl Version
                         await userPermissionVersionControlRepository.SetUserPermissionVersion(user.Id, cancellationToken);
+
+                        var company = new Company()
+                        {
+                            CompanyTypeId = 1,
+                            Name = "شرکت پژواک",
+                            Code = "123456",
+                            PhoneNumber = "05112345678",
+                            Active = true,
+                            IsParentCompany = true,
+                            CountryId = 1,
+                            ProvinceId = 12,
+                            CityId = 183,
+                            Description = "شرکت اصلی و پایه سیستم است"
+                        };
+
+                        await companyRepository.CreateCompanyAsync(company, cancellationToken);
+                        var profile = new UserProfile()
+                        {
+                            UserId = user.Id
+                        };
+                        var userCompany =
+                            new UserCompany()
+                            {
+                                CompanyId = company.Id,
+                                UserId = user.Id
+                            };
+                        var companyPreferences = new CompanyPreferences()
+                        {
+                            CompanyId = company.Id,
+                            EconomicCode = "123456789",
+                            NationalId = "123456789",
+                            RegistrationId = "123456789",
+                            CaptainCargoName = "SampleName",
+                            CaptainCargoCode = "123456789"
+                        };
+                        await profileRepository.CreateUserProfile(profile, cancellationToken);
+                        await userCompanyRepository.Create(userCompany, cancellationToken);
+                        await companyPreferencesRepository.CreateCompanyPreferencesAsync(companyPreferences,
+                            cancellationToken);
+                    }
+                    else
+                    {
+                        throw new Exception("Error In Seeding User");
                     }
 
-                    //var group = await dbContext.Groups
-                    //    .Include(g => g.RoleGroups)
-                    //    .ThenInclude(rg => rg.Role)
-                    //    .FirstOrDefaultAsync(g => g.RoleGroups.Any(rg => rg.Role.Name == roleName), cancellationToken);
-
-
-                    //await dbContext.UserGroups.AddAsync(new UserGroup() { User = user, GroupId = group!.Id }, cancellationToken);
                     i++;
                 }
             }
@@ -256,10 +174,6 @@ namespace Capitan360.Infrastructure.Seeders
 
             await unitOfWork.CommitTransactionAsync(cancellationToken);
             //TODO:Log Errors of InsertData of Identity
-
-
         }
-
-
     }
 }

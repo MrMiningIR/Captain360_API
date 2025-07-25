@@ -3,7 +3,6 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.Permission.Dtos;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Dtos.TransferObject;
-using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Repositories.PermissionRepository;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -13,15 +12,15 @@ namespace Capitan360.Application.Services.Permission.Services;
 public class PermissionService(IPermissionRepository permissionRepository,
     PermissionCollectorService permissionCollector, IUnitOfWork unitOfWork, ILogger<PermissionService> logger, IMapper mapper) : IPermissionService
 {
-    public async Task<List<string>?> GetUserPermissions(string userId, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(userId))
-            throw new UnExpectedException("User Id is Empty");
+    //public async Task<List<string>?> GetUserPermissions(string userId, CancellationToken cancellationToken)
+    //{
+    //    if (string.IsNullOrEmpty(userId))
+    //        throw new UnExpectedException("User Id is Empty");
 
-        var permissions = await permissionRepository.GetUserPermissionsAsync(userId, cancellationToken);
+    //    var permissions = await permissionRepository.GetUserPermissionsAsync(userId, cancellationToken);
 
-        return permissions ?? [];
-    }
+    //    return permissions ?? [];
+    //}
 
     public async Task<ApiResponse<List<ParentPermissionTransfer>>> GetParentPermissions(CancellationToken ct)
     {

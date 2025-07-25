@@ -10,20 +10,17 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyRepository
 {
-    public async Task<int> CreateCompanyAsync(Company companyEntity, string userId, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanyAsync(Company companyEntity, CancellationToken cancellationToken)
     {
-        dbContext.Entry(companyEntity).Property("CreatedBy").CurrentValue = userId;
         dbContext.Companies.Add(companyEntity);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyEntity.Id;
-
     }
 
     public void Delete(Company company, string userId)
     {
         dbContext.Entry(company).Property("Deleted").CurrentValue = true;
-
     }
 
     public async Task<IReadOnlyList<Company>> GetAllCompanies(CancellationToken cancellationToken)
@@ -42,9 +39,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
             dbQuery = dbQuery.Where(x => x.CompanyTypeId == userCompanyTypeId);
         }
 
-
         return await dbQuery.SingleOrDefaultAsync(cancellationToken);
-
 
         //.Include(c => c.CompanyType)
         //.Include(c => c.CompanyAddresses)
@@ -53,9 +48,6 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         //.Include(c => c.CompanyAddresses).ThenInclude(c => c.Address).ThenInclude(c => c.Province)
         //.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
-
-
-
 
     public async Task<(IReadOnlyList<Company>, int)> GetMatchingAllCompanies(string? searchPhrase, int companyTypeId,
         int pageSize, int pageNumber, string? sortBy,
