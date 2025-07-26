@@ -42,7 +42,10 @@ public class UserMapperProfile : Profile
         CreateMap<Domain.Entities.AuthorizationEntity.Role, RoleDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RolePersianName, opt => opt.MapFrom(src => src.PersianName))
-                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name));
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Visible, opt => opt.MapFrom(src => src.Visible))
+
+                ;
 
         //CreateMap<CreateUserCommand, User>().ReverseMap()
         //    .ForMember(d => d.MoadianFactorType, opt => opt

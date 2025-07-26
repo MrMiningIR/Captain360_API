@@ -6,7 +6,7 @@ public record CreateCompanyCommand(string Code, string Phone, string Name, strin
     public string PhoneNumber { get; } = Phone;
     public string Name { get; } = Name;
     public int CompanyTypeId { get; } = CompanyTypeId;
-    public bool Admin { get; set; }
+    public bool IsParentCompany { get; set; }
     public bool Active { get; set; }
     public string Description { get; } = Description;
     public int CountryId { get; } = 1;

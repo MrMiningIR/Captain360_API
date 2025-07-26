@@ -10,7 +10,8 @@ public record CurrentUser(
     int CompanyId,
     string PermissionVersionControl,
     string SessionId,
-    int CompanyType)
+    int CompanyType,
+    bool IsParent)
 {
     public bool HasPermission(string permissionName)
     {
@@ -31,12 +32,14 @@ public record CurrentUser(
     public bool IsSuperAdmin()
     {
         return HasRole(ConstantNames.SuperAdminRole);
-
     }
     public bool IsAdministratorGroup()
     {
         return HasRole(ConstantNames.SuperAdminRole) || HasRole(ConstantNames.ManagerRole);
-
+    }
+    public bool IsParentCompany()
+    {
+        return IsParent;
     }
 
     public int GetCompanyId()
@@ -63,5 +66,4 @@ public record CurrentUser(
 
         return true;
     }
-
 }

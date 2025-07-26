@@ -8,7 +8,7 @@ public class CompanyDto
     public string Name { get; set; } = default!;
     public int CompanyTypeId { get; set; }
     public string CompanyTypeName { get; set; } = default!;
-    public bool Admin { get; set; }
+    public bool IsParentCompany { get; set; }
     public bool Active { get; set; }
     public string Description { get; set; } = default!;
 

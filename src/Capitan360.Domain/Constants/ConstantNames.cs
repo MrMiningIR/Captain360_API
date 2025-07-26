@@ -55,6 +55,8 @@ public static class ConstantNames
     public const string GroupId = "GroupId";
     public const string Permissions = "Permissions";
     public const string Permission = "Permission";
+    public const string IsParentCompany = "IsParentCompany";
+    public const string CompanyName = "CompanyName";
 
 
 

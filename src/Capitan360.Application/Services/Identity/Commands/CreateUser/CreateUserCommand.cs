@@ -8,10 +8,11 @@ public record CreateUserCommand
     public string ConfirmPassword { get; set; } = default!;
     public int MoadianFactorType { get; set; }
     public string? Email { get; set; }
-    public string? RoleId { get; set; }
-    public string? RoleName { get; set; }
-    public int? CompanyId { get; set; }
+    public string RoleId { get; set; }
+    public string RoleName { get; set; }
+    public int CompanyId { get; set; }
     public int CompanyType { get; set; }
+    public int UserKind { get; set; }
 
 
 }

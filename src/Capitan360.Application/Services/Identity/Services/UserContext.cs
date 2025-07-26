@@ -20,13 +20,17 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
         var roles = user.FindAll(ClaimTypes.Role).Select(x => x.Value).ToList();
         var sessionId = user.Claims.FirstOrDefault(c => c.Type == ConstantNames.SessionId)?.Value ?? "";
         var companyType = user.Claims.FirstOrDefault(c => c.Type == ConstantNames.CompanyType)?.Value ?? "-1";
+        var isParentCompany = user.Claims.FirstOrDefault(c => c.Type == ConstantNames.IsParentCompany)?.Value ?? "false";
+
 
 
         var permissionsClaim = user.Claims.FirstOrDefault(c => c.Type == ConstantNames.Permissions);
         var permissions = permissionsClaim!.Value.Split(',').ToList();
         var convertedCompanyId = int.Parse(companyId);
         var convertedCompanyType = int.Parse(companyType);
+        var isParent = bool.Parse(isParentCompany);
 
-        return new CurrentUser(userId!, mobile!, roles, permissions, convertedCompanyId, permissionVersionControl, sessionId, convertedCompanyType);
+
+        return new CurrentUser(userId!, mobile!, roles, permissions, convertedCompanyId, permissionVersionControl, sessionId, convertedCompanyType, isParent);
     }
 }

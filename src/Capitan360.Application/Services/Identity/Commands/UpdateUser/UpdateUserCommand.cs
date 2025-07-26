@@ -9,8 +9,9 @@ public record UpdateUserCommand
     public string? Email { get; set; }
     public string? RoleId { get; set; }
     public string? RoleName { get; set; }
-    public int? CompanyId { get; set; }
+    public int CompanyId { get; set; }
     public int CompanyType { get; set; }
+    public int UserKind { get; set; }
 
 
 }

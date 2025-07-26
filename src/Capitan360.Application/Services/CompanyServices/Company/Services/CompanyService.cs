@@ -24,7 +24,8 @@ public class CompanyService(
    ICompanyPackageTypeRepository companyPackageTypesRepository,
    ICompanyContentTypeRepository companyContentTypeRepository,
    IContentTypeRepository contentTypeRepository,
-   IPackageTypeRepository packageTypeRepository
+   IPackageTypeRepository packageTypeRepository,
+   ICompanyPreferencesRepository preferencesRepository
 
     ) : ICompanyService
 {
@@ -56,6 +57,12 @@ public class CompanyService(
         {
             await companyPackageTypesRepository.AddPackageTypesToCompanyPackageType(relatedPackageTypes, companyId, cancellationToken);
         }
+
+        await preferencesRepository.CreateCompanyPreferencesAsync(
+            new Domain.Entities.CompanyEntity.CompanyPreferences()
+            {
+                CompanyId = companyId
+            }, cancellationToken);
 
 
 

@@ -8,7 +8,7 @@ public record UpdateCompanyCommand(
     string? Name,
     string? Description,
     int CompanyTypeId,
-    bool? Admin,
+    bool? IsParentCompany,
     bool? Active,
     int CountryId,
     int CityId,

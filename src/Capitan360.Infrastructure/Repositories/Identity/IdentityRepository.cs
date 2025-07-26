@@ -173,10 +173,7 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
 
     public async Task<User?> GetUserByIdForUpdateAsync(string userId, CancellationToken ct)
     {
-        return await dbContext.Users
-
-
-            .SingleOrDefaultAsync(x => x.Id == userId, ct);
+        return await dbContext.Users.SingleOrDefaultAsync(x => x.Id == userId, ct);
     }
 
     public async Task<IdentityResult?> CreateUserByCompanyAsync(User user, string password)

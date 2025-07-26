@@ -25,13 +25,13 @@ public class UserCompanyRepository(ApplicationDbContext dbContext, IUnitOfWork u
     {
         if (tracked)
         {
-            var userCompany = await dbContext.UserCompanies
+            var userCompany = await dbContext.UserCompanies.Include(x => x.Company)
                 .SingleOrDefaultAsync(x => x.UserId == userId, cancellationToken: cancellationToken);
             return userCompany;
         }
         else
         {
-            var userCompany = await dbContext.UserCompanies.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId,
+            var userCompany = await dbContext.UserCompanies.AsNoTracking().Include(x => x.Company).SingleOrDefaultAsync(x => x.UserId == userId,
             cancellationToken: cancellationToken);
             return userCompany;
         }

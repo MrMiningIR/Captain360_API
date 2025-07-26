@@ -1,4 +1,5 @@
 ﻿using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Entities.UserEntity;
 using Capitan360.Domain.Repositories.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -61,7 +62,7 @@ public class TokenService(IUserCompanyRepository UserCompanyRepository)
         return Encoding.UTF8.GetString(decrypted);
     }
 
-    public List<Claim> ClaimsGenerator(User user, int companyId, string permissionVersionControl, IReadOnlyList<string> roles,
+    public List<Claim> ClaimsGenerator(User user, UserCompany userCompany, string permissionVersionControl, IReadOnlyList<string> roles,
         string newSessionId, List<string> permissions)
     {
 
@@ -70,7 +71,9 @@ public class TokenService(IUserCompanyRepository UserCompanyRepository)
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.MobilePhone, user.PhoneNumber!),
             new(ClaimTypes.Name, user.FullName!) ,
-            new(ConstantNames.CompanyId,  companyId.ToString()),
+            new(ConstantNames.CompanyId,  userCompany.CompanyId.ToString()),
+            new(ConstantNames.IsParentCompany,  userCompany.Company.IsParentCompany.ToString()),
+            new(ConstantNames.CompanyName,  userCompany.Company.Name.ToString()),
             new(ConstantNames.CompanyType,  user.CompanyType.ToString()),
             new(ConstantNames.Permissions,  string.Join(',',permissions))
         };

@@ -34,7 +34,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     {
         var dbQuery = dbContext.Companies.Where(x => x.Id == id);
         dbQuery = !track ? dbQuery.AsNoTracking() : dbQuery;
-        if (userCompanyTypeId > 0)
+        if (userCompanyTypeId > 1)
         {
             dbQuery = dbQuery.Where(x => x.CompanyTypeId == userCompanyTypeId);
         }
