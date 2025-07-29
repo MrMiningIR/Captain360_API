@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
 {
-    internal class CompanyPreferencesConfigurations: IEntityTypeConfiguration<CompanyPreferences>
+    internal class CompanyPreferencesConfigurations : IEntityTypeConfiguration<CompanyPreferences>
     {
         public void Configure(EntityTypeBuilder<CompanyPreferences> builder)
         {
             builder.HasKey(x => x.Id);
             builder.Property(ca => ca.CaptainCargoName).HasMaxLength(30);
             builder.Property(ca => ca.CaptainCargoCode).HasMaxLength(30);
-            builder.Property(c => c.EconomicCode).IsRequired().HasMaxLength(50);
-            builder.Property(c => c.NationalId).IsRequired().HasMaxLength(50);
-            builder.Property(c => c.RegistrationId).IsRequired().HasMaxLength(50);
+            builder.Property(c => c.EconomicCode).HasMaxLength(50);
+            builder.Property(c => c.NationalId).HasMaxLength(50);
+            builder.Property(c => c.RegistrationId).HasMaxLength(50);
             builder.Property(c => c.Tax).HasColumnType("decimal(5, 2)");
             builder.Property(x => x.ActiveIssueDomesticWaybill).HasDefaultValue(false);
             builder.Property(x => x.ActiveShowInSearchEngine).HasDefaultValue(false);

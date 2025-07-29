@@ -32,21 +32,26 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
     public async Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, int userCompanyTypeId = 0, bool track = false)
     {
-        var dbQuery = dbContext.Companies.Where(x => x.Id == id);
-        dbQuery = !track ? dbQuery.AsNoTracking() : dbQuery;
-        if (userCompanyTypeId > 1)
+        if (!track)
         {
-            dbQuery = dbQuery.Where(x => x.CompanyTypeId == userCompanyTypeId);
+            var unTrackedDbQuery = dbContext.Companies.AsNoTracking().Include(x => x.CompanyType).Where(x => x.Id == id);
+            if (userCompanyTypeId > 1)
+            {
+                unTrackedDbQuery = unTrackedDbQuery.Where(x => x.CompanyTypeId == userCompanyTypeId);
+            }
+
+            return await unTrackedDbQuery.SingleOrDefaultAsync(cancellationToken);
         }
+        else
+        {
+            var trackedDbQuery = dbContext.Companies.Include(x => x.CompanyType).Where(x => x.Id == id);
+            if (userCompanyTypeId > 1)
+            {
+                trackedDbQuery = trackedDbQuery.Where(x => x.CompanyTypeId == userCompanyTypeId);
+            }
 
-        return await dbQuery.SingleOrDefaultAsync(cancellationToken);
-
-        //.Include(c => c.CompanyType)
-        //.Include(c => c.CompanyAddresses)
-        //.ThenInclude(c => c.Address).ThenInclude(c => c.Country)
-        //.Include(c => c.CompanyAddresses).ThenInclude(c => c.Address).ThenInclude(c => c.City)
-        //.Include(c => c.CompanyAddresses).ThenInclude(c => c.Address).ThenInclude(c => c.Province)
-        //.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+            return await trackedDbQuery.SingleOrDefaultAsync(cancellationToken);
+        }
     }
 
     public async Task<(IReadOnlyList<Company>, int)> GetMatchingAllCompanies(string? searchPhrase, int companyTypeId,

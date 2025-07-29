@@ -15,5 +15,6 @@ public class UserDto
     public int CompanyId { get; set; }
     public int UserKind { get; set; }
     public int CompanyTypeId { get; set; }
+    public bool IsParentCompany { get; set; }
     public ICollection<RoleDto>? Roles { get; set; } = [];
 }

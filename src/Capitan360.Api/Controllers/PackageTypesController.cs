@@ -80,7 +80,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     }
 
     [HttpPost("MoveUpPackage")]
-    [PermissionFilter("تغییر ترتیب - بالا", "T6")]
+    [PermissionFilter("تغییر ترتیب - بالا", "U6")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -91,7 +91,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     }
 
     [HttpPost("MoveDownPackage")]
-    [PermissionFilter("تغییر ترتیب - بالا", "T7")]
+    [PermissionFilter("تغییر ترتیب - بالا", "U7")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

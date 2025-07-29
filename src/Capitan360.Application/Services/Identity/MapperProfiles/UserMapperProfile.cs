@@ -28,6 +28,8 @@ public class UserMapperProfile : Profile
                 src.UserCompanies.Any()
                     ? src.UserCompanies.FirstOrDefault()!.Company.Name
                     : "-"))
+             .ForMember(dest => dest.IsParentCompany, opt => opt.MapFrom(src =>
+                src.UserCompanies.Any() && src.UserCompanies.FirstOrDefault()!.Company.IsParentCompany))
              .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src =>
                 src.UserCompanies.Any()
                     ? src.UserCompanies.FirstOrDefault()!.Company.Id

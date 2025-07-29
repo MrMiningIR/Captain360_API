@@ -4,15 +4,12 @@ namespace Capitan360.Domain.Entities.CompanyEntity;
 
 public class CompanyPreferences : Entity
 {
+    public string? EconomicCode { get; set; }
+    public string? NationalId { get; set; }
+    public string? RegistrationId { get; set; }
 
-
-
-    public string EconomicCode { get; set; } = default!;
-    public string NationalId { get; set; } = default!;
-    public string RegistrationId { get; set; } = default!;
-
-    public string CaptainCargoName { get; set; } = default!;
-    public string CaptainCargoCode { get; set; } = default!;
+    public string? CaptainCargoName { get; set; }
+    public string? CaptainCargoCode { get; set; }
     public decimal Tax { get; set; }
     public bool ActiveIssueDomesticWaybill { get; set; }
     public bool ActiveShowInSearchEngine { get; set; }
@@ -21,6 +18,7 @@ public class CompanyPreferences : Entity
 
     // Weight-related settings
     public bool ExitStampBillMinWeightIsFixed { get; set; }
+
     public bool ExitPackagingMinWeightIsFixed { get; set; }
     public bool ExitAccumulationMinWeightIsFixed { get; set; }
     public bool ExitExtraSourceMinWeightIsFixed { get; set; }
@@ -31,6 +29,7 @@ public class CompanyPreferences : Entity
 
     // Tax-related settings
     public bool ExitFareInTax { get; set; }
+
     public bool ExitStampBillInTax { get; set; }
     public bool ExitPackagingInTax { get; set; }
     public bool ExitAccumulationInTax { get; set; }
@@ -41,7 +40,6 @@ public class CompanyPreferences : Entity
     public bool ExitRevenue3InTax { get; set; }
     public bool ExitDistributionInTax { get; set; }
     public bool ExitExtraDestinationInTax { get; set; }
-
 
     // Navigation Properties
 
