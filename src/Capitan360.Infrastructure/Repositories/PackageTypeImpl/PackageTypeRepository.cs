@@ -190,9 +190,10 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return (packageTypes, totalCount);
     }
 
-    public async Task<bool> CheckExistPackageTypeName(string packageTypeName, int companyTypeId, CancellationToken cancellationToken)
+    public async Task<PackageType?> CheckExistPackageTypeName(string packageTypeName, int companyTypeId,
+        CancellationToken cancellationToken)
     {
-        return await dbContext.PackageTypes.AnyAsync(pt => pt.CompanyTypeId == companyTypeId && pt.PackageTypeName == packageTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.PackageTypes.SingleOrDefaultAsync(pt => pt.CompanyTypeId == companyTypeId && pt.PackageTypeName.ToLower().Trim() == packageTypeName.ToLower().Trim(), cancellationToken);
     }
 
     public async Task<int> OrderPackageType(int companyTypeId, CancellationToken cancellationToken)

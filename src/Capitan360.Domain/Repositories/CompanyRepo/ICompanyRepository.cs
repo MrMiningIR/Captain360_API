@@ -7,7 +7,7 @@ public interface ICompanyRepository
 {
     Task<int> CreateCompanyAsync(Company company, CancellationToken cancellationToken);
     void Delete(Company company, string id);
-    Task<IReadOnlyList<Company>> GetAllCompanies(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Company>> GetAllCompanies(int companyTypeId, CancellationToken cancellationToken);
     Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, int userCompanyTypeId = 0,
         bool track = false);
 

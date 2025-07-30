@@ -23,9 +23,10 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         dbContext.Entry(company).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<IReadOnlyList<Company>> GetAllCompanies(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Company>> GetAllCompanies(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
+            .Where(x => companyTypeId == 0 || x.CompanyTypeId == companyTypeId)
 
             .ToListAsync(cancellationToken);
     }

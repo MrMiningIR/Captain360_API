@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Capitan360.Application.Services.ContentTypeService.Commands;
 using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentType;
+using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
 using Capitan360.Domain.Entities.ContentEntity;
 

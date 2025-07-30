@@ -136,7 +136,7 @@ public class IdentityController(UserManager<User> userManager,
 
     [HttpGet("GetRoles")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<RoleDto>>), StatusCodes.Status200OK)]
-    [PermissionFilter("دریافت نقش ها", "T10")]
+    [ExcludeFromPermission]
     public async Task<ActionResult<ApiResponse<PagedResult<RoleDto>>>> GetRoles(CancellationToken cancellationToken)
     {
         var response = await identityService.GetRoles(cancellationToken);

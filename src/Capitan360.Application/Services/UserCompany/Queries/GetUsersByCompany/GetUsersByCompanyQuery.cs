@@ -6,6 +6,7 @@ namespace Capitan360.Application.Services.UserCompany.Queries.GetUsersByCompany;
 public record GetUsersByCompanyQuery(
 
     [property: DefaultValue((int)UserKind.Normal)] int UserKind = 2,
+    [property: DefaultValue(0)] int CompanyType = 0,
     [property: DefaultValue(null)] string? SearchPhrase = null,
     [property: DefaultValue(null)] string? SortBy = null,
     [property: DefaultValue(1)] int PageNumber = 1,

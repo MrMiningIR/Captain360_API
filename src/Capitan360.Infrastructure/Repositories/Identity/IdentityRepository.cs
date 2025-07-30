@@ -75,35 +75,17 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
              .ToListAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<User>, int)> GetMatchingAllUsersByCompany(int companyId, int userKind,
+    public async Task<(IReadOnlyList<User>, int)> GetMatchingAllUsersByCompany(int companyId, int userKind, int companyType,
         string? searchPhrase, int pageSize, int pageNumber, string? sortBy,
         SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
 
-        #region MyRegion
-        //var baseQuery = dbContext.UserCompanies.AsNoTracking()
-        //    .Include(x => x.User)
-        //        .Where(uc => companyId == 0 || uc.CompanyId == companyId)
-        //    .Select(uc => uc.User)
-        //    .Where(x => x.UserKind == userKind)
-        //.Where(a => searchPhraseLower == null ||
-        //                (a.FullName!.ToLower().Contains(searchPhraseLower) ||
-        //                 a.PhoneNumber!.Contains(searchPhraseLower)));
 
-        //var baseQuery = dbContext.UserCompanies
-        //    .AsNoTracking()
-
-        //    .Where(uc => (companyId == 0 || uc.CompanyId == companyId) &&
-        //                 (userKind == 0 || uc.User.UserKind == userKind) &&
-        //                 (searchPhraseLower == null ||
-        //                  uc.User.FullName!.ToLower().Contains(searchPhraseLower) ||
-        //                  uc.User.PhoneNumber!.Contains(searchPhraseLower)))
-        //    .Select(uc => uc.User); 
-        #endregion
 
         var baseQuery = dbContext.Users
             .AsNoTracking()
+            .Where(x => companyType == 0 || x.CompanyType == companyType)
             .Include(x => x.Roles)
             .Include(x => x.UserCompanies)
             .ThenInclude(x => x.Company)

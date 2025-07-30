@@ -11,7 +11,8 @@ public interface IContentTypeRepository
     void Delete(ContentType contentType);
     Task<ContentType?> GetContentTypeById(int id, CancellationToken cancellationToken);
     Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypes(string? searchPhrase, int companyTypeId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
-    Task<bool> CheckExistContentTypeName(string contentTypeName, int companyTypeId, CancellationToken cancellationToken);
+    Task<ContentType?> CheckExistContentTypeName(string contentTypeName, int companyTypeId,
+        CancellationToken cancellationToken);
 
 
     Task<int> OrderContentType(int companyTypeId, CancellationToken cancellationToken);

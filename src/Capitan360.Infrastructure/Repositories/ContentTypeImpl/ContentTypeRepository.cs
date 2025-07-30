@@ -80,9 +80,10 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return (contentTypes, totalCount);
     }
 
-    public async Task<bool> CheckExistContentTypeName(string contentTypeName, int companyTypeId, CancellationToken cancellationToken)
+    public async Task<ContentType?> CheckExistContentTypeName(string contentTypeName, int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.ContentTypes.AnyAsync(ct => ct.CompanyTypeId == companyTypeId && ct.ContentTypeName == contentTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.ContentTypes.SingleOrDefaultAsync(ct => ct.CompanyTypeId ==
+            companyTypeId && ct.ContentTypeName.ToLower().Trim() == contentTypeName.ToLower().Trim(), cancellationToken);
     }
 
 

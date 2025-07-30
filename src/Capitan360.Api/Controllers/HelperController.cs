@@ -63,12 +63,12 @@ namespace Capitan360.Api.Controllers
             return Ok(rates);
         }
 
-        [HttpGet("MiniCompanies")]
+        [HttpGet("MiniCompanies/{companyTypeId}")]
         [ProducesResponseType(typeof(ApiResponse<List<CompanyItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<List<CompanyItemDto>>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ApiResponse<List<CompanyItemDto>>>> MiniCompanies(CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<List<CompanyItemDto>>>> MiniCompanies(int companyTypeId, CancellationToken cancellationToken)
         {
-            var response = await identityService.GetCompaniesList(cancellationToken);
+            var response = await identityService.GetCompaniesList(companyTypeId, cancellationToken);
 
             return StatusCode(response.StatusCode, response);
         }

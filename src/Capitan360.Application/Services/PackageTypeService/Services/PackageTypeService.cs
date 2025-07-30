@@ -17,172 +17,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.PackageTypeService.Services;
 
-//public class PackageTypeService(ILogger<PackageTypeService> logger,
-//    IMapper mapper,
-//    IUnitOfWork unitOfWork,
-//    IUserContext userContext,
-//    IPackageTypeRepository packageTypeRepository,
-//    ICompanyTypeRepository companyTypeRepository) : IPackageTypeService
-//{
-//    #region MyRegion
-//    //public async Task<ApiResponse<int>> CreatePackageTypeAsync(CreatePackageTypeCommand packageTypeCommand, CancellationToken cancellationToken)
-//    //{
-//    //    logger.LogInformation("CreatePackageType is Called with {@CreateContentTypeCommand}", packageTypeCommand);
-
-//    //    if (packageTypeCommand == null)
-//    //        return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوا نمی‌تواند null باشد");
-//    //    var exist = await packageTypeRepository.CheckExistPackageTypeName(packageTypeCommand.ContentTypeName,
-//    //        packageTypeCommand.CompanyTypeId, cancellationToken);
-
-//    //    if (exist)
-//    //        return ApiResponse<int>.Error(409, "نام نوع محتوا مشابه وجود دارد");
-
-//    //    var order = await packageTypeRepository.OrderPackageType(packageTypeCommand.CompanyTypeId, cancellationToken);
-
-//    //    var packageType = mapper.Map<PackageType>(packageTypeCommand);
-//    //    packageType.OrderPackageType = order + 1;
-//    //    if (packageType == null)
-//    //        return ApiResponse<int>.Error(500, "مشکل در عملیات تبدیل");
-
-//    //    var contentTypeId = await packageTypeRepository.CreatePackageTypeAsync(packageType, cancellationToken);
-//    //    logger.LogInformation("PackageType created successfully with ID: {ContentTypeId}", contentTypeId);
-//    //    return ApiResponse<int>.Created(contentTypeId, "PackageType created successfully");
-//    //}
-
-//    //public async Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypes(GetAllPackageTypesQuery allPackageTypesQuery, CancellationToken cancellationToken)
-//    //{
-//    //    logger.LogInformation("GetAllPackageTypesByCompanyType is Called");
-//    //    if (allPackageTypesQuery.PageSize <= 0 || allPackageTypesQuery.PageNumber <= 0)
-//    //        return ApiResponse<PagedResult<PackageTypeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
-
-//    //    var (packageTypes, totalCount) = await packageTypeRepository.GetMatchingAllPackageTypes(
-//    //        allPackageTypesQuery.SearchPhrase,
-//    //        allPackageTypesQuery.CompanyTypeId,
-//    //        allPackageTypesQuery.Active,
-//    //        allPackageTypesQuery.PageSize,
-//    //        allPackageTypesQuery.PageNumber,
-//    //        allPackageTypesQuery.SortBy,
-//    //        allPackageTypesQuery.SortDirection,
-//    //        cancellationToken);
-//    //    var packageTypeDto = mapper.Map<IReadOnlyList<PackageTypeDto>>(packageTypes) ?? Array.Empty<PackageTypeDto>();
-//    //    logger.LogInformation("Retrieved {Count} package types", packageTypeDto.Count);
-
-//    //    var data = new PagedResult<PackageTypeDto>(packageTypeDto, totalCount, allPackageTypesQuery.PageSize,
-//    //        allPackageTypesQuery.PageNumber);
-//    //    return ApiResponse<PagedResult<PackageTypeDto>>.Ok(data, "PackageTypes retrieved successfully");
-//    //}
-
-//    //public async Task<ApiResponse<PackageTypeDto>> GetPackageTypeByIdAsync(GetPackageTypeByIdQuery getPackageTypeByIdQuery, CancellationToken cancellationToken)
-//    //{
-//    //    logger.LogInformation("GetPackageTypeById is Called with ID: {Id}", getPackageTypeByIdQuery.Id);
-//    //    if (getPackageTypeByIdQuery.Id <= 0)
-//    //        return ApiResponse<PackageTypeDto>.Error(400, "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد");
-
-//    //    var packageType = await packageTypeRepository.GetPackageTypeById(getPackageTypeByIdQuery.Id, cancellationToken);
-//    //    if (packageType is null)
-//    //        return ApiResponse<PackageTypeDto>.Error(404, $"نوع محتوا با شناسه {getPackageTypeByIdQuery.Id} یافت نشد");
-
-//    //    var result = mapper.Map<PackageTypeDto>(packageType);
-//    //    logger.LogInformation("PackageType retrieved successfully with ID: {Id}", getPackageTypeByIdQuery.Id);
-//    //    return ApiResponse<PackageTypeDto>.Ok(result, "PackageType retrieved successfully");
-//    //}
-
-//    //public async Task<ApiResponse<object>> DeletePackageTypeAsync(DeletePackageTypeCommand deletePackageTypeCommand, CancellationToken cancellationToken)
-//    //{
-//    //    logger.LogInformation("DeletePackageType is Called with ID: {Id}", deletePackageTypeCommand.Id);
-//    //    if (deletePackageTypeCommand.Id <= 0)
-//    //        return ApiResponse<object>.Error(400, "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد");
-//    //    var packageType =
-//    //        await packageTypeRepository.GetPackageTypeById(deletePackageTypeCommand.Id, cancellationToken);
-//    //    if (packageType is null)
-//    //        return ApiResponse<object>.Error(404, $"نوع پکیج با شناسه {deletePackageTypeCommand.Id} یافت نشد");
-
-//    //    packageTypeRepository.Delete(packageType);
-//    //    await unitOfWork.SaveChangesAsync(cancellationToken);
-//    //    logger.LogInformation("PackageType soft-deleted successfully with ID: {Id}", deletePackageTypeCommand.Id);
-//    //    return ApiResponse<object>.Deleted("PackageType deleted successfully");
-//    //}
-
-//    //public async Task<ApiResponse<PackageTypeDto>> UpdatePackageTypeAsync(UpdatePackageTypeCommand updatePackageTypeCommand, CancellationToken cancellationToken)
-//    //{
-//    //    logger.LogInformation("UpdatePackageType is Called with {@UpdateContentTypeCommand}", updatePackageTypeCommand);
-//    //    if (updatePackageTypeCommand == null || updatePackageTypeCommand.Id <= 0)
-//    //        return ApiResponse<PackageTypeDto>.Error(400,
-//    //            "شناسه نوع محتوا باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
-
-//    //    var packageType = await packageTypeRepository.GetPackageTypeById(updatePackageTypeCommand.Id, cancellationToken);
-//    //    if (packageType is null)
-//    //        return ApiResponse<PackageTypeDto>.Error(404, $"نوع محتوا با شناسه {updatePackageTypeCommand.Id} یافت نشد");
-
-//    //    var updatedPackageType = mapper.Map(updatePackageTypeCommand, packageType);
-//    //    updatedPackageType.OrderPackageType = packageType.OrderPackageType;
-
-//    //    await unitOfWork.SaveChangesAsync(cancellationToken);
-//    //    logger.LogInformation("PackageType updated successfully with ID: {Id}", updatePackageTypeCommand.Id);
-
-//    //    var updatedPackageTypeDto = mapper.Map<PackageTypeDto>(updatedPackageType);
-//    //    return ApiResponse<PackageTypeDto>.Updated(updatedPackageTypeDto);
-//    //}
-
-//    //public async Task<ApiResponse<object>> MovePackageTypeUpAsync(MovePackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
-//    //{
-//    //    var packageType =
-//    //        await companyTypeRepository.GetCompanyTypeById(movePackageTypeUpCommand.CompanyTypeId, cancellationToken);
-//    //    if (packageType == null)
-//    //        return ApiResponse<object>.Error(404,
-//    //            $"نوع شرکت با شناسه {movePackageTypeUpCommand.CompanyTypeId} یافت نشد");
-
-//    //    await packageTypeRepository.MovePackageTypeUpAsync(movePackageTypeUpCommand.CompanyTypeId,
-//    //        movePackageTypeUpCommand.PackageTypeId, cancellationToken);
-//    //    logger.LogInformation(
-//    //        "PackageType moved up successfully. CompanyTypeId: {CompanyTypeId}, ContentTypeId: {PackageTypeId}",
-//    //        movePackageTypeUpCommand.CompanyTypeId, movePackageTypeUpCommand.PackageTypeId);
-//    //    return ApiResponse<object>.Ok("PackageType moved up successfully");
-//    //}
-
-//    //public async Task<ApiResponse<object>> MovePackageTypeDownAsync(MovePackageTypeDownCommand movePackageTypeDownCommand,
-//    //    CancellationToken cancellationToken)
-//    //{
-//    //    var packageType =
-//    //        await companyTypeRepository.GetCompanyTypeById(movePackageTypeDownCommand.CompanyTypeId, cancellationToken);
-//    //    if (packageType == null)
-//    //        return ApiResponse<object>.Error(404,
-//    //            $"نوع شرکت با شناسه {movePackageTypeDownCommand.CompanyTypeId} یافت نشد");
-
-//    //    await packageTypeRepository.MovePackageTypeDownAsync(movePackageTypeDownCommand.CompanyTypeId,
-//    //        movePackageTypeDownCommand.PackageTypeId, cancellationToken);
-//    //    logger.LogInformation(
-//    //        "ContentType moved down successfully. CompanyTypeId: {CompanyTypeId}, ContentTypeId: {PackageTypeId}",
-//    //        movePackageTypeDownCommand.CompanyTypeId, movePackageTypeDownCommand.PackageTypeId);
-//    //    return ApiResponse<object>.Ok("PackageType moved down successfully");
-//    //} 
-
-//    #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//}
-
 public class PackageTypeService(
     ILogger<PackageTypeService> logger,
     IMapper mapper,
@@ -205,7 +39,7 @@ public class PackageTypeService(
         var exist = await packageTypeRepository.CheckExistPackageTypeName(packageTypeCommand.PackageTypeName,
             packageTypeCommand.CompanyTypeId, cancellationToken);
 
-        if (exist)
+        if (exist is not null)
             return ApiResponse<int>.Error(400, "نام نوع پکیج مشابه وجود دارد");
 
         int order = await packageTypeRepository.OrderPackageType(packageTypeCommand.CompanyTypeId, cancellationToken);
@@ -296,7 +130,7 @@ public class PackageTypeService(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdatePackageType is Called with {@UpdatePackageTypeCommand}", command);
-        if (command == null || command.Id <= 0)
+        if (command is not { Id: > 0 })
             return ApiResponse<PackageTypeDto>.Error(400,
                 "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
@@ -304,8 +138,11 @@ public class PackageTypeService(
         if (packageType is null)
             return ApiResponse<PackageTypeDto>.Error(404, $"نوع پکیج با شناسه {command.Id} یافت نشد");
 
+        var exist = await packageTypeRepository.CheckExistPackageTypeName(command.PackageTypeName,
+    command.CompanyTypeId, cancellationToken);
 
-        // TODO : need to Check Existed Name
+        if (exist is not null && packageType.Id != exist.Id)
+            return ApiResponse<PackageTypeDto>.Error(400, "نام نوع پکیج مشابه وجود دارد");
 
         var updatedPackageType = mapper.Map(command, packageType);
         updatedPackageType.OrderPackageType = packageType.OrderPackageType;

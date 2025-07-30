@@ -28,7 +28,7 @@ public interface IIdentityRepository
     Task<IReadOnlyList<Entities.UserEntity.User>> GetUsersByCompanyAsync(int companyId, CancellationToken ct);
 
     Task<(IReadOnlyList<Entities.UserEntity.User>, int)> GetMatchingAllUsersByCompany(int companyId,
-        int queryUserKind, string? searchPhrase, int pageSize, int pageNumber,
+        int queryUserKind, int companyType, string? searchPhrase, int pageSize, int pageNumber,
         string? sortBy, SortDirection sortDirection, CancellationToken ct);
 
 

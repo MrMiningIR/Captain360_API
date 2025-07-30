@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.ContentTypeService.Commands;
 using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.DeleteContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveDownContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveUpContentType;
+using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTypes;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetContentTypeById;
@@ -39,7 +39,7 @@ public class ContentTypeService(
         var exist = await contentTypeRepository.CheckExistContentTypeName(contentTypeCommand.ContentTypeName,
             contentTypeCommand.CompanyTypeId, cancellationToken);
 
-        if (exist)
+        if (exist is not null)
             return ApiResponse<int>.Error(400, "نام نوع محتوا مشابه وجود دارد");
 
         int order = await contentTypeRepository.OrderContentType(contentTypeCommand.CompanyTypeId, cancellationToken);
@@ -137,7 +137,7 @@ public class ContentTypeService(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateContentType is Called with {@UpdateContentTypeCommand}", command);
-        if (command == null || command.Id <= 0)
+        if (command is not { Id: > 0 })
             return ApiResponse<ContentTypeDto>.Error(400,
                 "شناسه نوع محتوا باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
@@ -145,12 +145,13 @@ public class ContentTypeService(
         if (contentType is null)
             return ApiResponse<ContentTypeDto>.Error(404, $"نوع محتوا با شناسه {command.Id} یافت نشد");
 
-        //TODO
-        //    var exist = await contentTypeRepository.CheckExistContentTypeName(contentTypeCommand.ContentTypeName,
-        //contentTypeCommand.CompanyTypeId, cancellationToken);
 
-        //    if (exist)
-        //        return ApiResponse<int>.Error(400, "نام نوع محتوا مشابه وجود دارد");
+        var exist = await contentTypeRepository.CheckExistContentTypeName(command.ContentTypeName,
+    command.CompanyTypeId, cancellationToken);
+
+
+        if (exist is not null && exist.Id != contentType.Id)
+            return ApiResponse<ContentTypeDto>.Error(400, "نام نوع محتوا مشابه وجود دارد");
 
         var updatedContentType = mapper.Map(command, contentType);
         updatedContentType.OrderContentType = contentType.OrderContentType;

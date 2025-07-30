@@ -1,9 +1,9 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Services.ContentTypeService.Commands;
 using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.DeleteContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveDownContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveUpContentType;
+using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTypes;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetContentTypeById;

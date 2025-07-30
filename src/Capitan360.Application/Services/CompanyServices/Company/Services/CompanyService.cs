@@ -129,7 +129,7 @@ public class CompanyService(
     public async Task<ApiResponse<CompanyDto>> UpdateCompanyAsync(UpdateCompanyCommand updateCompanyCommand, CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", updateCompanyCommand);
-        if (updateCompanyCommand == null || updateCompanyCommand.Id <= 0)
+        if (updateCompanyCommand is not { Id: > 0 })
             return ApiResponse<CompanyDto>.Error(400, "شناسه شرکت باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
         var company = await companyRepository.GetCompanyById(updateCompanyCommand.Id, cancellationToken, updateCompanyCommand.UserCompanyTypeId, true);

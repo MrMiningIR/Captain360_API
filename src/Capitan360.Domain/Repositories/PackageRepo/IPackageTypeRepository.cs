@@ -10,7 +10,7 @@ public interface IPackageTypeRepository
     void Delete(PackageType packageType);
     Task<PackageType?> GetPackageTypeById(int id, CancellationToken cancellationToken);
     Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypes(string? searchPhrase, int companyTypeId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
-    Task<bool> CheckExistPackageTypeName(string packageTypeName, int companyTypeId, CancellationToken cancellationToken);
+    Task<PackageType?> CheckExistPackageTypeName(string packageTypeName, int companyTypeId, CancellationToken cancellationToken);
 
 
     Task<int> OrderPackageType(int companyTypeId, CancellationToken cancellationToken);

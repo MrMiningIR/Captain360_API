@@ -57,7 +57,7 @@ public interface IIdentityService
     ApiResponse<PagedResult<RateDto>> GetRateList();
 
     Task<ApiResponse<PagedResult<RoleDto>>> GetRoles(CancellationToken cancellationToken);
-    Task<ApiResponse<List<CompanyItemDto>>> GetCompaniesList(CancellationToken cancellationToken);
+    Task<ApiResponse<List<CompanyItemDto>>> GetCompaniesList(int companyTypeId, CancellationToken cancellationToken);
 
     Task<ApiResponse<string>> ChangePassword(ChangePasswordCommand changePasswordCommand);
     Task<ApiResponse<string>> SetUserActivityStatus(ChangeUserActivityCommand activityCommand, CancellationToken cancellationToken);

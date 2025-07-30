@@ -1,4 +1,5 @@
-﻿using Capitan360.Application.Common;
+﻿using Capitan360.Application.Attributes.Authorization;
+using Capitan360.Application.Common;
 using Capitan360.Application.Services.Identity.Dtos;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Application.Services.UserCompany.Commands.Create;
@@ -11,11 +12,13 @@ namespace Capitan360.Api.Controllers
 {
     [Route("api/[controller]/{companyId}/users/")]
     [ApiController]
+    [PermissionFilter("مدیریت", "B")]
     public class AdminController(IIdentityService identityService, IUserContext userContext) : ControllerBase
     {
         [HttpGet("GetAllUsers")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<UserDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<UserDto>>), StatusCodes.Status400BadRequest)]
+        [PermissionFilter("لیست کاربران", "B1")]
         public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>> GetUsers([FromQuery] GetUsersByCompanyQuery query, CancellationToken cancellationToken,
          [FromRoute] int companyId = 0)
         {
@@ -30,6 +33,7 @@ namespace Capitan360.Api.Controllers
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
+        [PermissionFilter("دریافت کاربر بر اساس شناسه کاربر و شناسه کمپانی", "B2")]
         public async Task<ActionResult<ApiResponse<UserDto>>> GetUserByIdAndCompanyId([FromRoute] int companyId,
     [FromRoute] string userId, CancellationToken cancellationToken)
         {
@@ -40,6 +44,7 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpPost("users")]
+        [ExcludeFromPermission]
         public IActionResult CreateUser([FromRoute] int companyId, CreateUserCompanyCommand createUserByCompanyCommand, CancellationToken cancellationToken)
         {
             createUserByCompanyCommand.CompanyId = companyId;
@@ -49,6 +54,7 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpPut("{userId}")]
+        [ExcludeFromPermission]
         public async Task<IActionResult> UpdateUser([FromRoute] int companyId, [FromRoute] string userId, [FromBody] UpdateUserCompanyCommand updateUserCompanyCommand, CancellationToken cancellationToken)
         {
             updateUserCompanyCommand.UserId = userId;

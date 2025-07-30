@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
+using FluentValidation;
 
 namespace Capitan360.Application.Services.ContentTypeService.Commands;
 
@@ -17,6 +18,6 @@ public class UpdateContentTypeCommandValidator : AbstractValidator<UpdateContent
             .NotEmpty().WithMessage("توضیحات نوع محتوا نمی‌تواند خالی باشد")
             .MaximumLength(50).WithMessage("توضیحات نوع محتوا نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
-        
+
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Capitan360.Application.Services.ContentTypeService.Commands;
+﻿namespace Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 
 public record UpdateContentTypeCommand(
     int CompanyTypeId,
