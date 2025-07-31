@@ -1,7 +1,6 @@
 ﻿using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.AuthorizationEntity;
 using Capitan360.Domain.Entities.UserEntity;
-using Capitan360.Infrastructure.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -61,6 +60,8 @@ internal class UserConfigurations : IEntityTypeConfiguration<User>
 
 
         builder.HasMany(u => u.UserCompanies).WithOne(uc => uc.User).HasForeignKey(uc => uc.UserId);
+
+        builder.Property(x => x.ConcurrencyToken).IsRowVersion();
 
 
 

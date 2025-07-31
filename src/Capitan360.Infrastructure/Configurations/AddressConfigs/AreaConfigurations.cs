@@ -5,11 +5,11 @@ using System.Text.Json;
 
 namespace Capitan360.Infrastructure.Configurations.AddressConfigs
 {
-    internal class AreaConfigurations : IEntityTypeConfiguration<Area>
+    internal class AreaConfigurations : BaseEntityConfiguration<Area>
     {
-        public void Configure(EntityTypeBuilder<Area> builder)
+        public override void Configure(EntityTypeBuilder<Area> builder)
         {
-            builder.HasKey(a => a.Id);
+            base.Configure(builder);
 
             builder.Property(ar => ar.PersianName).IsRequired().HasMaxLength(50).IsUnicode();
             builder.Property(ar => ar.EnglishName).HasMaxLength(50);

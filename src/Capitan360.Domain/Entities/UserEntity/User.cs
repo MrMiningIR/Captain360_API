@@ -1,7 +1,7 @@
-﻿using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.AuthorizationEntity;
+﻿using Capitan360.Domain.Entities.AuthorizationEntity;
 using Capitan360.Domain.Entities.CompanyEntity;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace Capitan360.Domain.Entities.UserEntity;
 
@@ -16,7 +16,7 @@ public class User : IdentityUser
 
     public string? ActiveSessionId { get; set; }
     public int UserKind { get; set; }
-    public int  CompanyType { get; set; }
+    public int CompanyType { get; set; }
 
 
 
@@ -31,6 +31,9 @@ public class User : IdentityUser
 
     // Navigation Property برای نقش‌ها
     public ICollection<Role> Roles { get; set; } = [];
+
+    [JsonIgnore]
+    public byte[] ConcurrencyToken { get; set; } = [0];
 
 
 }

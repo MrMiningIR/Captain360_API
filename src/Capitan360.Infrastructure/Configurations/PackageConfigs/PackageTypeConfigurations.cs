@@ -1,17 +1,17 @@
 ﻿using Capitan360.Domain.Entities.PackageEntity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.PackageConfigs;
 
 
-public class PackageTypeConfigurations : IEntityTypeConfiguration<PackageType>
+public class PackageTypeConfigurations : BaseEntityConfiguration<PackageType>
 {
 
 
-    public void Configure(EntityTypeBuilder<PackageType> builder)
+    public override void Configure(EntityTypeBuilder<PackageType> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
         builder.Property(x => x.PackageTypeName).IsRequired().HasMaxLength(50).IsUnicode();
         builder.Property(x => x.PackageTypeDescription).IsRequired().HasMaxLength(50).IsUnicode();
         builder.Property(x => x.OrderPackageType).HasDefaultValue(0);

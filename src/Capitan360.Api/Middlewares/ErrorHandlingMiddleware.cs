@@ -58,6 +58,12 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger, IU
             exception = notFoundExceptions;
             await HandleExceptionAsync(context, notFoundExceptions, logger, HttpStatusCode.NotFound);
         }
+        catch (DbUpdateConcurrencyException concurrencyException)
+        {
+            exception = concurrencyException;
+
+            await HandleExceptionAsync(context, concurrencyException, logger, HttpStatusCode.InternalServerError);
+        }
         catch (DbUpdateException dbUpdateException)
         {
             exception = dbUpdateException;

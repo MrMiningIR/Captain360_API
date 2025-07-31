@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-public class CompanyDomesticPathStructPricesConfigurations : IEntityTypeConfiguration<CompanyDomesticPathStructPrices>
+public class CompanyDomesticPathStructPricesConfigurations : BaseEntityConfiguration<CompanyDomesticPathStructPrices>
 {
-    public void Configure(EntityTypeBuilder<CompanyDomesticPathStructPrices> builder)
+    public override void Configure(EntityTypeBuilder<CompanyDomesticPathStructPrices> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
         builder.Property(x => x.Weight).IsRequired();
         builder.Property(x => x.PathStructType).IsRequired();
         builder.Property(x => x.WeightType).IsRequired();

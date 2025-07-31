@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-public class CompanyInsuranceChargeConfigurations : IEntityTypeConfiguration<CompanyInsuranceCharge>
+public class CompanyInsuranceChargeConfigurations : BaseEntityConfiguration<CompanyInsuranceCharge>
 {
-    public void Configure(EntityTypeBuilder<CompanyInsuranceCharge> builder)
+    public override void Configure(EntityTypeBuilder<CompanyInsuranceCharge> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
         builder.Property(x => x.Rate).IsRequired();
         builder.Property(x => x.Value).HasColumnType("decimal(18,2)").IsRequired();
         builder.Property(x => x.Settlement).HasColumnType("decimal(18,2)").IsRequired();

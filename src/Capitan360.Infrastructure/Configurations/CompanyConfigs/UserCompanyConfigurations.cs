@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
 {
-    internal class UserCompanyConfigurations : IEntityTypeConfiguration<UserCompany>
+    internal class UserCompanyConfigurations : BaseEntityConfiguration<UserCompany>
     {
-        public void Configure(EntityTypeBuilder<UserCompany> builder)
+        public override void Configure(EntityTypeBuilder<UserCompany> builder)
         {
-            builder.HasKey(uc => uc.Id);
+
+
+            base.Configure(builder);
 
             builder.HasOne(uc => uc.User)
                 .WithMany(u => u.UserCompanies)
@@ -35,7 +37,7 @@ namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
             .IsUnique()
             .HasFilter("[Deleted] = 0");
 
-          
+
 
         }
     }

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
 {
-    internal class CompanyPreferencesConfigurations : IEntityTypeConfiguration<CompanyPreferences>
+    internal class CompanyPreferencesConfigurations : BaseEntityConfiguration<CompanyPreferences>
     {
-        public void Configure(EntityTypeBuilder<CompanyPreferences> builder)
+        public override void Configure(EntityTypeBuilder<CompanyPreferences> builder)
         {
-            builder.HasKey(x => x.Id);
+            base.Configure(builder);
             builder.Property(ca => ca.CaptainCargoName).HasMaxLength(30);
             builder.Property(ca => ca.CaptainCargoCode).HasMaxLength(30);
             builder.Property(c => c.EconomicCode).HasMaxLength(50);

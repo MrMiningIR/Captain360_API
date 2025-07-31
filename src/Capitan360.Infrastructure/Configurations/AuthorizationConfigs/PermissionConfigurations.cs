@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.AuthorizationConfigs;
 
-internal class PermissionConfigurations : IEntityTypeConfiguration<Permission>
+internal class PermissionConfigurations : BaseEntityConfiguration<Permission>
 {
-    public void Configure(EntityTypeBuilder<Permission> builder)
+    public override void Configure(EntityTypeBuilder<Permission> builder)
     {
-        builder.HasKey(p => p.Id);
+        base.Configure(builder);
 
         builder.Property(p => p.Name)
             .HasMaxLength(50)

@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.AuthorizationConfigs;
 
-public class UserPermissionConfigurations : IEntityTypeConfiguration<UserPermission>
+public class UserPermissionConfigurations : BaseEntityConfiguration<UserPermission>
 {
-    public void Configure(EntityTypeBuilder<UserPermission> builder)
+    public override void Configure(EntityTypeBuilder<UserPermission> builder)
     {
-        builder
-            .HasKey(x => x.Id);
+
+        base.Configure(builder);
 
         builder
             .HasOne(up => up.User)

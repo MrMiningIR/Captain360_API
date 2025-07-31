@@ -1,14 +1,13 @@
 ﻿using Capitan360.Domain.Entities.CompanyEntity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-internal class CompanySmsPatternsConfigurations:IEntityTypeConfiguration<CompanySmsPatterns>
+internal class CompanySmsPatternsConfigurations : BaseEntityConfiguration<CompanySmsPatterns>
 {
-    public void Configure(EntityTypeBuilder<CompanySmsPatterns> builder)
+    public override void Configure(EntityTypeBuilder<CompanySmsPatterns> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
 
         builder.Property(x => x.PatternSmsIssueSender).IsRequired(false).HasMaxLength(500);
         builder.Property(x => x.PatternSmsIssueReceiver).IsRequired(false).HasMaxLength(500);

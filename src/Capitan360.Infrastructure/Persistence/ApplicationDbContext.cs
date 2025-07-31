@@ -112,9 +112,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         }
 
-
-
-
     }
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.AddressConfigs;
 
-internal class AddressConfigurations : IEntityTypeConfiguration<Address>
+internal class AddressConfigurations : BaseEntityConfiguration<Address>
 {
-    public void Configure(EntityTypeBuilder<Address> builder)
+    public override void Configure(EntityTypeBuilder<Address> builder)
     {
-
+        base.Configure(builder);
         builder.HasKey(a => a.Id);
 
         builder.Property(a => a.AddressLine).IsRequired().HasMaxLength(200).IsUnicode();
@@ -26,6 +26,8 @@ internal class AddressConfigurations : IEntityTypeConfiguration<Address>
             .WithMany(c => c.Addresses)
             .HasForeignKey(a => a.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
+
+
 
 
     }

@@ -1,15 +1,15 @@
 ﻿using Capitan360.Domain.Entities.UserEntity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.AuthorizationConfigs;
 
-internal class TokenBlacklistConfigurations:IEntityTypeConfiguration<TokenBlacklist>
+internal class TokenBlacklistConfigurations : BaseEntityConfiguration<TokenBlacklist>
 {
-    public void Configure(EntityTypeBuilder<TokenBlacklist> builder)
+    public override void Configure(EntityTypeBuilder<TokenBlacklist> builder)
     {
 
-        builder.HasKey(tb => tb.Id);
+
+        base.Configure(builder);
         builder.Property(tb => tb.Token)
             .HasMaxLength(500)
             .IsRequired();

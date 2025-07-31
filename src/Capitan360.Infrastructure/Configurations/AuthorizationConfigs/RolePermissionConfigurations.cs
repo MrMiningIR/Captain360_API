@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.AuthorizationConfigs;
 
-internal class RolePermissionConfigurations : IEntityTypeConfiguration<RolePermission>
+internal class RolePermissionConfigurations : BaseEntityConfiguration<RolePermission>
 {
-    public void Configure(EntityTypeBuilder<RolePermission> builder)
+    public override void Configure(EntityTypeBuilder<RolePermission> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
 
         builder.HasOne(rp => rp.Role)
             .WithMany(r => r.RolePermissions)

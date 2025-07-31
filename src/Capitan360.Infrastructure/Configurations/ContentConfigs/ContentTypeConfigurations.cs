@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.ContentConfigs
 {
-    public class ContentTypeConfigurations : IEntityTypeConfiguration<ContentType>
+    public class ContentTypeConfigurations : BaseEntityConfiguration<ContentType>
     {
-        public void Configure(EntityTypeBuilder<ContentType> builder)
+        public override void Configure(EntityTypeBuilder<ContentType> builder)
         {
 
-            builder.HasKey(x => x.Id);
+            base.Configure(builder);
             builder.Property(x => x.ContentTypeName).IsRequired().HasMaxLength(50).IsUnicode();
             builder.Property(x => x.ContentTypeDescription).IsRequired().HasMaxLength(100).IsUnicode();
             builder.Property(x => x.OrderContentType).HasDefaultValue(0);

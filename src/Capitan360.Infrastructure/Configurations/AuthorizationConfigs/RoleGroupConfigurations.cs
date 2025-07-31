@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.AuthorizationConfigs;
 
-internal class RoleGroupConfigurations:IEntityTypeConfiguration<RoleGroup>
+internal class RoleGroupConfigurations : IEntityTypeConfiguration<RoleGroup>
 {
     public void Configure(EntityTypeBuilder<RoleGroup> builder)
     {

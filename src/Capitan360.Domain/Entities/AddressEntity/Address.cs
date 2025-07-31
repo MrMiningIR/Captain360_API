@@ -6,7 +6,7 @@ namespace Capitan360.Domain.Entities.AddressEntity;
 
 public class Address : Entity
 {
-    public int CompanyId { get; set; } 
+    public int CompanyId { get; set; }
 
     public string AddressLine { get; set; } = default!;
 

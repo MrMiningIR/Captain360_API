@@ -1,19 +1,15 @@
-﻿using Capitan360.Domain.Entities.CompanyEntity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
-
-//internal class CompanyAddressConfigurations : IEntityTypeConfiguration<CompanyAddress>
+//internal class CompanyAddressConfigurations : BaseEntityConfiguration<CompanyAddress>
 //{
-//    //public void Configure(EntityTypeBuilder<CompanyAddress> builder)
+//    //public override void Configure(EntityTypeBuilder<CompanyAddress> builder)
 //    //{
 
 //    //    builder.HasKey(ca => ca.Id);
 
 //    //    builder.Property(ca => ca.Active).HasDefaultValue(true);
 //    //    builder.Property(ca => ca.OrderAddress).IsRequired();
-       
+
 
 
 //    //    builder.HasOne(ca => ca.Company)

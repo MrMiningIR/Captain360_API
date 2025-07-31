@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.UserConfigs;
 
-internal class UserProfileConfigurations : IEntityTypeConfiguration<UserProfile>
+internal class UserProfileConfigurations : BaseEntityConfiguration<UserProfile>
 {
-    public void Configure(EntityTypeBuilder<UserProfile> builder)
+    public override void Configure(EntityTypeBuilder<UserProfile> builder)
     {
 
-        builder.HasKey(uc => uc.Id);
 
-        
+        base.Configure(builder);
+
+
 
         builder.Property(up => up.TelegramPhoneNumber).HasMaxLength(11).IsRequired(false);
         builder.Property(up => up.UserId).HasMaxLength(450).IsRequired(true);

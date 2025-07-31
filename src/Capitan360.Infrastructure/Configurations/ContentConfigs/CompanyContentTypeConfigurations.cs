@@ -4,18 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.ContentConfigs
 {
-    internal class CompanyContentTypeConfigurations : IEntityTypeConfiguration<CompanyContentType>
+    internal class CompanyContentTypeConfigurations : BaseEntityConfiguration<CompanyContentType>
     {
 
 
-        public void Configure(EntityTypeBuilder<CompanyContentType> builder)
+        public override void Configure(EntityTypeBuilder<CompanyContentType> builder)
         {
+            base.Configure(builder);
             builder
                  .HasIndex(x => new { x.CompanyId, x.ContentTypeId })
                  .HasDatabaseName("IX_CompanyContentType_Active")
                  .IsUnique()
                  .HasFilter("[Deleted] = 0");
-            builder.HasKey(x => x.Id);
+
             builder.Property(x => x.ContentTypeName).HasMaxLength(50).IsUnicode().IsRequired();
 
             builder.Property(x => x.OrderContentType);

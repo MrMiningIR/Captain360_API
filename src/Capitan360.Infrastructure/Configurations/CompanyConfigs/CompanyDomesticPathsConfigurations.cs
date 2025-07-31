@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-public class CompanyDomesticPathsConfigurations : IEntityTypeConfiguration<CompanyDomesticPaths>
+public class CompanyDomesticPathsConfigurations : BaseEntityConfiguration<CompanyDomesticPaths>
 {
-    public void Configure(EntityTypeBuilder<CompanyDomesticPaths> builder)
+    public override void Configure(EntityTypeBuilder<CompanyDomesticPaths> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
         builder.Property(x => x.Description).IsRequired().IsUnicode().HasMaxLength(500);
         builder.Property(x => x.DescriptionForSearch).IsRequired().IsUnicode().HasMaxLength(500);
 
@@ -67,7 +67,7 @@ public class CompanyDomesticPathsConfigurations : IEntityTypeConfiguration<Compa
             .WithMany()
             .HasForeignKey(a => a.DestinationCityId)
             .OnDelete(DeleteBehavior.Restrict);
-        
+
 
     }
 }

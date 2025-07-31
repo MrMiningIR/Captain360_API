@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-internal class CompanyCommissionsConfigurations:IEntityTypeConfiguration<CompanyCommissions>
+internal class CompanyCommissionsConfigurations : BaseEntityConfiguration<CompanyCommissions>
 {
-    public void Configure(EntityTypeBuilder<CompanyCommissions> builder)
+    public override void Configure(EntityTypeBuilder<CompanyCommissions> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
+
         builder.Property(x => x.CommissionFromCaptainCargoWebSite).HasColumnType("decimal(18,2)");
         builder.Property(x => x.CommissionFromCompanyWebSite).HasColumnType("decimal(18,2)");
         builder.Property(x => x.CommissionFromCaptainCargoWebService).HasColumnType("decimal(18,2)");

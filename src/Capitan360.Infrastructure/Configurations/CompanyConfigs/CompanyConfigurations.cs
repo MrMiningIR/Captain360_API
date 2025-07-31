@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
 
-internal class CompanyConfigurations : IEntityTypeConfiguration<Company>
+internal class CompanyConfigurations : BaseEntityConfiguration<Company>
 {
-    public void Configure(EntityTypeBuilder<Company> builder)
+    public override void Configure(EntityTypeBuilder<Company> builder)
     {
-        builder.HasKey(c => c.Id);
+        base.Configure(builder);
+
         builder.Property(c => c.PhoneNumber).IsRequired().HasMaxLength(11);
         builder.Property(c => c.Name).IsRequired().HasMaxLength(50);
         builder.Property(c => c.Code).IsRequired().HasMaxLength(20);
@@ -17,27 +18,21 @@ internal class CompanyConfigurations : IEntityTypeConfiguration<Company>
         builder.Property(c => c.Description).HasMaxLength(500).IsUnicode();
         builder.Property(x => x.IsParentCompany).HasDefaultValue(false);
 
-
-
-
         builder.HasMany(c => c.UserCompanies)
             .WithOne(uc => uc.Company)
             .HasForeignKey(uc => uc.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
-
 
         builder.HasMany(c => c.CompanyUris)
             .WithOne(ur => ur.Company)
             .HasForeignKey(ur => ur.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
 
-
         builder
             .HasOne(c => c.CompanyCommissions)
             .WithOne(c => c.Company)
             .HasForeignKey<CompanyCommissions>(c => c.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
-
 
         builder
             .HasOne(c => c.CompanyPreferences)
@@ -65,10 +60,5 @@ internal class CompanyConfigurations : IEntityTypeConfiguration<Company>
             .WithMany()
             .HasForeignKey(a => a.CityId)
             .OnDelete(DeleteBehavior.Restrict);
-
-
-
-
-
     }
 }
