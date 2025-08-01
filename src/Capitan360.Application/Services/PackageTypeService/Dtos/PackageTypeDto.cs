@@ -4,7 +4,7 @@ public class PackageTypeDto
 {
     public int Id { get; set; }
     public int CompanyTypeId { get; set; }
-    public string CompanyTypeName { get; set; }
+    public string CompanyTypeName { get; set; } = default!;
     public string PackageTypeName { get; set; } = default!;
     public bool Active { get; set; }
     public string PackageTypeDescription { get; set; } = default!;

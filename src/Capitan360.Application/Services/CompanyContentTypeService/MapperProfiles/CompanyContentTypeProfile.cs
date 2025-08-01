@@ -11,7 +11,7 @@ public class CompanyContentTypeProfile : Profile
     {
         CreateMap<UpdateCompanyContentTypeCommand, CompanyContentType>();
         CreateMap<CompanyContentType, CompanyContentTypeDto>()
-            .ForMember(dest => dest.NewContentTypeName, opt => opt.MapFrom(src => src.ContentTypeName))
+            .ForMember(dest => dest.NewCompanyContentTypeName, opt => opt.MapFrom(src => src.ContentTypeName))
             .ForMember(dest => dest.ContentTypeName, opt => opt.MapFrom(src => src.ContentType.ContentTypeName));
     }
 }

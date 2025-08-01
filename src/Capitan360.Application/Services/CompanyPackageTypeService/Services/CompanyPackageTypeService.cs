@@ -2,12 +2,14 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
+using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateActiveStateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCompanyPackageTypes;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Repositories.PackageRepo;
+using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyPackageTypeService.Services;
@@ -23,11 +25,11 @@ public class CompanyPackageTypeService(
     {
         logger.LogInformation("UpdateCompanyPackageTypeAsync is Called with {@UpdateCompanyPackageTypeCommand}", command);
 
-        if (string.IsNullOrEmpty(command.PackageTypeName) && command.Active is null)
+        if (string.IsNullOrEmpty(command.CompanyPackageTypeName) && command.Active is null)
             return ApiResponse<int>.Error(400, "ورودی ایجاد نوع پکیج نمی‌تواند null باشد");
 
         var originalPackageType =
-            await packageTypeRepository.GetPackageTypeById(command.PackageTypeId, cancellationToken);
+            await packageTypeRepository.GetPackageTypeById(command.PackageTypeId, cancellationToken, false);
         if (originalPackageType is null)
             return ApiResponse<int>.Error(404, "پکیج اصلی وجود ندارد");
 
@@ -133,7 +135,7 @@ public class CompanyPackageTypeService(
             return ApiResponse<int>.Error(400, "ورودی ایجاد نوع پکیج نمی‌تواند null باشد");
 
         var originalPackageType =
-            await packageTypeRepository.GetPackageTypeById(command.OriginalPackageId, cancellationToken);
+            await packageTypeRepository.GetPackageTypeById(command.OriginalPackageId, cancellationToken, false);
         if (originalPackageType is null)
             return ApiResponse<int>.Error(404, "پکیج اصلی وجود ندارد");
 
@@ -153,5 +155,24 @@ public class CompanyPackageTypeService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse<int>.Ok(command.Id, "CompanyPackageType updated successfully");
+    }
+
+    public async Task<ApiResponse<int>> SetCompanyPackageContentActivityStatus(UpdateActiveStateCompanyPackageTypeCommand command,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetCompanyPackageContentActivityStatus Called with {@UpdateActiveStateCompanyContentTypeCommand}", command);
+
+        var companyPackage =
+            await companyPackageTypeRepository.GetCompanyPackageTypeById(command.Id, cancellationToken, true);
+
+        if (companyPackage is null)
+            return ApiResponse<int>.Error(404, $"CompanyPackage Data was not Found :{command.Id}");
+
+        companyPackage.Active = !companyPackage.Active;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("SetCompanyPackageContentActivityStatus Updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 }

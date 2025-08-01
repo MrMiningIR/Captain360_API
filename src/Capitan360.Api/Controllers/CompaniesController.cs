@@ -2,6 +2,7 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.CreateCompany;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.DeleteCompany;
+using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateActiveStateCompany;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateCompany;
 using Capitan360.Application.Services.CompanyServices.Company.Dtos;
 using Capitan360.Application.Services.CompanyServices.Company.Queries.GetAllCompanies;
@@ -80,6 +81,16 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
 
         var response = await companyService.UpdateCompanyAsync(updateCompanyCommand, cancellationToken);
 
+        return StatusCode(response.StatusCode, response);
+    }
+    [HttpPost("ChangeCompanyActiveStatus")]
+    [PermissionFilter("تغییر وضعیت شرکت", "D6")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyActiveStatus([FromBody] UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken)
+    {
+        var response = await companyService.SetCompanyActivityStatus(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

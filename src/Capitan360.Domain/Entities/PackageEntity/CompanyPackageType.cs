@@ -8,8 +8,10 @@ public class CompanyPackageType : Entity
 {
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
+
     [ForeignKey(nameof(PackageType))]
     public int PackageTypeId { get; set; }
+
     public string PackageTypeName { get; set; } = default!;
     public bool Active { get; set; }
 
@@ -17,5 +19,4 @@ public class CompanyPackageType : Entity
 
     public Company Company { get; set; } = default!;
     public PackageType PackageType { get; set; } = default!;
-
 }

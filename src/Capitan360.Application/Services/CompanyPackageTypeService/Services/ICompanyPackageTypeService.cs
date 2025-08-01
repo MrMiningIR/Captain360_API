@@ -1,6 +1,7 @@
 ﻿using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
+using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateActiveStateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCompanyPackageTypes;
@@ -22,4 +23,5 @@ public interface ICompanyPackageTypeService
     Task<ApiResponse<CompanyPackageTypeDto>> GetCompanyPackageTypeByIdAsync(GetCompanyPackageTypeByIdQuery getCompanyPackageTypeByIdQuery, CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> UpdateCompanyPackageTypeNameAsync(UpdateCompanyPackageTypeNameCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> SetCompanyPackageContentActivityStatus(UpdateActiveStateCompanyPackageTypeCommand command, CancellationToken cancellationToken);
 }

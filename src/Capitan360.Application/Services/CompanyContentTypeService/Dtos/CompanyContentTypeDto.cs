@@ -6,7 +6,7 @@ public class CompanyContentTypeDto
     public int CompanyId { get; set; }
     public int ContentTypeId { get; set; }
     public string ContentTypeName { get; set; } = default!;
-    public string NewContentTypeName { get; set; } = default!;
+    public string NewCompanyContentTypeName { get; set; } = default!;
     public bool Active { get; set; }
     public int OrderContentType { get; set; }
 }

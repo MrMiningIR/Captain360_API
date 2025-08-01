@@ -3,14 +3,14 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.Identity.Dtos;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Application.Services.UserCompany.Commands.Create;
-using Capitan360.Application.Services.UserCompany.Commands.Update;
+using Capitan360.Application.Services.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Services.UserCompany.Queries.GetUserByCompany;
 using Capitan360.Application.Services.UserCompany.Queries.GetUsersByCompany;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers
 {
-    [Route("api/[controller]/{companyId}/users/")]
+    [Route("api/Admin/{companyId}/users/")]
     [ApiController]
     [PermissionFilter("مدیریت", "B")]
     public class AdminController(IIdentityService identityService, IUserContext userContext) : ControllerBase

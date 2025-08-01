@@ -3,6 +3,7 @@ using Capitan360.Application.Services.PackageTypeService.Commands.CreatePackageT
 using Capitan360.Application.Services.PackageTypeService.Commands.DeletePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeDown;
 using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeUp;
+using Capitan360.Application.Services.PackageTypeService.Commands.UpdateActiveStatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.UpdatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Dtos;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetAllPackageTypes;
@@ -20,4 +21,5 @@ public interface IPackageTypeService
 
     Task<ApiResponse<object>> MovePackageTypeUpAsync(MovePackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken);
     Task<ApiResponse<object>> MovePackageTypeDownAsync(MovePackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> SetPackageTypeActivityStatus(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken);
 }

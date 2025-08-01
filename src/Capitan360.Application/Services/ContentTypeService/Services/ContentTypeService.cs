@@ -4,6 +4,7 @@ using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentT
 using Capitan360.Application.Services.ContentTypeService.Commands.DeleteContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveDownContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveUpContentType;
+using Capitan360.Application.Services.ContentTypeService.Commands.UpdateActiveStateContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTypes;
@@ -35,12 +36,12 @@ public class ContentTypeService(
 
 
         if (string.IsNullOrEmpty(contentTypeCommand.ContentTypeName))
-            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوا نمی‌تواند null باشد");
+            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوی نمی‌تواند null باشد");
         var exist = await contentTypeRepository.CheckExistContentTypeName(contentTypeCommand.ContentTypeName,
             contentTypeCommand.CompanyTypeId, cancellationToken);
 
         if (exist is not null)
-            return ApiResponse<int>.Error(400, "نام نوع محتوا مشابه وجود دارد");
+            return ApiResponse<int>.Error(400, "نام نوع محتوی مشابه وجود دارد");
 
         int order = await contentTypeRepository.OrderContentType(contentTypeCommand.CompanyTypeId, cancellationToken);
 
@@ -103,11 +104,11 @@ public class ContentTypeService(
     {
         logger.LogInformation("GetContentTypeById is Called with ID: {Id}", getContentTypeByIdQuery.Id);
         if (getContentTypeByIdQuery.Id <= 0)
-            return ApiResponse<ContentTypeDto>.Error(400, "شناسه نوع محتوا باید بزرگ‌تر از صفر باشد");
+            return ApiResponse<ContentTypeDto>.Error(400, "شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
 
-        var contentType = await contentTypeRepository.GetContentTypeById(getContentTypeByIdQuery.Id, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeById(getContentTypeByIdQuery.Id, cancellationToken, false);
         if (contentType is null)
-            return ApiResponse<ContentTypeDto>.Error(404, $"نوع محتوا با شناسه {getContentTypeByIdQuery.Id} یافت نشد");
+            return ApiResponse<ContentTypeDto>.Error(404, $"نوع محتوی با شناسه {getContentTypeByIdQuery.Id} یافت نشد");
 
         var result = mapper.Map<ContentTypeDto>(contentType);
         logger.LogInformation("ContentType retrieved successfully with ID: {Id}", getContentTypeByIdQuery.Id);
@@ -119,12 +120,12 @@ public class ContentTypeService(
     {
         logger.LogInformation("DeleteContentType is Called with ID: {Id}", deleteContentTypeCommand.Id);
         if (deleteContentTypeCommand.Id <= 0)
-            return ApiResponse<object>.Error(400, "شناسه نوع محتوا باید بزرگ‌تر از صفر باشد");
+            return ApiResponse<object>.Error(400, "شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
 
         var contentType =
-            await contentTypeRepository.GetContentTypeById(deleteContentTypeCommand.Id, cancellationToken);
+            await contentTypeRepository.GetContentTypeById(deleteContentTypeCommand.Id, cancellationToken, true);
         if (contentType is null)
-            return ApiResponse<object>.Error(404, $"نوع محتوا با شناسه {deleteContentTypeCommand.Id} یافت نشد");
+            return ApiResponse<object>.Error(404, $"نوع محتوی با شناسه {deleteContentTypeCommand.Id} یافت نشد");
 
         contentTypeRepository.Delete(contentType);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -139,11 +140,11 @@ public class ContentTypeService(
         logger.LogInformation("UpdateContentType is Called with {@UpdateContentTypeCommand}", command);
         if (command is not { Id: > 0 })
             return ApiResponse<ContentTypeDto>.Error(400,
-                "شناسه نوع محتوا باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
+                "شناسه نوع محتوی باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
-        var contentType = await contentTypeRepository.GetContentTypeById(command.Id, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeById(command.Id, cancellationToken, true);
         if (contentType is null)
-            return ApiResponse<ContentTypeDto>.Error(404, $"نوع محتوا با شناسه {command.Id} یافت نشد");
+            return ApiResponse<ContentTypeDto>.Error(404, $"نوع محتوی با شناسه {command.Id} یافت نشد");
 
 
         var exist = await contentTypeRepository.CheckExistContentTypeName(command.ContentTypeName,
@@ -151,7 +152,7 @@ public class ContentTypeService(
 
 
         if (exist is not null && exist.Id != contentType.Id)
-            return ApiResponse<ContentTypeDto>.Error(400, "نام نوع محتوا مشابه وجود دارد");
+            return ApiResponse<ContentTypeDto>.Error(400, "نام نوع محتوی مشابه وجود دارد");
 
         var updatedContentType = mapper.Map(command, contentType);
         updatedContentType.OrderContentType = contentType.OrderContentType;
@@ -195,6 +196,24 @@ public class ContentTypeService(
             "ContentType moved down successfully. CompanyTypeId: {CompanyTypeId}, ContentTypeId: {ContentTypeId}",
             moveContentTypeDownCommand.CompanyTypeId, moveContentTypeDownCommand.ContentTypeId);
         return ApiResponse<object>.Ok("ContentType moved down successfully");
+    }
+
+    public async Task<ApiResponse<int>> SetContentActivityStatus(UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetContentActivityStatus Called with {@UpdateActiveStateContentTypeCommand}", command);
+
+        var contentType =
+            await contentTypeRepository.GetContentTypeById(command.Id, cancellationToken, true);
+
+        if (contentType is null)
+            return ApiResponse<int>.Error(404, $"contentType Data was not Found :{command.Id}");
+
+        contentType.Active = !contentType.Active;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("SetContentActivityStatus Updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 
     // CompanyContentType

@@ -3,6 +3,7 @@ using Capitan360.Application.Services.Permission.Services;
 using Capitan360.Domain.Constants;
 using Finbuckle.MultiTenant;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
 using Serilog;
 
 namespace Capitan360.Api.Extensions;
@@ -87,9 +88,25 @@ public static class WebApplicationBuilderExtensions
     .WithHeaderStrategy(ConstantNames.IdentifierHeaderName)
     .WithStore<DynamicTenantStore>(ServiceLifetime.Singleton);
 
-        #endregion Tenant
+        #endregion Tenant 
 
         builder.Services.AddSingleton<PermissionCollectorService>();
+
+        #region Telemetry
+
+        builder.Services.AddOpenTelemetry()
+            .WithMetrics(
+
+                providerBuilder =>
+                {
+                    providerBuilder.AddAspNetCoreInstrumentation();
+                    providerBuilder.AddRuntimeInstrumentation();
+
+                    providerBuilder.AddPrometheusExporter();
+                });
+
+        #endregion Telemetry
+
         return builder;
     }
 }

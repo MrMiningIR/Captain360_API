@@ -23,6 +23,7 @@
     <Folder Include="Services\AddressService\Commands\DeleteArea\" />
     <Folder Include="Services\CompanyServices\CompanyInsurance\Queries\" />
     <Folder Include="Services\PackageTypeService\MapperProfiles\" />
+    <Folder Include="Services\Role\Queries\" />
     <Folder Include="Services\UserCompany\Services\" />
   </ItemGroup>
 </Project>

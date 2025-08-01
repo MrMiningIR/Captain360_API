@@ -12,14 +12,12 @@ public class CompanyContentType : Entity
     [ForeignKey(nameof(ContentType))]
     public int ContentTypeId { get; set; }
 
-    // ContentTypeProps
     public string ContentTypeName { get; set; } = default!;
+
     public bool Active { get; set; }
 
     public int OrderContentType { get; set; }
 
-
     public Company Company { get; set; } = default!;
     public ContentType ContentType { get; set; } = default!;
-
 }

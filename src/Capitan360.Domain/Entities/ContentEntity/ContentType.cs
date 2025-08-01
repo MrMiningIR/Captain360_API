@@ -12,5 +12,4 @@ public class ContentType : Entity
     public string ContentTypeDescription { get; set; } = default!;
     public int OrderContentType { get; set; }
     public ICollection<CompanyContentType> CompanyContentTypes { get; set; } = [];
-
 }

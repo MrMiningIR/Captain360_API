@@ -8,6 +8,7 @@ using Capitan360.Domain.Repositories.CompanyUriRepo;
 using Capitan360.Domain.Repositories.ContentRepo;
 using Capitan360.Domain.Repositories.Identity;
 using Capitan360.Domain.Repositories.PackageRepo;
+using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Capitan360.Domain.Repositories.PermissionRepository;
 using Capitan360.Domain.Repositories.User;
 using Capitan360.Infrastructure.Authorization.Requirements;

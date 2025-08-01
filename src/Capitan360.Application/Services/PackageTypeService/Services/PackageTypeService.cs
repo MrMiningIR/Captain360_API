@@ -5,6 +5,7 @@ using Capitan360.Application.Services.PackageTypeService.Commands.CreatePackageT
 using Capitan360.Application.Services.PackageTypeService.Commands.DeletePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeDown;
 using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeUp;
+using Capitan360.Application.Services.PackageTypeService.Commands.UpdateActiveStatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.UpdatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Dtos;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetAllPackageTypes;
@@ -13,6 +14,7 @@ using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.PackageEntity;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.PackageRepo;
+using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.PackageTypeService.Services;
@@ -100,7 +102,7 @@ public class PackageTypeService(
         if (getPackageTypeByIdQuery.Id <= 0)
             return ApiResponse<PackageTypeDto>.Error(400, "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد");
 
-        var packageType = await packageTypeRepository.GetPackageTypeById(getPackageTypeByIdQuery.Id, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeById(getPackageTypeByIdQuery.Id, cancellationToken, false);
         if (packageType is null)
             return ApiResponse<PackageTypeDto>.Error(404, $"نوع پکیج با شناسه {getPackageTypeByIdQuery.Id} یافت نشد");
 
@@ -116,7 +118,7 @@ public class PackageTypeService(
         if (deletePackageTypeCommand.Id <= 0)
             return ApiResponse<object>.Error(400, "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد");
 
-        var packageType = await packageTypeRepository.GetPackageTypeById(deletePackageTypeCommand.Id, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeById(deletePackageTypeCommand.Id, cancellationToken, true);
         if (packageType is null)
             return ApiResponse<object>.Error(404, $"نوع پکیج با شناسه {deletePackageTypeCommand.Id} یافت نشد");
 
@@ -134,7 +136,7 @@ public class PackageTypeService(
             return ApiResponse<PackageTypeDto>.Error(400,
                 "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
-        var packageType = await packageTypeRepository.GetPackageTypeById(command.Id, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeById(command.Id, cancellationToken, true);
         if (packageType is null)
             return ApiResponse<PackageTypeDto>.Error(404, $"نوع پکیج با شناسه {command.Id} یافت نشد");
 
@@ -184,5 +186,23 @@ public class PackageTypeService(
             "PackageType moved down successfully. CompanyTypeId: {CompanyTypeId}, PackageTypeId: {PackageTypeId}",
             movePackageTypeDownCommand.CompanyTypeId, movePackageTypeDownCommand.PackageTypeId);
         return ApiResponse<object>.Ok("PackageType moved down successfully");
+    }
+
+    public async Task<ApiResponse<int>> SetPackageTypeActivityStatus(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetPackageTypeActivityStatus Called with {@UpdateActiveStatePackageTypeCommand}", command);
+
+        var packageType =
+            await packageTypeRepository.GetPackageTypeById(command.Id, cancellationToken, true);
+
+        if (packageType is null)
+            return ApiResponse<int>.Error(404, $"PackageType Data was not Found :{command.Id}");
+
+        packageType.Active = !packageType.Active;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("SetPackageTypeActivityStatus Updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 }

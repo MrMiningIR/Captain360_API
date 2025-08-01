@@ -13,7 +13,7 @@ public class PackageTypeConfigurations : BaseEntityConfiguration<PackageType>
     {
         base.Configure(builder);
         builder.Property(x => x.PackageTypeName).IsRequired().HasMaxLength(50).IsUnicode();
-        builder.Property(x => x.PackageTypeDescription).IsRequired().HasMaxLength(50).IsUnicode();
+        builder.Property(x => x.PackageTypeDescription).HasMaxLength(500).IsUnicode();
         builder.Property(x => x.OrderPackageType).HasDefaultValue(0);
         builder.Property(x => x.Active).HasDefaultValue(true);
 

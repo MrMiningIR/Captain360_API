@@ -2,6 +2,7 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
+using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateActiveStateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCompanyPackageTypes;
@@ -87,6 +88,17 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     {
         command.Id = id;
         var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAsync(command, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost("ChangeCompanyPackageTypeActiveStatus")]
+    [PermissionFilter("تغییر وضعیت بسته بندی مخصوص شرکت", "L7")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyPackageTypeActiveStatus([FromBody] UpdateActiveStateCompanyPackageTypeCommand command, CancellationToken cancellationToken)
+    {
+        var response = await companyPackageTypeService.SetCompanyPackageContentActivityStatus(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

@@ -27,9 +27,19 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
 
 
-    public async Task<ContentType?> GetContentTypeById(int id, CancellationToken cancellationToken)
+    public async Task<ContentType?> GetContentTypeById(int id, CancellationToken cancellationToken, bool tracked)
     {
-        return await dbContext.ContentTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+        if (tracked)
+        {
+            return await dbContext.ContentTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+
+        }
+        else
+        {
+            return await dbContext.ContentTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+
+
+        }
     }
 
 

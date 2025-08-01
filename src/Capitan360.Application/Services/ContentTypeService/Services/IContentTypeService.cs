@@ -3,6 +3,7 @@ using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentT
 using Capitan360.Application.Services.ContentTypeService.Commands.DeleteContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveDownContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveUpContentType;
+using Capitan360.Application.Services.ContentTypeService.Commands.UpdateActiveStateContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTypes;
@@ -22,5 +23,6 @@ public interface IContentTypeService
     Task<ApiResponse<object>> MoveContentTypeUpAsync(MoveContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken);
     Task<ApiResponse<object>> MoveContentTypeDownAsync(MoveContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken);
 
+    Task<ApiResponse<int>> SetContentActivityStatus(UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken);
 }
 

@@ -2,6 +2,7 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentType;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
@@ -87,6 +88,17 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     {
         command.Id = id;
         var response = await companyContentTypeService.UpdateCompanyContentTypeNameAsync(command, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost("ChangeCompanyContentTypeActiveStatus")]
+    [PermissionFilter("تغییر وضعیت محتوای مخصوص شرکت", "F7")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyContentTypeActiveStatus([FromBody] UpdateActiveStateCompanyContentTypeCommand command, CancellationToken cancellationToken)
+    {
+        var response = await companyContentTypeService.SetCompanyContentActivityStatus(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

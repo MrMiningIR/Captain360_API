@@ -11,7 +11,7 @@ public class CompanyPackageTypeProfile : Profile
     {
         CreateMap<UpdateCompanyPackageTypeCommand, CompanyPackageType>();
         CreateMap<CompanyPackageType, CompanyPackageTypeDto>()
-            .ForMember(dest => dest.NewPackageTypeName, opt => opt.MapFrom(src => src.PackageTypeName))
+            .ForMember(dest => dest.NewCompanyPackageTypeName, opt => opt.MapFrom(src => src.PackageTypeName))
             .ForMember(dest => dest.PackageTypeName, opt => opt.MapFrom(src => src.PackageType.PackageTypeName))
 
 

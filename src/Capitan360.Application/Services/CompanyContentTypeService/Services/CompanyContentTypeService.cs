@@ -2,12 +2,12 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentType;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.ContentRepo;
 using Microsoft.Extensions.Logging;
 
@@ -24,20 +24,20 @@ public class CompanyContentTypeService(
     {
         logger.LogInformation("UpdateCompanyContentTypeAsync is Called with {@UpdateCompanyContentTypeCommand}", command);
 
-        if (string.IsNullOrEmpty(command.ContentTypeName) && command.Active is null)
-            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوا نمی‌تواند null باشد");
+        if (string.IsNullOrEmpty(command.CompanyContentTypeName) && command.Active is null)
+            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوی نمی‌تواند null باشد");
 
         var originalContentType =
-            await contentTypeRepository.GetContentTypeById(command.ContentTypeId, cancellationToken);
+            await contentTypeRepository.GetContentTypeById(command.ContentTypeId, cancellationToken, false);
         if (originalContentType is null)
-            return ApiResponse<int>.Error(404, "محتوای اصلی وجود ندارد");
+            return ApiResponse<int>.Error(404, "محتویی اصلی وجود ندارد");
 
         logger.LogInformation("OriginalContentType {@OriginalContentType}", originalContentType);
 
         var exist = await companyContentTypeRepository.CheckExistCompanyContentTypeName(command.CompanyId, command.ContentTypeId, cancellationToken);
 
         if (exist is null)
-            return ApiResponse<int>.Error(404, "محتوای مورد نظر وجود ندارد");
+            return ApiResponse<int>.Error(404, "محتویی مورد نظر وجود ندارد");
 
         logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", exist);
 
@@ -81,7 +81,7 @@ public class CompanyContentTypeService(
             await companyContentTypeRepository.CheckExistCompanyContentTypeName(command.CompanyId, command.ContentTypeId, cancellationToken);
         if (existedRecord == null)
             return ApiResponse<object>.Error(404,
-                $"محتوای شرکت با شناسه {command.CompanyId} یافت نشد");
+                $"محتویی شرکت با شناسه {command.CompanyId} یافت نشد");
 
         await companyContentTypeRepository.MoveContentTypeUpAsync(command.CompanyId,
             command.ContentTypeId, cancellationToken);
@@ -97,7 +97,7 @@ public class CompanyContentTypeService(
             await companyContentTypeRepository.CheckExistCompanyContentTypeName(command.CompanyId, command.ContentTypeId, cancellationToken);
         if (existedRecord == null)
             return ApiResponse<object>.Error(404,
-                $"محتوای شرکت با شناسه {command.CompanyId} یافت نشد");
+                $"محتویی شرکت با شناسه {command.CompanyId} یافت نشد");
 
         await companyContentTypeRepository.MoveContentTypeDownAsync(command.CompanyId,
             command.ContentTypeId, cancellationToken);
@@ -112,11 +112,11 @@ public class CompanyContentTypeService(
     {
         logger.LogInformation("GetCompanyContentTypeByIdQuery is Called with ID: {Id}", query.Id);
         if (query.Id <= 0)
-            return ApiResponse<CompanyContentTypeDto>.Error(400, "شناسه نوع محتوا باید بزرگ‌تر از صفر باشد");
+            return ApiResponse<CompanyContentTypeDto>.Error(400, "شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
 
         var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeById(query.Id, cancellationToken);
         if (companyContentType is null)
-            return ApiResponse<CompanyContentTypeDto>.Error(404, $"نوع محتوا با شناسه {query.Id} یافت نشد");
+            return ApiResponse<CompanyContentTypeDto>.Error(404, $"نوع محتوی با شناسه {query.Id} یافت نشد");
 
         var result = mapper.Map<CompanyContentTypeDto>(companyContentType);
         logger.LogInformation("ContentType retrieved successfully with ID: {Id}", query.Id);
@@ -129,21 +129,21 @@ public class CompanyContentTypeService(
         logger.LogInformation("UpdateCompanyContentTypeNameAsync is Called with {@UpdateCompanyContentTypeNameCommand}", command);
 
         if (command.Id <= 0)
-            return ApiResponse<int>.Error(400, "شناسه نوع محتوا نمی‌تواند 0 باشد");
+            return ApiResponse<int>.Error(400, "شناسه نوع محتوی نمی‌تواند 0 باشد");
         if (string.IsNullOrEmpty(command.ContentTypeName))
-            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوا نمی‌تواند null باشد");
+            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوی نمی‌تواند null باشد");
 
         var originalContentType =
-            await contentTypeRepository.GetContentTypeById(command.OriginalContentId, cancellationToken);
+            await contentTypeRepository.GetContentTypeById(command.OriginalContentId, cancellationToken, false);
         if (originalContentType is null)
-            return ApiResponse<int>.Error(404, "محتوای اصلی وجود ندارد");
+            return ApiResponse<int>.Error(404, "محتویی اصلی وجود ندارد");
 
         logger.LogInformation("OriginalContentType {@OriginalContentType}", originalContentType);
 
         var exist = await companyContentTypeRepository.GetCompanyContentTypeById(command.Id, cancellationToken, true);
 
         if (exist is null)
-            return ApiResponse<int>.Error(404, "محتوای مورد نظر وجود ندارد");
+            return ApiResponse<int>.Error(404, "محتویی مورد نظر وجود ندارد");
 
         logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", exist);
 
@@ -152,5 +152,25 @@ public class CompanyContentTypeService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse<int>.Ok(command.Id, "CompanyContentType updated successfully");
+    }
+
+    public async Task<ApiResponse<int>> SetCompanyContentActivityStatus(
+        UpdateActiveStateCompanyContentTypeCommand command,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetCompanyContentActivityStatus Called with {@UpdateActiveStateCompanyContentTypeCommand}", command);
+
+        var companyContent =
+            await companyContentTypeRepository.GetCompanyContentTypeById(command.Id, cancellationToken, true);
+
+        if (companyContent is null)
+            return ApiResponse<int>.Error(404, $"CompanyContent Data was not Found :{command.Id}");
+
+        companyContent.Active = !companyContent.Active;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("SetCompanyContentActivityStatus Updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 }

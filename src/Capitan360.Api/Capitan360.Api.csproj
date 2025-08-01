@@ -1,34 +1,39 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>7cdf482a-881b-4a43-9119-5ace048af2dd</UserSecretsId>
+	<TargetFramework>net9.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<UserSecretsId>7cdf482a-881b-4a43-9119-5ace048af2dd</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="PermissionAttribute\**" />
-    <Content Remove="PermissionAttribute\**" />
-    <EmbeddedResource Remove="PermissionAttribute\**" />
-    <None Remove="PermissionAttribute\**" />
+	<Compile Remove="PermissionAttribute\**" />
+	<Content Remove="PermissionAttribute\**" />
+	<EmbeddedResource Remove="PermissionAttribute\**" />
+	<None Remove="PermissionAttribute\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Finbuckle.MultiTenant" Version="9.1.4" />
-    <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="9.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-    <PackageReference Include="Serilog.Expressions" Version="5.0.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+	<PackageReference Include="Finbuckle.MultiTenant" Version="9.1.4" />
+	<PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="9.1.4" />
+	<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="OpenTelemetry" Version="1.12.0" />
+	<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
+	<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
+	<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+	<PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+	<PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
+	<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+	<PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.12.0-beta.1" />
+	<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Capitan360.Application\Capitan360.Application.csproj" />
-    <ProjectReference Include="..\Capitan360.Infrastructure\Capitan360.Infrastructure.csproj" />
+	<ProjectReference Include="..\Capitan360.Application\Capitan360.Application.csproj" />
+	<ProjectReference Include="..\Capitan360.Infrastructure\Capitan360.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\" />
+	<Folder Include="Services\" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.PackageEntity;
-using Capitan360.Domain.Repositories.PackageRepo;
+using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -144,9 +144,18 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         dbContext.Entry(packageType).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<PackageType?> GetPackageTypeById(int id, CancellationToken cancellationToken)
+    public async Task<PackageType?> GetPackageTypeById(int id, CancellationToken cancellationToken, bool tracked)
     {
-        return await dbContext.PackageTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+        if (tracked)
+        {
+
+            return await dbContext.PackageTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+        }
+        else
+        {
+            return await dbContext.PackageTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+
+        }
     }
 
     public async Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypes(string? searchPhrase, int companyTypeId, int active,

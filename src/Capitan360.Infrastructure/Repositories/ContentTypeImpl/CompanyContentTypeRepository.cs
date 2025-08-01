@@ -2,7 +2,7 @@
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.ContentEntity;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.ContentRepo;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

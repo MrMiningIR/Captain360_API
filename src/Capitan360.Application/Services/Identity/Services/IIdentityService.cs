@@ -12,7 +12,7 @@ using Capitan360.Application.Services.Identity.Queries.LogOut;
 using Capitan360.Application.Services.Identity.Queries.RefreshToken;
 using Capitan360.Application.Services.Identity.Responses;
 using Capitan360.Application.Services.UserCompany.Commands.Create;
-using Capitan360.Application.Services.UserCompany.Commands.Update;
+using Capitan360.Application.Services.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Services.UserCompany.Queries.GetUserByCompany;
 using Capitan360.Application.Services.UserCompany.Queries.GetUserById;
 using Capitan360.Application.Services.UserCompany.Queries.GetUsersByCompany;

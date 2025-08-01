@@ -2,6 +2,7 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.CreateCompany;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.DeleteCompany;
+using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateActiveStateCompany;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateCompany;
 using Capitan360.Application.Services.CompanyServices.Company.Dtos;
 using Capitan360.Application.Services.CompanyServices.Company.Queries.GetAllCompanies;
@@ -11,6 +12,7 @@ using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.ContentRepo;
 using Capitan360.Domain.Repositories.PackageRepo;
+using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.Company.Services;
@@ -182,5 +184,23 @@ public class CompanyService(
 
         var updatedCompanyDto = mapper.Map<CompanyDto>(updatedCompany);
         return ApiResponse<CompanyDto>.Updated(updatedCompanyDto);
+    }
+
+    public async Task<ApiResponse<int>> SetCompanyActivityStatus(UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetCompanyActivityStatus Called with {@UpdateActiveStateCompanyCommand}", command);
+
+        var company =
+            await companyRepository.GetCompanyById(command.Id, cancellationToken, 0, true);
+
+        if (company is null)
+            return ApiResponse<int>.Error(404, $"Company Data was not Found :{command.Id}");
+
+        company.Active = !company.Active;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("SetCompanyActivityStatus Updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 }

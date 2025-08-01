@@ -4,6 +4,7 @@ using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentT
 using Capitan360.Application.Services.ContentTypeService.Commands.DeleteContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveDownContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.MoveUpContentType;
+using Capitan360.Application.Services.ContentTypeService.Commands.UpdateActiveStateContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
 using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTypes;
@@ -15,13 +16,13 @@ namespace Capitan360.Api.Controllers;
 
 [Route("api/ContentTypes")]
 [ApiController]
-[PermissionFilter("بخش محتوا", "Q")]
+[PermissionFilter("بخش محتوی", "Q")]
 public class ContentTypesController(IContentTypeService contentTypeService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("لیست محتوا", "Q1")]
+    [PermissionFilter("لیست محتوی", "Q1")]
     public async Task<ActionResult<ApiResponse<PagedResult<ContentTypeDto>>>> GetAllContentTypes(
         [FromQuery] GetAllContentTypesQuery query, CancellationToken cancellationToken)
     {
@@ -33,7 +34,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("دریافت محتوا", "Q2")]
+    [PermissionFilter("دریافت محتوی", "Q2")]
     public async Task<ActionResult<ApiResponse<ContentTypeDto>>> GetContentTypeById(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -44,7 +45,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("ساخت محتوای جدید", "Q3")]
+    [PermissionFilter("ساخت محتویی جدید", "Q3")]
     public async Task<ActionResult<ApiResponse<int>>> CreateContentType(
         [FromBody] CreateContentTypeCommand command, CancellationToken cancellationToken)
     {
@@ -56,7 +57,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("حذف محتوا", "Q4")]
+    [PermissionFilter("حذف محتوی", "Q4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteContentType(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -68,7 +69,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت محتوا", "Q5")]
+    [PermissionFilter("آپدیت محتوی", "Q5")]
     public async Task<ActionResult<ApiResponse<ContentTypeDto>>> UpdateContentType([FromRoute] int id,
         [FromBody] UpdateContentTypeCommand updateContentTypeCommand, CancellationToken cancellationToken)
     {
@@ -97,6 +98,17 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     public async Task<ActionResult<ApiResponse<object>>> MoveDownContentType(MoveContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await contentTypeService.MoveContentTypeDownAsync(moveContentTypeDownCommand, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost("ChangeContentTypeActiveStatus")]
+    [PermissionFilter("تغییر وضعیت محتوی ", "Q8")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> ChangeContentTypeActiveStatus([FromBody] UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken)
+    {
+        var response = await contentTypeService.SetContentActivityStatus(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

@@ -109,6 +109,6 @@ public class UpdateCompanyDomesticPathListStructPriceCommandValidator : Abstract
 
         // ولیدیشن برای هر آیتم
         RuleForEach(command => command.UpdateCompanyDomesticPathStructPriceItems)
-            .SetValidator(new UpdateCompanyDomesticPathStructPriceItemValidator());
+            .SetValidator(new UpdateCompanyDomesticPathStructPriceItemCommandValidator());
     }
 }

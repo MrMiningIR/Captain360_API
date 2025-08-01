@@ -4,6 +4,7 @@ using Capitan360.Application.Services.PackageTypeService.Commands.CreatePackageT
 using Capitan360.Application.Services.PackageTypeService.Commands.DeletePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeDown;
 using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeUp;
+using Capitan360.Application.Services.PackageTypeService.Commands.UpdateActiveStatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.UpdatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Dtos;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetAllPackageTypes;
@@ -98,6 +99,16 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     public async Task<ActionResult<ApiResponse<object>>> MoveDownPackagePackageType(MovePackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await packageTypeService.MovePackageTypeDownAsync(movePackageTypeDownCommand, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+    [HttpPost("ChangePackageTypeActiveStatus")]
+    [PermissionFilter("تغییر وضعیت بسته بندی", "U8")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> ChangePackageTypeActiveStatus([FromBody] UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken)
+    {
+        var response = await packageTypeService.SetPackageTypeActivityStatus(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

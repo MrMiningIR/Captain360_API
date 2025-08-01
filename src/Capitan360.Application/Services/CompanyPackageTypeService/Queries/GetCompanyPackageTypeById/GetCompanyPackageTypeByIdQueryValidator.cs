@@ -7,6 +7,6 @@ public class GetCompanyPackageTypeByIdQueryValidator : AbstractValidator<GetComp
     public GetCompanyPackageTypeByIdQueryValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه نوع محتوا باید بزرگ‌تر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
     }
 }

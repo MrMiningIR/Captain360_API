@@ -1,12 +1,10 @@
 ﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.CompanyEntity;
-using Capitan360.Domain.Entities.ContentEntity;
 
 namespace Capitan360.Domain.Entities.PackageEntity
 {
-    public  class PackageType : Entity
+    public class PackageType : Entity
     {
-
         public int CompanyTypeId { get; set; }
         public CompanyType CompanyType { get; set; } = default!;
 
@@ -18,8 +16,6 @@ namespace Capitan360.Domain.Entities.PackageEntity
 
         public int OrderPackageType { get; set; }
 
-
         public ICollection<CompanyPackageType> CompanyPackageTypes { get; set; } = [];
-
     }
 }

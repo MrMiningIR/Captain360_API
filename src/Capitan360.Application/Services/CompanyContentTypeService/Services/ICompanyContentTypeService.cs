@@ -1,6 +1,7 @@
 ﻿using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentType;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
@@ -22,4 +23,6 @@ public interface ICompanyContentTypeService
     Task<ApiResponse<CompanyContentTypeDto>> GetCompanyContentTypeByIdAsync(GetCompanyContentTypeByIdQuery getCompanyContentTypeByIdQuery, CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> UpdateCompanyContentTypeNameAsync(UpdateCompanyContentTypeNameCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> SetCompanyContentActivityStatus(UpdateActiveStateCompanyContentTypeCommand command,
+        CancellationToken cancellationToken);
 }
