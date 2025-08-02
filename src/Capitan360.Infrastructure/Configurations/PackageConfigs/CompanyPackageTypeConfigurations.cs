@@ -29,5 +29,6 @@ public class CompanyPackageTypeConfigurations : BaseEntityConfiguration<CompanyP
             .WithMany(ca => ca.CompanyPackageTypes)
             .HasForeignKey(ca => ca.PackageTypeId)
             .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.PackageTypeDescription).HasMaxLength(500).IsUnicode();
     }
 }

@@ -15,7 +15,7 @@ public interface IContentTypeRepository
         CancellationToken cancellationToken);
 
 
-    Task<int> OrderContentType(int companyTypeId, CancellationToken cancellationToken);
+    Task<int> GetCountContentType(int companyTypeId, CancellationToken cancellationToken);
     Task MoveContentTypeUpAsync(int companyTypeId, int contentTypeId, CancellationToken cancellationToken);
     Task MoveContentTypeDownAsync(int companyTypeId, int contentTypeId, CancellationToken cancellationToken);
     Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeId(int companyTypeId,

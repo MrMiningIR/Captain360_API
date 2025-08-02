@@ -9,85 +9,6 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.PackageTypeImpl;
 
-//public class CompanyPackageTypesRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyPackageTypesRepository
-//{
-//    public async Task<(IReadOnlyList<CompanyPackageTypeTransfer>, int)> GetCompanyPackageTypes(string? searchPhrase, int companyTypeId, int companyId, int active, int pageSize, int pageNumber,
-//        string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
-//    {
-//        var searchPhraseLower = searchPhrase?.ToLower();
-//        var baseQuery = dbContext.PackageTypes.AsNoTracking()
-//            .Where(ct => ct.CompanyTypeId == companyTypeId && ct.Active)
-//            .Where(ct => searchPhraseLower == null || ct.PackageTypeName.ToLower().Contains(searchPhraseLower));
-//        ;   // && ct.Active
-
-//        var query = baseQuery
-//            .OrderBy(ct => ct.OrderPackageType)
-//            .GroupJoin(
-//                dbContext.CompanyPackageTypes.Where(ccd => ccd.CompanyId == companyId),
-//                ct => ct.Id,
-//                ccd => ccd.PackageTypeId,
-//                (ct, ccdGroup) => new { ContentTypeBase = ct, CustomDataGroup = ccdGroup } // نتیجه موقت join
-//            )
-//            .SelectMany(
-//                x => x.CustomDataGroup.DefaultIfEmpty(),
-//                (joined, companyPackageType) => new CompanyPackageTypeTransfer
-//                {
-//                    PackageTypeId = companyPackageType != null
-//                        ? companyPackageType.CompanyId
-//                        : joined.ContentTypeBase.Id,
-//                    PackageTypeName = companyPackageType != null
-//                        ? companyPackageType.PackageTypeName
-//                        : joined.ContentTypeBase.PackageTypeName,
-//                    PackageTypeDescription = companyPackageType != null
-//                        ? companyPackageType.PackageTypeDescription
-//                        : joined.ContentTypeBase.PackageTypeDescription,
-//                    OrderPackageType = companyPackageType != null
-//                        ? companyPackageType.OrderPackageType
-//                        : joined.ContentTypeBase.OrderPackageType,
-//                    Active = companyPackageType != null ? companyPackageType.Active : joined.ContentTypeBase.Active,
-//                    CompanyId = companyPackageType != null ? companyPackageType.CompanyId : 0,
-//                    Id = companyPackageType != null ? companyPackageType.Id : 0
-//                });
-
-//        var totalCount = await baseQuery.CountAsync(cancellationToken);
-//        var columnsSelector = new Dictionary<string, Expression<Func<CompanyPackageTypeTransfer, object>>>
-//        {
-//            { nameof(CompanyPackageTypeTransfer.PackageTypeName), ct => ct.PackageTypeName },
-//            { nameof(CompanyPackageTypeTransfer.Active), ct => ct.Active },
-//            { nameof(CompanyPackageTypeTransfer.OrderPackageType), ct => ct.OrderPackageType }
-//        };
-
-//        sortBy ??= nameof(CompanyPackageTypeTransfer.OrderPackageType);
-
-//        var selectedColumn = columnsSelector[sortBy];
-//        query = sortDirection == SortDirection.Ascending
-//            ? query.OrderBy(selectedColumn)
-//            : query.OrderByDescending(selectedColumn);
-
-//        var contentTypes = await query
-//            .Skip(pageSize * (pageNumber - 1))
-//            .Take(pageSize)
-//            .ToListAsync(cancellationToken);
-
-//        return (contentTypes, totalCount);
-
-//    }
-
-//    public async Task<int> InsertCompanyPackageType(CompanyPackageType companyPackageType, CancellationToken ct)
-//    {
-//        dbContext.CompanyPackageTypes.Add(companyPackageType);
-//        await unitOfWork.SaveChangesAsync(ct);
-//        return companyPackageType.Id;
-//    }
-
-//    public async Task<int> UpdateCompanyPackageType(CompanyPackageType companyPackageType, CancellationToken ct)
-//    {
-//        dbContext.Entry(companyPackageType).State = EntityState.Modified;
-//        await unitOfWork.SaveChangesAsync(ct);
-//        return companyPackageType.Id;
-//    }
-//}
-
 public class CompanyPackageTypesRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyPackageTypeRepository
 {
     public async Task<(IReadOnlyList<CompanyPackageType>, int)> GetCompanyPackageTypes(string? searchPhrase, int companyId, int active, int pageSize,
@@ -98,8 +19,6 @@ public class CompanyPackageTypesRepository(ApplicationDbContext dbContext, IUnit
         var baseQuery = dbContext.CompanyPackageTypes.AsNoTracking()
             .Include(x => x.PackageType)
             .Where(x => x.CompanyId == companyId);
-
-
 
         baseQuery = baseQuery.Where(pt => string.IsNullOrEmpty(searchPhraseLower)
                          || pt.PackageTypeName.ToLower().Contains(searchPhraseLower));
@@ -197,12 +116,10 @@ public class CompanyPackageTypesRepository(ApplicationDbContext dbContext, IUnit
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<int> OrderPackageType(int companyId, CancellationToken cancellationToken)
+    public async Task<int> GetCountCompanyPackageType(int companyId, CancellationToken cancellationToken)
     {
-        var maxOrder = await dbContext.CompanyPackageTypes
-            .Where(pt => pt.CompanyId == companyId)
-            .MaxAsync(pt => (int?)pt.OrderPackageType, cancellationToken) ?? 0;
-        return maxOrder;
+        return await dbContext.CompanyPackageTypes
+             .CountAsync(pt => pt.CompanyId == companyId, cancellationToken: cancellationToken);
     }
 
     public async Task CreateCompanyPackageTypes(List<int> eligibleCommandlines, PackageType packageType, CancellationToken cancellationToken)
@@ -269,6 +186,5 @@ public class CompanyPackageTypesRepository(ApplicationDbContext dbContext, IUnit
     .SingleOrDefaultAsync(x => x.Id == companyPackageTypeId,
     cancellationToken);
         }
-
     }
 }

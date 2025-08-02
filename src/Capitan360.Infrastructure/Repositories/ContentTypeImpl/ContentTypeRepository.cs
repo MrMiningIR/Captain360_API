@@ -13,7 +13,6 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 {
     public async Task<int> CreateContentTypeAsync(ContentType contentType, CancellationToken cancellationToken)
     {
-
         dbContext.ContentTypes.Add(contentType);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return contentType.Id;
@@ -22,26 +21,19 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     public void Delete(ContentType contentType)
     {
         dbContext.Entry(contentType).Property("Deleted").CurrentValue = true;
-
     }
-
-
 
     public async Task<ContentType?> GetContentTypeById(int id, CancellationToken cancellationToken, bool tracked)
     {
         if (tracked)
         {
             return await dbContext.ContentTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-
         }
         else
         {
             return await dbContext.ContentTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-
-
         }
     }
-
 
     public async Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypes(string? searchPhrase, int companyTypeId, int active,
         int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
@@ -63,7 +55,6 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-
         var columnsSelector = new Dictionary<string, Expression<Func<ContentType, object>>>
         {
             { nameof(ContentType.ContentTypeName), ct => ct.ContentTypeName },
@@ -73,14 +64,10 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
         sortBy ??= nameof(ContentType.OrderContentType);
 
-
-
-
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
-
 
         var contentTypes = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
@@ -96,15 +83,10 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             companyTypeId && ct.ContentTypeName.ToLower().Trim() == contentTypeName.ToLower().Trim(), cancellationToken);
     }
 
-
-
-
-    public async Task<int> OrderContentType(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<int> GetCountContentType(int companyTypeId, CancellationToken cancellationToken)
     {
-        var maxOrder = await dbContext.ContentTypes
-            .Where(ca => ca.CompanyTypeId == companyTypeId)
-            .MaxAsync(ca => (int?)ca.OrderContentType, cancellationToken) ?? 0;
-        return maxOrder;
+        return await dbContext.ContentTypes
+             .CountAsync(ca => ca.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
     }
 
     public async Task MoveContentTypeUpAsync(int companyTypeId, int contentTypeId, CancellationToken cancellationToken)
@@ -156,7 +138,6 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
                 ContentTypeName = x.ContentTypeName,
                 Active = x.Active,
                 OrderContentType = x.OrderContentType
-
             }).ToListAsync(cancellationToken);
     }
 }

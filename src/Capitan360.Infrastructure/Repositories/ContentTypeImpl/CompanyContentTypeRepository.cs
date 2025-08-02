@@ -285,12 +285,11 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<int> OrderContentType(int companyId, CancellationToken cancellationToken)
+    public async Task<int> GetCountCompanyContentType(int companyId, CancellationToken cancellationToken)
     {
-        var maxOrder = await dbContext.CompanyContentTypes
-            .Where(ct => ct.CompanyId == companyId)
-            .MaxAsync(ct => (int?)ct.OrderContentType, cancellationToken) ?? 0;
-        return maxOrder;
+        return await dbContext.CompanyContentTypes
+              .CountAsync(ct => ct.CompanyId == companyId, cancellationToken: cancellationToken);
+
     }
 
     public async Task CreateCompanyContentTypes(List<int> eligibleCompanies, ContentType contentType, CancellationToken cancellationToken)

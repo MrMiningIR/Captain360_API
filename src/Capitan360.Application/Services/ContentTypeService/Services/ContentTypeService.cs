@@ -43,7 +43,7 @@ public class ContentTypeService(
         if (exist is not null)
             return ApiResponse<int>.Error(400, "نام نوع محتوی مشابه وجود دارد");
 
-        int order = await contentTypeRepository.OrderContentType(contentTypeCommand.CompanyTypeId, cancellationToken);
+        int order = await contentTypeRepository.GetCountContentType(contentTypeCommand.CompanyTypeId, cancellationToken);
 
         var contentType = mapper.Map<ContentType>(contentTypeCommand) ?? null;
         if (contentType == null)

@@ -35,16 +35,13 @@ public class PackageTypeService(
     {
         logger.LogInformation("CreatePackageType is Called with {@CreatePackageTypeCommand}", packageTypeCommand);
 
-        if (string.IsNullOrEmpty(packageTypeCommand.PackageTypeName))
-            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع پکیج نمی‌تواند null باشد");
-
         var exist = await packageTypeRepository.CheckExistPackageTypeName(packageTypeCommand.PackageTypeName,
             packageTypeCommand.CompanyTypeId, cancellationToken);
 
         if (exist is not null)
             return ApiResponse<int>.Error(400, "نام نوع پکیج مشابه وجود دارد");
 
-        int order = await packageTypeRepository.OrderPackageType(packageTypeCommand.CompanyTypeId, cancellationToken);
+        int order = await packageTypeRepository.GetCountPackageType(packageTypeCommand.CompanyTypeId, cancellationToken);
 
         var packageType = mapper.Map<PackageType>(packageTypeCommand) ?? null;
         if (packageType == null)
@@ -132,9 +129,6 @@ public class PackageTypeService(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdatePackageType is Called with {@UpdatePackageTypeCommand}", command);
-        if (command is not { Id: > 0 })
-            return ApiResponse<PackageTypeDto>.Error(400,
-                "شناسه نوع پکیج باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
         var packageType = await packageTypeRepository.GetPackageTypeById(command.Id, cancellationToken, true);
         if (packageType is null)
@@ -147,6 +141,9 @@ public class PackageTypeService(
             return ApiResponse<PackageTypeDto>.Error(400, "نام نوع پکیج مشابه وجود دارد");
 
         var updatedPackageType = mapper.Map(command, packageType);
+
+        if (updatedPackageType == null)
+            return ApiResponse<PackageTypeDto>.Error(400, "مشکل در عملیات تبدیل");
         updatedPackageType.OrderPackageType = packageType.OrderPackageType;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

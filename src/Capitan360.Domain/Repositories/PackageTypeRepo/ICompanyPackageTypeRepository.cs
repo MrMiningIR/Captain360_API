@@ -26,7 +26,7 @@ public interface ICompanyPackageTypeRepository
     Task MoveCompanyPackageTypeUpAsync(int companyId, int contentTypeId, CancellationToken cancellationToken);
     Task MoveCompanyPackageTypeDownAsync(int companyId, int contentTypeId, CancellationToken cancellationToken);
 
-    Task<int> OrderPackageType(int companyId, CancellationToken cancellationToken);
+    Task<int> GetCountCompanyPackageType(int companyId, CancellationToken cancellationToken);
 
 
     Task CreateCompanyPackageTypes(List<int> getEligibleCommandlines, PackageType packageType,

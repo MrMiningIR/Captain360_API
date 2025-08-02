@@ -1,7 +1,7 @@
 ﻿namespace Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateCompany;
 
 public record UpdateCompanyCommand(
-    int Id,
+
     int UserCompanyTypeId,
     string? Code,
     string? PhoneNumber,
@@ -16,5 +16,5 @@ public record UpdateCompanyCommand(
     bool UpdateRelatedThings = false
         )
 {
-    public int Id { get; set; } = Id;
+    public int Id { get; set; }
 }

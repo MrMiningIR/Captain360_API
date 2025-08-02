@@ -12,7 +12,7 @@ namespace Capitan360.Domain.Entities.PackageEntity
 
         public bool Active { get; set; }
 
-        public string PackageTypeDescription { get; set; } = default!;
+        public string? PackageTypeDescription { get; set; }
 
         public int OrderPackageType { get; set; }
 

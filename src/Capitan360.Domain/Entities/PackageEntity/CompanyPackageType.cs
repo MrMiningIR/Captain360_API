@@ -16,7 +16,7 @@ public class CompanyPackageType : Entity
     public bool Active { get; set; }
 
     public int OrderPackageType { get; set; }
-
+    public string? PackageTypeDescription { get; set; }
     public Company Company { get; set; } = default!;
     public PackageType PackageType { get; set; } = default!;
 }

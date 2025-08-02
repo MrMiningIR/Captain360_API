@@ -13,7 +13,7 @@ public interface IPackageTypeRepository
     Task<PackageType?> CheckExistPackageTypeName(string packageTypeName, int companyTypeId, CancellationToken cancellationToken);
 
 
-    Task<int> OrderPackageType(int companyTypeId, CancellationToken cancellationToken);
+    Task<int> GetCountPackageType(int companyTypeId, CancellationToken cancellationToken);
     Task MovePackageTypeUpAsync(int companyTypeId, int packageTypeId, CancellationToken cancellationToken);
     Task MovePackageTypeDownAsync(int companyTypeId, int packageTypeId, CancellationToken cancellationToken);
     Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeId(int companyTypeId,

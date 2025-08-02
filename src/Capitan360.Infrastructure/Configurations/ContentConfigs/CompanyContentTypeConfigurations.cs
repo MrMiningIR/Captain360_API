@@ -6,8 +6,6 @@ namespace Capitan360.Infrastructure.Configurations.ContentConfigs
 {
     internal class CompanyContentTypeConfigurations : BaseEntityConfiguration<CompanyContentType>
     {
-
-
         public override void Configure(EntityTypeBuilder<CompanyContentType> builder)
         {
             base.Configure(builder);
@@ -32,11 +30,7 @@ namespace Capitan360.Infrastructure.Configurations.ContentConfigs
                     .HasForeignKey(ca => ca.ContentTypeId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-
-
-
-
-
+            builder.Property(x => x.ContentTypeDescription).HasMaxLength(500).IsUnicode();
         }
     }
 }
