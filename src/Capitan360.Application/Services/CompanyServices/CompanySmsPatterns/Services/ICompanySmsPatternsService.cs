@@ -10,9 +10,14 @@ namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Ser
 
 public interface ICompanySmsPatternsService
 {
-    Task<int> CreateCompanySmsPatternsAsync(CreateCompanySmsPatternsCommand command, CancellationToken cancellationToken);
-    Task<PagedResult<CompanySmsPatternsDto>> GetAllCompanySmsPatterns(GetAllCompanySmsPatternsQuery query, CancellationToken cancellationToken);
-    Task<CompanySmsPatternsDto> GetCompanySmsPatternsByIdAsync(GetCompanySmsPatternsByIdQuery id, CancellationToken cancellationToken);
-    Task DeleteCompanySmsPatternsAsync(DeleteCompanySmsPatternsCommand id, CancellationToken cancellationToken);
-    Task UpdateCompanySmsPatternsAsync(UpdateCompanySmsPatternsCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> CreateCompanySmsPatternsAsync(CreateCompanySmsPatternsCommand command,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<CompanySmsPatternsDto>>> GetAllCompanySmsPatterns(GetAllCompanySmsPatternsQuery query,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<CompanySmsPatternsDto>> GetCompanySmsPatternsByIdAsync(GetCompanySmsPatternsByIdQuery id,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<int>> DeleteCompanySmsPatternsAsync(DeleteCompanySmsPatternsCommand id,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<int>> UpdateCompanySmsPatternsAsync(UpdateCompanySmsPatternsCommand command,
+        CancellationToken cancellationToken);
 }

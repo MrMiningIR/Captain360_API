@@ -7,4 +7,7 @@ public record UpdateCompanyCommissionsCommand(
     decimal? CommissionFromCaptainCargoWebService,
     decimal? CommissionFromCompanyWebService,
     decimal? CommissionFromCaptainCargoPanel,
-    decimal? CommissionFromCaptainCargoDesktop);
+    decimal? CommissionFromCaptainCargoDesktop)
+{
+    public int Id { get; set; }
+}

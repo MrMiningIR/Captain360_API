@@ -137,7 +137,7 @@ public class AddressService(
 
         // await unitOfWork.BeginTransactionAsync(cancellationToken);
         var company =
-            await companyRepository.GetCompanyById(addNewAddressToCompanyCommand.CompanyId, cancellationToken, addNewAddressToCompanyCommand.UserCompanyTypeId, track: true);
+            await companyRepository.GetCompanyById(addNewAddressToCompanyCommand.CompanyId, cancellationToken, tracked: true, userCompanyTypeId: addNewAddressToCompanyCommand.UserCompanyTypeId);
 
         if (company == null)
             return ApiResponse<int>.Error(404, $"شرکت با شناسه {addNewAddressToCompanyCommand.CompanyId} یافت نشد");
@@ -163,7 +163,7 @@ public class AddressService(
     public async Task<ApiResponse<object>> MoveAddressUpAsync(MoveAddressUpCommand moveAddressUpCommand, CancellationToken cancellationToken)
     {
         var company =
-            await companyRepository.GetCompanyById(moveAddressUpCommand.CompanyId, cancellationToken);
+            await companyRepository.GetCompanyById(moveAddressUpCommand.CompanyId, cancellationToken, false);
 
         if (company == null)
             return ApiResponse<object>.Error(404, $"شرکت با شناسه {moveAddressUpCommand.CompanyId} یافت نشد");
@@ -176,7 +176,7 @@ public class AddressService(
     public async Task<ApiResponse<object>> MoveAddressDownAsync(MoveAddressDownCommand moveAddressDownCommand, CancellationToken cancellationToken)
     {
         var company =
-            await companyRepository.GetCompanyById(moveAddressDownCommand.CompanyId, cancellationToken);
+            await companyRepository.GetCompanyById(moveAddressDownCommand.CompanyId, cancellationToken, false);
 
         if (company == null)
             return ApiResponse<object>.Error(404, $"شرکت با شناسه {moveAddressDownCommand.CompanyId} یافت نشد");

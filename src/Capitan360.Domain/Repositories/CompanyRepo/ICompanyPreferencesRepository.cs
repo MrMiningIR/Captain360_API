@@ -9,9 +9,9 @@ public interface ICompanyPreferencesRepository
     void Delete(CompanyPreferences companyPreferences, string userId);
     Task<IReadOnlyList<CompanyPreferences>> GetAllCompanyPreferences(CancellationToken cancellationToken);
     Task<CompanyPreferences?> GetCompanyPreferencesByCompanyId(int id, CancellationToken cancellationToken,
-        bool track = false);
+        bool track);
     Task<CompanyPreferences?> GetCompanyPreferencesById(int id, CancellationToken cancellationToken,
-        bool track = false);
+        bool track);
 
 
     Task<(IReadOnlyList<CompanyPreferences>, int)> GetMatchingAllCompanyPreferences(string? searchPhrase, int pageSize,

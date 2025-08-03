@@ -8,7 +8,6 @@ using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries.GetCompanyCommissionsById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -22,16 +21,21 @@ public class CompanyCommissionsService(
     ICompanyCommissionsRepository companyCommissionsRepository
 ) : ICompanyCommissionsService
 {
-    public async Task<int> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand command,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateCompanyCommissions is Called with {@CreateCompanyCommissionsCommand}", command);
-        var companyCommissions = mapper.Map<Domain.Entities.CompanyEntity.CompanyCommissions>(command) ?? throw new ArgumentNullException(nameof(command));
+        var companyCommissions = mapper.Map<Domain.Entities.CompanyEntity.CompanyCommissions>(command);
+        if (companyCommissions is null)
+            return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
+
         var companyCommissionsId = await companyCommissionsRepository.CreateCompanyCommissionsAsync(companyCommissions, Guid.NewGuid().ToString(), cancellationToken);
         logger.LogInformation("CompanyCommissions created successfully with ID: {CompanyCommissionsId}", companyCommissionsId);
-        return companyCommissionsId;
+        return ApiResponse<int>.Ok(companyCommissionsId);
     }
 
-    public async Task<PagedResult<CompanyCommissionsDto>> GetAllCompanyCommissions(GetAllCompanyCommissionsQuery allCompanyCommissionsQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanyCommissionsDto>>> GetAllCompanyCommissions(
+        GetAllCompanyCommissionsQuery allCompanyCommissionsQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyCommissions is Called");
         var (companyCommissions, totalCount) = await companyCommissionsRepository.GetMatchingAllCompanyCommissions(
@@ -42,43 +46,65 @@ public class CompanyCommissionsService(
             allCompanyCommissionsQuery.SortDirection,
             cancellationToken);
         var companyCommissionsDto = mapper.Map<IReadOnlyList<CompanyCommissionsDto>>(companyCommissions);
+        if (companyCommissionsDto is null)
+            return ApiResponse<PagedResult<CompanyCommissionsDto>>.Error(400, "خطا در عملیات تبدیل");
+
         logger.LogInformation("Retrieved {Count} company commissions", companyCommissionsDto.Count);
-        return new PagedResult<CompanyCommissionsDto>(companyCommissionsDto, totalCount, allCompanyCommissionsQuery.PageSize, allCompanyCommissionsQuery.PageNumber);
+
+        var data = new PagedResult<CompanyCommissionsDto>(companyCommissionsDto, totalCount, allCompanyCommissionsQuery.PageSize, allCompanyCommissionsQuery.PageNumber);
+        return ApiResponse<PagedResult<CompanyCommissionsDto>>.Ok(data);
     }
 
-    public async Task<CompanyCommissionsDto> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery getCompanyCommissionsByIdQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByIdAsync(
+        GetCompanyCommissionsByIdQuery getCompanyCommissionsByIdQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCompanyCommissionsById is Called with ID: {Id}", getCompanyCommissionsByIdQuery.Id);
-        if (getCompanyCommissionsByIdQuery.Id <= 0)
-            throw new ArgumentException("شناسه کمیسیون باید بزرگ‌تر از صفر باشد");
-        var companyCommissions = await companyCommissionsRepository.GetCompanyCommissionsById(getCompanyCommissionsByIdQuery.Id, cancellationToken)
-                                 ?? throw new NotFoundException($"کمیسیون با شناسه {getCompanyCommissionsByIdQuery.Id} یافت نشد");
-        var result = mapper.Map<CompanyCommissionsDto>(companyCommissions);
+
+        var companyCommissions =
+            await companyCommissionsRepository.GetCompanyCommissionsById(getCompanyCommissionsByIdQuery.Id, false,
+                cancellationToken);
+        if (companyCommissions is null)
+            return ApiResponse<CompanyCommissionsDto>.Error(400, $"کمیسیون با شناسه {getCompanyCommissionsByIdQuery.Id} یافت نشد");
+
+        var companyCommissionDto = mapper.Map<CompanyCommissionsDto>(companyCommissions);
+        if (companyCommissionDto is null)
+            return ApiResponse<CompanyCommissionsDto>.Error(400, "خطا در عملیات تبدیل");
+
         logger.LogInformation("CompanyCommissions retrieved successfully with ID: {Id}", getCompanyCommissionsByIdQuery.Id);
-        return result;
+        return ApiResponse<CompanyCommissionsDto>.Ok(companyCommissionDto);
     }
 
-    public async Task DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand deleteCompanyCommissionsCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DeleteCompanyCommissions is Called with ID: {Id}", deleteCompanyCommissionsCommand.Id);
-        if (deleteCompanyCommissionsCommand.Id <= 0)
-            throw new ArgumentException("شناسه کمیسیون باید بزرگ‌تر از صفر باشد");
-        var companyCommissions = await companyCommissionsRepository.GetCompanyCommissionsById(deleteCompanyCommissionsCommand.Id, cancellationToken)
-                                 ?? throw new KeyNotFoundException($"کمیسیون با شناسه {deleteCompanyCommissionsCommand.Id} یافت نشد");
-        companyCommissionsRepository.Delete(companyCommissions, Guid.NewGuid().ToString());
+        logger.LogInformation("DeleteCompanyCommissions is Called with ID: {Id}", command.Id);
+
+        var companyCommissions =
+            await companyCommissionsRepository.GetCompanyCommissionsById(command.Id, true,
+                cancellationToken);
+        if (companyCommissions is null)
+            return ApiResponse<int>.Error(400, $"کمیسیون با شناسه {command.Id} یافت نشد");
+        companyCommissionsRepository.Delete(companyCommissions);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("CompanyCommissions soft-deleted successfully with ID: {Id}", deleteCompanyCommissionsCommand.Id);
+        logger.LogInformation("CompanyCommissions soft-deleted successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 
-    public async Task UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateCompanyCommissions is Called with {@UpdateCompanyCommissionsCommand}", command);
-        var companyCommissions = await companyCommissionsRepository.GetCompanyCommissionsById(command.Id, cancellationToken)
-                                 ?? throw new NotFoundException($"کمیسیون با شناسه {command.Id} یافت نشد");
-        mapper.Map(command, companyCommissions);
-        companyCommissionsRepository.UpdateShadows(companyCommissions, Guid.NewGuid().ToString());
+        var companyCommissions =
+            await companyCommissionsRepository.GetCompanyCommissionsById(command.Id, true, cancellationToken);
+        if (companyCommissions is null)
+            return ApiResponse<int>.Error(400, $"کمیسیون با شناسه {command.Id} یافت نشد");
+
+
+        var companyCommission = mapper.Map(command, companyCommissions);
+        if (companyCommission is null)
+            return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("CompanyCommissions updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
-
 }

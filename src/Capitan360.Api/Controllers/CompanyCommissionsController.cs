@@ -1,6 +1,9 @@
-﻿using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Commands.CreateCompanyCommissions;
+﻿using Capitan360.Application.Attributes.Authorization;
+using Capitan360.Application.Common;
+using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Commands.CreateCompanyCommissions;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Commands.DeleteCompanyCommissions;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Commands.UpdateCompanyCommissions;
+using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Dtos;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries.GetAllCompanyCommissions;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries.GetCompanyCommissionsById;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Services;
@@ -10,44 +13,64 @@ namespace Capitan360.Api.Controllers
 {
     [Route("api/CompanyCommissions")]
     [ApiController]
-
+    [PermissionFilter("بخش کمیسیون", "E")]
 
     public class CompanyCommissionsController(ICompanyCommissionsService companyCommissionsService) : ControllerBase
     {
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyCommissionsDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyCommissionsDto>>), StatusCodes.Status400BadRequest)]
+        [PermissionFilter("دریافت لیست کمیسیسون", "E1")]
 
-        public async Task<IActionResult> GetAllCompanyCommissions([FromQuery] GetAllCompanyCommissionsQuery getAllCompanyCommissionsQuery, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<PagedResult<CompanyCommissionsDto>>>> GetAllCompanyCommissions([FromQuery] GetAllCompanyCommissionsQuery getAllCompanyCommissionsQuery, CancellationToken cancellationToken)
         {
-            var companyCommissions = await companyCommissionsService.GetAllCompanyCommissions(getAllCompanyCommissionsQuery, cancellationToken);
-            return Ok(companyCommissions);
+            var response = await companyCommissionsService.GetAllCompanyCommissions(getAllCompanyCommissionsQuery, cancellationToken);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCompanyCommissionsById([FromRoute] int id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status404NotFound)]
+        [PermissionFilter("دریافت کمیسیسون", "E2")]
+        public async Task<ActionResult<ApiResponse<CompanyCommissionsDto>>> GetCompanyCommissionsById([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var companyCommissions = await companyCommissionsService.GetCompanyCommissionsByIdAsync(new GetCompanyCommissionsByIdQuery(id), cancellationToken);
-            return Ok(companyCommissions);
+            var response = await companyCommissionsService.GetCompanyCommissionsByIdAsync(new GetCompanyCommissionsByIdQuery(id), cancellationToken);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCompanyCommissions(CreateCompanyCommissionsCommand command, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [PermissionFilter("ایجاد کمیسیون", "E3")]
+        public async Task<ActionResult<ApiResponse<int>>> CreateCompanyCommissions(CreateCompanyCommissionsCommand command, CancellationToken cancellationToken)
         {
-            var companyCommissionsId = await companyCommissionsService.CreateCompanyCommissionsAsync(command, cancellationToken);
-            return CreatedAtAction(nameof(GetCompanyCommissionsById), new { id = companyCommissionsId }, null);
+            var response = await companyCommissionsService.CreateCompanyCommissionsAsync(command, cancellationToken);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompanyCommissions([FromRoute] int id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+        [PermissionFilter("حذف کمیسیون", "E4")]
+        public async Task<ActionResult<ApiResponse<int>>> DeleteCompanyCommissions([FromRoute] int id, CancellationToken cancellationToken)
         {
-            await companyCommissionsService.DeleteCompanyCommissionsAsync(new DeleteCompanyCommissionsCommand(id), cancellationToken);
-            return NoContent();
+            var response = await companyCommissionsService.DeleteCompanyCommissionsAsync(new DeleteCompanyCommissionsCommand(id), cancellationToken);
+            return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> UpdateCompanyCommissions(UpdateCompanyCommissionsCommand command, CancellationToken cancellationToken)
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+        [PermissionFilter("آپدیت کمیسیون", "E5")]
+        public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyCommissions([FromRoute] int id, UpdateCompanyCommissionsCommand updateCompanyCommissionsCommand, CancellationToken cancellationToken)
         {
-            await companyCommissionsService.UpdateCompanyCommissionsAsync(command, cancellationToken);
-            return NoContent();
+
+            updateCompanyCommissionsCommand.Id = id;
+            var response = await companyCommissionsService.UpdateCompanyCommissionsAsync(updateCompanyCommissionsCommand, cancellationToken);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

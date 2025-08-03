@@ -10,9 +10,9 @@ namespace Capitan360.Application.Services.CompanyServices.CompanyCommissions.Ser
 
 public interface ICompanyCommissionsService
 {
-    Task<int> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand companyCommissions, CancellationToken cancellationToken);
-    Task<PagedResult<CompanyCommissionsDto>> GetAllCompanyCommissions(GetAllCompanyCommissionsQuery allCompanyCommissionsQuery, CancellationToken cancellationToken);
-    Task<CompanyCommissionsDto> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery id, CancellationToken cancellationToken);
-    Task DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand id, CancellationToken cancellationToken);
-    Task UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand companyCommissions, CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<CompanyCommissionsDto>>> GetAllCompanyCommissions(GetAllCompanyCommissionsQuery allCompanyCommissionsQuery, CancellationToken cancellationToken);
+    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery id, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand id, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command, CancellationToken cancellationToken);
 }

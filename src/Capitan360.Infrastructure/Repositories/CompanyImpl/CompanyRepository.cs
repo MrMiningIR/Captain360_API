@@ -18,7 +18,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         return companyEntity.Id;
     }
 
-    public void Delete(Company company, string userId)
+    public void Delete(Company company)
     {
         dbContext.Entry(company).Property("Deleted").CurrentValue = true;
     }
@@ -31,7 +31,8 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, int userCompanyTypeId = 0, bool track = false)
+    public async Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, bool track,
+        int userCompanyTypeId = 0)
     {
         if (!track)
         {

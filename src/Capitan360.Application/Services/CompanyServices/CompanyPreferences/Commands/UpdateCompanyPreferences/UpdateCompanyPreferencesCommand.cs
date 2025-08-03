@@ -1,7 +1,7 @@
 ﻿namespace Capitan360.Application.Services.CompanyServices.CompanyPreferences.Commands.UpdateCompanyPreferences;
 
 public record UpdateCompanyPreferencesCommand(
-    int Id,
+
     int CompanyId,
     string EconomicCode,
     string NationalId,
@@ -31,4 +31,7 @@ public record UpdateCompanyPreferencesCommand(
     bool ExitRevenue2InTax,
     bool ExitRevenue3InTax,
     bool ExitDistributionInTax,
-    bool ExitExtraDestinationInTax);
+    bool ExitExtraDestinationInTax)
+{
+    public int Id { get; set; }
+}

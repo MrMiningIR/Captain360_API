@@ -1,18 +1,17 @@
-﻿using System.Linq.Expressions;
-using Capitan360.Domain.Abstractions;
+﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanySmsPatternsRepository
 {
-    public async Task<int> CreateCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, string userId, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, CancellationToken cancellationToken)
     {
-        dbContext.Entry(companySmsPatterns).Property("CreatedBy").CurrentValue = userId;
         dbContext.CompanySmsPatterns.Add(companySmsPatterns);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companySmsPatterns.Id;
@@ -21,7 +20,6 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
     public void Delete(CompanySmsPatterns companySmsPatterns, string userId)
     {
         dbContext.Entry(companySmsPatterns).Property("Deleted").CurrentValue = true;
-        UpdateShadows(companySmsPatterns, userId);
     }
 
     public async Task<IReadOnlyList<CompanySmsPatterns>> GetAllCompanySmsPatterns(CancellationToken cancellationToken)
@@ -29,16 +27,14 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
         return await dbContext.CompanySmsPatterns.ToListAsync(cancellationToken);
     }
 
-    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsById(int id, CancellationToken cancellationToken)
+    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsById(int id, bool tracked,
+        CancellationToken cancellationToken)
     {
-        return await dbContext.CompanySmsPatterns.FirstOrDefaultAsync(csp => csp.Id == id, cancellationToken);
-    }
+        if (tracked)
+            return await dbContext.CompanySmsPatterns.FirstOrDefaultAsync(csp => csp.Id == id, cancellationToken);
+        else
 
-    public CompanySmsPatterns UpdateShadows(CompanySmsPatterns companySmsPatterns, string userId)
-    {
-        dbContext.Entry(companySmsPatterns).Property("UpdatedDate").CurrentValue = DateTime.UtcNow;
-        dbContext.Entry(companySmsPatterns).Property("UpdatedBy").CurrentValue = userId;
-        return companySmsPatterns;
+            return await dbContext.CompanySmsPatterns.AsNoTracking().FirstOrDefaultAsync(csp => csp.Id == id, cancellationToken);
     }
 
     public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetMatchingAllCompanySmsPatterns(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)

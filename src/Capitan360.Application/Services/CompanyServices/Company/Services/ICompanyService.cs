@@ -18,9 +18,9 @@ public interface ICompanyService
 
     Task<ApiResponse<CompanyDto>> GetCompanyByIdAsync(GetCompanyByIdQuery id, CancellationToken cancellationToken);
 
-    Task<ApiResponse<object>> DeleteCompanyAsync(DeleteCompanyCommand id, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> DeleteCompanyAsync(DeleteCompanyCommand id, CancellationToken cancellationToken);
 
-    Task<ApiResponse<CompanyDto>> UpdateCompanyAsync(UpdateCompanyCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> UpdateCompanyAsync(UpdateCompanyCommand command, CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> SetCompanyActivityStatus(UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken);
 }

@@ -48,8 +48,6 @@ public class CompanyService(
         var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeId(companyCommand.CompanyTypeId, cancellationToken);
         var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeId(companyCommand.CompanyTypeId, cancellationToken);
 
-
-
         if (relatedContentTypes.Any())
         {
             await companyContentTypeRepository.AddContentTypesToCompanyContentType(relatedContentTypes, companyId, cancellationToken);
@@ -65,8 +63,6 @@ public class CompanyService(
             {
                 CompanyId = companyId
             }, cancellationToken);
-
-
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
@@ -103,7 +99,7 @@ public class CompanyService(
         if (getCompanyByIdQuery.Id <= 0)
             return ApiResponse<CompanyDto>.Error(400, "شناسه شرکت باید بزرگ‌تر از صفر باشد");
 
-        var company = await companyRepository.GetCompanyById(getCompanyByIdQuery.Id, cancellationToken, getCompanyByIdQuery.UserCompanyTypeId, getCompanyByIdQuery.Track);
+        var company = await companyRepository.GetCompanyById(getCompanyByIdQuery.Id, cancellationToken, getCompanyByIdQuery.Track, getCompanyByIdQuery.UserCompanyTypeId);
         if (company is null)
             return ApiResponse<CompanyDto>.Error(404, $"شرکت با شناسه {getCompanyByIdQuery.Id} یافت نشد");
 
@@ -112,40 +108,36 @@ public class CompanyService(
         return ApiResponse<CompanyDto>.Ok(result, "Company retrieved successfully");
     }
 
-    public async Task<ApiResponse<object>> DeleteCompanyAsync(DeleteCompanyCommand deleteCompanyCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyAsync(DeleteCompanyCommand command,
+        CancellationToken cancellationToken)
     {
-        logger.LogInformation("DeleteCompany is Called with ID: {Id}", deleteCompanyCommand.Id);
-        if (deleteCompanyCommand.Id <= 0)
-            return ApiResponse<object>.Error(400, "شناسه شرکت باید بزرگ‌تر از صفر باشد");
+        logger.LogInformation("DeleteCompany is Called with ID: {Id}", command.Id);
 
-        var company = await companyRepository.GetCompanyById(deleteCompanyCommand.Id, cancellationToken, track: true);
+        var company = await companyRepository.GetCompanyById(command.Id, cancellationToken, tracked: true);
         if (company is null)
-            return ApiResponse<object>.Error(404, $"شرکت با شناسه {deleteCompanyCommand.Id} یافت نشد");
+            return ApiResponse<int>.Error(404, $"شرکت با شناسه {command.Id} یافت نشد");
 
-        companyRepository.Delete(company, Guid.NewGuid().ToString());
+        companyRepository.Delete(company);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Company soft-deleted successfully with ID: {Id}", deleteCompanyCommand.Id);
-        return ApiResponse<object>.Deleted("Company deleted successfully");
+        logger.LogInformation("Company soft-deleted successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 
-    public async Task<ApiResponse<CompanyDto>> UpdateCompanyAsync(UpdateCompanyCommand updateCompanyCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> UpdateCompanyAsync(UpdateCompanyCommand command,
+        CancellationToken cancellationToken)
     {
-        logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", updateCompanyCommand);
-        if (updateCompanyCommand is not { Id: > 0 })
-            return ApiResponse<CompanyDto>.Error(400, "شناسه شرکت باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
+        logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", command);
 
-        var company = await companyRepository.GetCompanyById(updateCompanyCommand.Id, cancellationToken, updateCompanyCommand.UserCompanyTypeId, true);
+        var company = await companyRepository.GetCompanyById(command.Id, cancellationToken, true, command.UserCompanyTypeId);
         if (company is null)
-            return ApiResponse<CompanyDto>.Error(404, $"شرکت با شناسه {updateCompanyCommand.Id} یافت نشد");
+            return ApiResponse<int>.Error(404, $"شرکت با شناسه {command.Id} یافت نشد");
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var updatedCompany = mapper.Map(updateCompanyCommand, company);
+        var updatedCompany = mapper.Map(command, company);
 
-        if (updateCompanyCommand.UpdateRelatedThings)
+        if (command.UpdateRelatedThings)
         {
-            // var tasks = new List<Task>();
-
             // Delete
             var existAnyCompanyContentRecord = await companyContentTypeRepository.CheckExistAnyItem(company.Id, cancellationToken);
 
@@ -161,7 +153,7 @@ public class CompanyService(
             }
 
             // Add
-            var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeId(updateCompanyCommand.CompanyTypeId, cancellationToken);
+            var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeId(command.CompanyTypeId, cancellationToken);
 
             if (relatedContentTypes.Any())
             {
@@ -169,21 +161,18 @@ public class CompanyService(
                     cancellationToken);
             }
 
-            var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeId(updateCompanyCommand.CompanyTypeId, cancellationToken);
+            var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeId(command.CompanyTypeId, cancellationToken);
             if (relatedPackageTypes.Any())
             {
                 await companyPackageTypesRepository.AddPackageTypesToCompanyPackageType(relatedPackageTypes, company.Id, cancellationToken);
             }
-
-            // await Task.WhenAll(tasks);
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
-        logger.LogInformation("Company updated successfully with ID: {Id}", updateCompanyCommand.Id);
+        logger.LogInformation("Company updated successfully with ID: {Id}", command.Id);
 
-        var updatedCompanyDto = mapper.Map<CompanyDto>(updatedCompany);
-        return ApiResponse<CompanyDto>.Updated(updatedCompanyDto);
+        return ApiResponse<int>.Ok(command.Id);
     }
 
     public async Task<ApiResponse<int>> SetCompanyActivityStatus(UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken)
@@ -191,7 +180,7 @@ public class CompanyService(
         logger.LogInformation("SetCompanyActivityStatus Called with {@UpdateActiveStateCompanyCommand}", command);
 
         var company =
-            await companyRepository.GetCompanyById(command.Id, cancellationToken, 0, true);
+            await companyRepository.GetCompanyById(command.Id, cancellationToken, true, 0);
 
         if (company is null)
             return ApiResponse<int>.Error(404, $"Company Data was not Found :{command.Id}");

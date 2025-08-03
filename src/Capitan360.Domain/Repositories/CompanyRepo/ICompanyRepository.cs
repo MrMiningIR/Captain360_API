@@ -6,10 +6,10 @@ namespace Capitan360.Domain.Repositories.CompanyRepo;
 public interface ICompanyRepository
 {
     Task<int> CreateCompanyAsync(Company company, CancellationToken cancellationToken);
-    void Delete(Company company, string id);
+    void Delete(Company company);
     Task<IReadOnlyList<Company>> GetAllCompanies(int companyTypeId, CancellationToken cancellationToken);
-    Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, int userCompanyTypeId = 0,
-        bool track = false);
+    Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, bool tracked, int userCompanyTypeId = 0
+      );
 
 
 

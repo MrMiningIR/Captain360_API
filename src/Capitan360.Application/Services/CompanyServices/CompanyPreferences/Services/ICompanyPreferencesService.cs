@@ -15,8 +15,9 @@ public interface ICompanyPreferencesService
     Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByIdAsync(GetCompanyPreferencesByIdQuery id, CancellationToken cancellationToken);
     Task<ApiResponse<int>> UpdateCompanyPreferencesAsync(UpdateCompanyPreferencesCommand command, CancellationToken cancellationToken);
 
-    Task<PagedResult<CompanyPreferencesDto>> GetAllCompanyPreferences(GetAllCompanyPreferencesQuery allCompanyPreferencesQuery, CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<CompanyPreferencesDto>>> GetAllCompanyPreferences(GetAllCompanyPreferencesQuery allCompanyPreferencesQuery, CancellationToken cancellationToken);
 
-    Task DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand id, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand id,
+        CancellationToken cancellationToken);
 
 }

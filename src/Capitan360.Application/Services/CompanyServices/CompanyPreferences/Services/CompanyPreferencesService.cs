@@ -38,7 +38,8 @@ public class CompanyPreferencesService(
         return ApiResponse<int>.Created(companyPreferencesId, "Company created successfully");
     }
 
-    public async Task<PagedResult<CompanyPreferencesDto>> GetAllCompanyPreferences(GetAllCompanyPreferencesQuery allCompanyPreferencesQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanyPreferencesDto>>> GetAllCompanyPreferences(
+        GetAllCompanyPreferencesQuery allCompanyPreferencesQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyPreferences is Called");
         var (companyPreferences, totalCount) = await companyPreferencesRepository.GetMatchingAllCompanyPreferences(
@@ -49,8 +50,10 @@ public class CompanyPreferencesService(
             allCompanyPreferencesQuery.SortDirection,
             cancellationToken);
         var companyPreferencesDto = mapper.Map<IReadOnlyList<CompanyPreferencesDto>>(companyPreferences);
+
         logger.LogInformation("Retrieved {Count} company preferences", companyPreferencesDto.Count);
-        return new PagedResult<CompanyPreferencesDto>(companyPreferencesDto, totalCount, allCompanyPreferencesQuery.PageSize, allCompanyPreferencesQuery.PageNumber);
+        var data = new PagedResult<CompanyPreferencesDto>(companyPreferencesDto, totalCount, allCompanyPreferencesQuery.PageSize, allCompanyPreferencesQuery.PageNumber);
+        return ApiResponse<PagedResult<CompanyPreferencesDto>>.Ok(data, "Companies retrieved successfully");
     }
 
     public async Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByIdAsync(
@@ -60,7 +63,7 @@ public class CompanyPreferencesService(
         if (getCompanyPreferencesByIdQuery.Id <= 0)
             return ApiResponse<CompanyPreferencesDto>.Error(400, "شناسه معتبر نیست");
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyId(getCompanyPreferencesByIdQuery.Id, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyId(getCompanyPreferencesByIdQuery.Id, cancellationToken, false);
 
         if (companyPreferences is null)
             return ApiResponse<CompanyPreferencesDto>.Ok(new CompanyPreferencesDto(), "اطلاعات یافت نشد");
@@ -70,16 +73,20 @@ public class CompanyPreferencesService(
         return ApiResponse<CompanyPreferencesDto>.Ok(result);
     }
 
-    public async Task DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand deleteCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DeleteCompanyPreferences is Called with ID: {Id}", deleteCompanyPreferencesCommand.Id);
-        if (deleteCompanyPreferencesCommand.Id <= 0)
-            throw new ArgumentException("شناسه تنظیمات باید بزرگ‌تر از صفر باشد");
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyId(deleteCompanyPreferencesCommand.Id, cancellationToken)
-                                 ?? throw new KeyNotFoundException($"تنظیمات با شناسه {deleteCompanyPreferencesCommand.Id} یافت نشد");
+        logger.LogInformation("DeleteCompanyPreferences is Called with ID: {Id}", command.Id);
+
+        var companyPreferences =
+            await companyPreferencesRepository.GetCompanyPreferencesByCompanyId(command.Id,
+                cancellationToken, true);
+        if (companyPreferences is null)
+            return ApiResponse<int>.Error(400, $"تنظیمات با شناسه {command.Id} یافت نشد");
+
         companyPreferencesRepository.Delete(companyPreferences, Guid.NewGuid().ToString());
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("CompanyPreferences soft-deleted successfully with ID: {Id}", deleteCompanyPreferencesCommand.Id);
+        logger.LogInformation("CompanyPreferences soft-deleted successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id);
     }
 
     public async Task<ApiResponse<int>> UpdateCompanyPreferencesAsync(UpdateCompanyPreferencesCommand command,
@@ -92,6 +99,8 @@ public class CompanyPreferencesService(
             return ApiResponse<int>.Error(400, "ترجیحات شرکت یافت نشد.");
 
         var mappedCompanyPreferences = mapper.Map(command, companyPreferences);
+        if (mappedCompanyPreferences is null)
+            return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("CompanyPreferences updated successfully with ID: {Id}", command.Id);
         return ApiResponse<int>.Ok(command.Id);

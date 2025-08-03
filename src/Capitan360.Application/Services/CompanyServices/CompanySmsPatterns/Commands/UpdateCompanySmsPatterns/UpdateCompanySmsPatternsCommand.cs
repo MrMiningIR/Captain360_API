@@ -1,7 +1,7 @@
 ﻿namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Commands.UpdateCompanySmsPatterns;
 
 public record UpdateCompanySmsPatternsCommand(
-    int Id,
+
     int? CompanyId,
     string? PatternSmsIssueSender,
     string? PatternSmsIssueReceiver,
@@ -23,4 +23,7 @@ public record UpdateCompanySmsPatternsCommand(
     string? PatternSmsCancelByCustomerSender,
     string? PatternSmsCancelByCustomerReceiver,
     string? PatternSmsCancelByCustomerCompany,
-    string? PatternSmsSendManifestReceiverCompany);
+    string? PatternSmsSendManifestReceiverCompany)
+{
+    public int Id { get; set; }
+}
