@@ -9,8 +9,7 @@ public class UpdateCompanyUriCommandValidator : AbstractValidator<UpdateCompanyU
         //RuleFor(x => x.Id)
         //    .GreaterThan(0).WithMessage("شناسه URI باید مشخص باشد");
 
-        RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد");
+
 
         RuleFor(x => x.Uri)
             .NotEmpty().WithMessage("آدرس URI نمی‌تواند خالی باشد")

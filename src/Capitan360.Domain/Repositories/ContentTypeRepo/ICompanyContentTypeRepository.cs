@@ -2,40 +2,22 @@
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.ContentEntity;
 
-namespace Capitan360.Domain.Repositories.ContentRepo;
+namespace Capitan360.Domain.Repositories.ContentTypeRepo;
 
 public interface ICompanyContentTypeRepository
 {
-    Task<(IReadOnlyList<CompanyContentType>, int)> GetCompanyContentTypes(string? searchPhrase,
-        int companyId, int active, int pageSize,
-        int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyContentType>, int)> GetCompanyContentTypesAsync(string? searchPhrase, int companyId, int active, int pageSize,
+    int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<int> UpdateCompanyContentTypeForCompany(
-        CompanyContentType companyContentType,
-        CancellationToken ct);
-
-    Task<int> InsertCompanyContentTypeForCompany(
-        CompanyContentType companyContentType,
-        CancellationToken ct);
-
-    Task<CompanyContentType?> CheckExistCompanyContentTypeName(int commandCompanyId, int commandContentTypeId, CancellationToken cancellationToken);
-
-    Task MoveContentTypeUpAsync(int companyId, int contentTypeId, CancellationToken cancellationToken);
-
-    Task MoveContentTypeDownAsync(int companyId, int contentTypeId, CancellationToken cancellationToken);
-
-    Task<int> GetCountCompanyContentType(int companyId, CancellationToken cancellationToken);
-
-    Task CreateCompanyContentTypes(List<int> getEligibleCommandlines, ContentType contentType,
-        CancellationToken cancellationToken);
-
-    Task AddContentTypesToCompanyContentType(List<CompanyContentTypeTransfer> relatedContentTypes, int companyId,
-        CancellationToken cancellationToken);
-
-    Task DeleteAllContentsByCompanyId(int companyId, CancellationToken cancellationToken);
-
-    Task<bool> CheckExistAnyItem(int companyId, CancellationToken cancellationToken);
-
-    Task<CompanyContentType?> GetCompanyContentTypeById(int id, CancellationToken cancellationToken,
-        bool tracking = false);
+    Task<int> InsertCompanyContentTypeForCompanyAsync(CompanyContentType companyContentType, CancellationToken ct);
+    Task<int> UpdateCompanyContentTypeForCompanyAsync(CompanyContentType companyContentType, CancellationToken ct);
+    Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int? currentCompanyContentTypeId, int companyId, CancellationToken cancellationToken);
+    Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken);
+    Task MoveCompanyContentTypeDownAsync(int companyContentTypeId, CancellationToken cancellationToken);
+    Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken);
+    Task CreateCompanyContentTypesAsync(List<int> companiesId, ContentType contentType, CancellationToken cancellationToken);
+    Task AddContentTypesToCompanyContentTypeAsync(List<CompanyContentTypeTransfer> relatedContentTypes, int companyId, CancellationToken cancellationToken);
+    Task DeleteAllContentsByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
+    Task<bool> CheckExistAnyItemAsync(int companyId, CancellationToken cancellationToken);
+    Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool tracked, CancellationToken cancellationToken);
 }

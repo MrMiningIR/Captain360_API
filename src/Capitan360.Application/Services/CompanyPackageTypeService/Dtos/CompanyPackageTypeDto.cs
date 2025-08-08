@@ -7,6 +7,7 @@ public class CompanyPackageTypeDto
     public int PackageTypeId { get; set; }
     public string PackageTypeName { get; set; } = default!;
     public string NewCompanyPackageTypeName { get; set; } = default!;
+    public string CompanyPackageTypeDescription { get; set; } = default!;
     public bool Active { get; set; }
     public int OrderPackageType { get; set; }
 }

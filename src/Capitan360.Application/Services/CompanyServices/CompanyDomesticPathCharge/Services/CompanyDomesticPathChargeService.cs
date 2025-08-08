@@ -13,7 +13,7 @@ using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Repositories.CompanyRepo;
-using Capitan360.Domain.Repositories.ContentRepo;
+using Capitan360.Domain.Repositories.ContentTypeRepo;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathCharge.Services;
@@ -354,7 +354,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
      null, SortDirection.Ascending, cancellationToken);
 
         var (contentTypesData, total) = await companyContentTypeRepository
-            .GetCompanyContentTypes("", domesticPth.CompanyId, 1, 100, 1, null, SortDirection.Ascending, cancellationToken);
+            .GetCompanyContentTypesAsync("", domesticPth.CompanyId, 1, 100, 1, null, SortDirection.Ascending, cancellationToken);
 
         var weightTypes = identityService.GetWeightTypeList();
 

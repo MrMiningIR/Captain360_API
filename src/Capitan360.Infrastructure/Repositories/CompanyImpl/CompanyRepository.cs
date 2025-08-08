@@ -13,7 +13,6 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     public async Task<int> CreateCompanyAsync(Company companyEntity, CancellationToken cancellationToken)
     {
         dbContext.Companies.Add(companyEntity);
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyEntity.Id;
     }
@@ -23,7 +22,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         dbContext.Entry(company).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<IReadOnlyList<Company>> GetAllCompanies(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Company>> GetAllCompaniesAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
             .Where(x => companyTypeId == 0 || x.CompanyTypeId == companyTypeId)
@@ -31,10 +30,10 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, bool track,
+    public async Task<Company?> GetCompanyByIdAsync(int id, CancellationToken cancellationToken, bool tracked,
         int userCompanyTypeId = 0)
     {
-        if (!track)
+        if (!tracked)
         {
             var unTrackedDbQuery = dbContext.Companies.AsNoTracking().Include(x => x.CompanyType).Where(x => x.Id == id);
             if (userCompanyTypeId > 1)
@@ -56,7 +55,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         }
     }
 
-    public async Task<(IReadOnlyList<Company>, int)> GetMatchingAllCompanies(string? searchPhrase, int companyTypeId,
+    public async Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, int companyTypeId,
         int pageSize, int pageNumber, string? sortBy,
         SortDirection sortDirection, CancellationToken cancellationToken)
     {
@@ -97,15 +96,28 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     }
 
     //--
-    public async Task<List<int>> GetCompaniesIdByCompanyTypeId(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<List<int>> GetCompaniesIdByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking().Where(x => x.CompanyTypeId == companyTypeId)
             .Select(x => x.Id).ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> ValidateCompanyDataWithUserCompanyType(int userCompanyType, int companyId, CancellationToken cancellationToken)
+    public async Task<bool> ValidateCompanyDataWithUserCompanyTypeAsync(int userCompanyType, int companyId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
             .AnyAsync(x => x.Id == companyId && x.CompanyTypeId == userCompanyType, cancellationToken: cancellationToken);
+    }
+    public async Task<bool> CheckExistCompanyNameAsync(string companyName, int? currentCompanyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Companies.AnyAsync(cm => (currentCompanyId == null || cm.Id != currentCompanyId) && cm.Name.ToLower() == companyName.ToLower().Trim(), cancellationToken);
+    }
+
+    public async Task<bool> CheckExistCompanyCodeAsync(string companyCode, int? currentCompanyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Companies.AnyAsync(cm => (currentCompanyId == null || cm.Id != currentCompanyId) && cm.Code.ToLower() == companyCode.ToLower().Trim(), cancellationToken);
+    }
+    public async Task<bool> CheckExistCompanyIsParentCompanyAsync(int companyTypeId, int? currentCompanyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Companies.AnyAsync(cm => (currentCompanyId == null || cm.Id != currentCompanyId) && cm.IsParentCompany == true && cm.CompanyTypeId == companyTypeId, cancellationToken);
     }
 }

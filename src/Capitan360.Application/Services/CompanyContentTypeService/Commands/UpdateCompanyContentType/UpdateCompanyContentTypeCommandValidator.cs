@@ -14,7 +14,12 @@ public class UpdateCompanyContentTypeCommandValidator : AbstractValidator<Update
             .GreaterThan(0).WithMessage("شناسه نوع شرکت الزامی است");
         RuleFor(x => x.CompanyContentTypeName)
             .MaximumLength(50).WithMessage("نام محتوی نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            .MinimumLength(3).WithMessage("نام محتوی نمی‌تواند کمتر از 3 کاراکتر باشد")
+            .MinimumLength(4).WithMessage("نام محتوی نمی‌تواند کمتر از43 کاراکتر باشد")
             .When(x => !string.IsNullOrEmpty(x.CompanyContentTypeName));
+
+        RuleFor(x => x.CompanyContentTypeDescription)
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrEmpty(x.CompanyContentTypeName))
+            .WithMessage("توضیحات محتوی نمی‌تواند بیشتر از 500 کاراکتر باشد");
     }
 }

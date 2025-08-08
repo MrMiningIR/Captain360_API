@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
+using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageTypeName;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
 using Capitan360.Domain.Entities.PackageEntity;
 
@@ -9,12 +9,11 @@ public class CompanyPackageTypeProfile : Profile
 {
     public CompanyPackageTypeProfile()
     {
-        CreateMap<UpdateCompanyPackageTypeCommand, CompanyPackageType>();
+        CreateMap<UpdateCompanyPackageTypeNameAndDescriptionCommand, CompanyPackageType>()
+            .ForMember(dest => dest.CompanyPackageTypeDescription, opt => opt.MapFrom(src => src.PackageTypeDescription))
+.ForMember(dest => dest.PackageTypeName, opt => opt.MapFrom(src => src.PackageTypeName)); ;
         CreateMap<CompanyPackageType, CompanyPackageTypeDto>()
             .ForMember(dest => dest.NewCompanyPackageTypeName, opt => opt.MapFrom(src => src.PackageTypeName))
-            .ForMember(dest => dest.PackageTypeName, opt => opt.MapFrom(src => src.PackageType.PackageTypeName))
-
-
-            ;
+            .ForMember(dest => dest.PackageTypeName, opt => opt.MapFrom(src => src.PackageType.PackageTypeName));
     }
 }

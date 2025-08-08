@@ -17,12 +17,14 @@ public interface IContentTypeService
     Task<ApiResponse<int>> CreateContentTypeAsync(CreateContentTypeCommand contentType, CancellationToken cancellationToken);
     Task<ApiResponse<PagedResult<ContentTypeDto>>> GetAllContentTypes(GetAllContentTypesQuery allContentTypesQuery, CancellationToken cancellationToken);
     Task<ApiResponse<ContentTypeDto>> GetContentTypeByIdAsync(GetContentTypeByIdQuery id, CancellationToken cancellationToken);
-    Task<ApiResponse<object>> DeleteContentTypeAsync(DeleteContentTypeCommand id, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> DeleteContentTypeAsync(DeleteContentTypeCommand id, CancellationToken cancellationToken);
     Task<ApiResponse<ContentTypeDto>> UpdateContentTypeAsync(UpdateContentTypeCommand command, CancellationToken cancellationToken);
 
-    Task<ApiResponse<object>> MoveContentTypeUpAsync(MoveContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken);
-    Task<ApiResponse<object>> MoveContentTypeDownAsync(MoveContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveContentTypeUpCommand moveContentTypeUpCommand,
+        CancellationToken cancellationToken);
+    Task<ApiResponse<int>> MoveContentTypeDownAsync(MoveContentTypeDownCommand moveContentTypeDownCommand,
+        CancellationToken cancellationToken);
 
-    Task<ApiResponse<int>> SetContentActivityStatus(UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> SetContentTypeActivityStatus(UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken);
 }
 

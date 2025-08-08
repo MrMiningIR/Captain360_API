@@ -3,12 +3,12 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
-using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentType;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeName;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Repositories.ContentRepo;
+using Capitan360.Domain.Repositories.ContentTypeRepo;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyContentTypeService.Services;
@@ -20,44 +20,12 @@ public class CompanyContentTypeService(
     ICompanyContentTypeRepository companyContentTypeRepository,
     IContentTypeRepository contentTypeRepository) : ICompanyContentTypeService
 {
-    public async Task<ApiResponse<int>> UpdateCompanyContentTypeAsync(UpdateCompanyContentTypeCommand command, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("UpdateCompanyContentTypeAsync is Called with {@UpdateCompanyContentTypeCommand}", command);
-
-        if (string.IsNullOrEmpty(command.CompanyContentTypeName) && command.Active is null)
-            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوی نمی‌تواند null باشد");
-
-        var originalContentType =
-            await contentTypeRepository.GetContentTypeById(command.ContentTypeId, cancellationToken, false);
-        if (originalContentType is null)
-            return ApiResponse<int>.Error(404, "محتویی اصلی وجود ندارد");
-
-        logger.LogInformation("OriginalContentType {@OriginalContentType}", originalContentType);
-
-        var exist = await companyContentTypeRepository.CheckExistCompanyContentTypeName(command.CompanyId, command.ContentTypeId, cancellationToken);
-
-        if (exist is null)
-            return ApiResponse<int>.Error(404, "محتویی مورد نظر وجود ندارد");
-
-        logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", exist);
-
-        var mappedUpdatedCompanyContentType = mapper.Map(command, exist);
-        if (mappedUpdatedCompanyContentType == null)
-            return ApiResponse<int>.Error(500, "مشکل در عملیات تبدیل");
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return ApiResponse<int>.Ok(command.Id, "CompanyContentType updated successfully");
-    }
-
     public async Task<ApiResponse<PagedResult<CompanyContentTypeDto>>> GetAllCompanyContentTypesByCompany(
         GetAllCompanyContentTypesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyContentTypesByCompany is Called");
-        if (query.PageSize <= 0 || query.PageNumber <= 0)
-            return ApiResponse<PagedResult<CompanyContentTypeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (companyContentTypes, totalCount) = await companyContentTypeRepository.GetCompanyContentTypes(
+        var (companyContentTypes, totalCount) = await companyContentTypeRepository.GetCompanyContentTypesAsync(
             query.SearchPhrase,
             query.CompanyId,
             query.Active,
@@ -72,86 +40,81 @@ public class CompanyContentTypeService(
 
         var data = new PagedResult<CompanyContentTypeDto>(companyContentTypeDto, totalCount, query.PageSize,
             query.PageNumber);
-        return ApiResponse<PagedResult<CompanyContentTypeDto>>.Ok(data, "CompanyContentType retrieved successfully");
+        return ApiResponse<PagedResult<CompanyContentTypeDto>>.Ok(data, "محتوی‌ها با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<object>> MoveContentTypeUpAsync(MoveCompanyContentTypeUpCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveCompanyContentTypeUpCommand command, CancellationToken cancellationToken)
     {
-        var existedRecord =
-            await companyContentTypeRepository.CheckExistCompanyContentTypeName(command.CompanyId, command.ContentTypeId, cancellationToken);
-        if (existedRecord == null)
-            return ApiResponse<object>.Error(404,
-                $"محتویی شرکت با شناسه {command.CompanyId} یافت نشد");
+        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.CompanyContentTypeId, false, cancellationToken);
+        if (companyContentType == null)
+            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        await companyContentTypeRepository.MoveContentTypeUpAsync(command.CompanyId,
-            command.ContentTypeId, cancellationToken);
+        if (companyContentType.OrderContentType == 1)
+            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+
+        var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
+
+        if (count <= 1)
+            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+
+        await companyContentTypeRepository.MoveCompanyContentTypeUpAsync(command.CompanyContentTypeId, cancellationToken);
         logger.LogInformation(
-            "ContentType moved up successfully. CompanyContentType: {CompanyId}, ContentTypeId: {ContentTypeId}",
-            existedRecord.Id, command.ContentTypeId);
-        return ApiResponse<object>.Ok("ContentType moved up successfully");
+            "ContentType moved up successfully., ContentTypeId: {CompanyContentTypeId}", command.CompanyContentTypeId);
+        return ApiResponse<int>.Ok(command.CompanyContentTypeId, "محتوی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<object>> MoveContentTypeDownAsync(MoveCompanyContentTypeDownCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> MoveContentTypeDownAsync(MoveCompanyContentTypeDownCommand command, CancellationToken cancellationToken)
     {
-        var existedRecord =
-            await companyContentTypeRepository.CheckExistCompanyContentTypeName(command.CompanyId, command.ContentTypeId, cancellationToken);
-        if (existedRecord == null)
-            return ApiResponse<object>.Error(404,
-                $"محتویی شرکت با شناسه {command.CompanyId} یافت نشد");
+        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.CompanyContentTypeId, false, cancellationToken);
+        if (companyContentType == null)
+            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        await companyContentTypeRepository.MoveContentTypeDownAsync(command.CompanyId,
-            command.ContentTypeId, cancellationToken);
+        if (companyContentType.OrderContentType == 1)
+            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+
+        var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
+
+        if (count <= 1)
+            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+
+        await companyContentTypeRepository.MoveCompanyContentTypeDownAsync(command.CompanyContentTypeId, cancellationToken);
         logger.LogInformation(
-            "ContentType moved down successfully. CompanyContentType: {CompanyId}, ContentTypeId: {ContentTypeId}",
-            existedRecord.Id, command.ContentTypeId);
-        return ApiResponse<object>.Ok("ContentType moved down successfully");
+            "ContentType moved up successfully., ContentTypeId: {CompanyContentTypeId}", command.CompanyContentTypeId);
+        return ApiResponse<int>.Ok(command.CompanyContentTypeId, "محتوی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<CompanyContentTypeDto>> GetCompanyContentTypeByIdAsync(GetCompanyContentTypeByIdQuery query,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCompanyContentTypeByIdQuery is Called with ID: {Id}", query.Id);
-        if (query.Id <= 0)
-            return ApiResponse<CompanyContentTypeDto>.Error(400, "شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
 
-        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeById(query.Id, cancellationToken);
+        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(query.Id, false, cancellationToken);
         if (companyContentType is null)
             return ApiResponse<CompanyContentTypeDto>.Error(404, $"نوع محتوی با شناسه {query.Id} یافت نشد");
 
         var result = mapper.Map<CompanyContentTypeDto>(companyContentType);
         logger.LogInformation("ContentType retrieved successfully with ID: {Id}", query.Id);
-        return ApiResponse<CompanyContentTypeDto>.Ok(result, "ContentType retrieved successfully");
+        return ApiResponse<CompanyContentTypeDto>.Ok(result, "محتوی با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<int>> UpdateCompanyContentTypeNameAsync(UpdateCompanyContentTypeNameCommand command,
+    public async Task<ApiResponse<int>> UpdateCompanyContentTypeNameAndDescriptionAsync(UpdateCompanyContentTypeNameAndDescriptionCommand command,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateCompanyContentTypeNameAsync is Called with {@UpdateCompanyContentTypeNameCommand}", command);
+        var receivedCompanyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, true, cancellationToken);
+        if (receivedCompanyContentType == null)
+            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        if (command.Id <= 0)
-            return ApiResponse<int>.Error(400, "شناسه نوع محتوی نمی‌تواند 0 باشد");
-        if (string.IsNullOrEmpty(command.ContentTypeName))
-            return ApiResponse<int>.Error(400, "ورودی ایجاد نوع محتوی نمی‌تواند null باشد");
+        logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", receivedCompanyContentType);
 
-        var originalContentType =
-            await contentTypeRepository.GetContentTypeById(command.OriginalContentId, cancellationToken, false);
-        if (originalContentType is null)
-            return ApiResponse<int>.Error(404, "محتویی اصلی وجود ندارد");
+        var companyContentType = mapper.Map(command, receivedCompanyContentType);
+        if (companyContentType is null)
 
-        logger.LogInformation("OriginalContentType {@OriginalContentType}", originalContentType);
-
-        var exist = await companyContentTypeRepository.GetCompanyContentTypeById(command.Id, cancellationToken, true);
-
-        if (exist is null)
-            return ApiResponse<int>.Error(404, "محتویی مورد نظر وجود ندارد");
-
-        logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", exist);
-
-        exist.ContentTypeName = command.ContentTypeName;
+            return ApiResponse<int>.Error(500, "خطا در عملیات تبدیل");
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ApiResponse<int>.Ok(command.Id, "CompanyContentType updated successfully");
+        return ApiResponse<int>.Ok(command.Id, "اطلاعات با موفقیت به‌روزرسانی شد");
     }
 
     public async Task<ApiResponse<int>> SetCompanyContentActivityStatus(
@@ -161,16 +124,16 @@ public class CompanyContentTypeService(
         logger.LogInformation("SetCompanyContentActivityStatus Called with {@UpdateActiveStateCompanyContentTypeCommand}", command);
 
         var companyContent =
-            await companyContentTypeRepository.GetCompanyContentTypeById(command.Id, cancellationToken, true);
+            await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, true, cancellationToken);
 
         if (companyContent is null)
-            return ApiResponse<int>.Error(404, $"CompanyContent Data was not Found :{command.Id}");
+            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
         companyContent.Active = !companyContent.Active;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("SetCompanyContentActivityStatus Updated successfully with ID: {Id}", command.Id);
-        return ApiResponse<int>.Ok(command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت بسته بندی با موفقیت به‌روزرسانی شد");
     }
 }

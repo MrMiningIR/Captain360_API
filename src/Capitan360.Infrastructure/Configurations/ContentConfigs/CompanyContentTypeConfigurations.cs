@@ -30,7 +30,7 @@ namespace Capitan360.Infrastructure.Configurations.ContentConfigs
                     .HasForeignKey(ca => ca.ContentTypeId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(x => x.ContentTypeDescription).HasMaxLength(500).IsUnicode();
+            builder.Property(x => x.CompanyContentTypeDescription).HasMaxLength(500).IsUnicode();
         }
     }
 }

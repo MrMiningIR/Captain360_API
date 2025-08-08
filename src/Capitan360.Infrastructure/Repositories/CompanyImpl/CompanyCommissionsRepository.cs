@@ -6,7 +6,7 @@ using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Capitan360.Infrastructure.Repositories;
+namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyCommissionsRepository
 {
@@ -23,27 +23,21 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
 
     }
 
-    public async Task<IReadOnlyList<CompanyCommissions>> GetAllCompanyCommissions(CancellationToken cancellationToken)
-    {
-        return await dbContext.CompanyCommissions.ToListAsync(cancellationToken);
-    }
 
-    public async Task<CompanyCommissions?> GetCompanyCommissionsById(int id, bool tracked,
+
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int companyCommissionsId, bool tracked,
         CancellationToken cancellationToken)
     {
-        if (tracked)
-        {
-
-            return await dbContext.CompanyCommissions.SingleOrDefaultAsync(cc => cc.Id == id, cancellationToken);
-        }
-        else
-        {
-            return await dbContext.CompanyCommissions.AsNoTracking().SingleOrDefaultAsync(cc => cc.Id == id, cancellationToken);
-        }
+        return tracked ? await dbContext.CompanyCommissions.SingleOrDefaultAsync(a => a.Id == companyCommissionsId, cancellationToken) :
+                         await dbContext.CompanyCommissions.AsNoTracking().SingleOrDefaultAsync(a => a.Id == companyCommissionsId, cancellationToken);
+    }
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool tracked, CancellationToken cancellationToken)
+    {
+        return tracked ? await dbContext.CompanyCommissions.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken) :
+                         await dbContext.CompanyCommissions.AsNoTracking().SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
     }
 
-
-    public async Task<(IReadOnlyList<CompanyCommissions>, int)> GetMatchingAllCompanyCommissions(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var baseQuery = dbContext.CompanyCommissions.AsNoTracking();
 

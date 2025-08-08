@@ -8,28 +8,35 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
+
+
 public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyUriRepository
 {
     public async Task<int> CreateCompanyUriAsync(CompanyUri companyUri, CancellationToken cancellationToken)
     {
-        // dbContext.Entry(companyUri).Property("CreatedBy").CurrentValue = userId;
+
         dbContext.CompanyUris.Add(companyUri);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyUri.Id;
     }
-
+    public async Task<bool> CheckExistUriAsync(string uri, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyUris.AnyAsync(a => a.Uri.ToLower().Trim() == uri.ToLower().Trim(),
+            cancellationToken: cancellationToken);
+    }
     public void Delete(CompanyUri companyUri)
     {
         dbContext.Entry(companyUri).Property("Deleted").CurrentValue = true;
-        // UpdateShadows(companyUri, userId);
+
     }
 
-    public async Task<CompanyUri?> GetCompanyUriById(int id, CancellationToken cancellationToken)
+    public async Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool tracked, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyUris.FirstOrDefaultAsync(cu => cu.Id == id, cancellationToken);
+        return tracked ? await dbContext.CompanyUris.SingleOrDefaultAsync(a => a.Id == companyUriId, cancellationToken) :
+                          await dbContext.CompanyUris.AsNoTracking().SingleOrDefaultAsync(a => a.Id == companyUriId, cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyUri>, int)> GetMatchingAllCompanyUris(string? searchPhrase, int companyId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyUri>, int)> GetAllCompanyUrisAsync(string? searchPhrase, int companyId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
         var baseQuery = dbContext.CompanyUris.AsNoTracking()
@@ -77,9 +84,5 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         return (companyUris, totalCount);
     }
 
-    public async Task<bool> CheckExistUri(string uri, int companyId, CancellationToken cancellationToken)
-    {
-        return await dbContext.CompanyUris.AnyAsync(a => a.Uri.ToLower().Trim() == uri.ToLower().Trim(),
-            cancellationToken: cancellationToken);
-    }
+
 }

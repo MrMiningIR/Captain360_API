@@ -8,7 +8,7 @@ public class MoveCompanyPackageTypeCommandUpValidator : AbstractValidator<MoveCo
     {
         RuleFor(x => x.CompanyId)
      .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد");
-        RuleFor(x => x.PackageTypeId)
+        RuleFor(x => x.CompanyPackageTypeId)
             .GreaterThan(0).WithMessage("شناسه بسته بندی بار باید بزرگ‌تر از صفر باشد");
     }
 }

@@ -7,15 +7,21 @@ namespace Capitan360.Domain.Repositories.PackageTypeRepo;
 public interface IPackageTypeRepository
 {
     Task<int> CreatePackageTypeAsync(PackageType packageType, CancellationToken cancellationToken);
+
     void Delete(PackageType packageType);
-    Task<PackageType?> GetPackageTypeById(int id, CancellationToken cancellationToken, bool tracked);
-    Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypes(string? searchPhrase, int companyTypeId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
-    Task<PackageType?> CheckExistPackageTypeName(string packageTypeName, int companyTypeId, CancellationToken cancellationToken);
 
+    Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool tracked, CancellationToken cancellationToken);
 
-    Task<int> GetCountPackageType(int companyTypeId, CancellationToken cancellationToken);
-    Task MovePackageTypeUpAsync(int companyTypeId, int packageTypeId, CancellationToken cancellationToken);
-    Task MovePackageTypeDownAsync(int companyTypeId, int packageTypeId, CancellationToken cancellationToken);
-    Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeId(int companyTypeId,
-        CancellationToken cancellationToken);
+    Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypesAsync(string? searchPhrase, int companyTypeId, int active,
+        int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+
+    Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int? currentPackageTypeId, int companyTypeId, CancellationToken cancellationToken);
+
+    Task<int> GetCountPackageTypeAsync(int companyTypeId, CancellationToken cancellationToken);
+
+    Task MovePackageTypeUpAsync(int packageTypeId, CancellationToken cancellationToken);
+
+    Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken);
+
+    Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken);
 }

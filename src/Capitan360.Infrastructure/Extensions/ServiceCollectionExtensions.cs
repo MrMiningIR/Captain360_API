@@ -5,18 +5,18 @@ using Capitan360.Domain.Entities.UserEntity;
 using Capitan360.Domain.Repositories.AddressRepo;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.CompanyUriRepo;
-using Capitan360.Domain.Repositories.ContentRepo;
+using Capitan360.Domain.Repositories.ContentTypeRepo;
 using Capitan360.Domain.Repositories.Identity;
-using Capitan360.Domain.Repositories.PackageRepo;
 using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Capitan360.Domain.Repositories.PermissionRepository;
 using Capitan360.Domain.Repositories.User;
 using Capitan360.Infrastructure.Authorization.Requirements;
 using Capitan360.Infrastructure.Authorization.Services;
 using Capitan360.Infrastructure.Persistence;
-using Capitan360.Infrastructure.Repositories;
 using Capitan360.Infrastructure.Repositories.AddressImpl;
+using Capitan360.Infrastructure.Repositories.CompanyContentTypeImpl;
 using Capitan360.Infrastructure.Repositories.CompanyImpl;
+using Capitan360.Infrastructure.Repositories.CompanyPackageTypeImpl;
 using Capitan360.Infrastructure.Repositories.ContentTypeImpl;
 using Capitan360.Infrastructure.Repositories.Identity;
 using Capitan360.Infrastructure.Repositories.PackageTypeImpl;
@@ -179,7 +179,7 @@ public static class ServiceCollectionExtensions
         service.AddScoped<ICompanyContentTypeRepository, CompanyContentTypeRepository>();
         service.AddScoped<IUtilsService, UtilsService>();
         service.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
-        service.AddScoped<ICompanyPackageTypeRepository, CompanyPackageTypesRepository>();
+        service.AddScoped<ICompanyPackageTypeRepository, CompanyPackageTypeRepository>();
 
         // service.AddSingleton<IResponseCacheService, ResponseCacheService>();
 

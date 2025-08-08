@@ -7,6 +7,6 @@ public class DeletePackageTypeCommandValidator : AbstractValidator<DeletePackage
     public DeletePackageTypeCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
+          .GreaterThan(0).WithMessage("شناسه نوع محتوی باید بزرگ‌تر از صفر باشد");
     }
 }

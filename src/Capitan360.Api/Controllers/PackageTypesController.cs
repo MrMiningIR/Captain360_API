@@ -26,7 +26,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     public async Task<ActionResult<ApiResponse<PagedResult<PackageTypeDto>>>> GetAllPackageTypes(
         [FromQuery] GetAllPackageTypesQuery query, CancellationToken cancellationToken)
     {
-        var response = await packageTypeService.GetAllPackageTypes(query, cancellationToken);
+        var response = await packageTypeService.GetAllPackageTypesAsync(query, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -108,7 +108,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> ChangePackageTypeActiveStatus([FromBody] UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken)
     {
-        var response = await packageTypeService.SetPackageTypeActivityStatus(command, cancellationToken);
+        var response = await packageTypeService.SetPackageTypeActivityStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

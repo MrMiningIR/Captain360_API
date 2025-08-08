@@ -6,9 +6,8 @@ public class MoveCompanyContentTypeUpCommandValidator : AbstractValidator<MoveCo
 {
     public MoveCompanyContentTypeUpCommandValidator()
     {
-        RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد");
-        RuleFor(x => x.ContentTypeId)
+
+        RuleFor(x => x.CompanyContentTypeId)
             .GreaterThan(0).WithMessage("شناسه محتوی باید بزرگ‌تر از صفر باشد");
     }
 }

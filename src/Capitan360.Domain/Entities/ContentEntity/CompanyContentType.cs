@@ -17,7 +17,7 @@ public class CompanyContentType : Entity
     public bool Active { get; set; }
 
     public int OrderContentType { get; set; }
-    public string? ContentTypeDescription { get; set; }
+    public string? CompanyContentTypeDescription { get; set; }
     public Company Company { get; set; } = default!;
     public ContentType ContentType { get; set; } = default!;
 }

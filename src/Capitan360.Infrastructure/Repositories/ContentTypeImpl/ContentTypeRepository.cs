@@ -2,12 +2,13 @@
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.ContentEntity;
-using Capitan360.Domain.Repositories.ContentRepo;
+using Capitan360.Domain.Repositories.ContentTypeRepo;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.ContentTypeImpl;
+
 
 public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IContentTypeRepository
 {
@@ -23,19 +24,13 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         dbContext.Entry(contentType).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<ContentType?> GetContentTypeById(int id, CancellationToken cancellationToken, bool tracked)
+    public async Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool tracked, CancellationToken cancellationToken)
     {
-        if (tracked)
-        {
-            return await dbContext.ContentTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-        }
-        else
-        {
-            return await dbContext.ContentTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-        }
+        return tracked ? await dbContext.ContentTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == contentTypeId, cancellationToken)
+            : await dbContext.ContentTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == contentTypeId, cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypes(string? searchPhrase, int companyTypeId, int active,
+    public async Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypesAsync(string? searchPhrase, int companyTypeId, int active,
         int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
@@ -77,67 +72,49 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return (contentTypes, totalCount);
     }
 
-    public async Task<ContentType?> CheckExistContentTypeName(string contentTypeName, int companyTypeId, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistContentTypeNameAsync(string contentTypeName, int? currentContentTypeId, int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.ContentTypes.SingleOrDefaultAsync(ct => ct.CompanyTypeId ==
-            companyTypeId && ct.ContentTypeName.ToLower().Trim() == contentTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.ContentTypes.AnyAsync(pt => pt.CompanyTypeId == companyTypeId && (currentContentTypeId == null || pt.Id != currentContentTypeId) && pt.ContentTypeName.ToLower() == contentTypeName.ToLower().Trim(), cancellationToken);
     }
 
-    public async Task<int> GetCountContentType(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<int> GetCountContentTypeAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.ContentTypes
              .CountAsync(ca => ca.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
     }
 
-    public async Task MoveContentTypeUpAsync(int companyTypeId, int contentTypeId, CancellationToken cancellationToken)
+    public async Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken)
     {
-        var contentTypes = await dbContext.ContentTypes
-            .Where(c => c.CompanyTypeId == companyTypeId)
-            .OrderBy(a => a.OrderContentType)
-            .ToListAsync(cancellationToken);
+        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.Id == contentTypeId, cancellationToken: cancellationToken);
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType!.CompanyTypeId && p.OrderContentType == currentContentType.OrderContentType - 1, cancellationToken: cancellationToken);
 
-        var currentContentType = contentTypes.SingleOrDefault(a => a.Id == contentTypeId);
-        var currentIndex = contentTypes.IndexOf(currentContentType!);
-        if (currentIndex <= 0)
-            return;
-
-        var previousContentType = contentTypes[currentIndex - 1];
-        var currentOrder = currentContentType!.OrderContentType;
-        currentContentType.OrderContentType = previousContentType.OrderContentType;
-        previousContentType.OrderContentType = currentOrder;
+        nextContentType!.OrderContentType++;
+        currentContentType!.OrderContentType--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task MoveContentTypeDownAsync(int companyTypeId, int contentTypeId, CancellationToken cancellationToken)
+    public async Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken)
     {
-        var contentTypes = await dbContext.ContentTypes
-            .Where(c => c.CompanyTypeId == companyTypeId)
-            .OrderBy(a => a.OrderContentType)
-            .ToListAsync(cancellationToken);
+        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.Id == contentTypeId, cancellationToken: cancellationToken);
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType!.CompanyTypeId && p.OrderContentType == currentContentType.OrderContentType + 1, cancellationToken: cancellationToken);
 
-        var currentContentType = contentTypes.FirstOrDefault(a => a.Id == contentTypeId);
-        var currentIndex = contentTypes.IndexOf(currentContentType!);
-        if (currentIndex >= contentTypes.Count - 1)
-            return;
+        nextContentType!.OrderContentType--;
+        currentContentType!.OrderContentType++;
 
-        var nextContentType = contentTypes[currentIndex + 1];
-        var tempOrder = currentContentType!.OrderContentType;
-        currentContentType.OrderContentType = nextContentType.OrderContentType;
-        nextContentType.OrderContentType = tempOrder;
-
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeId(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.ContentTypes.AsNoTracking().Where(x => x.CompanyTypeId == companyTypeId)
-            .Select(x => new CompanyContentTypeTransfer
+            .Select(x => new CompanyContentTypeTransfer()
             {
                 Id = x.Id,
-                ContentTypeName = x.ContentTypeName,
                 Active = x.Active,
-                OrderContentType = x.OrderContentType
+                OrderContentType = x.OrderContentType,
+                ContentTypeName = x.ContentTypeName,
+                CompanyContentTypeDescription = x.ContentTypeDescription,
             }).ToListAsync(cancellationToken);
     }
 }

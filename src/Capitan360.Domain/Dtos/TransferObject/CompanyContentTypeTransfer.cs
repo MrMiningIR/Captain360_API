@@ -6,5 +6,5 @@ public class CompanyContentTypeTransfer
     public string ContentTypeName { get; set; } = default!;
     public bool Active { get; set; }
     public int OrderContentType { get; set; }
-
+    public string? CompanyContentTypeDescription { get; set; }
 }

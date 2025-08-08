@@ -7,17 +7,21 @@ public interface ICompanyRepository
 {
     Task<int> CreateCompanyAsync(Company company, CancellationToken cancellationToken);
     void Delete(Company company);
-    Task<IReadOnlyList<Company>> GetAllCompanies(int companyTypeId, CancellationToken cancellationToken);
-    Task<Company?> GetCompanyById(int id, CancellationToken cancellationToken, bool tracked, int userCompanyTypeId = 0
+    Task<IReadOnlyList<Company>> GetAllCompaniesAsync(int companyTypeId, CancellationToken cancellationToken);
+    Task<Company?> GetCompanyByIdAsync(int id, CancellationToken cancellationToken, bool tracked, int userCompanyTypeId = 0
       );
 
 
+    Task<bool> CheckExistCompanyNameAsync(string companyName, int? currentCompanyId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Company>, int)> GetMatchingAllCompanies(string? searchPhrase, int companyTypeId, int pageSize,
+    Task<bool> CheckExistCompanyCodeAsync(string companyCode, int? currentCompanyId, CancellationToken cancellationToken);
+
+    Task<bool> CheckExistCompanyIsParentCompanyAsync(int companyTypeId, int? currentCompanyId, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, int companyTypeId, int pageSize,
         int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<List<int>> GetCompaniesIdByCompanyTypeId(int companyTypeId, CancellationToken cancellationToken);
+    Task<List<int>> GetCompaniesIdByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken);
 
-    Task<bool> ValidateCompanyDataWithUserCompanyType(int userCompanyType, int companyId,
+    Task<bool> ValidateCompanyDataWithUserCompanyTypeAsync(int userCompanyType, int companyId,
         CancellationToken cancellationToken);
 }

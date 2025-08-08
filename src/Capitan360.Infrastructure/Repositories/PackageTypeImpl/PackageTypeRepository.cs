@@ -9,6 +9,8 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.PackageTypeImpl;
 
+
+
 public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IPackageTypeRepository
 {
     public async Task<int> CreatePackageTypeAsync(PackageType packageType, CancellationToken cancellationToken)
@@ -23,19 +25,13 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         dbContext.Entry(packageType).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<PackageType?> GetPackageTypeById(int id, CancellationToken cancellationToken, bool tracked)
+    public async Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool tracked, CancellationToken cancellationToken)
     {
-        if (tracked)
-        {
-            return await dbContext.PackageTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-        }
-        else
-        {
-            return await dbContext.PackageTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-        }
+        return tracked ? await dbContext.PackageTypes.Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == packageTypeId, cancellationToken) :
+                        await dbContext.PackageTypes.AsNoTracking().Include(a => a.CompanyType).SingleOrDefaultAsync(a => a.Id == packageTypeId, cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypes(string? searchPhrase, int companyTypeId, int active,
+    public async Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypesAsync(string? searchPhrase, int companyTypeId, int active,
         int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
@@ -76,59 +72,40 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return (packageTypes, totalCount);
     }
 
-    public async Task<PackageType?> CheckExistPackageTypeName(string packageTypeName, int companyTypeId,
-        CancellationToken cancellationToken)
+    public async Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int? currentPackageTypeId, int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.PackageTypes.SingleOrDefaultAsync(pt => pt.CompanyTypeId == companyTypeId && pt.PackageTypeName.ToLower().Trim() == packageTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.PackageTypes.AnyAsync(pt => pt.CompanyTypeId == companyTypeId && (currentPackageTypeId == null || pt.Id != currentPackageTypeId) && pt.PackageTypeName.ToLower() == packageTypeName.ToLower().Trim(), cancellationToken);
     }
 
-    public async Task<int> GetCountPackageType(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<int> GetCountPackageTypeAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.PackageTypes
             .CountAsync(pt => pt.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
     }
 
-    public async Task MovePackageTypeUpAsync(int companyTypeId, int packageTypeId, CancellationToken cancellationToken)
+    public async Task MovePackageTypeUpAsync(int packageTypeId, CancellationToken cancellationToken)
     {
-        var packageTypes = await dbContext.PackageTypes
-            .Where(p => p.CompanyTypeId == companyTypeId)
-            .OrderBy(a => a.OrderPackageType)
-            .ToListAsync(cancellationToken);
+        var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.Id == packageTypeId, cancellationToken: cancellationToken);
+        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentPackageType.CompanyTypeId && p.OrderPackageType == currentPackageType.OrderPackageType - 1, cancellationToken: cancellationToken);
 
-        var currentPackageType = packageTypes.SingleOrDefault(a => a.Id == packageTypeId);
-        var currentIndex = packageTypes.IndexOf(currentPackageType!);
-        if (currentIndex <= 0)
-            return;
-
-        var previousPackageType = packageTypes[currentIndex - 1];
-        var currentOrder = currentPackageType!.OrderPackageType;
-        currentPackageType.OrderPackageType = previousPackageType.OrderPackageType;
-        previousPackageType.OrderPackageType = currentOrder;
+        nextPackageType.OrderPackageType++;
+        currentPackageType.OrderPackageType--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task MovePackageTypeDownAsync(int companyTypeId, int packageTypeId, CancellationToken cancellationToken)
+    public async Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken)
     {
-        var packageTypes = await dbContext.PackageTypes
-            .Where(p => p.CompanyTypeId == companyTypeId)
-            .OrderBy(a => a.OrderPackageType)
-            .ToListAsync(cancellationToken);
+        var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.Id == packageTypeId, cancellationToken: cancellationToken);
+        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentPackageType.CompanyTypeId && p.OrderPackageType == currentPackageType.OrderPackageType + 1, cancellationToken: cancellationToken);
 
-        var currentPackageType = packageTypes.SingleOrDefault(a => a.Id == packageTypeId);
-        var currentIndex = packageTypes.IndexOf(currentPackageType!);
-        if (currentIndex >= packageTypes.Count - 1)
-            return;
-
-        var nextPackageType = packageTypes[currentIndex + 1];
-        var tempOrder = currentPackageType!.OrderPackageType;
-        currentPackageType.OrderPackageType = nextPackageType.OrderPackageType;
-        nextPackageType.OrderPackageType = tempOrder;
+        nextPackageType.OrderPackageType--;
+        currentPackageType.OrderPackageType++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeId(int companyTypeId, CancellationToken cancellationToken)
+    public async Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.PackageTypes.AsNoTracking().Where(x => x.CompanyTypeId == companyTypeId)
             .Select(x => new CompanyPackageTypeTransfer()
@@ -136,7 +113,9 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
                 Id = x.Id,
                 Active = x.Active,
                 OrderPackageType = x.OrderPackageType,
-                PackageTypeName = x.PackageTypeName
+                PackageTypeName = x.PackageTypeName,
+                CompanyPackageTypeDescription = x.PackageTypeDescription,
+
             }).ToListAsync(cancellationToken);
     }
 }

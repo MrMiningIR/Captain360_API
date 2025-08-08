@@ -8,4 +8,5 @@ public class CompanyPackageTypeTransfer
     public bool Active { get; set; }
 
     public int OrderPackageType { get; set; }
+    public string? CompanyPackageTypeDescription { get; set; }
 }

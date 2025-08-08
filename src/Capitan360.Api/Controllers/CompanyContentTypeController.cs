@@ -3,7 +3,7 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
-using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentType;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeName;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;
@@ -40,25 +40,10 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("{id}")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت محتوی شرکت", "F3")]
-    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyContentType(
-        [FromRoute] int id, [FromBody] UpdateCompanyContentTypeCommand command, CancellationToken cancellationToken)
-    {
-        command.Id = id;
-        var response = await companyContentTypeService.UpdateCompanyContentTypeAsync(command, cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
-
     [HttpPost("MoveUpCompanyContentType")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     [PermissionFilter("تغییر چیدمان -بالا", "F4")]
-
     public async Task<ActionResult<ApiResponse<object>>> MoveUpCompanyContentType(
         [FromBody] MoveCompanyContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
     {
@@ -84,10 +69,10 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter("آپدیت نام محتوی", "F6")]
     public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyContentTypeName(
-        [FromRoute] int id, [FromBody] UpdateCompanyContentTypeNameCommand command, CancellationToken cancellationToken)
+        [FromRoute] int id, [FromBody] UpdateCompanyContentTypeNameAndDescriptionCommand command, CancellationToken cancellationToken)
     {
         command.Id = id;
-        var response = await companyContentTypeService.UpdateCompanyContentTypeNameAsync(command, cancellationToken);
+        var response = await companyContentTypeService.UpdateCompanyContentTypeNameAndDescriptionAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 

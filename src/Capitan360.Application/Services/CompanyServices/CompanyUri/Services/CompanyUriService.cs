@@ -2,6 +2,7 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Commands.CreateCompanyUri;
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Commands.DeleteCompanyUri;
+using Capitan360.Application.Services.CompanyServices.CompanyUri.Commands.UpdateActiveStateCompanyUri;
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Commands.UpdateCompanyUri;
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Dtos;
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Queries.GetAllCompanyUris;
@@ -12,6 +13,8 @@ using Capitan360.Domain.Repositories.CompanyUriRepo;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyUri.Services;
+
+
 
 public class CompanyUriService(
     ILogger<CompanyUriService> logger,
@@ -25,13 +28,8 @@ public class CompanyUriService(
     {
         logger.LogInformation("CreateCompanyUri is Called with {@CreateCompanyUriCommand}", command);
 
-        if (string.IsNullOrEmpty(command.Uri))
-            return ApiResponse<int>.Error(400, "ورودی ایجاد URI شرکت نمی‌تواند null باشد");
-
-        var exist = await companyUriRepository.CheckExistUri(command.Uri, command.CompanyId, cancellationToken);
-
-        if (exist)
-            return ApiResponse<int>.Error(400, "Uri مشابه وجود دارد");
+        if (await companyUriRepository.CheckExistUriAsync(command.Uri, cancellationToken))
+            return ApiResponse<int>.Error(400, "Uri تکراری است");
 
         var companyUri = mapper.Map<Domain.Entities.CompanyEntity.CompanyUri>(command);
         if (companyUri == null)
@@ -39,16 +37,14 @@ public class CompanyUriService(
 
         var companyUriId = await companyUriRepository.CreateCompanyUriAsync(companyUri, cancellationToken);
         logger.LogInformation("CompanyUri created successfully with ID: {CompanyUriId}", companyUriId);
-        return ApiResponse<int>.Ok(companyUriId, "CompanyUri created successfully");
+        return ApiResponse<int>.Ok(companyUriId, "URI با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<PagedResult<CompanyUriDto>>> GetAllCompanyUris(GetAllCompanyUrisQuery allCompanyUrisQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanyUriDto>>> GetAllCompanyUrisAsync(GetAllCompanyUrisQuery allCompanyUrisQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyUris is Called");
-        if (allCompanyUrisQuery.PageSize <= 0 || allCompanyUrisQuery.PageNumber <= 0)
-            return ApiResponse<PagedResult<CompanyUriDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (companyUris, totalCount) = await companyUriRepository.GetMatchingAllCompanyUris(
+        var (companyUris, totalCount) = await companyUriRepository.GetAllCompanyUrisAsync(
             allCompanyUrisQuery.SearchPhrase,
             allCompanyUrisQuery.CompanyId,
             allCompanyUrisQuery.Active,
@@ -62,49 +58,48 @@ public class CompanyUriService(
         logger.LogInformation("Retrieved {Count} company URIs", companyUriDtos.Count);
 
         var data = new PagedResult<CompanyUriDto>(companyUriDtos, totalCount, allCompanyUrisQuery.PageSize, allCompanyUrisQuery.PageNumber);
-        return ApiResponse<PagedResult<CompanyUriDto>>.Ok(data, "Company URIs retrieved successfully");
+        return ApiResponse<PagedResult<CompanyUriDto>>.Ok(data, "شناسه های ادرس با موفقیت بازیابی شدند.");
     }
 
     public async Task<ApiResponse<CompanyUriDto>> GetCompanyUriByIdAsync(GetCompanyUriByIdQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCompanyUriById is Called with ID: {Id}", query.Id);
-        if (query.Id <= 0)
-            return ApiResponse<CompanyUriDto>.Error(400, "شناسه URI شرکت باید بزرگ‌تر از صفر باشد");
 
-        var companyUri = await companyUriRepository.GetCompanyUriById(query.Id, cancellationToken);
+        var companyUri = await companyUriRepository.GetCompanyUriByIdAsync(query.Id, false, cancellationToken);
         if (companyUri is null)
-            return ApiResponse<CompanyUriDto>.Error(404, $"URI شرکت با شناسه {query.Id} یافت نشد");
+            return ApiResponse<CompanyUriDto>.Error(404, $"شناسه ادرس نامعتبر است");
 
         var result = mapper.Map<CompanyUriDto>(companyUri);
         logger.LogInformation("CompanyUri retrieved successfully with ID: {Id}", query.Id);
-        return ApiResponse<CompanyUriDto>.Ok(result, "CompanyUri retrieved successfully");
+        return ApiResponse<CompanyUriDto>.Ok(result, "URI با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<object>> DeleteCompanyUriAsync(DeleteCompanyUriCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyUriAsync(DeleteCompanyUriCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("DeleteCompanyUri is Called with ID: {Id}", command.Id);
-        if (command.Id <= 0)
-            return ApiResponse<object>.Error(400, "شناسه URI شرکت باید بزرگ‌تر از صفر باشد");
 
-        var companyUri = await companyUriRepository.GetCompanyUriById(command.Id, cancellationToken);
+
+        var companyUri = await companyUriRepository.GetCompanyUriByIdAsync(command.Id, true, cancellationToken);
         if (companyUri is null)
-            return ApiResponse<object>.Error(404, $"URI شرکت با شناسه {command.Id} یافت نشد");
+            return ApiResponse<int>.Error(404, $"URI شرکت با شناسه {command.Id} یافت نشد");
 
         companyUriRepository.Delete(companyUri);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("CompanyUri soft-deleted successfully with ID: {Id}", command.Id);
-        return ApiResponse<object>.Deleted("CompanyUri deleted successfully");
+        return ApiResponse<int>.Ok(command.Id, "URI با موفقیت حذف شد");
     }
 
-    public async Task<ApiResponse<int>> UpdateCompanyUriAsync(UpdateCompanyUriCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyUriDto>> UpdateCompanyUriAsync(UpdateCompanyUriCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateCompanyUri is Called with {@UpdateCompanyUriCommand}", command);
-        if (command.Id <= 0)
-            return ApiResponse<int>.Error(400, "شناسه URI شرکت باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
 
-        var companyUri = await companyUriRepository.GetCompanyUriById(command.Id, cancellationToken);
-        if (companyUri is null)
-            return ApiResponse<int>.Error(404, $"URI شرکت با شناسه {command.Id} یافت نشد");
+        var companyUri = await companyUriRepository.GetCompanyUriByIdAsync(command.Id, true, cancellationToken);
+        if (companyUri == null)
+            return ApiResponse<CompanyUriDto>.Error(404, $"URI نامعتبر است");
+
+        var exist = await companyUriRepository.CheckExistUriAsync(command.Uri, cancellationToken);
+        if (exist)
+            return ApiResponse<CompanyUriDto>.Error(400, "URI تکراری است");
 
         var updatedCompanyUri = mapper.Map(command, companyUri);
 
@@ -112,6 +107,22 @@ public class CompanyUriService(
         logger.LogInformation("CompanyUri updated successfully with ID: {Id}", command.Id);
 
         var updatedCompanyUriDto = mapper.Map<CompanyUriDto>(updatedCompanyUri);
-        return ApiResponse<int>.Ok(command.Id);
+        return ApiResponse<CompanyUriDto>.Ok(updatedCompanyUriDto, "URI با موفقیت به‌روزرسانی شد");
+    }
+
+    public async Task<ApiResponse<int>> SetCompanyUriActivityStatusAsync(UpdateActiveStateCompanyUriCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetCompanyUriActivityStatus Called with {@UpdateActiveStateCompanyUriCommand}", command);
+
+        var companyUri = await companyUriRepository.GetCompanyUriByIdAsync(command.Id, true, cancellationToken);
+        if (companyUri == null)
+            return ApiResponse<int>.Error(404, $"URI نامعتبر است");
+
+        companyUri.IsActive = !companyUri.IsActive;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("SetCompanyUriActivityStatus Updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت URI با موفقیت به‌روزرسانی شد");
     }
 }

@@ -3,7 +3,7 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateActiveStateCompanyPackageType;
-using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
+using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageTypeName;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCompanyPackageTypes;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
@@ -24,7 +24,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyPackageTypeDto>>>> GetAllCompanyPackageTypes(
         [FromQuery] GetAllCompanyPackageTypesQuery allCompanyPackageTypesQuery, CancellationToken cancellationToken)
     {
-        var response = await companyPackageTypeService.GetAllCompanyPackageTypesByCompany(allCompanyPackageTypesQuery, cancellationToken);
+        var response = await companyPackageTypeService.GetAllCompanyPackageTypesByCompanyAsync(allCompanyPackageTypesQuery, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -37,20 +37,6 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     [FromRoute] int id, CancellationToken cancellationToken)
     {
         var response = await companyPackageTypeService.GetCompanyPackageTypeByIdAsync(new GetCompanyPackageTypeByIdQuery(id), cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
-
-    [HttpPut("{id}")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
-    [PermissionFilter("آپدیت بسته بندی شرکت", "L3")]
-    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageType([FromRoute] int id,
-        [FromBody] UpdateCompanyPackageTypeCommand command, CancellationToken cancellationToken)
-    {
-        command.Id = id;
-        var response = await companyPackageTypeService.UpdateCompanyPackageTypeAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -69,7 +55,6 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     [PermissionFilter("تغییر چیدمان - پایین", "L5")]
-
     public async Task<ActionResult<ApiResponse<object>>> MoveDownCompanyPackageType(
         [FromBody] MoveCompanyPackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
@@ -84,10 +69,10 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter("آپدیت نام", "L6")]
     public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeName([FromRoute] int id,
-    [FromBody] UpdateCompanyPackageTypeNameCommand command, CancellationToken cancellationToken)
+    [FromBody] UpdateCompanyPackageTypeNameAndDescriptionCommand command, CancellationToken cancellationToken)
     {
         command.Id = id;
-        var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAsync(command, cancellationToken);
+        var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAndDescriptionAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -98,7 +83,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyPackageTypeActiveStatus([FromBody] UpdateActiveStateCompanyPackageTypeCommand command, CancellationToken cancellationToken)
     {
-        var response = await companyPackageTypeService.SetCompanyPackageContentActivityStatus(command, cancellationToken);
+        var response = await companyPackageTypeService.SetCompanyPackageContentActivityStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

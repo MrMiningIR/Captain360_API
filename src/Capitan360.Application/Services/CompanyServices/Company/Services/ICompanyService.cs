@@ -11,6 +11,8 @@ namespace Capitan360.Application.Services.CompanyServices.Company.Services;
 
 public interface ICompanyService
 {
+
+
     Task<ApiResponse<int>> CreateCompanyAsync(CreateCompanyCommand company, CancellationToken cancellationToken);
 
     Task<ApiResponse<PagedResult<CompanyDto>>> GetAllCompanies(GetAllCompanyQuery allCompanyQuery,
@@ -20,7 +22,7 @@ public interface ICompanyService
 
     Task<ApiResponse<int>> DeleteCompanyAsync(DeleteCompanyCommand id, CancellationToken cancellationToken);
 
-    Task<ApiResponse<int>> UpdateCompanyAsync(UpdateCompanyCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<CompanyDto>> UpdateCompanyAsync(UpdateCompanyCommand command, CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> SetCompanyActivityStatus(UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken);
 }

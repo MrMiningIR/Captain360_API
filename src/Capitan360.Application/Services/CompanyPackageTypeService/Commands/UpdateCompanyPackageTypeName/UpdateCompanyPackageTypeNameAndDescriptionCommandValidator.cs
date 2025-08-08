@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
+namespace Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageTypeName;
 
-public class UpdateCompanyPackageTypeNameCommandValidator : AbstractValidator<UpdateCompanyPackageTypeNameCommand>
+public class UpdateCompanyPackageTypeNameAndDescriptionCommandValidator : AbstractValidator<UpdateCompanyPackageTypeNameAndDescriptionCommand>
 {
-    public UpdateCompanyPackageTypeNameCommandValidator()
+    public UpdateCompanyPackageTypeNameAndDescriptionCommandValidator()
     {
 
         RuleFor(x => x.OriginalPackageId)

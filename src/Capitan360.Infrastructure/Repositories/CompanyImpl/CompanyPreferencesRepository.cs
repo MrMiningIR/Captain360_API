@@ -8,14 +8,12 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
-
 public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
     : ICompanyPreferencesRepository
 {
     public async Task<int> CreateCompanyPreferencesAsync(CompanyPreferences companyPreferences,
         CancellationToken cancellationToken)
     {
-
         dbContext.CompanyPreferences.Add(companyPreferences);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyPreferences.Id;
@@ -24,41 +22,21 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
     public void Delete(CompanyPreferences companyPreferences, string userId)
     {
         dbContext.Entry(companyPreferences).Property("Deleted").CurrentValue = true;
-
     }
 
-    public async Task<IReadOnlyList<CompanyPreferences>> GetAllCompanyPreferences(CancellationToken cancellationToken)
+    public async Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, bool tracked, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyPreferences.ToListAsync(cancellationToken);
+        return tracked ? await dbContext.CompanyPreferences.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken) :
+                          await dbContext.CompanyPreferences.AsNoTracking().SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
     }
 
-    public async Task<CompanyPreferences?> GetCompanyPreferencesByCompanyId(int id, CancellationToken cancellationToken, bool track = false)
+    public async Task<CompanyPreferences?> GetCompanyPreferencesByIdAsync(int companyPreferencesId, bool tracked, CancellationToken cancellationToken)
     {
-        if (track)
-        {
-            return await dbContext.CompanyPreferences.SingleOrDefaultAsync(cp => cp.CompanyId == id, cancellationToken);
-        }
-        else
-        {
-            return await dbContext.CompanyPreferences.AsNoTracking().SingleOrDefaultAsync(cp => cp.CompanyId == id, cancellationToken);
-        }
+        return tracked ? await dbContext.CompanyPreferences.SingleOrDefaultAsync(a => a.Id == companyPreferencesId, cancellationToken) :
+                       await dbContext.CompanyPreferences.AsNoTracking().SingleOrDefaultAsync(a => a.Id == companyPreferencesId, cancellationToken);
     }
 
-    public async Task<CompanyPreferences?> GetCompanyPreferencesById(int id, CancellationToken cancellationToken, bool track = false)
-    {
-        if (track)
-        {
-            return await dbContext.CompanyPreferences.SingleOrDefaultAsync(cp => cp.Id == id, cancellationToken);
-        }
-        else
-        {
-            return await dbContext.CompanyPreferences.AsNoTracking().SingleOrDefaultAsync(cp => cp.Id == id, cancellationToken);
-        }
-    }
-
-
-
-    public async Task<(IReadOnlyList<CompanyPreferences>, int)> GetMatchingAllCompanyPreferences(string? searchPhrase,
+    public async Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string? searchPhrase,
         int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();

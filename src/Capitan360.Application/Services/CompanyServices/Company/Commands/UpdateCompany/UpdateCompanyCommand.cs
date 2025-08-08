@@ -3,16 +3,16 @@
 public record UpdateCompanyCommand(
 
     int UserCompanyTypeId,
-    string Code,
+    string Code,//
     string PhoneNumber,
     string Name,
     string Description,
     int CompanyTypeId,
     bool IsParentCompany,
     bool Active,
-    int CountryId,
-    int CityId,
-    int ProvinceId,
+    int CountryId,//
+    int CityId,//
+    int ProvinceId,//
     bool UpdateRelatedThings = false
         )
 {

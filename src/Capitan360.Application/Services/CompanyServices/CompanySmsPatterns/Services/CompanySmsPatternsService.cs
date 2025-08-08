@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Services;
 
+
+
 public class CompanySmsPatternsService(
     ILogger<CompanySmsPatternsService> logger,
     IMapper mapper,
@@ -32,10 +34,10 @@ public class CompanySmsPatternsService(
         return ApiResponse<int>.Ok(companySmsPatternsId);
     }
 
-    public async Task<ApiResponse<PagedResult<CompanySmsPatternsDto>>> GetAllCompanySmsPatterns(GetAllCompanySmsPatternsQuery allCompanySmsPatternsQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanySmsPatternsDto>>> GetAllCompanySmsPatternsAsync(GetAllCompanySmsPatternsQuery allCompanySmsPatternsQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanySmsPatterns is Called");
-        var (companySmsPatterns, totalCount) = await companySmsPatternsRepository.GetMatchingAllCompanySmsPatterns(
+        var (companySmsPatterns, totalCount) = await companySmsPatternsRepository.GetAllCompanySmsPatterns(
             allCompanySmsPatternsQuery.SearchPhrase,
             allCompanySmsPatternsQuery.PageSize,
             allCompanySmsPatternsQuery.PageNumber,
@@ -55,22 +57,20 @@ public class CompanySmsPatternsService(
     {
         logger.LogInformation("GetCompanySmsPatternsById is Called with ID: {Id}", getCompanySmsPatternsByIdQuery.Id);
 
-        var companySmsPatterns = await companySmsPatternsRepository.GetCompanySmsPatternsById(getCompanySmsPatternsByIdQuery.Id, false, cancellationToken);
-        if (companySmsPatterns is null)
-            return ApiResponse<CompanySmsPatternsDto>.Error(400, $"الگو با شناسه {getCompanySmsPatternsByIdQuery.Id} یافت نشد");
-        var mappedCompanySmsPattern = mapper.Map<CompanySmsPatternsDto>(companySmsPatterns);
-        if (mappedCompanySmsPattern is null)
-            return ApiResponse<CompanySmsPatternsDto>.Error(400, "خطا در عملیات تبدیل");
+        var companySmsPatterns = await companySmsPatternsRepository.GetCompanySmsPatternsByIdAsync(getCompanySmsPatternsByIdQuery.Id, false, cancellationToken);
+        if (companySmsPatterns == null)
+            return ApiResponse<CompanySmsPatternsDto>.Error(404, $"تنظیمات پیامک شرکت نامعتبر است");
 
+        var result = mapper.Map<CompanySmsPatternsDto>(companySmsPatterns);
         logger.LogInformation("CompanySmsPatterns retrieved successfully with ID: {Id}", getCompanySmsPatternsByIdQuery.Id);
-        return ApiResponse<CompanySmsPatternsDto>.Ok(mappedCompanySmsPattern);
+        return ApiResponse<CompanySmsPatternsDto>.Ok(result, "PackageType retrieved successfully");
     }
 
     public async Task<ApiResponse<int>> DeleteCompanySmsPatternsAsync(DeleteCompanySmsPatternsCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("DeleteCompanySmsPatterns is Called with ID: {Id}", command.Id);
 
-        var companySmsPatterns = await companySmsPatternsRepository.GetCompanySmsPatternsById(command.Id, true, cancellationToken);
+        var companySmsPatterns = await companySmsPatternsRepository.GetCompanySmsPatternsByIdAsync(command.Id, true, cancellationToken);
         if (companySmsPatterns is null)
             return ApiResponse<int>.Error(400, $"الگو با شناسه {command.Id} یافت نشد");
         companySmsPatternsRepository.Delete(companySmsPatterns, Guid.NewGuid().ToString());
@@ -80,19 +80,22 @@ public class CompanySmsPatternsService(
         return ApiResponse<int>.Ok(command.Id);
     }
 
-    public async Task<ApiResponse<int>> UpdateCompanySmsPatternsAsync(UpdateCompanySmsPatternsCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanySmsPatternsDto>> UpdateCompanySmsPatternsAsync(UpdateCompanySmsPatternsCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateCompanySmsPatterns is Called with {@UpdateCompanySmsPatternsCommand}", command);
-        var companySmsPatterns = await companySmsPatternsRepository.GetCompanySmsPatternsById(command.Id, true, cancellationToken);
-        if (companySmsPatterns is null)
-            return ApiResponse<int>.Error(400, $"الگو با شناسه {command.Id} یافت نشد");
-        var mappedCompanySmsPattern = mapper.Map(command, companySmsPatterns);
-        if (mappedCompanySmsPattern is null)
-            return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
+
+        var companySmsPatterns = await companySmsPatternsRepository.GetCompanySmsPatternsByIdAsync(command.Id, true, cancellationToken);
+        if (companySmsPatterns == null)
+            return ApiResponse<CompanySmsPatternsDto>.Error(404, $"تنظیمات پیامک نامعتبر است");
+
+        var mapped = mapper.Map(command, companySmsPatterns);
+        if (mapped == null)
+            return ApiResponse<CompanySmsPatternsDto>.Error(400, "مشکل در عملیات تبدیل");
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("CompanySmsPatterns updated successfully with ID: {Id}", command.Id);
 
-        return ApiResponse<int>.Ok(command.Id);
+        var updatedCompanySmsPatternsCommandDto = mapper.Map<CompanySmsPatternsDto>(command);
+        return ApiResponse<CompanySmsPatternsDto>.Ok(updatedCompanySmsPatternsCommandDto, "تنظیمات پیامک شرکت با موفقیت به‌روزرسانی شد");
     }
 }

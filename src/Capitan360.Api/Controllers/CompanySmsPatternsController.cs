@@ -23,7 +23,7 @@ namespace Capitan360.Api.Controllers
         [PermissionFilter("دریافت لیست پیامک ها", "N1")]
         public async Task<ActionResult<ApiResponse<PagedResult<CompanySmsPatternsDto>>>> GetAllCompanySmsPatterns([FromQuery] GetAllCompanySmsPatternsQuery getAllCompanySmsPatternsQuery, CancellationToken cancellationToken)
         {
-            var response = await companySmsPatternsService.GetAllCompanySmsPatterns(getAllCompanySmsPatternsQuery, cancellationToken);
+            var response = await companySmsPatternsService.GetAllCompanySmsPatternsAsync(getAllCompanySmsPatternsQuery, cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
 

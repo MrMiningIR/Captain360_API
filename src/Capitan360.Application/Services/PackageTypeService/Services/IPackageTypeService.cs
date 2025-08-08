@@ -13,13 +13,26 @@ namespace Capitan360.Application.Services.PackageTypeService.Services;
 
 public interface IPackageTypeService
 {
-    Task<ApiResponse<int>> CreatePackageTypeAsync(CreatePackageTypeCommand packageType, CancellationToken cancellationToken);
-    Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypes(GetAllPackageTypesQuery allPackageTypesQuery, CancellationToken cancellationToken);
-    Task<ApiResponse<PackageTypeDto>> GetPackageTypeByIdAsync(GetPackageTypeByIdQuery id, CancellationToken cancellationToken);
-    Task<ApiResponse<object>> DeletePackageTypeAsync(DeletePackageTypeCommand id, CancellationToken cancellationToken);
-    Task<ApiResponse<PackageTypeDto>> UpdatePackageTypeAsync(UpdatePackageTypeCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> CreatePackageTypeAsync(CreatePackageTypeCommand command,
+     CancellationToken cancellationToken);
 
-    Task<ApiResponse<object>> MovePackageTypeUpAsync(MovePackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken);
-    Task<ApiResponse<object>> MovePackageTypeDownAsync(MovePackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken);
-    Task<ApiResponse<int>> SetPackageTypeActivityStatus(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypesAsync(
+        GetAllPackageTypesQuery allPackageTypesQuery, CancellationToken cancellationToken);
+
+    Task<ApiResponse<PackageTypeDto>> GetPackageTypeByIdAsync(
+        GetPackageTypeByIdQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> DeletePackageTypeAsync(DeletePackageTypeCommand command,
+        CancellationToken cancellationToken);
+
+    Task<ApiResponse<PackageTypeDto>> UpdatePackageTypeAsync(UpdatePackageTypeCommand command,
+        CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> MovePackageTypeUpAsync(MovePackageTypeUpCommand command,
+        CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> MovePackageTypeDownAsync(
+        MovePackageTypeDownCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> SetPackageTypeActivityStatusAsync(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken);
 }

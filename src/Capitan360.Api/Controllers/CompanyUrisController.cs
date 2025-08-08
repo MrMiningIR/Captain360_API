@@ -24,7 +24,7 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyUriDto>>>> GetAllCompanyUris(
         [FromQuery] GetAllCompanyUrisQuery query, CancellationToken cancellationToken)
     {
-        var response = await companyUriService.GetAllCompanyUris(query, cancellationToken);
+        var response = await companyUriService.GetAllCompanyUrisAsync(query, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 

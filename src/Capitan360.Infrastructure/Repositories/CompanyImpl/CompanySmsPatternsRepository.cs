@@ -22,22 +22,23 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
         dbContext.Entry(companySmsPatterns).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<IReadOnlyList<CompanySmsPatterns>> GetAllCompanySmsPatterns(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanySmsPatterns>> GetAllCompanySmsPatternsAsync(CancellationToken cancellationToken)
     {
         return await dbContext.CompanySmsPatterns.ToListAsync(cancellationToken);
     }
 
-    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsById(int id, bool tracked,
+    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool tracked,
         CancellationToken cancellationToken)
     {
-        if (tracked)
-            return await dbContext.CompanySmsPatterns.FirstOrDefaultAsync(csp => csp.Id == id, cancellationToken);
-        else
-
-            return await dbContext.CompanySmsPatterns.AsNoTracking().FirstOrDefaultAsync(csp => csp.Id == id, cancellationToken);
+        return tracked ? await dbContext.CompanySmsPatterns.SingleOrDefaultAsync(a => a.Id == companySmsPatternsId, cancellationToken) :
+                 await dbContext.CompanySmsPatterns.AsNoTracking().SingleOrDefaultAsync(a => a.Id == companySmsPatternsId, cancellationToken);
     }
-
-    public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetMatchingAllCompanySmsPatterns(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, bool tracked, CancellationToken cancellationToken)
+    {
+        return tracked ? await dbContext.CompanySmsPatterns.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken) :
+                         await dbContext.CompanySmsPatterns.AsNoTracking().SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
+    }
+    public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetAllCompanySmsPatterns(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
         var baseQuery = dbContext.CompanySmsPatterns

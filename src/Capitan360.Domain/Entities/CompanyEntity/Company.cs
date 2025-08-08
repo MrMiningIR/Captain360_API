@@ -7,7 +7,6 @@ namespace Capitan360.Domain.Entities.CompanyEntity;
 
 public class Company : Entity
 {
-
     public string Code { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
     public string Name { get; set; } = default!;
@@ -21,9 +20,6 @@ public class Company : Entity
     public int CityId { get; set; }
     public string Description { get; set; } = default!;
 
-
-
-
     // Navigation Properties
 
     public ICollection<UserCompany> UserCompanies { get; set; } = [];
@@ -32,7 +28,6 @@ public class Company : Entity
     public ICollection<CompanyContentType> CompanyContentTypes { get; set; } = [];
     public ICollection<CompanyPackageType> CompanyPackageTypes { get; set; } = [];
 
-    // public ICollection<CompanyAddress> CompanyAddresses { get; set; } = [];
     public ICollection<Address> Addresses { get; set; } = [];
 
     public CompanyCommissions CompanyCommissions { get; set; } = default!;
@@ -41,18 +36,13 @@ public class Company : Entity
     public CompanySmsPatterns CompanySmsPatterns { get; set; } = default!;
     public CompanyType CompanyType { get; set; } = default!;
 
-
     // Navigation Properties
 
     public Area Country { get; set; } = null!;
     public Area Province { get; set; } = null!;
     public Area City { get; set; } = null!;
 
-
     public ICollection<CompanyDomesticPaths> CompanyDomesticPaths { get; set; } = [];
 
     public ICollection<CompanyInsurance> CompanyInsurances { get; set; } = [];
-
-
-
 }

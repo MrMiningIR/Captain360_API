@@ -108,7 +108,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> ChangeContentTypeActiveStatus([FromBody] UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken)
     {
-        var response = await contentTypeService.SetContentActivityStatus(command, cancellationToken);
+        var response = await contentTypeService.SetContentTypeActivityStatus(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

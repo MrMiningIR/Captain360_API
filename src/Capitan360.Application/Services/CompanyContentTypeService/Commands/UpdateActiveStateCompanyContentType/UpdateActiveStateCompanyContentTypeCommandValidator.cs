@@ -7,7 +7,7 @@ namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.Upd
         public UpdateActiveStateCompanyContentTypeValidator()
         {
             RuleFor(x => x.Id)
-                .GreaterThan(0).WithMessage("شناسه محتوی باید بزرگ‌تر از صفر باشد");
+                 .GreaterThan(0).WithMessage("شناسه نوع محتوی شرکت الزامی است");
         }
     }
 }

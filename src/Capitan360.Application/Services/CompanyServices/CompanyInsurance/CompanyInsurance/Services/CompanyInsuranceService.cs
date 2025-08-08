@@ -36,7 +36,7 @@ public class CompanyInsuranceService(
         if (companyType == null)
             return ApiResponse<int>.Error(404, $"نوع شرکت با شناسه {command.CompanyTypeId} یافت نشد");
 
-        var company = await companyRepository.GetCompanyById(command.CompanyId, cancellationToken, false);
+        var company = await companyRepository.GetCompanyByIdAsync(command.CompanyId, cancellationToken, false);
         if (company == null)
             return ApiResponse<int>.Error(404, $"شرکت با شناسه {command.CompanyId} یافت نشد");
 

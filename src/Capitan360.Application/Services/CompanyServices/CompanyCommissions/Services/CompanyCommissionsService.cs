@@ -38,7 +38,7 @@ public class CompanyCommissionsService(
         GetAllCompanyCommissionsQuery allCompanyCommissionsQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyCommissions is Called");
-        var (companyCommissions, totalCount) = await companyCommissionsRepository.GetMatchingAllCompanyCommissions(
+        var (companyCommissions, totalCount) = await companyCommissionsRepository.GetAllCompanyCommissionsAsync(
             allCompanyCommissionsQuery.SearchPhrase,
             allCompanyCommissionsQuery.PageSize,
             allCompanyCommissionsQuery.PageNumber,
@@ -61,7 +61,7 @@ public class CompanyCommissionsService(
         logger.LogInformation("GetCompanyCommissionsById is Called with ID: {Id}", getCompanyCommissionsByIdQuery.Id);
 
         var companyCommissions =
-            await companyCommissionsRepository.GetCompanyCommissionsById(getCompanyCommissionsByIdQuery.Id, false,
+            await companyCommissionsRepository.GetCompanyCommissionsByIdAsync(getCompanyCommissionsByIdQuery.Id, false,
                 cancellationToken);
         if (companyCommissions is null)
             return ApiResponse<CompanyCommissionsDto>.Error(400, $"کمیسیون با شناسه {getCompanyCommissionsByIdQuery.Id} یافت نشد");
@@ -79,7 +79,7 @@ public class CompanyCommissionsService(
         logger.LogInformation("DeleteCompanyCommissions is Called with ID: {Id}", command.Id);
 
         var companyCommissions =
-            await companyCommissionsRepository.GetCompanyCommissionsById(command.Id, true,
+            await companyCommissionsRepository.GetCompanyCommissionsByIdAsync(command.Id, true,
                 cancellationToken);
         if (companyCommissions is null)
             return ApiResponse<int>.Error(400, $"کمیسیون با شناسه {command.Id} یافت نشد");
@@ -94,7 +94,7 @@ public class CompanyCommissionsService(
     {
         logger.LogInformation("UpdateCompanyCommissions is Called with {@UpdateCompanyCommissionsCommand}", command);
         var companyCommissions =
-            await companyCommissionsRepository.GetCompanyCommissionsById(command.Id, true, cancellationToken);
+            await companyCommissionsRepository.GetCompanyCommissionsByIdAsync(command.Id, true, cancellationToken);
         if (companyCommissions is null)
             return ApiResponse<int>.Error(400, $"کمیسیون با شناسه {command.Id} یافت نشد");
 
