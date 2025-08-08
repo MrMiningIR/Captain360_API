@@ -364,3 +364,6 @@ FodyWeavers.xsd
 /src/Capitan360.Infrastructure/Data/Migrations/*.*
 
 /src/Capitan360.Infrastructure/Migrations
+/.notes
+/.vscode
+/.vscode/settings.json
