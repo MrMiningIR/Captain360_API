@@ -66,11 +66,11 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
     [PermissionFilter("آپدیت شرکت", "D5")]
-    public async Task<ActionResult<ApiResponse<int>>> UpdateCompany([FromRoute] int id,
+    public async Task<ActionResult<ApiResponse<CompanyDto?>>> UpdateCompany([FromRoute] int id,
 
         [FromBody] UpdateCompanyCommand updateCompanyCommand,
         CancellationToken cancellationToken)

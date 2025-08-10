@@ -41,10 +41,10 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     }
 
     [HttpPost("MoveUpCompanyPackageType")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter("تغییر چیدمان - بالا", "L4")]
-    public async Task<ActionResult<ApiResponse<object>>> MoveUpCompanyPackageType(
+    public async Task<ActionResult<ApiResponse<int>>> MoveUpCompanyPackageType(
         [FromBody] MoveCompanyPackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
     {
         var response = await companyPackageTypeService.MoveCompanyPackageTypeUpAsync(movePackageTypeUpCommand, cancellationToken);
@@ -52,23 +52,23 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     }
 
     [HttpPost("MoveDownCompanyPackageType")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter("تغییر چیدمان - پایین", "L5")]
-    public async Task<ActionResult<ApiResponse<object>>> MoveDownCompanyPackageType(
+    public async Task<ActionResult<ApiResponse<int>>> MoveDownCompanyPackageType(
         [FromBody] MoveCompanyPackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await companyPackageTypeService.MoveCompanyPackageTypeDownAsync(movePackageTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("UpdateCompanyPackageTypeName/{id}")]
+    [HttpPut("UpdateCompanyPackageTypeNameAndDescription/{id}")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter("آپدیت نام", "L6")]
-    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeName([FromRoute] int id,
+    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeNameAndDescription([FromRoute] int id,
     [FromBody] UpdateCompanyPackageTypeNameAndDescriptionCommand command, CancellationToken cancellationToken)
     {
         command.Id = id;

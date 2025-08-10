@@ -54,11 +54,11 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter("حذف محتوی", "Q4")]
-    public async Task<ActionResult<ApiResponse<object>>> DeleteContentType(
+    public async Task<ActionResult<ApiResponse<int>>> DeleteContentType(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
         var response = await contentTypeService.DeleteContentTypeAsync(new DeleteContentTypeCommand(id), cancellationToken);
@@ -81,10 +81,10 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
 
     [HttpPost("MoveUpContent")]
     [PermissionFilter("تغییر ترتیب - بالا", "Q6")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object>>> MoveUpContentType(MoveContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> MoveUpContentType(MoveContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
     {
         var response = await contentTypeService.MoveContentTypeUpAsync(moveContentTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
@@ -92,10 +92,10 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
 
     [HttpPost("MoveDownContent")]
     [PermissionFilter("تغییر ترتیب - پایین", "Q7")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object>>> MoveDownContentType(MoveContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> MoveDownContentType(MoveContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await contentTypeService.MoveContentTypeDownAsync(moveContentTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);

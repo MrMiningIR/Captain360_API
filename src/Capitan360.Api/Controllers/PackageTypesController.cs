@@ -55,11 +55,11 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
 
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     [PermissionFilter(displayName: "حذف بسته بندی", "U4")]
-    public async Task<ActionResult<ApiResponse<object>>> DeletePackageType(
+    public async Task<ActionResult<ApiResponse<int>>> DeletePackageType(
         [FromRoute] int id, CancellationToken cancellationToken)
     {
         var response = await packageTypeService.DeletePackageTypeAsync(new DeletePackageTypeCommand(id), cancellationToken);
@@ -82,10 +82,10 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
 
     [HttpPost("MoveUpPackage")]
     [PermissionFilter("تغییر ترتیب - بالا", "U6")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object>>> MoveUpPackagePackageType(MovePackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> MoveUpPackagePackageType(MovePackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
     {
         var response = await packageTypeService.MovePackageTypeUpAsync(movePackageTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
@@ -93,10 +93,10 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
 
     [HttpPost("MoveDownPackage")]
     [PermissionFilter("تغییر ترتیب - بالا", "U7")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object>>> MoveDownPackagePackageType(MovePackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<int>>> MoveDownPackagePackageType(MovePackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await packageTypeService.MovePackageTypeDownAsync(movePackageTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);

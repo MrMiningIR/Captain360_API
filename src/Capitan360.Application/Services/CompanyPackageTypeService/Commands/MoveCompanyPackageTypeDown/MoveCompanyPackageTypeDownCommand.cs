@@ -1,3 +1,3 @@
 ﻿namespace Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
 
-public record MoveCompanyPackageTypeDownCommand(int CompanyId, int CompanyPackageTypeId);
+public record MoveCompanyPackageTypeDownCommand(int CompanyPackageTypeId);
