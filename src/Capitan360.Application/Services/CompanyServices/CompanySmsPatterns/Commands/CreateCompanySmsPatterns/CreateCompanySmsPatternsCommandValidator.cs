@@ -7,90 +7,111 @@ public class CreateCompanySmsPatternsCommandValidator : AbstractValidator<Create
     public CreateCompanySmsPatternsCommandValidator()
     {
         RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+    .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.PatternSmsIssueSender)
-            .MaximumLength(500).WithMessage("الگوی SMS صدور فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsIssueSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsIssueSender))
+            .WithMessage("الگوی SMS صدور فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsIssueReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS صدور گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsIssueReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsIssueReceiver))
+            .WithMessage("الگوی SMS صدور گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsIssueCompany)
-            .MaximumLength(500).WithMessage("الگوی SMS صدور شرکت نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsIssueCompany != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsIssueCompany))
+            .WithMessage("الگوی SMS صدور شرکت نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsSendSenderPeakSender)
-            .MaximumLength(500).WithMessage("الگوی SMS ارسال فرستنده در اوج فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsSendSenderPeakSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsSendSenderPeakSender))
+            .WithMessage("الگوی SMS ارسال پیک شرکت فرستنده برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsSendSenderPeakReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS ارسال فرستنده در اوج گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsSendSenderPeakReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsSendSenderPeakReceiver))
+            .WithMessage("الگوی SMS ارسال پیک شرکت فرستنده برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsPackageInCompanySender)
-            .MaximumLength(500).WithMessage("الگوی SMS بسته در شرکت فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsPackageInCompanySender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsPackageInCompanySender))
+            .WithMessage("الگوی SMS رسیدن بسته به شرکت فرستنده برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsPackageInCompanyReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS بسته در شرکت گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsPackageInCompanyReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsPackageInCompanyReceiver))
+            .WithMessage("الگوی SMS رسیدن بسته به شرکت فرستنده برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsManifestSender)
-            .MaximumLength(500).WithMessage("الگوی SMS مانیفست فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsManifestSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsManifestSender))
+            .WithMessage("الگوی SMS مانیفست برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsManifestReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS مانیفست گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsManifestReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsManifestReceiver))
+            .WithMessage("الگوی SMS مانیفست برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsReceivedInReceiverCompanySender)
-            .MaximumLength(500).WithMessage("الگوی SMS دریافت در شرکت گیرنده فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsReceivedInReceiverCompanySender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsReceivedInReceiverCompanySender))
+            .WithMessage("الگوی SMS دریافت در شرکت گیرنده برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsReceivedInReceiverCompanyReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS دریافت در شرکت گیرنده گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsReceivedInReceiverCompanyReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsReceivedInReceiverCompanyReceiver))
+            .WithMessage("الگوی SMS دریافت در شرکت گیرنده برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsSendReceiverPeakSender)
-            .MaximumLength(500).WithMessage("الگوی SMS ارسال گیرنده در اوج فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsSendReceiverPeakSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsSendReceiverPeakSender))
+            .WithMessage("الگوی SMS ارسال پیک شرکت گیرنده برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsSendReceiverPeakReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS ارسال گیرنده در اوج گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsSendReceiverPeakReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsSendReceiverPeakReceiver))
+            .WithMessage("الگوی SMS ارسال پیک شرکت گیرنده برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsDeliverSender)
-            .MaximumLength(500).WithMessage("الگوی SMS تحویل فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsDeliverSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsDeliverSender))
+            .WithMessage("الگوی SMS تحویل برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsDeliverReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS تحویل گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsDeliverReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsDeliverReceiver))
+            .WithMessage("الگوی SMS تحویل برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsCancelSender)
-            .MaximumLength(500).WithMessage("الگوی SMS لغو فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsCancelSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsCancelSender))
+            .WithMessage("الگوی SMS لغو برای فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsCancelReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS لغو گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsCancelReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsCancelReceiver))
+            .WithMessage("الگوی SMS لغو برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsCancelByCustomerSender)
-            .MaximumLength(500).WithMessage("الگوی SMS لغو توسط مشتری فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsCancelByCustomerSender != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsCancelByCustomerSender))
+            .WithMessage("الگوی SMS لغو توسط مشتری برای شرکت فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsCancelByCustomerReceiver)
-            .MaximumLength(500).WithMessage("الگوی SMS لغو توسط مشتری گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsCancelByCustomerReceiver != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsCancelByCustomerReceiver))
+            .WithMessage("الگوی SMS لغو توسط مشتری برای گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsCancelByCustomerCompany)
-            .MaximumLength(500).WithMessage("الگوی SMS لغو توسط مشتری شرکت نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsCancelByCustomerCompany != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsCancelByCustomerCompany))
+            .WithMessage("الگوی SMS لغو توسط مشتری برای شرکت نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsSendManifestReceiverCompany)
-            .MaximumLength(500).WithMessage("الگوی SMS ارسال مانیفست شرکت گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => x.PatternSmsSendManifestReceiverCompany != null);
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrWhiteSpace(x.PatternSmsSendManifestReceiverCompany))
+            .WithMessage("الگوی SMS ارسال مانیفست برای شرکت گیرنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
     }
 }

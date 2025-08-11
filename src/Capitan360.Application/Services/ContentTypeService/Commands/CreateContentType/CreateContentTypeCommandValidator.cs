@@ -7,10 +7,10 @@ public class CreateContentTypeValidator : AbstractValidator<CreateContentTypeCom
     public CreateContentTypeValidator()
     {
         RuleFor(x => x.CompanyTypeId)
-             .GreaterThan(0).WithMessage("شناسه نوع شرکت باید بزرگ‌تر از صفر باشد");
+    .GreaterThan(0).WithMessage("شناسه نوع شرکت باید بزرگ‌تر از صفر باشد");
 
         RuleFor(x => x.ContentTypeName)
-           .NotEmpty().WithMessage("نام محتوی الزامی است")
+            .NotEmpty().WithMessage("نام محتوی الزامی است")
             .MinimumLength(4).WithMessage("نام محتوی نمی‌تواند کمتر از 4 کاراکتر باشد")
             .MaximumLength(50).WithMessage("نام محتوی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 

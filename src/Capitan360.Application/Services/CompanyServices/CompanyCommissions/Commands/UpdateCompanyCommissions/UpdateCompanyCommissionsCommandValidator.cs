@@ -7,30 +7,24 @@ public class UpdateCompanyCommissionsCommandValidator : AbstractValidator<Update
     public UpdateCompanyCommissionsCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه کمیسیون باید مشخص باشد");
+     .GreaterThan(0).WithMessage("شناسه کمیسیون باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoWebSite)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سایت کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد")
-            .When(x => x.CommissionFromCaptainCargoWebSite.HasValue);
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سایت جستجوی کاپیتان 360 باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCompanyWebSite)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سایت شرکت باید بین 0 و 9999999999999999.99 باشد")
-            .When(x => x.CommissionFromCompanyWebSite.HasValue);
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سایت شرکت باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoWebService)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سرویس کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد")
-            .When(x => x.CommissionFromCaptainCargoWebService.HasValue);
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سرویس کاپیتان 360 باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCompanyWebService)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سرویس شرکت باید بین 0 و 9999999999999999.99 باشد")
-            .When(x => x.CommissionFromCompanyWebService.HasValue);
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سرویس شرکت باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoPanel)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون پنل کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد")
-            .When(x => x.CommissionFromCaptainCargoPanel.HasValue);
+            .GreaterThan(0).WithMessage("کمیسیون صدور در پنل کاربری کاپیتان 360 باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoDesktop)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون دسکتاپ کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد")
-            .When(x => x.CommissionFromCaptainCargoDesktop.HasValue);
+            .GreaterThan(0).WithMessage("کمیسیون صدور در از طریق نرم افزار کاپیتان کارگو باید مشخص باشد");
     }
 }

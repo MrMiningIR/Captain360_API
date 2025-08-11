@@ -9,11 +9,11 @@ namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
         public override void Configure(EntityTypeBuilder<CompanyPreferences> builder)
         {
             base.Configure(builder);
-            builder.Property(ca => ca.CaptainCargoName).HasMaxLength(30);
-            builder.Property(ca => ca.CaptainCargoCode).HasMaxLength(30);
-            builder.Property(c => c.EconomicCode).HasMaxLength(50);
-            builder.Property(c => c.NationalId).HasMaxLength(50);
-            builder.Property(c => c.RegistrationId).HasMaxLength(50);
+            builder.Property(ca => ca.CaptainCargoName).IsRequired(false).HasMaxLength(30);
+            builder.Property(ca => ca.CaptainCargoCode).IsRequired(false).HasMaxLength(30);
+            builder.Property(c => c.EconomicCode).IsRequired(false).HasMaxLength(50);
+            builder.Property(c => c.NationalId).IsRequired(false).HasMaxLength(50);
+            builder.Property(c => c.RegistrationId).IsRequired(false).HasMaxLength(50);
             builder.Property(c => c.Tax).HasColumnType("decimal(5, 2)");
             builder.Property(x => x.ActiveIssueDomesticWaybill).HasDefaultValue(false);
             builder.Property(x => x.ActiveShowInSearchEngine).HasDefaultValue(false);

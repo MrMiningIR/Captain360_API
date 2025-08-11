@@ -18,7 +18,7 @@ public class Company : Entity
     public int ProvinceId { get; set; }
 
     public int CityId { get; set; }
-    public string Description { get; set; } = default!;
+    public string? Description { get; set; }
 
     // Navigation Properties
 

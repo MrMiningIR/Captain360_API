@@ -5,7 +5,7 @@ namespace Capitan360.Domain.Repositories.CompanyRepo;
 
 public interface ICompanyCommissionsRepository
 {
-    Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions, string userId, CancellationToken cancellationToken);
+    Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions, CancellationToken cancellationToken);
 
     void Delete(CompanyCommissions companyCommissions);
 

@@ -2,7 +2,7 @@
 
 public record UpdateCompanySmsPatternsCommand(
 
-    int? CompanyId,
+
     string? PatternSmsIssueSender,
     string? PatternSmsIssueReceiver,
     string? PatternSmsIssueCompany,

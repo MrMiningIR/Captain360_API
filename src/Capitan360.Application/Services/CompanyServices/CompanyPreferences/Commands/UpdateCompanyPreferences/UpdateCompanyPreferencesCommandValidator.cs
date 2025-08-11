@@ -7,37 +7,35 @@ public class UpdateCompanyPreferencesCommandValidator : AbstractValidator<Update
     public UpdateCompanyPreferencesCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
-
-        RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد")
-           ;
+     .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
 
         RuleFor(x => x.EconomicCode)
-            .NotEmpty().WithMessage("کد اقتصادی نمی‌تواند خالی باشد")
-            .MaximumLength(50).WithMessage("کد اقتصادی نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            ;
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.EconomicCode))
+            .WithMessage("کد اقتصادی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.NationalId)
-            .NotEmpty().WithMessage("شناسه ملی نمی‌تواند خالی باشد")
-            .MaximumLength(50).WithMessage("شناسه ملی نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            ;
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.NationalId))
+            .WithMessage("شناسه ملی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.RegistrationId)
-            .NotEmpty().WithMessage("شناسه ثبت نمی‌تواند خالی باشد")
-            .MaximumLength(50).WithMessage("شناسه ثبت نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            ;
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.RegistrationId))
+            .WithMessage("شناسه ثبت نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.CaptainCargoName)
-            .NotEmpty().WithMessage("نام کاپیتان کارگو نمی‌تواند خالی باشد")
-            .MaximumLength(30).WithMessage("نام کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد")
-            ;
+            .MaximumLength(30)
+            .When(x => !string.IsNullOrWhiteSpace(x.CaptainCargoName))
+            .WithMessage("نام کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
+
         RuleFor(x => x.CaptainCargoCode)
-            .NotEmpty().WithMessage("کد کاپیتان کارگو نمی‌تواند خالی باشد")
-            .MaximumLength(30).WithMessage("کد کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد")
-            ;
+            .MaximumLength(30)
+            .When(x => !string.IsNullOrWhiteSpace(x.CaptainCargoCode))
+            .WithMessage("کد کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
+
         RuleFor(x => x.Tax)
-            .InclusiveBetween(0m, 999.99m).WithMessage("مالیات باید بین 0 و 999.99 باشد")
-         ;
+            .InclusiveBetween(0m, 100.00m).WithMessage("مالیات باید بین 0 و 100.00 باشد");
+        ;
     }
 }

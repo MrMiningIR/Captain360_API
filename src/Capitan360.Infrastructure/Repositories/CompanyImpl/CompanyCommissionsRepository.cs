@@ -10,7 +10,8 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyCommissionsRepository
 {
-    public async Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions, string userId, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions,
+        CancellationToken cancellationToken)
     {
         dbContext.CompanyCommissions.Add(companyCommissions);
         await unitOfWork.SaveChangesAsync(cancellationToken);

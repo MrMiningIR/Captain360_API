@@ -8,30 +8,28 @@ public class UpdateCompanyCommandValidator : AbstractValidator<UpdateCompanyComm
     public UpdateCompanyCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه شرکت باید مشخص باشد");
-
-        RuleFor(x => x.Code)
-            .NotEmpty().WithMessage("کد شرکت نمی‌تواند خالی باشد")
-            .MaximumLength(50).WithMessage("کد شرکت نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            .When(x => x.Code != null); // فقط اگه مقدار داره
+     .GreaterThan(0).WithMessage("شناسه شرکت باید مشخص باشد");
 
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("شماره تلفن نمی‌تواند خالی باشد")
-            .Matches(@"^\+?\d{10,15}$").WithMessage("شماره تلفن باید عددی و بین 10 تا 15 رقم باشد")
-            .When(x => x.PhoneNumber != null);
+            .NotEmpty()
+            .WithMessage("شماره تلفن شرکت اجباری است")
+            .Matches(@"^\d{11}$")
+            .WithMessage("شماره تلفن شرکت باید 11 کارکتر باشد");
 
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("نام شرکت نمی‌تواند خالی باشد")
-            .MaximumLength(100).WithMessage("نام شرکت نمی‌تواند بیشتر از 100 کاراکتر باشد")
-            .When(x => x.Name != null);
+            .NotEmpty()
+            .WithMessage("نام شرکت اجباری است")
+            .MinimumLength(4)
+            .WithMessage("کد شرکت نمی‌تواند کمتر از 4 کاراکتر باشد")
+            .MaximumLength(50)
+            .WithMessage("نام شرکت نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("توضیحات نمی‌تواند خالی باشد")
-            .When(x => x.Description != null);
+            .MaximumLength(500)
+            .WithMessage("توضحیحات نباید بیشتر از 500 کاراکتر باشد")
+            .When(x => !string.IsNullOrEmpty(x.Description));
 
-        RuleFor(x => x.CompanyTypeId)
-            .GreaterThan(0).WithMessage("نوع شرکت باید مشخص باشد")
-           ;
+
 
 
     }

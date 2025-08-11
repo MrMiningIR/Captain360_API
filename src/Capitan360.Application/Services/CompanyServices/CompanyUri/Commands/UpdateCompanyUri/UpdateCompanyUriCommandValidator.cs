@@ -6,18 +6,16 @@ public class UpdateCompanyUriCommandValidator : AbstractValidator<UpdateCompanyU
 {
     public UpdateCompanyUriCommandValidator()
     {
-        //RuleFor(x => x.Id)
-        //    .GreaterThan(0).WithMessage("شناسه URI باید مشخص باشد");
-
-
+        RuleFor(x => x.Id)
+    .GreaterThan(0).WithMessage("شناسه URI باید مشخص باشد");
 
         RuleFor(x => x.Uri)
-            .NotEmpty().WithMessage("آدرس URI نمی‌تواند خالی باشد")
+            .NotEmpty().WithMessage("آدرس URI الزامی است")
             .MaximumLength(100).WithMessage("آدرس URI نمی‌تواند بیشتر از 100 کاراکتر باشد")
-            ;
+            .MinimumLength(4).WithMessage("آدرس URI نمی‌تواند کمتر از 4 کاراکتر باشد");
 
         RuleFor(x => x.Description)
-            .MaximumLength(100).WithMessage("توضیحات نمی‌تواند بیشتر از 100 کاراکتر باشد")
-            .When(x => string.IsNullOrEmpty(x.Description));
+            .MaximumLength(500).WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد")
+            .When(x => !string.IsNullOrEmpty(x.Description));
     }
 }

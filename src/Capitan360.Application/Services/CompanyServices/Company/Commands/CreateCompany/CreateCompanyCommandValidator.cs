@@ -6,52 +6,52 @@ public class CreateCompanyCommandValidator : AbstractValidator<CreateCompanyComm
 {
     public CreateCompanyCommandValidator()
     {
-        //_companyTypeRepository = companyTypeRepository;
-
         RuleFor(x => x.Code)
             .NotEmpty()
-            .WithMessage("Code is required")
-            .MaximumLength(20)
-            .WithMessage("Code must not exceed 100 characters")
+            .WithMessage("کد شرکت اجباری است")
+            .MaximumLength(4)
+            .WithMessage("نام شرکت نمی‌تواند بیشتر از 4 کاراکتر باشد")
             .MinimumLength(4)
-            .WithMessage("Code must be at least 5 characters");
+            .WithMessage("کد شرکت نمی‌تواند کمتر از 4 کاراکتر باشد");
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
-            .WithMessage("PhoneNumber is required")
+            .WithMessage("شماره تلفن شرکت اجباری است")
             .Matches(@"^\d{11}$")
-            .WithMessage("PhoneNumber must be 11 digits");
+            .WithMessage("شماره تلفن شرکت باید 11 کارکتر باشد");
 
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Name is required")
-            .MinimumLength(5)
-            .WithMessage("Name must be at least 6 characters")
+            .WithMessage("نام شرکت اجباری است")
+            .MinimumLength(4)
+            .WithMessage("کد شرکت نمی‌تواند کمتر از 4 کاراکتر باشد")
             .MaximumLength(50)
-            .WithMessage("Code must not exceed 100 characters");
+            .WithMessage("نام شرکت نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.CompanyTypeId)
             .NotEmpty()
             .GreaterThan(0)
-            .WithMessage("CompanyType is required");
+            .WithMessage("نوع شرکت اجباری است");
 
-        ;
-        RuleFor(x => x.CityId)
+        RuleFor(x => x.CountryId)
             .NotEmpty()
             .GreaterThan(0)
-            .WithMessage("CityId is required")
-            ;
+            .WithMessage("کشور شرکت اجباری است");
+
         RuleFor(x => x.ProvinceId)
             .NotEmpty()
             .GreaterThan(0)
-            .WithMessage("ProvinceId is required")
-            ;
+            .WithMessage("استان شرکت اجباری است");
+
+        RuleFor(x => x.CityId)
+            .NotEmpty()
+            .GreaterThan(0)
+            .WithMessage("شهر شرکت اجباری است");
+
         RuleFor(x => x.Description)
-        .NotEmpty()
-        .WithMessage("توضحیحات شرکت الزامی است")
         .MaximumLength(500)
         .WithMessage("توضحیحات نباید بیشتر از 500 کاراکتر باشد")
-        .MinimumLength(10)
-        .WithMessage("توضحیحات باید حداقل 10 کاراکتر باشد");
+        .When(x => !string.IsNullOrEmpty(x.Description));
+
     }
 }

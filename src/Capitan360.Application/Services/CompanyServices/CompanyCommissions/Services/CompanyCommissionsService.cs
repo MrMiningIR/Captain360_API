@@ -29,7 +29,7 @@ public class CompanyCommissionsService(
         if (companyCommissions is null)
             return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
 
-        var companyCommissionsId = await companyCommissionsRepository.CreateCompanyCommissionsAsync(companyCommissions, Guid.NewGuid().ToString(), cancellationToken);
+        var companyCommissionsId = await companyCommissionsRepository.CreateCompanyCommissionsAsync(companyCommissions, cancellationToken);
         logger.LogInformation("CompanyCommissions created successfully with ID: {CompanyCommissionsId}", companyCommissionsId);
         return ApiResponse<int>.Ok(companyCommissionsId);
     }

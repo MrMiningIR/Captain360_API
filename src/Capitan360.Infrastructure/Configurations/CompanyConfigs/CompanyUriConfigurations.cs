@@ -11,7 +11,7 @@ namespace Capitan360.Infrastructure.Configurations.CompanyConfigs
 
             base.Configure(builder);
             builder.Property(ur => ur.Uri).IsRequired().HasMaxLength(100);
-            builder.Property(ur => ur.Description).HasMaxLength(100).IsUnicode();
+            builder.Property(ur => ur.Description).HasMaxLength(500).IsUnicode();
             builder.Property(ur => ur.IsActive).IsRequired().HasDefaultValue(true);
 
             builder.HasOne(ur => ur.Company)

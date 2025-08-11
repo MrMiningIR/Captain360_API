@@ -7,6 +7,6 @@ public class DeleteContentTypeCommandValidator : AbstractValidator<DeleteContent
     public DeleteContentTypeCommandValidator()
     {
         RuleFor(x => x.Id)
-          .GreaterThan(0).WithMessage("شناسه محتوی باید بزرگ‌تر از صفر باشد");
+    .GreaterThan(0).WithMessage("شناسه محتوی باید بزرگ‌تر از صفر باشد");
     }
 }

@@ -27,7 +27,8 @@ public class CompanyService(
    IContentTypeRepository contentTypeRepository,
    IPackageTypeRepository packageTypeRepository,
    ICompanyPreferencesRepository preferencesRepository,
-   ICompanySmsPatternsRepository companySmsPatternsRepository
+   ICompanySmsPatternsRepository companySmsPatternsRepository,
+   ICompanyCommissionsRepository commissionsRepository
 
     ) : ICompanyService
 {
@@ -72,10 +73,16 @@ public class CompanyService(
             }, cancellationToken);
 
         await companySmsPatternsRepository.CreateCompanySmsPatternsAsync(
-    new Domain.Entities.CompanyEntity.CompanySmsPatterns
-    {
-        CompanyId = companyId,
-    }, cancellationToken);
+        new Domain.Entities.CompanyEntity.CompanySmsPatterns
+        {
+            CompanyId = companyId,
+        }, cancellationToken);
+
+        await commissionsRepository.CreateCompanyCommissionsAsync(
+            new Domain.Entities.CompanyEntity.CompanyCommissions()
+            {
+                CompanyId = companyId
+            }, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
@@ -137,6 +144,9 @@ public class CompanyService(
     {
         logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", command);
 
+
+        // we need UserCompanyTypeId to get access to Super admin or regular users! 
+
         var company = await companyRepository.GetCompanyByIdAsync(command.Id, cancellationToken, true, command.UserCompanyTypeId);
         if (company is null)
             return ApiResponse<CompanyDto>.Error(400, $"شرکت نامعتبر است");
@@ -144,12 +154,13 @@ public class CompanyService(
         if (await companyRepository.CheckExistCompanyNameAsync(command.Name, command.Id, cancellationToken))
             return ApiResponse<CompanyDto>.Error(400, "نام شرکت تکراری است");
 
-        await unitOfWork.BeginTransactionAsync(cancellationToken);
+
 
         var updatedCompany = mapper.Map(command, company);
         if (updatedCompany == null)
             return ApiResponse<CompanyDto>.Error(400, "خطا در عملیات تبدیل");
 
+        #region Comment
         //if (command.UpdateRelatedThings)
         //{
         //    // Delete
@@ -180,10 +191,10 @@ public class CompanyService(
         //    {
         //        await companyPackageTypesRepository.AddPackageTypesToCompanyPackageTypeAsync(relatedPackageTypes, company.Id, cancellationToken);
         //    }
-        //}
+        //} 
+        #endregion
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        await unitOfWork.CommitTransactionAsync(cancellationToken);
         logger.LogInformation("Company updated successfully with ID: {Id}", command.Id);
 
         var updatedCompanyDto = mapper.Map<CompanyDto>(updatedCompany);

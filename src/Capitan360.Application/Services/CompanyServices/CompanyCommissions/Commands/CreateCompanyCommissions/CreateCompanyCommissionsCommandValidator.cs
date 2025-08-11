@@ -7,24 +7,24 @@ public class CreateCompanyCommissionsCommandValidator : AbstractValidator<Create
     public CreateCompanyCommissionsCommandValidator()
     {
         RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+    .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.CommissionFromCaptainCargoWebSite)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سایت کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد");
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سایت جستجوی کاپیتان 360 باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCompanyWebSite)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سایت شرکت باید بین 0 و 9999999999999999.99 باشد");
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سایت شرکت باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoWebService)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سرویس کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد");
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سرویس کاپیتان 360 باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCompanyWebService)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون وب‌سرویس شرکت باید بین 0 و 9999999999999999.99 باشد");
+            .GreaterThan(0).WithMessage("کمیسیون صدور در وب سرویس شرکت باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoPanel)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون پنل کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد");
+            .GreaterThan(0).WithMessage("کمیسیون صدور در پنل کاربری کاپیتان 360 باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoDesktop)
-            .InclusiveBetween(0m, 9999999999999999.99m).WithMessage("کمیسیون دسکتاپ کاپیتان کارگو باید بین 0 و 9999999999999999.99 باشد");
+            .GreaterThan(0).WithMessage("کمیسیون صدور در از طریق نرم افزار کاپیتان کارگو باید مشخص باشد");
     }
 }

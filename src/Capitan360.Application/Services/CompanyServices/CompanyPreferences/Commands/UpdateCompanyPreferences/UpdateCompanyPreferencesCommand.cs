@@ -2,7 +2,7 @@
 
 public record UpdateCompanyPreferencesCommand(
 
-    int CompanyId,
+
     string EconomicCode,
     string NationalId,
     string RegistrationId,
