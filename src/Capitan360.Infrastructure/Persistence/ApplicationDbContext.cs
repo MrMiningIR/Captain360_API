@@ -2,7 +2,9 @@
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.AddressEntity;
 using Capitan360.Domain.Entities.AuthorizationEntity;
+using Capitan360.Domain.Entities.CompanyContentEntity;
 using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.CompanyPackageEntity;
 using Capitan360.Domain.Entities.ContentEntity;
 using Capitan360.Domain.Entities.PackageEntity;
 using Capitan360.Domain.Entities.UserEntity;

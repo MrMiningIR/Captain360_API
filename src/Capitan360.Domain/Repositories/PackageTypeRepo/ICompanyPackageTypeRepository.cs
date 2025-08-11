@@ -1,5 +1,6 @@
 ﻿using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
+using Capitan360.Domain.Entities.CompanyPackageEntity;
 using Capitan360.Domain.Entities.PackageEntity;
 
 namespace Capitan360.Domain.Repositories.PackageTypeRepo;

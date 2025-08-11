@@ -46,11 +46,11 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         switch (active)
         {
             case 1:
-                baseQuery = baseQuery.Where(x => x.IsActive);
+                baseQuery = baseQuery.Where(x => x.Active);
                 break;
 
             case 0:
-                baseQuery = baseQuery.Where(x => !x.IsActive);
+                baseQuery = baseQuery.Where(x => !x.Active);
                 break;
         }
 
@@ -59,7 +59,7 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyUri, object>>>
             {
                 { nameof(CompanyUri.Id), cu => cu.Id },
-                { nameof(CompanyUri.IsActive), cu => cu.IsActive },
+                { nameof(CompanyUri.Active), cu => cu.Active },
                 { nameof(CompanyUri.CompanyId), cu => cu.CompanyId }
             };
 

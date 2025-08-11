@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Entities.ContentEntity;
+﻿using Capitan360.Domain.Entities.CompanyContentEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,9 +15,9 @@ namespace Capitan360.Infrastructure.Configurations.ContentConfigs
                  .IsUnique()
                  .HasFilter("[Deleted] = 0");
 
-            builder.Property(x => x.ContentTypeName).HasMaxLength(50).IsUnicode().IsRequired();
+            builder.Property(x => x.CompanyContentTypeName).HasMaxLength(50).IsUnicode().IsRequired();
 
-            builder.Property(x => x.OrderContentType);
+            builder.Property(x => x.OrderCompanyContentType);
             builder.Property(x => x.Active);
 
             builder.HasOne(ca => ca.Company)

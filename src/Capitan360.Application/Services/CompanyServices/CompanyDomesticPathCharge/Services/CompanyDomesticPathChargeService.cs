@@ -385,7 +385,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
             tableData.Add(new PathChargeTableDataDto
             {
                 ContentTypeId = content.ContentTypeId,
-                ContentTypeName = content.ContentTypeName ?? "-*-",
+                ContentTypeName = content.CompanyContentTypeName ?? "-*-",
                 CompanyDomesticPathId = query.CompanyDomesticPathId,
                 Id = 0
             });

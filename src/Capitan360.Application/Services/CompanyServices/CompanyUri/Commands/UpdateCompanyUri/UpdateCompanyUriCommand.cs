@@ -3,7 +3,7 @@
 public record UpdateCompanyUriCommand(
      string Uri,
    string? Description,
-    bool IsActive)
+    bool Active)
 {
     public int Id { get; set; }
 };

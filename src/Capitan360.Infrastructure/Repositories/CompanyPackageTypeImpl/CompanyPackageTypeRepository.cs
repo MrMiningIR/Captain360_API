@@ -1,6 +1,7 @@
 ﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
+using Capitan360.Domain.Entities.CompanyPackageEntity;
 using Capitan360.Domain.Entities.PackageEntity;
 using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Capitan360.Infrastructure.Persistence;
@@ -26,7 +27,7 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
         }
 
         baseQuery = baseQuery.Where(pt => string.IsNullOrEmpty(searchPhraseLower)
-                         || pt.PackageTypeName.ToLower().Contains(searchPhraseLower));
+                         || pt.CompanyPackageTypeName.ToLower().Contains(searchPhraseLower));
 
         baseQuery = active switch
         {
@@ -39,12 +40,12 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
 
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyPackageType, object>>>
         {
-            { nameof(CompanyPackageType.PackageTypeName), pt => pt.PackageTypeName! },
+            { nameof(CompanyPackageType.CompanyPackageTypeName), pt => pt.CompanyPackageTypeName! },
             { nameof(CompanyPackageType.Active), pt => pt.Active! },
-            { nameof(CompanyPackageType.OrderPackageType), pt => pt.OrderPackageType! }
+            { nameof(CompanyPackageType.OrderCompanyPackageType), pt => pt.OrderCompanyPackageType! }
         };
 
-        sortBy ??= nameof(CompanyPackageType.OrderPackageType);
+        sortBy ??= nameof(CompanyPackageType.OrderCompanyPackageType);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
@@ -75,16 +76,16 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task<bool> CheckExistCompanyPackageTypeNameAsync(string companyPackageTypeName, int? currentCompanyPackageTypeId, int companyId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyPackageTypes.AnyAsync(pt => pt.CompanyId == companyId && (currentCompanyPackageTypeId == null || pt.Id != currentCompanyPackageTypeId) && pt.PackageTypeName.ToLower() == companyPackageTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.CompanyPackageTypes.AnyAsync(pt => pt.CompanyId == companyId && (currentCompanyPackageTypeId == null || pt.Id != currentCompanyPackageTypeId) && pt.CompanyPackageTypeName.ToLower() == companyPackageTypeName.ToLower().Trim(), cancellationToken);
     }
 
     public async Task MoveCompanyPackageTypeUpAsync(int companyPackageTypeId, CancellationToken cancellationToken)
     {
         var currentCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(p => p.Id == companyPackageTypeId, cancellationToken: cancellationToken);
-        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyPackageType!.CompanyId && p.OrderPackageType == currentCompanyPackageType.OrderPackageType - 1, cancellationToken: cancellationToken);
+        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyPackageType!.CompanyId && p.OrderCompanyPackageType == currentCompanyPackageType.OrderCompanyPackageType - 1, cancellationToken: cancellationToken);
 
-        nextCompanyPackageType!.OrderPackageType++;
-        currentCompanyPackageType!.OrderPackageType--;
+        nextCompanyPackageType!.OrderCompanyPackageType++;
+        currentCompanyPackageType!.OrderCompanyPackageType--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -92,10 +93,10 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
     public async Task MoveCompanyPackageTypeDownAsync(int companyPackageTypeId, CancellationToken cancellationToken)
     {
         var currentCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(p => p.Id == companyPackageTypeId, cancellationToken: cancellationToken);
-        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyPackageType!.CompanyId && p.OrderPackageType == currentCompanyPackageType.OrderPackageType + 1, cancellationToken: cancellationToken);
+        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyPackageType!.CompanyId && p.OrderCompanyPackageType == currentCompanyPackageType.OrderCompanyPackageType + 1, cancellationToken: cancellationToken);
 
-        nextCompanyPackageType!.OrderPackageType--;
-        currentCompanyPackageType!.OrderPackageType++;
+        nextCompanyPackageType!.OrderCompanyPackageType--;
+        currentCompanyPackageType!.OrderCompanyPackageType++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -115,8 +116,8 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
                 CompanyId = companyId,
                 PackageTypeId = packageType.Id,
                 Active = packageType.Active,
-                PackageTypeName = packageType.PackageTypeName,
-                OrderPackageType = packageType.OrderPackageType,
+                CompanyPackageTypeName = packageType.PackageTypeName,
+                OrderCompanyPackageType = packageType.OrderPackageType,
             });
         }
 
@@ -132,8 +133,8 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
                 Active = packageType.Active,
                 CompanyId = companyId,
                 PackageTypeId = packageType.Id,
-                PackageTypeName = packageType.PackageTypeName,
-                OrderPackageType = packageType.OrderPackageType
+                CompanyPackageTypeName = packageType.PackageTypeName,
+                OrderCompanyPackageType = packageType.OrderPackageType
             });
         }
 

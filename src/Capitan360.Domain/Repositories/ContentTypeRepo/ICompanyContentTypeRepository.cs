@@ -1,5 +1,6 @@
 ﻿using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
+using Capitan360.Domain.Entities.CompanyContentEntity;
 using Capitan360.Domain.Entities.ContentEntity;
 
 namespace Capitan360.Domain.Repositories.ContentTypeRepo;

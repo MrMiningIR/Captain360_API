@@ -3,7 +3,7 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
-using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeName;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeNameAndDescription;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;
@@ -49,7 +49,7 @@ public class CompanyContentTypeService(
         if (companyContentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        if (companyContentType.OrderContentType == 1)
+        if (companyContentType.OrderCompanyContentType == 1)
             return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
 
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
@@ -69,7 +69,7 @@ public class CompanyContentTypeService(
         if (companyContentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        if (companyContentType.OrderContentType == 1)
+        if (companyContentType.OrderCompanyContentType == 1)
             return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
 
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);

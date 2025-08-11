@@ -8,7 +8,7 @@ public class GetAllCompanyUrisQueryValidator : AbstractValidator<GetAllCompanyUr
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
         nameof(CompanyUriDto.Uri),
-        nameof(CompanyUriDto.IsActive),
+        nameof(CompanyUriDto.Active),
         nameof(CompanyUriDto.CompanyId)
     ];
 

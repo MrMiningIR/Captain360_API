@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Entities.PackageEntity;
+﻿using Capitan360.Domain.Entities.CompanyPackageEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,9 +15,9 @@ public class CompanyPackageTypeConfigurations : BaseEntityConfiguration<CompanyP
              .HasDatabaseName("IX_CompanyPackageType_Active")
              .IsUnique()
              .HasFilter("[Deleted] = 0");
-        builder.Property(x => x.PackageTypeName).IsRequired().HasMaxLength(50).IsUnicode();
+        builder.Property(x => x.CompanyPackageTypeName).IsRequired().HasMaxLength(50).IsUnicode();
 
-        builder.Property(x => x.OrderPackageType).HasDefaultValue(0);
+        builder.Property(x => x.OrderCompanyPackageType).HasDefaultValue(0);
         builder.Property(x => x.Active).HasDefaultValue(true);
 
         builder.HasOne(ca => ca.Company)

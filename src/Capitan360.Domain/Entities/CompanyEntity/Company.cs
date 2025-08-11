@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.AddressEntity;
-using Capitan360.Domain.Entities.ContentEntity;
-using Capitan360.Domain.Entities.PackageEntity;
+using Capitan360.Domain.Entities.CompanyContentEntity;
+using Capitan360.Domain.Entities.CompanyPackageEntity;
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 

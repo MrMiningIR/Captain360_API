@@ -118,7 +118,7 @@ public class CompanyUriService(
         if (companyUri == null)
             return ApiResponse<int>.Error(404, $"URI نامعتبر است");
 
-        companyUri.IsActive = !companyUri.IsActive;
+        companyUri.Active = !companyUri.Active;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

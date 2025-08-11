@@ -485,7 +485,7 @@ public class CompanyInsuranceChargeService(
             tableData.Add(new CompanyInsuranceChargeTableDataDto
             {
                 ContentTypeId = content.ContentTypeId,
-                ContentTypeName = content.ContentTypeName ?? "-*-",
+                ContentTypeName = content.CompanyContentTypeName ?? "-*-",
 
                 Id = 0
             });

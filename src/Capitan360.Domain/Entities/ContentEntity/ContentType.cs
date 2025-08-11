@@ -1,4 +1,5 @@
 ﻿using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Entities.CompanyContentEntity;
 using Capitan360.Domain.Entities.CompanyEntity;
 
 namespace Capitan360.Domain.Entities.ContentEntity;

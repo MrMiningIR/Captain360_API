@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeName;
+namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeNameAndDescription;
 
 public class UpdateCompanyContentTypeNameAndDescriptionCommandValidator : AbstractValidator<UpdateCompanyContentTypeNameAndDescriptionCommand>
 {

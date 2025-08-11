@@ -3,7 +3,7 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
 using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
-using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeName;
+using Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeNameAndDescription;
 using Capitan360.Application.Services.CompanyContentTypeService.Dtos;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCompanyContentTypes;
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;

@@ -4,4 +4,4 @@ public record CreateCompanyUriCommand(
     int CompanyId,
     string Uri,
     string? Description,
-    bool IsActive);
+    bool Active);
