@@ -27,13 +27,13 @@ namespace Capitan360.Api.Controllers
             return Ok(userMoadian);
         }
 
-        [HttpGet("EntranceType")]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<EntranceTypeDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<EntranceTypeDto>>), StatusCodes.Status400BadRequest)]
-        public ActionResult<ApiResponse<PagedResult<EntranceTypeDto>>> GetEntranceTypes()
+        [HttpGet("EntranceFeeType")]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<EntranceFeeTypeDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<EntranceFeeTypeDto>>), StatusCodes.Status400BadRequest)]
+        public ActionResult<ApiResponse<PagedResult<EntranceFeeTypeDto>>> GetEntranceTypes()
         {
-            var entranceType = identityService.GetEntranceTypeList();
-            return Ok(entranceType);
+            var entranceFeeType = identityService.GetEntranceTypeList();
+            return Ok(entranceFeeType);
         }
 
         [HttpGet("PathStructTypes")]

@@ -1,22 +1,54 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
+﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.AddressEntity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 
 public class CompanyDomesticPaths : Entity
 {
+    [ForeignKey(nameof(Company))]
+    public int CompanyId { get; set; }
+    public Company? Company { get; set; }
+
+    [ForeignKey(nameof(SourceCountry))]
+    public int SourceCountryId { get; set; }
+
+    public Area SourceCountry { get; set; } = null!;
+
+    [ForeignKey(nameof(SourceProvince))]
+    public int SourceProvinceId { get; set; }
+
+    public Area SourceProvince { get; set; } = null!;
+
+    [ForeignKey(nameof(SourceCity))]
+    public int SourceCityId { get; set; }
+
+    public Area SourceCity { get; set; } = null!;
+
+    [ForeignKey(nameof(DestinationCountry))]
+    public int DestinationCountryId { get; set; }
+
+    public Area DestinationCountry { get; set; } = null!;
+
+    [ForeignKey(nameof(DestinationProvince))]
+    public int DestinationProvinceId { get; set; }
+
+    public Area DestinationProvince { get; set; } = null!;
+
+    [ForeignKey(nameof(DestinationCity))]
+    public int DestinationCityId { get; set; }
+
+    public Area DestinationCity { get; set; } = null!;
 
     public int Active { get; set; }
 
     public string Description { get; set; } = default!;
-    public string DescriptionForSearch { get; set; } = default!;
+    public string? DescriptionForSearch { get; set; }
 
     public long EntranceFee { get; set; }
-    public decimal EntranceWeight { get; set; }
+    public decimal EntranceFeeWeight { get; set; }
 
-    public int EntranceType { get; set; }
+    public int EntranceFeeType { get; set; }
 
     public bool ExitStampBillMinWeightIsFixed { get; set; }
 
@@ -37,40 +69,9 @@ public class CompanyDomesticPaths : Entity
     public bool ExitDistributionMinWeightIsFixed { get; set; }
 
     public bool ExitExtraDestinationMinWeightIsFixed { get; set; }
-    
-
-
-    public int CompanyId { get; set; }
-    public Company? Company { get; set; }
-
-    [ForeignKey(nameof(SourceCountry))]
-    public int SourceCountryId { get; set; }
-    public Area SourceCountry { get; set; } = null!;
-
-    [ForeignKey(nameof(SourceProvince))]
-    public int SourceProvinceId { get; set; }
-    public Area SourceProvince { get; set; } = null!;
-
-    [ForeignKey(nameof(SourceCity))]
-    public int SourceCityId { get; set; }
-    public Area SourceCity { get; set; } = null!;
-
-    [ForeignKey(nameof(DestinationCountry))]
-    public int DestinationCountryId { get; set; }
-    public Area DestinationCountry { get; set; } = null!;
-
-    [ForeignKey(nameof(DestinationProvince))]
-    public int DestinationProvinceId { get; set; }
-    public Area DestinationProvince { get; set; } = null!;
-
-    [ForeignKey(nameof(DestinationCity))]
-    public int DestinationCityId { get; set; }
-    public Area DestinationCity { get; set; } = null!;
-
 
     public ICollection<CompanyDomesticPathStructPrices> CompanyDomesticPathStructPrices { get; set; } = [];
     public ICollection<CompanyDomesticPathCharge> CompanyDomesticPathCharges { get; set; } = [];
     public ICollection<CompanyDomesticPathStructPriceMunicipalAreas> CompanyDomesticPathStructPriceMunicipalAreas { get; set; } = [];
     public ICollection<CompanyDomesticPathChargeContentType> CompanyDomesticPathChargeContentTypes { get; set; } = [];
-
 }

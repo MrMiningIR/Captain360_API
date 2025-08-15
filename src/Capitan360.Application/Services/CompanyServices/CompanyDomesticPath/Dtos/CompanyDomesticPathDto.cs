@@ -1,6 +1,4 @@
-﻿using Capitan360.Domain.Constants;
-
-namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Dtos;
+﻿namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Dtos;
 
 public class CompanyDomesticPathDto
 {
@@ -9,8 +7,8 @@ public class CompanyDomesticPathDto
     public string Description { get; set; } = default!;
     public string DescriptionForSearch { get; set; } = default!;
     public long EntranceFee { get; set; }
-    public decimal EntranceWeight { get; set; }
-    public int EntranceType { get; set; }
+    public decimal EntranceFeeWeight { get; set; }
+    public int EntranceFeeType { get; set; }
     public int CompanyId { get; set; }
     public int SourceCountryId { get; set; }
     public string SourceCountryName { get; set; } = default!;

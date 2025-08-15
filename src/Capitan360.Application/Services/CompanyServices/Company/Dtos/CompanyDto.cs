@@ -4,15 +4,18 @@ public class CompanyDto
 {
     public int Id { get; set; }
     public string Code { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
+    public string MobileCounter { get; set; } = default!;
     public string Name { get; set; } = default!;
     public int CompanyTypeId { get; set; }
     public string CompanyTypeName { get; set; } = default!;
     public bool IsParentCompany { get; set; }
     public bool Active { get; set; }
-    public string Description { get; set; } = default!;
 
     public int CountryId { get; set; }
+    public string CountryName { get; set; } = default!;
     public int ProvinceId { get; set; }
+    public string ProvinceName { get; set; } = default!;
     public int CityId { get; set; }
+    public string CityName { get; set; } = default!;
+    public string Description { get; set; } = default!;
 }

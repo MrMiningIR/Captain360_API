@@ -86,8 +86,8 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
                 { nameof(CompanyDomesticPaths.Description), cu => cu.Description },
                 { nameof(CompanyDomesticPaths.Active), cu => cu.Active },
                 { nameof(CompanyDomesticPaths.EntranceFee), cu => cu.EntranceFee },
-                { nameof(CompanyDomesticPaths.EntranceWeight), cu => cu.EntranceWeight },
-                { nameof(CompanyDomesticPaths.EntranceType), cu => cu.EntranceType }
+                { nameof(CompanyDomesticPaths.EntranceFeeWeight), cu => cu.EntranceFeeWeight },
+                { nameof(CompanyDomesticPaths.EntranceFeeType), cu => cu.EntranceFeeType }
             };
 
             var selectedColumn = columnsSelector[sortBy];

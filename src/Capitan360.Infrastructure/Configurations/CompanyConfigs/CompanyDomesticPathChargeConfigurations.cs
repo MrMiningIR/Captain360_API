@@ -12,7 +12,7 @@ public class CompanyDomesticPathChargeConfigurations : BaseEntityConfiguration<C
         base.Configure(builder);
         builder.Property(x => x.Weight).IsRequired();
         builder.Property(x => x.WeightType).IsRequired();
-        builder.Property(x => x.Price).IsRequired();
+        builder.Property(x => x.PriceDirect).IsRequired();
         builder.Property(x => x.ContentTypeChargeBaseNormal).HasDefaultValue(false);
         builder.Property(x => x.ContentTypeId).HasDefaultValue(0);
 

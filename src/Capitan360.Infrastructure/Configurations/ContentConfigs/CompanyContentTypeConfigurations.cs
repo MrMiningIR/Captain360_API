@@ -17,8 +17,8 @@ namespace Capitan360.Infrastructure.Configurations.ContentConfigs
 
             builder.Property(x => x.CompanyContentTypeName).HasMaxLength(50).IsUnicode().IsRequired();
 
-            builder.Property(x => x.OrderCompanyContentType);
-            builder.Property(x => x.Active);
+            builder.Property(x => x.CompanyContentTypeOrder);
+            builder.Property(x => x.CompanyContentTypeActive);
 
             builder.HasOne(ca => ca.Company)
                           .WithMany(ca => ca.CompanyContentTypes)

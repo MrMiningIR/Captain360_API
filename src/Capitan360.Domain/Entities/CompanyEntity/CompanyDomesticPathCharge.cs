@@ -10,10 +10,10 @@ public class CompanyDomesticPathCharge : Entity
     public int CompanyDomesticPathId { get; set; }
     public CompanyDomesticPaths? CompanyDomesticPaths { get; set; }
     public int ContentTypeId { get; set; }
-    
+
     public WeightType WeightType { get; set; }
     public int Weight { get; set; }
-    public long Price { get; set; }
+    public long PriceDirect { get; set; }
 
     public bool ContentTypeChargeBaseNormal { get; set; }
 

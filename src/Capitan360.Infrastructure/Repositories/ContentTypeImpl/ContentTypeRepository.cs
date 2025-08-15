@@ -43,8 +43,8 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
         baseQuery = active switch
         {
-            1 => baseQuery.Where(a => a.Active),
-            0 => baseQuery.Where(a => !a.Active),
+            1 => baseQuery.Where(a => a.ContentTypeActive),
+            0 => baseQuery.Where(a => !a.ContentTypeActive),
             _ => baseQuery
         };
 
@@ -53,11 +53,11 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         var columnsSelector = new Dictionary<string, Expression<Func<ContentType, object>>>
         {
             { nameof(ContentType.ContentTypeName), ct => ct.ContentTypeName },
-            { nameof(ContentType.Active), ct => ct.Active },
-            { nameof(ContentType.OrderContentType), ct => ct.OrderContentType }
+            { nameof(ContentType.ContentTypeActive), ct => ct.ContentTypeActive },
+            { nameof(ContentType.ContentTypeOrder), ct => ct.ContentTypeOrder }
         };
 
-        sortBy ??= nameof(ContentType.OrderContentType);
+        sortBy ??= nameof(ContentType.ContentTypeOrder);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
@@ -86,10 +86,10 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     public async Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken)
     {
         var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.Id == contentTypeId, cancellationToken: cancellationToken);
-        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType!.CompanyTypeId && p.OrderContentType == currentContentType.OrderContentType - 1, cancellationToken: cancellationToken);
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType!.CompanyTypeId && p.ContentTypeOrder == currentContentType.ContentTypeOrder - 1, cancellationToken: cancellationToken);
 
-        nextContentType!.OrderContentType++;
-        currentContentType!.OrderContentType--;
+        nextContentType!.ContentTypeOrder++;
+        currentContentType!.ContentTypeOrder--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -97,10 +97,10 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     public async Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken)
     {
         var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.Id == contentTypeId, cancellationToken: cancellationToken);
-        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType!.CompanyTypeId && p.OrderContentType == currentContentType.OrderContentType + 1, cancellationToken: cancellationToken);
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType!.CompanyTypeId && p.ContentTypeOrder == currentContentType.ContentTypeOrder + 1, cancellationToken: cancellationToken);
 
-        nextContentType!.OrderContentType--;
-        currentContentType!.OrderContentType++;
+        nextContentType!.ContentTypeOrder--;
+        currentContentType!.ContentTypeOrder++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -111,8 +111,8 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             .Select(x => new CompanyContentTypeTransfer()
             {
                 Id = x.Id,
-                Active = x.Active,
-                OrderContentType = x.OrderContentType,
+                Active = x.ContentTypeActive,
+                OrderContentType = x.ContentTypeOrder,
                 ContentTypeName = x.ContentTypeName,
                 CompanyContentTypeDescription = x.ContentTypeDescription,
             }).ToListAsync(cancellationToken);

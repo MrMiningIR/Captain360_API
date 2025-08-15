@@ -11,11 +11,11 @@ namespace Capitan360.Domain.Entities.PackageEntity
 
         public string PackageTypeName { get; set; } = default!;
 
-        public bool Active { get; set; }
+        public bool PackageTypeActive { get; set; }
 
         public string? PackageTypeDescription { get; set; }
 
-        public int OrderPackageType { get; set; }
+        public int PackageTypeOrder { get; set; }
 
         public ICollection<CompanyPackageType> CompanyPackageTypes { get; set; } = [];
     }

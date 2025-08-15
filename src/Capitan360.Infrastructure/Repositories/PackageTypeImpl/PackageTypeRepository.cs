@@ -43,8 +43,8 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
         baseQuery = active switch
         {
-            1 => baseQuery.Where(a => a.Active),
-            0 => baseQuery.Where(a => !a.Active),
+            1 => baseQuery.Where(a => a.PackageTypeActive),
+            0 => baseQuery.Where(a => !a.PackageTypeActive),
             _ => baseQuery
         };
 
@@ -53,11 +53,11 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         var columnsSelector = new Dictionary<string, Expression<Func<PackageType, object>>>
         {
             { nameof(PackageType.PackageTypeName), pt => pt.PackageTypeName },
-            { nameof(PackageType.Active), pt => pt.Active },
-            { nameof(PackageType.OrderPackageType), pt => pt.OrderPackageType }
+            { nameof(PackageType.PackageTypeActive), pt => pt.PackageTypeActive },
+            { nameof(PackageType.PackageTypeOrder), pt => pt.PackageTypeOrder }
         };
 
-        sortBy ??= nameof(PackageType.OrderPackageType);
+        sortBy ??= nameof(PackageType.PackageTypeOrder);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
@@ -86,10 +86,10 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     public async Task MovePackageTypeUpAsync(int packageTypeId, CancellationToken cancellationToken)
     {
         var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.Id == packageTypeId, cancellationToken: cancellationToken);
-        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentPackageType.CompanyTypeId && p.OrderPackageType == currentPackageType.OrderPackageType - 1, cancellationToken: cancellationToken);
+        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentPackageType.CompanyTypeId && p.PackageTypeOrder == currentPackageType.PackageTypeOrder - 1, cancellationToken: cancellationToken);
 
-        nextPackageType.OrderPackageType++;
-        currentPackageType.OrderPackageType--;
+        nextPackageType.PackageTypeOrder++;
+        currentPackageType.PackageTypeOrder--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -97,10 +97,10 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     public async Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken)
     {
         var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.Id == packageTypeId, cancellationToken: cancellationToken);
-        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentPackageType.CompanyTypeId && p.OrderPackageType == currentPackageType.OrderPackageType + 1, cancellationToken: cancellationToken);
+        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentPackageType.CompanyTypeId && p.PackageTypeOrder == currentPackageType.PackageTypeOrder + 1, cancellationToken: cancellationToken);
 
-        nextPackageType.OrderPackageType--;
-        currentPackageType.OrderPackageType++;
+        nextPackageType.PackageTypeOrder--;
+        currentPackageType.PackageTypeOrder++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -111,8 +111,8 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             .Select(x => new CompanyPackageTypeTransfer()
             {
                 Id = x.Id,
-                Active = x.Active,
-                OrderPackageType = x.OrderPackageType,
+                Active = x.PackageTypeActive,
+                OrderPackageType = x.PackageTypeOrder,
                 PackageTypeName = x.PackageTypeName,
                 CompanyPackageTypeDescription = x.PackageTypeDescription,
 

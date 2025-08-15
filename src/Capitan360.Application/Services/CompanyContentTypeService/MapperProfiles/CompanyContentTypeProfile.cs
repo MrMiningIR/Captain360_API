@@ -13,7 +13,7 @@ public class CompanyContentTypeProfile : Profile
              .ForMember(dest => dest.CompanyContentTypeName, opt => opt.MapFrom(src => src.CompanyContentTypeName))
  .ForMember(dest => dest.CompanyContentTypeDescription, opt => opt.MapFrom(src => src.CompanyContentTypeDescription));
         CreateMap<CompanyContentType, CompanyContentTypeDto>()
-            .ForMember(dest => dest.NewCompanyContentTypeName, opt => opt.MapFrom(src => src.CompanyContentTypeName))
-            .ForMember(dest => dest.CompanyContentTypeName, opt => opt.MapFrom(src => src.ContentType.ContentTypeName));
+            .ForMember(dest => dest.CompanyContentTypeName, opt => opt.MapFrom(src => src.CompanyContentTypeName))
+            .ForMember(dest => dest.ContentTypeName, opt => opt.MapFrom(src => src.ContentType.ContentTypeName));
     }
 }

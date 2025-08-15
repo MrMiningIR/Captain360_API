@@ -45,42 +45,42 @@ public class CompanyContentTypeService(
 
     public async Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveCompanyContentTypeUpCommand command, CancellationToken cancellationToken)
     {
-        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.CompanyContentTypeId, false, cancellationToken);
+        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, false, cancellationToken);
         if (companyContentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        if (companyContentType.OrderCompanyContentType == 1)
-            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+        if (companyContentType.CompanyContentTypeOrder == 1)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await companyContentTypeRepository.MoveCompanyContentTypeUpAsync(command.CompanyContentTypeId, cancellationToken);
+        await companyContentTypeRepository.MoveCompanyContentTypeUpAsync(command.Id, cancellationToken);
         logger.LogInformation(
-            "ContentType moved up successfully., ContentTypeId: {CompanyContentTypeId}", command.CompanyContentTypeId);
-        return ApiResponse<int>.Ok(command.CompanyContentTypeId, "محتوی با موفقیت جابجا شد");
+            "ContentType moved up successfully., ContentTypeId: {CompanyContentTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "محتوی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<int>> MoveContentTypeDownAsync(MoveCompanyContentTypeDownCommand command, CancellationToken cancellationToken)
     {
-        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.CompanyContentTypeId, false, cancellationToken);
+        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, false, cancellationToken);
         if (companyContentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        if (companyContentType.OrderCompanyContentType == 1)
-            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+        if (companyContentType.CompanyContentTypeOrder == 1)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.CompanyContentTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await companyContentTypeRepository.MoveCompanyContentTypeDownAsync(command.CompanyContentTypeId, cancellationToken);
+        await companyContentTypeRepository.MoveCompanyContentTypeDownAsync(command.Id, cancellationToken);
         logger.LogInformation(
-            "ContentType moved up successfully., ContentTypeId: {CompanyContentTypeId}", command.CompanyContentTypeId);
-        return ApiResponse<int>.Ok(command.CompanyContentTypeId, "محتوی با موفقیت جابجا شد");
+            "ContentType moved up successfully., ContentTypeId: {CompanyContentTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "محتوی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<CompanyContentTypeDto>> GetCompanyContentTypeByIdAsync(GetCompanyContentTypeByIdQuery query,
@@ -129,7 +129,7 @@ public class CompanyContentTypeService(
         if (companyContent is null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        companyContent.Active = !companyContent.Active;
+        companyContent.CompanyContentTypeActive = !companyContent.CompanyContentTypeActive;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

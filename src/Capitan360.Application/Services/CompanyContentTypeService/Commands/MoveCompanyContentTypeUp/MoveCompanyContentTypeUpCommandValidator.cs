@@ -7,7 +7,7 @@ public class MoveCompanyContentTypeUpCommandValidator : AbstractValidator<MoveCo
     public MoveCompanyContentTypeUpCommandValidator()
     {
 
-        RuleFor(x => x.CompanyContentTypeId)
+        RuleFor(x => x.Id)
             .GreaterThan(0).WithMessage("شناسه محتوی باید بزرگ‌تر از صفر باشد");
     }
 }

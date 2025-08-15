@@ -2,14 +2,14 @@
 
 namespace Capitan360.Domain.Constants;
 
-public enum EntranceType
+public enum EntranceFeeType
 {
     [Display(Name = "بدون هزینه ورودی")]
 
     WithoutEntrance = 1,
-     [Display(Name = "کم شدن وزن ورودی")]
-    WithEntranceMinusEntranceWeight = 2,
-     [Display(Name = "کم نشدن وزن ورودی")]
+    [Display(Name = "کم شدن وزن ورودی")]
+    WithEntranceMinusEntranceFeeWeight = 2,
+    [Display(Name = "کم نشدن وزن ورودی")]
 
-    WithEntrancePlusEntranceWeight = 3
+    WithEntrancePlusEntranceFeeWeight = 3
 }

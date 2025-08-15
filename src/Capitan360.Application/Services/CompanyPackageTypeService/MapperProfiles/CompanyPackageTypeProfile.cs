@@ -13,7 +13,7 @@ public class CompanyPackageTypeProfile : Profile
             .ForMember(dest => dest.CompanyPackageTypeDescription, opt => opt.MapFrom(src => src.CompanyPackageTypeDescription))
 .ForMember(dest => dest.CompanyPackageTypeName, opt => opt.MapFrom(src => src.CompanyPackageTypeName)); ;
         CreateMap<CompanyPackageType, CompanyPackageTypeDto>()
-            .ForMember(dest => dest.NewCompanyPackageTypeName, opt => opt.MapFrom(src => src.CompanyPackageTypeName))
-            .ForMember(dest => dest.CompanyPackageTypeName, opt => opt.MapFrom(src => src.PackageType.PackageTypeName));
+            .ForMember(dest => dest.CompanyPackageTypeName, opt => opt.MapFrom(src => src.CompanyPackageTypeName))
+            .ForMember(dest => dest.PackageTypeName, opt => opt.MapFrom(src => src.PackageType.PackageTypeName));
     }
 }

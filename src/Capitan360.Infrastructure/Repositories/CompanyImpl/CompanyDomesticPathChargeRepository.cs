@@ -1,14 +1,14 @@
-﻿using System.Linq.Expressions;
-using Capitan360.Domain.Abstractions;
+﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
-public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork): ICompanyDomesticPathChargeRepository
+public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyDomesticPathChargeRepository
 {
     public async Task<List<int>> CreateByListAsync(List<CompanyDomesticPathCharge> items, CancellationToken cancellationToken)
     {
@@ -41,10 +41,10 @@ public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext,
 
     public void Delete(CompanyDomesticPathCharge price)
     {
-         dbContext.Entry(price).Property("Deleted").CurrentValue = true;
+        dbContext.Entry(price).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<(IReadOnlyList<CompanyDomesticPathCharge>, int)> GetMatchingAllCompanyDomesticPathCharge(string? searchPhrase, int companyDomesticPathId, 
+    public async Task<(IReadOnlyList<CompanyDomesticPathCharge>, int)> GetMatchingAllCompanyDomesticPathCharge(string? searchPhrase, int companyDomesticPathId,
         int pageSize,
         int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
@@ -58,11 +58,11 @@ public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext,
             )
 
             .Where(p => companyDomesticPathId == 0 || p.CompanyDomesticPathId == companyDomesticPathId);
-         
-            //.Where(p => searchPhraseLower == null ||
-            //    p.Weight.ToString().Contains(searchPhraseLower) ||
-               
-            //    p.WeightType.ToString().ToLower().Contains(searchPhraseLower));
+
+        //.Where(p => searchPhraseLower == null ||
+        //    p.Weight.ToString().Contains(searchPhraseLower) ||
+
+        //    p.WeightType.ToString().ToLower().Contains(searchPhraseLower));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -71,7 +71,7 @@ public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext,
             var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPathCharge, object>>>
             {
                 { nameof(CompanyDomesticPathCharge.Weight), p => p.Weight },
-                { nameof(CompanyDomesticPathCharge.Price), p => p.Price },
+                { nameof(CompanyDomesticPathCharge.PriceDirect), p => p.PriceDirect },
                 { nameof(CompanyDomesticPathCharge.WeightType), p => p.WeightType }
             };
 
@@ -104,7 +104,7 @@ public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext,
 
     public async Task<CompanyDomesticPathCharge?> GetCompanyCompanyDomesticPathChargeById(int id, CancellationToken cancellationToken)
     {
-         return await dbContext.CompanyDomesticPathCharges.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        return await dbContext.CompanyDomesticPathCharges.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task<List<CompanyDomesticPathCharge>> GetExistingStructPaths(List<int> ids, CancellationToken cancellationToken)

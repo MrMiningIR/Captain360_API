@@ -3,6 +3,8 @@
 public class CompanyPreferencesDto
 {
     public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public string? CompanyName { get; set; }
     public string EconomicCode { get; set; } = default!;
     public string NationalId { get; set; } = default!;
     public string RegistrationId { get; set; } = default!;
@@ -32,5 +34,5 @@ public class CompanyPreferencesDto
     public bool ExitRevenue3InTax { get; set; }
     public bool ExitDistributionInTax { get; set; }
     public bool ExitExtraDestinationInTax { get; set; }
-    public int CompanyId { get; set; }
+
 }

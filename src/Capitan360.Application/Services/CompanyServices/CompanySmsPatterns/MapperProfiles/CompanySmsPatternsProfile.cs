@@ -11,7 +11,7 @@ public class CompanySmsPatternsProfile : Profile
     {
         CreateMap<CreateCompanySmsPatternsCommand, Domain.Entities.CompanyEntity.CompanySmsPatterns>();
         CreateMap<UpdateCompanySmsPatternsCommand, Domain.Entities.CompanyEntity.CompanySmsPatterns>()
-            .ForMember(dest => dest.CompanyId, opt => opt.Condition(src => src.CompanyId.HasValue))
+            // .ForMember(dest => dest.CompanyId, opt => opt.Condition(src => src.CompanyId.HasValue))
             .ForMember(dest => dest.PatternSmsIssueSender, opt => opt.Condition(src => src.PatternSmsIssueSender != null))
             .ForMember(dest => dest.PatternSmsIssueReceiver, opt => opt.Condition(src => src.PatternSmsIssueReceiver != null))
             .ForMember(dest => dest.PatternSmsIssueCompany, opt => opt.Condition(src => src.PatternSmsIssueCompany != null))

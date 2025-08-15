@@ -1,3 +1,3 @@
 ﻿namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeDown;
 
-public record MoveCompanyContentTypeDownCommand(int CompanyContentTypeId);
+public record MoveCompanyContentTypeDownCommand(int Id);

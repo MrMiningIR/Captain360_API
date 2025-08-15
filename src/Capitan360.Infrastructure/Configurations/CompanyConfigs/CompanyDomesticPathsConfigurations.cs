@@ -31,9 +31,9 @@ public class CompanyDomesticPathsConfigurations : BaseEntityConfiguration<Compan
         builder.Property(x => x.ExitExtraDestinationMinWeightIsFixed).HasDefaultValue(false);
 
 
-        builder.Property(x => x.EntranceWeight).HasColumnType("decimal(10, 2)").HasDefaultValue(0);
+        builder.Property(x => x.EntranceFeeWeight).HasColumnType("decimal(10, 2)").HasDefaultValue(0);
         builder.Property(x => x.EntranceFee).HasDefaultValue(0);
-        builder.Property(x => x.EntranceType).IsRequired();
+        builder.Property(x => x.EntranceFeeType).IsRequired();
 
 
 

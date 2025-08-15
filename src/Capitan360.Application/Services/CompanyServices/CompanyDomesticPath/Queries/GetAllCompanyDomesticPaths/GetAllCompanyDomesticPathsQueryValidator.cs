@@ -10,8 +10,8 @@ public class GetAllCompanyDomesticPathsQueryValidator : AbstractValidator<GetAll
         nameof(CompanyDomesticPathDto.Description),
         nameof(CompanyDomesticPathDto.Active),
         nameof(CompanyDomesticPathDto.EntranceFee),
-        nameof(CompanyDomesticPathDto.EntranceWeight),
-        nameof(CompanyDomesticPathDto.EntranceType)
+        nameof(CompanyDomesticPathDto.EntranceFeeWeight),
+        nameof(CompanyDomesticPathDto.EntranceFeeType)
     };
 
     public GetAllCompanyDomesticPathsQueryValidator()

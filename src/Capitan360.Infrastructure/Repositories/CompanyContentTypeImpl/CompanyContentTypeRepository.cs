@@ -29,8 +29,8 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
 
         baseQuery = active switch
         {
-            1 => baseQuery.Where(a => a.Active),
-            0 => baseQuery.Where(a => !a.Active),
+            1 => baseQuery.Where(a => a.CompanyContentTypeActive),
+            0 => baseQuery.Where(a => !a.CompanyContentTypeActive),
             _ => baseQuery
         };
 
@@ -39,11 +39,11 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyContentType, object>>>
         {
             { nameof(CompanyContentType.CompanyContentTypeName), ct => ct.CompanyContentTypeName! },
-            { nameof(CompanyContentType.Active), ct => ct.Active! },
-            { nameof(CompanyContentType.OrderCompanyContentType), ct => ct.OrderCompanyContentType! }
+            { nameof(CompanyContentType.CompanyContentTypeActive), ct => ct.CompanyContentTypeActive! },
+            { nameof(CompanyContentType.CompanyContentTypeOrder), ct => ct.CompanyContentTypeOrder! }
         };
 
-        sortBy ??= nameof(CompanyContentType.OrderCompanyContentType);
+        sortBy ??= nameof(CompanyContentType.CompanyContentTypeOrder);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
@@ -80,10 +80,10 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
     public async Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken)
     {
         var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.Id == companyContentTypeId, cancellationToken: cancellationToken);
-        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyContentType!.CompanyId && p.OrderCompanyContentType == currentCompanyContentType.OrderCompanyContentType - 1, cancellationToken: cancellationToken);
+        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyContentType!.CompanyId && p.CompanyContentTypeOrder == currentCompanyContentType.CompanyContentTypeOrder - 1, cancellationToken: cancellationToken);
 
-        nextCompanyContentType!.OrderCompanyContentType++;
-        currentCompanyContentType!.OrderCompanyContentType--;
+        nextCompanyContentType!.CompanyContentTypeOrder++;
+        currentCompanyContentType!.CompanyContentTypeOrder--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -91,10 +91,10 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
     public async Task MoveCompanyContentTypeDownAsync(int companyContentTypeId, CancellationToken cancellationToken)
     {
         var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.Id == companyContentTypeId, cancellationToken: cancellationToken);
-        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyContentType!.CompanyId && p.OrderCompanyContentType == currentCompanyContentType.OrderCompanyContentType + 1, cancellationToken: cancellationToken);
+        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyContentType!.CompanyId && p.CompanyContentTypeOrder == currentCompanyContentType.CompanyContentTypeOrder + 1, cancellationToken: cancellationToken);
 
-        nextCompanyContentType!.OrderCompanyContentType--;
-        currentCompanyContentType!.OrderCompanyContentType++;
+        nextCompanyContentType!.CompanyContentTypeOrder--;
+        currentCompanyContentType!.CompanyContentTypeOrder++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -113,9 +113,9 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
             {
                 CompanyId = companyId,
                 ContentTypeId = contentType.Id,
-                Active = contentType.Active,
+                CompanyContentTypeActive = contentType.ContentTypeActive,
                 CompanyContentTypeName = contentType.ContentTypeName,
-                OrderCompanyContentType = contentType.OrderContentType,
+                CompanyContentTypeOrder = contentType.ContentTypeOrder,
 
             });
         }
@@ -129,11 +129,11 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         {
             dbContext.CompanyContentTypes.Add(new CompanyContentType()
             {
-                Active = contentType.Active,
+                CompanyContentTypeActive = contentType.Active,
                 CompanyId = companyId,
                 ContentTypeId = contentType.Id,
                 CompanyContentTypeName = contentType.ContentTypeName,
-                OrderCompanyContentType = contentType.OrderContentType
+                CompanyContentTypeOrder = contentType.OrderContentType
             });
         }
 

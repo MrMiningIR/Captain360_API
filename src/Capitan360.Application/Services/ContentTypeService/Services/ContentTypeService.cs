@@ -45,7 +45,7 @@ public class ContentTypeService(
 
         //--
 
-        contentType.OrderContentType = existingCount + 1;
+        contentType.ContentTypeOrder = existingCount + 1;
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
         var contentTypeId = await contentTypeRepository.CreateContentTypeAsync(contentType, cancellationToken);
@@ -146,7 +146,7 @@ public class ContentTypeService(
         var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.ContentTypeId, false, cancellationToken);
         if (contentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
-        if (contentType.OrderContentType == 1)
+        if (contentType.ContentTypeOrder == 1)
             return ApiResponse<int>.Ok(command.ContentTypeId, "انجام شد");
 
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
@@ -171,7 +171,7 @@ public class ContentTypeService(
 
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
 
-        if (contentType.OrderContentType == count)
+        if (contentType.ContentTypeOrder == count)
             return ApiResponse<int>.Ok(command.ContentTypeId, "انجام شد");
 
         if (count <= 1)
@@ -193,7 +193,7 @@ public class ContentTypeService(
         if (contentType is null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        contentType.Active = !contentType.Active;
+        contentType.ContentTypeActive = !contentType.ContentTypeActive;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

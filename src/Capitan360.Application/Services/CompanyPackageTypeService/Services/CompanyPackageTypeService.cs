@@ -51,7 +51,7 @@ public class CompanyPackageTypeService(
         if (companyPackageType == null)
             return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
 
-        if (companyPackageType.OrderCompanyPackageType == 1)
+        if (companyPackageType.CompanyPackageTypeOrder == 1)
             return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "انجام شد");
 
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
@@ -71,7 +71,7 @@ public class CompanyPackageTypeService(
         if (companyPackageType == null)
             return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
 
-        if (companyPackageType.OrderCompanyPackageType == 1)
+        if (companyPackageType.CompanyPackageTypeOrder == 1)
             return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "انجام شد");
 
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
@@ -130,7 +130,7 @@ public class CompanyPackageTypeService(
         if (companyPackage is null)
             return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
 
-        companyPackage.Active = !companyPackage.Active;
+        companyPackage.CompanyPackageTypeActive = !companyPackage.CompanyPackageTypeActive;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

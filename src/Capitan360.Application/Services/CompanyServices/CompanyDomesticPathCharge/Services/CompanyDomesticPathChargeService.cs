@@ -204,7 +204,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                     var existingPrice = existingPrices.First(p => p.Id == item.Id!.Value);
 
                     existingPrice.Weight = item.Weight;
-                    existingPrice.Price = item.Price;
+                    existingPrice.PriceDirect = item.Price;
                     existingPrice.ContentTypeChargeBaseNormal = item.ContentTypeChargeBaseNormal;
                     pricesToUpdate.Add(existingPrice);
                 }
@@ -381,11 +381,10 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
         // اضافه کردن ردیف‌های مناطق
         foreach (var content in contentTypesData)
         {
-            Console.WriteLine(content.ContentTypeId);
             tableData.Add(new PathChargeTableDataDto
             {
                 ContentTypeId = content.ContentTypeId,
-                ContentTypeName = content.CompanyContentTypeName ?? "-*-",
+                ContentTypeName = content.CompanyContentTypeName ?? "",
                 CompanyDomesticPathId = query.CompanyDomesticPathId,
                 Id = 0
             });
@@ -410,7 +409,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                 rowPrice.Fields[(int)sub.WeightType] = new PathChargeFieldDto
                 {
                     Weight = null,
-                    Price = sub.Price,
+                    Price = sub.PriceDirect,
                     Static = sub.ContentTypeChargeBaseNormal,
                     Id = sub.Id
                 };
@@ -430,8 +429,6 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                         ContentTypeId = item.ContentTypeId,
                         CompanyDomesticPathId = row.CompanyDomesticPathId
                     };
-                    Console.WriteLine("-----------------");
-                    Console.WriteLine(item.ContentTypeId);
                 }
             }
         }

@@ -10,15 +10,16 @@ public class CompanyContentType : Entity
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
 
+    public Company Company { get; set; } = default!;
+
     [ForeignKey(nameof(ContentType))]
     public int ContentTypeId { get; set; }
 
+    public ContentType ContentType { get; set; } = default!;
     public string CompanyContentTypeName { get; set; } = default!;
 
-    public bool Active { get; set; }
+    public bool CompanyContentTypeActive { get; set; }
 
-    public int OrderCompanyContentType { get; set; }
+    public int CompanyContentTypeOrder { get; set; }
     public string? CompanyContentTypeDescription { get; set; }
-    public Company Company { get; set; } = default!;
-    public ContentType ContentType { get; set; } = default!;
 }

@@ -127,7 +127,7 @@ namespace Capitan360.Infrastructure.Seeders
                             CompanyTypeId = 1,
                             Name = "شرکت پژواک",
                             Code = "123456",
-                            PhoneNumber = "05112345678",
+                            MobileCounter = "05112345678",
                             Active = false,
                             IsParentCompany = true,
                             CountryId = 1,

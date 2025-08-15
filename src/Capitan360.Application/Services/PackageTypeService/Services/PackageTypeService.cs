@@ -44,7 +44,7 @@ public class PackageTypeService(
         if (packageType == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
 
-        packageType.OrderPackageType = existingCount + 1;
+        packageType.PackageTypeOrder = existingCount + 1;
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
@@ -144,23 +144,23 @@ public class PackageTypeService(
     {
         logger.LogInformation("MovePackageTypeUp is Called with {@MovePackageTypeUpCommand}", command);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.PackageTypeId, false, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, cancellationToken);
         if (packageType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        if (packageType.OrderPackageType == 1)
-            return ApiResponse<int>.Ok(command.PackageTypeId, "انجام شد");
+        if (packageType.PackageTypeOrder == 1)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await packageTypeRepository.GetCountPackageTypeAsync(packageType.CompanyTypeId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.PackageTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await packageTypeRepository.MovePackageTypeUpAsync(command.PackageTypeId, cancellationToken);
+        await packageTypeRepository.MovePackageTypeUpAsync(command.Id, cancellationToken);
 
         logger.LogInformation(
-            "PackageType moved up successfully.  PackageTypeId: {PackageTypeId}", command.PackageTypeId);
-        return ApiResponse<int>.Ok(command.PackageTypeId, "بسته‌بندی با موفقیت جابجا شد");
+            "PackageType moved up successfully.  PackageTypeId: {PackageTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<int>> MovePackageTypeDownAsync(
@@ -168,23 +168,23 @@ public class PackageTypeService(
     {
         logger.LogInformation("MovePackageTypeUp is Called with {@MovePackageTypeUpCommand}", command);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.PackageTypeId, false, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, cancellationToken);
         if (packageType == null)
             return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
 
-        if (packageType.OrderPackageType == 1)
-            return ApiResponse<int>.Ok(command.PackageTypeId, "انجام شد");
+        if (packageType.PackageTypeOrder == 1)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await packageTypeRepository.GetCountPackageTypeAsync(packageType.CompanyTypeId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.PackageTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await packageTypeRepository.MovePackageTypeDownAsync(command.PackageTypeId, cancellationToken);
+        await packageTypeRepository.MovePackageTypeDownAsync(command.Id, cancellationToken);
 
         logger.LogInformation(
-            "PackageType moved up successfully.  PackageTypeId: {PackageTypeId}", command.PackageTypeId);
-        return ApiResponse<int>.Ok(command.PackageTypeId, "بسته‌بندی با موفقیت جابجا شد");
+            "PackageType moved up successfully.  PackageTypeId: {PackageTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<int>> SetPackageTypeActivityStatusAsync(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken)
@@ -197,7 +197,7 @@ public class PackageTypeService(
         if (packageType is null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
-        packageType.Active = !packageType.Active;
+        packageType.PackageTypeActive = !packageType.PackageTypeActive;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

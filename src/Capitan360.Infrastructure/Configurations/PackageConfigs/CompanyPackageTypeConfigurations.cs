@@ -17,8 +17,8 @@ public class CompanyPackageTypeConfigurations : BaseEntityConfiguration<CompanyP
              .HasFilter("[Deleted] = 0");
         builder.Property(x => x.CompanyPackageTypeName).IsRequired().HasMaxLength(50).IsUnicode();
 
-        builder.Property(x => x.OrderCompanyPackageType).HasDefaultValue(0);
-        builder.Property(x => x.Active).HasDefaultValue(true);
+        builder.Property(x => x.CompanyPackageTypeOrder).HasDefaultValue(0);
+        builder.Property(x => x.CompanyPackageTypeActive).HasDefaultValue(true);
 
         builder.HasOne(ca => ca.Company)
             .WithMany(ca => ca.CompanyPackageTypes)

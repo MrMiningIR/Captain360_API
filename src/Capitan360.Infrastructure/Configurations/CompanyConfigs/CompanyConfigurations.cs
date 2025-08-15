@@ -10,7 +10,7 @@ internal class CompanyConfigurations : BaseEntityConfiguration<Company>
     {
         base.Configure(builder);
 
-        builder.Property(c => c.PhoneNumber).IsRequired().HasMaxLength(11);
+        builder.Property(c => c.MobileCounter).IsRequired().HasMaxLength(11);
         builder.Property(c => c.Name).IsRequired().HasMaxLength(50);
         builder.Property(c => c.Code).IsRequired().HasMaxLength(20);
         builder.Property(x => x.CompanyTypeId).IsRequired();

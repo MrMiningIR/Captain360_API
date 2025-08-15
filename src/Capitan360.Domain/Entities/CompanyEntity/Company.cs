@@ -2,25 +2,38 @@
 using Capitan360.Domain.Entities.AddressEntity;
 using Capitan360.Domain.Entities.CompanyContentEntity;
 using Capitan360.Domain.Entities.CompanyPackageEntity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 
 public class Company : Entity
 {
     public string Code { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
+    public string MobileCounter { get; set; } = default!;
     public string Name { get; set; } = default!;
+
+    [ForeignKey(nameof(CompanyType))]
     public int CompanyTypeId { get; set; }
+
+    public CompanyType CompanyType { get; set; } = default!;
     public bool IsParentCompany { get; set; }
     public bool Active { get; set; }
+
+    [ForeignKey(nameof(Country))]
     public int CountryId { get; set; }
 
+    public Area Country { get; set; } = null!;
+
+    [ForeignKey(nameof(Province))]
     public int ProvinceId { get; set; }
 
-    public int CityId { get; set; }
-    public string? Description { get; set; }
+    public Area Province { get; set; } = null!;
 
-    // Navigation Properties
+    [ForeignKey(nameof(City))]
+    public int CityId { get; set; }
+
+    public Area City { get; set; } = null!;
+    public string? Description { get; set; }
 
     public ICollection<UserCompany> UserCompanies { get; set; } = [];
 
@@ -34,13 +47,8 @@ public class Company : Entity
     public CompanyPreferences CompanyPreferences { get; set; } = default!;
 
     public CompanySmsPatterns CompanySmsPatterns { get; set; } = default!;
-    public CompanyType CompanyType { get; set; } = default!;
 
     // Navigation Properties
-
-    public Area Country { get; set; } = null!;
-    public Area Province { get; set; } = null!;
-    public Area City { get; set; } = null!;
 
     public ICollection<CompanyDomesticPaths> CompanyDomesticPaths { get; set; } = [];
 

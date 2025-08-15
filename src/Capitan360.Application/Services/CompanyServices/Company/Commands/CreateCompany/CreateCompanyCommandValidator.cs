@@ -14,7 +14,7 @@ public class CreateCompanyCommandValidator : AbstractValidator<CreateCompanyComm
             .MinimumLength(4)
             .WithMessage("کد شرکت نمی‌تواند کمتر از 4 کاراکتر باشد");
 
-        RuleFor(x => x.PhoneNumber)
+        RuleFor(x => x.MobileCounter)
             .NotEmpty()
             .WithMessage("شماره تلفن شرکت اجباری است")
             .Matches(@"^\d{11}$")

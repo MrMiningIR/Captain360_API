@@ -9,8 +9,8 @@ public class ContentType : Entity
     public int CompanyTypeId { get; set; }
     public CompanyType CompanyType { get; set; } = default!;
     public string ContentTypeName { get; set; } = default!;
-    public bool Active { get; set; }
+    public bool ContentTypeActive { get; set; }
     public string? ContentTypeDescription { get; set; }
-    public int OrderContentType { get; set; }
+    public int ContentTypeOrder { get; set; }
     public ICollection<CompanyContentType> CompanyContentTypes { get; set; } = [];
 }

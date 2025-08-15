@@ -8,7 +8,7 @@ public class CompanyDomesticPathChargeDto
     public int CompanyDomesticPathId { get; set; }
     public WeightType WeightType { get; set; }
     public int Weight { get; set; }
-    public long Price { get; set; }
+    public long PriceDirect { get; set; }
     public bool ContentTypeChargeBaseNormal { get; set; }
 
     public List<CompanyDomesticPathChargeContentTypeDto> CompanyDomesticPathChargeContentTypesDtos { get; set; } = [];

@@ -51,7 +51,7 @@ public interface IIdentityService
 
     ApiResponse<PagedResult<UserKindItemDto>> GetUserKindList();
     ApiResponse<PagedResult<MoadianItemDto>> GeMoadianList();
-    ApiResponse<PagedResult<EntranceTypeDto>> GetEntranceTypeList();
+    ApiResponse<PagedResult<EntranceFeeTypeDto>> GetEntranceTypeList();
     ApiResponse<PagedResult<PathStructTypeDto>> GetPathStructTypeList();
     ApiResponse<PagedResult<WeightTypeDto>> GetWeightTypeList(List<int>? shouldRemove = null);
     ApiResponse<PagedResult<RateDto>> GetRateList();

@@ -21,12 +21,12 @@ public class UpdateCompanyDomesticPathCommandValidator : AbstractValidator<Updat
             .NotNull().NotEmpty().WithMessage("نمیتواند بدون مقدار باشد")
             .GreaterThanOrEqualTo(0).WithMessage("هزینه ورودی نمی‌تواند منفی باشد").LessThanOrEqualTo(1_000_000_000).WithMessage("هزینه ورودی نمی‌تواند بیشتر از یک میلیارد باشد"); ;
 
-        RuleFor(x => x.EntranceWeight)
+        RuleFor(x => x.EntranceFeeWeight)
              .NotNull().NotEmpty().WithMessage("نمیتواند بدون مقدار باشد")
             .GreaterThanOrEqualTo(0).WithMessage("وزن ورودی نمی‌تواند منفی باشد").InclusiveBetween(0m, 99_999_999.99m).WithMessage("وزن ورودی باید بین 0 و 99,999,999.99 باشد")
             .ScalePrecision(2, 10).WithMessage("وزن ورودی باید حداکثر 10 رقم با 2 رقم اعشار داشته باشد");
 
-        RuleFor(x => x.EntranceType)
+        RuleFor(x => x.EntranceFeeType)
            .GreaterThan(0).WithMessage("نوع ورودی معتبر نیست");
 
         RuleFor(x => x.SourceCountryId)

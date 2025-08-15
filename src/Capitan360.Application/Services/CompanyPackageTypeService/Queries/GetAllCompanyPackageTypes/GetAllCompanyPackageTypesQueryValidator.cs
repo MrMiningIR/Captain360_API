@@ -8,9 +8,9 @@ public class GetAllCompanyPackageTypesQueryValidator : AbstractValidator<GetAllC
     private int[] _allowPageSizes = [5, 10, 15, 30];
 
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanyPackageTypeDto.CompanyPackageTypeName),
-        nameof(CompanyPackageTypeDto.Active),
-        nameof(CompanyPackageTypeDto.OrderCompanyPackageType)
+        nameof(CompanyPackageTypeDto.PackageTypeName),
+        nameof(CompanyPackageTypeDto.CompanyPackageTypeActive),
+        nameof(CompanyPackageTypeDto.CompanyPackageTypeOrder)
     ];
 
     public GetAllCompanyPackageTypesQueryValidator()
