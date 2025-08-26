@@ -7,14 +7,24 @@ public class GetAllCompanyPreferencesQueryValidator : AbstractValidator<GetAllCo
 {
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanyPreferencesDto.EconomicCode),
-        nameof(CompanyPreferencesDto.CompanyId)
+        nameof(CompanyPreferencesDto.CompanyName),
+        nameof(CompanyPreferencesDto.CaptainCargoName),
+        nameof(CompanyPreferencesDto.CaptainCargoCode)
     ];
 
     public GetAllCompanyPreferencesQueryValidator()
     {
+        RuleFor(x => x.CompanyTypeId)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه نوع شرکت باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.CompanyId)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه شرکت باید بزرگتر یا مساوی صفر باشد");
+
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

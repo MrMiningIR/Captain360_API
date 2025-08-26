@@ -3,6 +3,6 @@
 public record CreatePackageTypeCommand(
     int CompanyTypeId,
     string PackageTypeName,
-    string PackageTypeDescription,
-    bool Active
+    string? PackageTypeDescription,
+    bool PackageTypeActive
 );

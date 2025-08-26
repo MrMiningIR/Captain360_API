@@ -4,9 +4,9 @@ public class PackageTypeDto
 {
     public int Id { get; set; }
     public int CompanyTypeId { get; set; }
-    public string CompanyTypeName { get; set; } = default!;
+    public string? CompanyTypeName { get; set; } 
     public string PackageTypeName { get; set; } = default!;
     public bool PackageTypeActive { get; set; }
-    public string PackageTypeDescription { get; set; } = default!;
+    public string? PackageTypeDescription { get; set; } 
     public int PackageTypeOrder { get; set; }
 }

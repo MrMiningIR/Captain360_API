@@ -7,6 +7,6 @@ public class GetCompanyUriByIdQueryValidator : AbstractValidator<GetCompanyUriBy
     public GetCompanyUriByIdQueryValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه URI باید بزرگ‌تر از صفر باشد");
+              .GreaterThan(0).WithMessage("شناسه URI باید بزرگتر از صفر باشد");
     }
 }

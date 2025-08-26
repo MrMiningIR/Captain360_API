@@ -1,7 +1,9 @@
 ﻿namespace Capitan360.Application.Services.CompanyServices.CompanyType.Commands.UpdateCompanyType;
 
 public record UpdateCompanyTypeCommand(
-    int Id,
-    string? TypeName,
-    string? DisplayName,
-    string? Description);
+    string TypeName,
+    string DisplayName,
+    string? Description)
+{
+    public int Id { get; set; }
+}

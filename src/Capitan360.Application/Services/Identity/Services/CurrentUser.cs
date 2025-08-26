@@ -17,13 +17,20 @@ public record CurrentUser(
     {
         return Permissions.Contains(permissionName);
     }
+    
+    public bool IsSuperManager(int compnyTypeId )
+    {
+        return HasRole(ConstantNames.ManagerRole) && IsParentCompany() && compnyTypeId == CompanyType;
+    }
+
+    public bool IsManager(int compnyId)
+    {
+        return HasRole(ConstantNames.ManagerRole) && IsParentCompany() == false && compnyId == CompanyId;
+    }
+
     public bool HasRole(string roleName)
     {
         return Roles.Contains(roleName);
-    }
-    public bool IsManager()
-    {
-        return HasRole(ConstantNames.ManagerRole);
     }
     public bool IsUser()
     {

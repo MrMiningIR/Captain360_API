@@ -7,6 +7,6 @@ public class DeleteCompanySmsPatternsCommandValidator : AbstractValidator<Delete
     public DeleteCompanySmsPatternsCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه الگوهای SMS باید بزرگ‌تر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه الگوهای SMS باید بزرگتر از صفر باشد");
     }
 }

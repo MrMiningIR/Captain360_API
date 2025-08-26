@@ -8,8 +8,6 @@ public class GetAllCompanyContentTypesQueryValidator : AbstractValidator<GetAllC
     private int[] _allowPageSizes = [5, 10, 15, 30];
 
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanyContentTypeDto.ContentTypeName),
-        nameof(CompanyContentTypeDto.CompanyContentTypeActive),
         nameof(CompanyContentTypeDto.CompanyContentTypeOrder)
     ];
 

@@ -3,6 +3,11 @@
 public class CompanySmsPatternsDto
 {
     public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public string? CompanyName { get; set; } 
+    public string? SmsPanelUserName { get; set; }
+    public string? SmsPanelPassword { get; set; }
+    public string? SmsPanelNumber { get; set; }
     public string? PatternSmsIssueSender { get; set; }
     public string? PatternSmsIssueReceiver { get; set; }
     public string? PatternSmsIssueCompany { get; set; }
@@ -24,5 +29,4 @@ public class CompanySmsPatternsDto
     public string? PatternSmsCancelByCustomerReceiver { get; set; }
     public string? PatternSmsCancelByCustomerCompany { get; set; }
     public string? PatternSmsSendManifestReceiverCompany { get; set; }
-    public int CompanyId { get; set; }
 }

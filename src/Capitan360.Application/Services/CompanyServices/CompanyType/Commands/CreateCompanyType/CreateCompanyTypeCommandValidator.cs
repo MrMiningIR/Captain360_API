@@ -1,14 +1,11 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Services.CompanyServices.CompanyType.Commands.UpdateCompanyType;
+namespace Capitan360.Application.Services.CompanyServices.CompanyType.Commands.CreateCompanyType;
 
-public class UpdateCompanyTypeCommandValidator : AbstractValidator<UpdateCompanyTypeCommand>
+public class CreateCompanyTypeCommandValidator : AbstractValidator<CreateCompanyTypeCommand>
 {
-    public UpdateCompanyTypeCommandValidator()
+    public CreateCompanyTypeCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه نوع شرکت باید مشخص باشد");
-
         RuleFor(x => x.TypeName)
             .NotEmpty().WithMessage("نام نوع شرکت الزامی است")
             .MaximumLength(100).WithMessage("نام نوع شرکت نمی‌تواند بیشتر از 100 کاراکتر باشد")

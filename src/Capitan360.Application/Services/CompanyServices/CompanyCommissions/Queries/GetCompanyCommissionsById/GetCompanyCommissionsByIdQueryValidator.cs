@@ -7,6 +7,6 @@ public class GetCompanyCommissionsByIdQueryValidator : AbstractValidator<GetComp
     public GetCompanyCommissionsByIdQueryValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه کمیسیون باید بزرگ‌تر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه کمیسیون باید بزرگتر از صفر باشد");
     }
 }

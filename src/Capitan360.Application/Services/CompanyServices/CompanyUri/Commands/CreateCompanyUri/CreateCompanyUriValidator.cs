@@ -7,7 +7,7 @@ public class CreateCompanyUriValidator : AbstractValidator<CreateCompanyUriComma
     public CreateCompanyUriValidator()
     {
         RuleFor(x => x.CompanyId)
-    .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.Uri)
             .NotEmpty().WithMessage("آدرس URI الزامی است")
@@ -15,7 +15,8 @@ public class CreateCompanyUriValidator : AbstractValidator<CreateCompanyUriComma
             .MinimumLength(4).WithMessage("آدرس URI نمی‌تواند کمتر از 4 کاراکتر باشد");
 
         RuleFor(x => x.Description)
-            .MaximumLength(500).WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد")
-            .When(x => !string.IsNullOrEmpty(x.Description));
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrEmpty(x.Description))
+            .WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد");
     }
 }

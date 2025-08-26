@@ -4,13 +4,12 @@ public class CompanyPreferencesDto
 {
     public int Id { get; set; }
     public int CompanyId { get; set; }
-    public string? CompanyName { get; set; }
-    public string EconomicCode { get; set; } = default!;
-    public string NationalId { get; set; } = default!;
-    public string RegistrationId { get; set; } = default!;
-    public string CaptainCargoName { get; set; } = default!;
-    public string CaptainCargoCode { get; set; } = default!;
-    public decimal Tax { get; set; }
+    public string? CompanyName { get; set; } 
+    public string? EconomicCode { get; set; } = default!;
+    public string? NationalId { get; set; } = default!;
+    public string? RegistrationId { get; set; } = default!;
+    public string? CaptainCargoName { get; set; } = default!;
+    public string? CaptainCargoCode { get; set; } = default!;
     public bool ActiveIssueDomesticWaybill { get; set; }
     public bool ActiveShowInSearchEngine { get; set; }
     public bool ActiveInWebServiceSearchEngine { get; set; }
@@ -23,6 +22,7 @@ public class CompanyPreferencesDto
     public bool ExitRevenue1MinWeightIsFixed { get; set; }
     public bool ExitRevenue2MinWeightIsFixed { get; set; }
     public bool ExitRevenue3MinWeightIsFixed { get; set; }
+    public decimal Tax { get; set; }
     public bool ExitFareInTax { get; set; }
     public bool ExitStampBillInTax { get; set; }
     public bool ExitPackagingInTax { get; set; }

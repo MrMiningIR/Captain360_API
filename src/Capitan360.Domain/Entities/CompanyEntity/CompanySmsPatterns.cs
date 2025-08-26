@@ -7,12 +7,14 @@ namespace Capitan360.Domain.Entities.CompanyEntity
     {
         [ForeignKey(nameof(Company))]
         public int CompanyId { get; set; }
+        public Company? Company { get; set; } 
 
-        public Company Company { get; set; }
+        public string? SmsPanelUserName { get; set; }
 
-        public string? SMSPanelUserName { get; set; }
-        public string? SMSPanelPassword { get; set; }
-        public string? SMSPanelNumber { get; set; }
+        public string? SmsPanelPassword { get; set; }
+
+        public string? SmsPanelNumber { get; set; }
+
         public string? PatternSmsIssueSender { get; set; }
 
         public string? PatternSmsIssueReceiver { get; set; }

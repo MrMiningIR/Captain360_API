@@ -7,6 +7,6 @@ public class DeleteCompanyInsuranceCommandValidator : AbstractValidator<DeleteCo
     public DeleteCompanyInsuranceCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه بیمه شرکت باید بزرگ‌تر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه شرکت بیمه باید بزرگتر از صفر باشد");
     }
 }

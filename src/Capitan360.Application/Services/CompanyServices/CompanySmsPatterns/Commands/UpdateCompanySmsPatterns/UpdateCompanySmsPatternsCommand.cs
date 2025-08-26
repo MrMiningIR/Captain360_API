@@ -1,8 +1,9 @@
 ﻿namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Commands.UpdateCompanySmsPatterns;
 
 public record UpdateCompanySmsPatternsCommand(
-
-
+    string? SmsPanelUserName,
+    string? SmsPanelPassword,
+    string? SmsPanelNumber,
     string? PatternSmsIssueSender,
     string? PatternSmsIssueReceiver,
     string? PatternSmsIssueCompany,

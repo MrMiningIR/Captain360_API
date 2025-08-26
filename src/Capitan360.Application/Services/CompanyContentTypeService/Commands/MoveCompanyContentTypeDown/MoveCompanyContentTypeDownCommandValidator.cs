@@ -6,8 +6,7 @@ public class MoveCompanyContentTypeDownCommandValidator : AbstractValidator<Move
 {
     public MoveCompanyContentTypeDownCommandValidator()
     {
-
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه محتوی بار باید بزرگ‌تر از صفر باشد");
+           .GreaterThan(0).WithMessage("شناسه محتوی بار باید بزرگتر از صفر باشد");
     }
 }

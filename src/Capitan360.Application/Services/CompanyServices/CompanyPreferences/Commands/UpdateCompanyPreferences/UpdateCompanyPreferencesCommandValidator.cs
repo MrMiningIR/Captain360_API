@@ -7,7 +7,7 @@ public class UpdateCompanyPreferencesCommandValidator : AbstractValidator<Update
     public UpdateCompanyPreferencesCommandValidator()
     {
         RuleFor(x => x.Id)
-     .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
+            .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
 
         RuleFor(x => x.EconomicCode)
             .MaximumLength(50)
@@ -36,6 +36,5 @@ public class UpdateCompanyPreferencesCommandValidator : AbstractValidator<Update
 
         RuleFor(x => x.Tax)
             .InclusiveBetween(0m, 100.00m).WithMessage("مالیات باید بین 0 و 100.00 باشد");
-        ;
     }
 }

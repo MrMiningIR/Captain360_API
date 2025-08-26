@@ -6,6 +6,7 @@ public class DeleteCompanyCommandValidator : AbstractValidator<DeleteCompanyComm
 {
     public DeleteCompanyCommandValidator()
     {
-        RuleFor(x => x.Id).GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد");
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگتر از صفر باشد");
     }
 }

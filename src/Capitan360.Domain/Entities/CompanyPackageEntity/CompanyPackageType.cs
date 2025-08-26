@@ -10,12 +10,12 @@ public class CompanyPackageType : Entity
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
 
-    public Company Company { get; set; } = default!;
+    public Company? Company { get; set; }
 
     [ForeignKey(nameof(PackageType))]
     public int PackageTypeId { get; set; }
 
-    public PackageType PackageType { get; set; } = default!;
+    public PackageType? PackageType { get; set; }
 
     public string CompanyPackageTypeName { get; set; } = default!;
     public bool CompanyPackageTypeActive { get; set; }

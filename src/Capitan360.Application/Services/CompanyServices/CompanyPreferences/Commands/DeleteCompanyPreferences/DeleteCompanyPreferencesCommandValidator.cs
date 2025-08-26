@@ -7,6 +7,6 @@ public class DeleteCompanyPreferencesCommandValidator : AbstractValidator<Delete
     public DeleteCompanyPreferencesCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه تنظیمات باید بزرگ‌تر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه تنظیمات باید بزرگتر از صفر باشد");
     }
 }

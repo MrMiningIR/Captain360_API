@@ -1,11 +1,10 @@
 ﻿namespace Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 
 public record UpdateContentTypeCommand(
-    int CompanyTypeId,
     string ContentTypeName,
-    string ContentTypeDescription,
-    bool Active
-   )
+    string? ContentTypeDescription,
+    bool ContentTypeActive
+)
 {
     public int Id { get; set; }
 };

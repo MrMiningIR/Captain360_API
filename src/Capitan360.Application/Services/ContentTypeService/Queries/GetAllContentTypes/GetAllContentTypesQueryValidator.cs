@@ -7,8 +7,6 @@ public class GetAllContentTypesQueryValidator : AbstractValidator<GetAllContentT
 {
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
-        nameof(ContentTypeDto.ContentTypeName),
-        nameof(ContentTypeDto.ContentTypeActive),
         nameof(ContentTypeDto.ContentTypeOrder)
     ];
 

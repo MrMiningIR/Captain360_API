@@ -8,15 +8,15 @@ public class GetAllCompanyPackageTypesQueryValidator : AbstractValidator<GetAllC
     private int[] _allowPageSizes = [5, 10, 15, 30];
 
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanyPackageTypeDto.PackageTypeName),
-        nameof(CompanyPackageTypeDto.CompanyPackageTypeActive),
         nameof(CompanyPackageTypeDto.CompanyPackageTypeOrder)
     ];
 
     public GetAllCompanyPackageTypesQueryValidator()
     {
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
+
         RuleFor(x => x.CompanyId)
             .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 

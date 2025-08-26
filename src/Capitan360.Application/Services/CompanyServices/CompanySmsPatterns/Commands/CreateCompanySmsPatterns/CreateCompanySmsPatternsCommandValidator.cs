@@ -7,7 +7,22 @@ public class CreateCompanySmsPatternsCommandValidator : AbstractValidator<Create
     public CreateCompanySmsPatternsCommandValidator()
     {
         RuleFor(x => x.CompanyId)
-    .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+
+        RuleFor(x => x.SmsPanelUserName)
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.SmsPanelUserName))
+            .WithMessage("نام کاربری پنل SMS نمی‌تواند بیشتر از 50 کاراکتر باشد");
+
+        RuleFor(x => x.SmsPanelPassword)
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.SmsPanelPassword))
+            .WithMessage("رمز عبور پنل SMS نمی‌تواند بیشتر از 50 کاراکتر باشد");
+
+        RuleFor(x => x.SmsPanelNumber)
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.SmsPanelNumber))
+            .WithMessage("شماره پنل SMS نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.PatternSmsIssueSender)
             .MaximumLength(500)

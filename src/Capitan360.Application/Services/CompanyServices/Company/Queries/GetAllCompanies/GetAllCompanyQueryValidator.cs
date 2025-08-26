@@ -14,9 +14,6 @@ public class GetAllCompanyQueryValidator : AbstractValidator<GetAllCompanyQuery>
         RuleFor(r => r.PageNumber)
             .GreaterThanOrEqualTo(1);
 
-        //RuleFor(r => r.CompanyTypeId)
-        //    .GreaterThan(0).WithMessage("شناسه نوع شرکت باید مشخص باشد");
-
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))
             .WithMessage($"Page size must be in [{string.Join(",", _allowPageSizes)}]");

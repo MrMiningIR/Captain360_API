@@ -47,42 +47,42 @@ public class CompanyPackageTypeService(
 
     public async Task<ApiResponse<int>> MoveCompanyPackageTypeUpAsync(MoveCompanyPackageTypeUpCommand command, CancellationToken cancellationToken)
     {
-        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.CompanyPackageTypeId, false, cancellationToken);
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, cancellationToken);
         if (companyPackageType == null)
             return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
 
         if (companyPackageType.CompanyPackageTypeOrder == 1)
-            return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await companyPackageTypeRepository.MoveCompanyPackageTypeUpAsync(command.CompanyPackageTypeId, cancellationToken);
+        await companyPackageTypeRepository.MoveCompanyPackageTypeUpAsync(command.Id, cancellationToken);
         logger.LogInformation(
-            "PackageType moved up successfully., CompanyPackageTypeId: {CompanyPackageTypeId}", command.CompanyPackageTypeId);
-        return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "بسته‌بندی با موفقیت جابجا شد");
+            "PackageType moved up successfully., CompanyPackageTypeId: {CompanyPackageTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<int>> MoveCompanyPackageTypeDownAsync(MoveCompanyPackageTypeDownCommand command, CancellationToken cancellationToken)
     {
-        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.CompanyPackageTypeId, false, cancellationToken);
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, cancellationToken);
         if (companyPackageType == null)
             return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
 
         if (companyPackageType.CompanyPackageTypeOrder == 1)
-            return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await companyPackageTypeRepository.MoveCompanyPackageTypeDownAsync(command.CompanyPackageTypeId, cancellationToken);
+        await companyPackageTypeRepository.MoveCompanyPackageTypeDownAsync(command.Id, cancellationToken);
         logger.LogInformation(
-            "PackageType moved down successfully., CompanyPackageTypeId: {CompanyPackageTypeId}", command.CompanyPackageTypeId);
-        return ApiResponse<int>.Ok(command.CompanyPackageTypeId, "بسته‌بندی با موفقیت جابجا شد");
+            "PackageType moved down successfully., CompanyPackageTypeId: {CompanyPackageTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<CompanyPackageTypeDto>> GetCompanyPackageTypeByIdAsync(GetCompanyPackageTypeByIdQuery query,

@@ -12,37 +12,32 @@ public class CompanyDomesticPaths : Entity
 
     [ForeignKey(nameof(SourceCountry))]
     public int SourceCountryId { get; set; }
-
-    public Area SourceCountry { get; set; } = null!;
+    public Area? SourceCountry { get; set; } = null!;
 
     [ForeignKey(nameof(SourceProvince))]
     public int SourceProvinceId { get; set; }
-
-    public Area SourceProvince { get; set; } = null!;
+    public Area? SourceProvince { get; set; } = null!;
 
     [ForeignKey(nameof(SourceCity))]
     public int SourceCityId { get; set; }
-
-    public Area SourceCity { get; set; } = null!;
+    public Area? SourceCity { get; set; } = null!;
 
     [ForeignKey(nameof(DestinationCountry))]
     public int DestinationCountryId { get; set; }
-
-    public Area DestinationCountry { get; set; } = null!;
+    public Area? DestinationCountry { get; set; } = null!;
 
     [ForeignKey(nameof(DestinationProvince))]
     public int DestinationProvinceId { get; set; }
-
-    public Area DestinationProvince { get; set; } = null!;
+    public Area? DestinationProvince { get; set; } = null!;
 
     [ForeignKey(nameof(DestinationCity))]
     public int DestinationCityId { get; set; }
+    public Area? DestinationCity { get; set; } = null!;
 
-    public Area DestinationCity { get; set; } = null!;
-
-    public int Active { get; set; }
+    public bool Active { get; set; }
 
     public string Description { get; set; } = default!;
+
     public string? DescriptionForSearch { get; set; }
 
     public long EntranceFee { get; set; }

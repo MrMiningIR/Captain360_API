@@ -7,7 +7,7 @@ public class CreateCompanyCommissionsCommandValidator : AbstractValidator<Create
     public CreateCompanyCommissionsCommandValidator()
     {
         RuleFor(x => x.CompanyId)
-    .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.CommissionFromCaptainCargoWebSite)
             .GreaterThan(0).WithMessage("کمیسیون صدور در وب سایت جستجوی کاپیتان 360 باید مشخص باشد");

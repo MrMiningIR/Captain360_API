@@ -143,21 +143,21 @@ public class ContentTypeService(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("MoveContentTypeUp is Called with {@MoveContentTypeUpCommand}", command);
-        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.ContentTypeId, false, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, cancellationToken);
         if (contentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
         if (contentType.ContentTypeOrder == 1)
-            return ApiResponse<int>.Ok(command.ContentTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.ContentTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await contentTypeRepository.MoveContentTypeUpAsync(command.ContentTypeId, cancellationToken);
+        await contentTypeRepository.MoveContentTypeUpAsync(command.Id, cancellationToken);
         logger.LogInformation(
-            "ContentType moved up successfully. ContentTypeId: {ContentTypeId}", command.ContentTypeId);
-        return ApiResponse<int>.Ok(command.ContentTypeId, "محتوی با موفقیت جابجا شد");
+            "ContentType moved up successfully. ContentTypeId: {ContentTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "محتوی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<int>> MoveContentTypeDownAsync(
@@ -165,22 +165,22 @@ public class ContentTypeService(
     {
         logger.LogInformation("MoveContentTypeDown is Called with {@MoveContentTypeDownCommand}", command);
 
-        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.ContentTypeId, false, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, cancellationToken);
         if (contentType == null)
             return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
 
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
 
         if (contentType.ContentTypeOrder == count)
-            return ApiResponse<int>.Ok(command.ContentTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         if (count <= 1)
-            return ApiResponse<int>.Ok(command.ContentTypeId, "انجام شد");
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
-        await contentTypeRepository.MoveContentTypeDownAsync(command.ContentTypeId, cancellationToken);
+        await contentTypeRepository.MoveContentTypeDownAsync(command.Id, cancellationToken);
         logger.LogInformation(
-            "ContentType moved down successfully, ContentTypeId: {ContentTypeId}", command.ContentTypeId);
-        return ApiResponse<int>.Ok(command.ContentTypeId, "محتوی با موفقیت جابجا شد");
+            "ContentType moved down successfully, ContentTypeId: {ContentTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "محتوی با موفقیت جابجا شد");
     }
 
     public async Task<ApiResponse<int>> SetContentTypeActivityStatus(UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken)

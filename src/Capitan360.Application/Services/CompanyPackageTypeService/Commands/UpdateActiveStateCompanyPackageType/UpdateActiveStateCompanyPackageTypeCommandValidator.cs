@@ -7,6 +7,6 @@ public class UpdateActiveStatePackageTypeValidator : AbstractValidator<UpdateAct
     public UpdateActiveStatePackageTypeValidator()
     {
         RuleFor(x => x.Id)
-    .GreaterThan(0).WithMessage("شناسه نوع بسته بندی شرکت الزامی است");
+           .GreaterThan(0).WithMessage("شناسه بسته بندی بار باید بزرگتر از صفر باشد");
     }
 }

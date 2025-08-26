@@ -7,7 +7,7 @@ public class CreateCompanyPreferencesCommandValidator : AbstractValidator<Create
     public CreateCompanyPreferencesCommandValidator()
     {
         RuleFor(x => x.CompanyId)
-     .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.EconomicCode)
             .MaximumLength(50)

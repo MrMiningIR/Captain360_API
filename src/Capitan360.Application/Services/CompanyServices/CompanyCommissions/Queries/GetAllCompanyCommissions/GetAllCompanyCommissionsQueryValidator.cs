@@ -7,8 +7,7 @@ public class GetAllCompanyCommissionsQueryValidator : AbstractValidator<GetAllCo
 {
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanyCommissionsDto.CommissionFromCaptainCargoWebSite),
-        nameof(CompanyCommissionsDto.CompanyId)
+        nameof(CompanyCommissionsDto.CompanyName)
     ];
 
     public GetAllCompanyCommissionsQueryValidator()

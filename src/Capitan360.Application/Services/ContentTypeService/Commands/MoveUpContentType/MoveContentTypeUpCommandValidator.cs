@@ -6,9 +6,7 @@ public class MoveContentTypeUpCommandValidator : AbstractValidator<MoveContentTy
 {
     public MoveContentTypeUpCommandValidator()
     {
-
-
-        RuleFor(x => x.ContentTypeId)
-            .GreaterThan(0).WithMessage("شناسه محتوی باید بزرگ‌تر از صفر باشد");
+        RuleFor(x => x.Id)
+           .GreaterThan(0).WithMessage("شناسه محتوی بار باید بزرگتر از صفر باشد");
     }
 }

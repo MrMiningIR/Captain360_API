@@ -7,7 +7,7 @@ public class CompanyPreferences : Entity
 {
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-    public Company Company { get; set; } = null!;
+    public Company? Company { get; set; }
 
     public string? EconomicCode { get; set; }
 

@@ -7,8 +7,9 @@ public class GetAllCompanySmsPatternsQueryValidator : AbstractValidator<GetAllCo
 {
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanySmsPatternsDto.PatternSmsIssueSender),
-        nameof(CompanySmsPatternsDto.CompanyId)
+        nameof(CompanySmsPatternsDto.CompanyName),
+        nameof(CompanySmsPatternsDto.SmsPanelUserName),
+        nameof(CompanySmsPatternsDto.SmsPanelNumber),
     ];
 
     public GetAllCompanySmsPatternsQueryValidator()

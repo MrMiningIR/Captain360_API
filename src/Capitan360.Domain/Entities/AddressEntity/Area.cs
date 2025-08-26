@@ -8,6 +8,7 @@ public class Area : Entity
     public int? ParentId { get; set; }
 
     public short LevelId { get; set; }
+    public AreaType Level { get; set; }
 
     public string PersianName { get; set; } = default!;
 

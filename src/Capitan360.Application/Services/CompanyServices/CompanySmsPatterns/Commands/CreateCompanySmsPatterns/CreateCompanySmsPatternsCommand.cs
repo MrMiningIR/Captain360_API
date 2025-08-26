@@ -2,6 +2,9 @@
 
 public record CreateCompanySmsPatternsCommand(
     int CompanyId,
+    string? SmsPanelUserName,
+    string? SmsPanelPassword,
+    string? SmsPanelNumber,
     string? PatternSmsIssueSender,
     string? PatternSmsIssueReceiver,
     string? PatternSmsIssueCompany,

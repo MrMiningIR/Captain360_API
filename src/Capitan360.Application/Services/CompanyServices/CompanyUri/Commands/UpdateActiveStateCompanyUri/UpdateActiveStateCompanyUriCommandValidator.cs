@@ -7,7 +7,7 @@ using FluentValidation;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyUri.Commands.UpdateActiveStateCompanyUri
 {
-    internal class UpdateActiveStateCompanyUriCommandValidator : AbstractValidator<UpdateActiveStateCompanyUriCommand>
+    public class UpdateActiveStateCompanyUriCommandValidator : AbstractValidator<UpdateActiveStateCompanyUriCommand>
     {
         public UpdateActiveStateCompanyUriCommandValidator()
         {

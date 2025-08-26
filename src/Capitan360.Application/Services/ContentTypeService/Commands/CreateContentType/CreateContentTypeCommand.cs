@@ -3,6 +3,6 @@
 public record CreateContentTypeCommand(
     int CompanyTypeId,
     string ContentTypeName,
-    string ContentTypeDescription,
-    bool Active
-    );
+    string? ContentTypeDescription,
+    bool ContentTypeActive
+);

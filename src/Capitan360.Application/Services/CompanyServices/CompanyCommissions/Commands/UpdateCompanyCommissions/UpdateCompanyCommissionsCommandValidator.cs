@@ -7,7 +7,7 @@ public class UpdateCompanyCommissionsCommandValidator : AbstractValidator<Update
     public UpdateCompanyCommissionsCommandValidator()
     {
         RuleFor(x => x.Id)
-     .GreaterThan(0).WithMessage("شناسه کمیسیون باید مشخص باشد");
+            .GreaterThan(0).WithMessage("شناسه کمیسیون باید مشخص باشد");
 
         RuleFor(x => x.CommissionFromCaptainCargoWebSite)
             .GreaterThan(0).WithMessage("کمیسیون صدور در وب سایت جستجوی کاپیتان 360 باید مشخص باشد");
