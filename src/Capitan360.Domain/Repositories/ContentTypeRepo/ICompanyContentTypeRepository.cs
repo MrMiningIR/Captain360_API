@@ -20,5 +20,12 @@ public interface ICompanyContentTypeRepository
     Task AddContentTypesToCompanyContentTypeAsync(List<CompanyContentTypeTransfer> relatedContentTypes, int companyId, CancellationToken cancellationToken);
     Task DeleteAllContentsByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
     Task<bool> CheckExistAnyItemAsync(int companyId, CancellationToken cancellationToken);
-    Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool tracked, bool loadData,
+        CancellationToken cancellationToken);
+
+    Task DeleteCompanyContentTypeAsync(CompanyContentType companyContentType);
+
+    Task<(IReadOnlyList<CompanyContentType>, int)> GetMatchingAllCompanyContentTypesAsync(string? searchPhrase,
+        string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection,
+        CancellationToken cancellationToken);
 }

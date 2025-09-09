@@ -11,6 +11,16 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
     : ICompanyInsuranceRepository
 {
+    public async Task<bool> CheckExistCompanyInsuranceNameAsync(string companyInsuranceName, int? currentCompanyInsuranceId, int companyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyInsurances.AnyAsync(ci => ci.CompanyId == companyId && (currentCompanyInsuranceId == null || ci.Id != currentCompanyInsuranceId) && ci.Name.ToLower() == companyInsuranceName.ToLower().Trim(), cancellationToken);
+    }
+
+    public async Task<bool> CheckExistCompanyInsuranceCodeAsync(string companyInsuranceCode, int? currentCompanyInsuranceId, int companyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyInsurances.AnyAsync(ci => ci.CompanyId == companyId && (currentCompanyInsuranceId == null || ci.Id != currentCompanyInsuranceId) && ci.Code.ToLower() == companyInsuranceCode.ToLower().Trim(), cancellationToken);
+    }
+
     public async Task<int> CreateCompanyInsuranceAsync(CompanyInsurance companyInsurance, CancellationToken cancellationToken)
     {
         dbContext.CompanyInsurances.Add(companyInsurance);
@@ -18,65 +28,65 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
         return companyInsurance.Id;
     }
 
-    public void Delete(CompanyInsurance companyInsurance)
+    public async Task<CompanyInsurance?> GetCompanyInsuranceByIdAsync(int companyInsuranceId, bool tracked, bool loadData, CancellationToken cancellationToken)
     {
-        dbContext.Entry(companyInsurance).Property("Deleted").CurrentValue = true;
+        IQueryable<CompanyInsurance> query = dbContext.CompanyInsurances;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.SingleOrDefaultAsync(a => a.Id == companyInsuranceId, cancellationToken);
     }
 
-    public async Task<CompanyInsurance?> GetCompanyInsuranceById(int id, CancellationToken cancellationToken, bool track = false)
+    public async Task<IReadOnlyList<CompanyInsurance>?> GetCompanyInsuranceByCompanyIdAsync(int companyInsuranceCompanyId, bool tracked, bool loadData, CancellationToken cancellationToken)
     {
-        if (track)
-        {
+        IQueryable<CompanyInsurance> query = dbContext.CompanyInsurances;
 
-            return await dbContext.CompanyInsurances
-                .Include(a => a.CompanyType)
-                //  .Include(a => a.Company)
-                // .Include(a=>a.CompanyInsuranceCharges)
-                .SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-            // .Include(a => a.CompanyInsuranceCharge)
-        }
-        else
-        {
-            return await dbContext.CompanyInsurances.AsNoTracking()
-            .Include(a => a.CompanyType)
-            //  .Include(a => a.Company)
-            // .Include(a=>a.CompanyInsuranceCharges)
-            .SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
-            // .Include(a => a.CompanyInsuranceCharge)
-        }
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.Where(a => a.CompanyId == companyInsuranceCompanyId)
+                          .ToListAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyInsurance>, int)> GetMatchingAllCompanyInsurances(string? searchPhrase, int companyTypeId, int companyId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task DeleteCompanyInsuranceAsync(CompanyInsurance companyInsurance)
+    {
+        await Task.Yield();
+    }
+
+    public async Task<(IReadOnlyList<CompanyInsurance>, int)> GetMatchingAllCompanyInsurancesAsync(string? searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
-        var baseQuery = dbContext.CompanyInsurances
-            .Include(a => a.CompanyType)
-            .Include(a => a.Company)
-            .AsNoTracking()
-            .Where(ci => string.IsNullOrEmpty(searchPhraseLower)
-                         || ci.Name.ToLower().Contains(searchPhraseLower)
-                         || ci.Code.ToLower().Contains(searchPhraseLower));
+        var baseQuery = dbContext.CompanyInsurances.AsNoTracking()
+                                              .Where(cu => searchPhraseLower == null || cu.Code.ToLower().Contains(searchPhraseLower) || cu.Name.ToLower().Contains(searchPhraseLower) || cu.Description.ToLower().Contains(searchPhraseLower));
 
-        if (companyTypeId != 0)
-            baseQuery = baseQuery.Where(ci => ci.CompanyTypeId == companyTypeId);
-
-        if (companyId != 0)
-            baseQuery = baseQuery.Where(ci => ci.CompanyId == companyId);
+        if (loadData)
+            baseQuery = baseQuery.Include(a => a.Company);
 
         baseQuery = active switch
         {
             1 => baseQuery.Where(a => a.Active),
-            2 => baseQuery.Where(a => !a.Active),
+            0 => baseQuery.Where(a => !a.Active),
             _ => baseQuery
         };
+
+        if (companyId != 0)
+            baseQuery = baseQuery.Where(pt => pt.CompanyId == companyId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyInsurance, object>>>
         {
-            { nameof(CompanyInsurance.Name), ci => ci.Name },
-            { nameof(CompanyInsurance.Tax), ci => ci.Tax },
-            { nameof(CompanyInsurance.Scale), ci => ci.Scale },
+            { nameof(CompanyInsurance.Name), pt => pt.Name},
+            { nameof(CompanyInsurance.Code), pt => pt.Code},
+            { nameof(CompanyInsurance.Active), pt => pt.Active},
+            { nameof(CompanyInsurance.CaptainCargoCode), pt => pt.CaptainCargoCode}
         };
 
         sortBy ??= nameof(CompanyInsurance.Name);
@@ -86,17 +96,11 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var companyInsurances = await baseQuery
+        var packageTypes = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (companyInsurances, totalCount);
-    }
-
-    public async Task<bool> CheckExistCompanyInsuranceName(string name, int companyTypeId, int companyId, CancellationToken cancellationToken)
-    {
-        return await dbContext.CompanyInsurances
-            .AnyAsync(ci => ci.CompanyTypeId == companyTypeId && ci.CompanyId == companyId && ci.Name.ToLower().Trim() == name.ToLower().Trim(), cancellationToken);
+        return (packageTypes, totalCount);
     }
 }

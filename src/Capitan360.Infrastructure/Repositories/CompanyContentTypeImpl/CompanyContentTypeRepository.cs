@@ -72,12 +72,12 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         return companyContentType.Id;
     }
 
-    public async Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int? currentCompanyContentTypeId, int companyId, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int? currentCompanyContentTypeId, int companyId, CancellationToken cancellationToken)//ch**
     {
         return await dbContext.CompanyContentTypes.AnyAsync(pt => pt.CompanyId == companyId && (currentCompanyContentTypeId == null || pt.Id != currentCompanyContentTypeId) && pt.CompanyContentTypeName.ToLower() == companyContentTypeName.ToLower().Trim(), cancellationToken);
     }
 
-    public async Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken)
+    public async Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken)//ch**
     {
         var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.Id == companyContentTypeId, cancellationToken: cancellationToken);
         var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(p => p.CompanyId == currentCompanyContentType!.CompanyId && p.CompanyContentTypeOrder == currentCompanyContentType.CompanyContentTypeOrder - 1, cancellationToken: cancellationToken);
@@ -97,15 +97,14 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         currentCompanyContentType!.CompanyContentTypeOrder++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
+    } //ch**
 
-    public async Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken)
+    public async Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken)//ch**
     {
-        return await dbContext.CompanyContentTypes
-              .CountAsync(ct => ct.CompanyId == companyId, cancellationToken: cancellationToken);
+        return await dbContext.CompanyContentTypes.CountAsync(pt => pt.CompanyId == companyId, cancellationToken: cancellationToken);
     }
 
-    public async Task CreateCompanyContentTypesAsync(List<int> companiesId, ContentType contentType, CancellationToken cancellationToken)
+    public async Task CreateCompanyContentTypesAsync(List<int> companiesId, ContentType contentType, CancellationToken cancellationToken)//ch**
     {
         foreach (var companyId in companiesId)
         {
@@ -117,23 +116,24 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
                 CompanyContentTypeName = contentType.ContentTypeName,
                 CompanyContentTypeOrder = contentType.ContentTypeOrder,
 
+
             });
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task AddContentTypesToCompanyContentTypeAsync(List<CompanyContentTypeTransfer> relatedContentTypes, int companyId, CancellationToken cancellationToken)
+    public async Task AddContentTypesToCompanyContentTypeAsync(List<CompanyContentTypeTransfer> relatedContentTypes, int companyId, CancellationToken cancellationToken) //ch**
     {
         foreach (var contentType in relatedContentTypes)
         {
             dbContext.CompanyContentTypes.Add(new CompanyContentType()
             {
-                CompanyContentTypeActive = contentType.Active,
+                CompanyContentTypeActive = contentType.ContentTypeActive,
                 CompanyId = companyId,
                 ContentTypeId = contentType.Id,
                 CompanyContentTypeName = contentType.ContentTypeName,
-                CompanyContentTypeOrder = contentType.OrderContentType
+                CompanyContentTypeOrder = contentType.ContentTypeOrder
             });
         }
 
@@ -156,15 +156,59 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
             .AnyAsync(x => x.CompanyId == companyId, cancellationToken);
     }
 
-    public async Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool tracked, bool loadData, CancellationToken cancellationToken)//ch**
     {
-        return tracked ? await dbContext.CompanyContentTypes
-                  .Include(x => x.ContentType)
-                  .SingleOrDefaultAsync(x => x.Id == companyContentTypeId, cancellationToken) :
-           await dbContext.CompanyContentTypes
-              .AsNoTracking()
-              .Include(x => x.ContentType)
-              .SingleOrDefaultAsync(x => x.Id == companyContentTypeId, cancellationToken);
+        IQueryable<CompanyContentType> query = dbContext.CompanyContentTypes;
 
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.SingleOrDefaultAsync(a => a.Id == companyContentTypeId, cancellationToken);
+
+    }
+
+
+    public async Task DeleteCompanyContentTypeAsync(CompanyContentType companyContentType)//ch**
+    {
+        await Task.Yield();
+    }
+    public async Task<(IReadOnlyList<CompanyContentType>, int)> GetMatchingAllCompanyContentTypesAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    {
+        var searchPhraseLower = searchPhrase?.ToLower();
+
+        var baseQuery = dbContext.CompanyContentTypes.AsNoTracking()
+                                                     .Where(pt => searchPhraseLower == null || pt.CompanyContentTypeName.ToLower().Contains(searchPhraseLower));
+
+        if (loadData)
+            baseQuery = baseQuery.Include(a => a.Company);
+
+        if (companyId != 0)
+        {
+            baseQuery = baseQuery.Where(pt => pt.CompanyId == companyId);
+        }
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyContentType, object>>>
+        {
+            { nameof(CompanyContentType.CompanyContentTypeOrder), pt => pt.CompanyContentTypeOrder! }
+        };
+
+        sortBy ??= nameof(CompanyContentType.CompanyContentTypeOrder);
+
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
+
+        var contentTypes = await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (contentTypes, totalCount);
     }
 }

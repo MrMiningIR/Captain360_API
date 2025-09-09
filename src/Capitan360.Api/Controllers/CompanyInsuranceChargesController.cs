@@ -30,7 +30,7 @@ public class CompanyInsuranceChargesController(ICompanyInsuranceChargeService co
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyInsuranceChargeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyInsuranceChargeDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<CompanyInsuranceChargeDto>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("دریافت نرخنامه", "J2")]
     public async Task<ActionResult<ApiResponse<CompanyInsuranceChargeDto>>> GetCompanyInsuranceChargeById(
         [FromRoute] int id, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class CompanyInsuranceChargesController(ICompanyInsuranceChargeService co
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("ثبت نرخنامه بیمه", "J3")]
     public async Task<ActionResult<ApiResponse<CompanyInsuranceChargeDto>>> UpdateCompanyInsuranceCharge(
         [FromBody] UpdateCompanyInsuranceChargeListCommand command, CancellationToken cancellationToken)

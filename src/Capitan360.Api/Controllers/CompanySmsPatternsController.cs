@@ -30,7 +30,7 @@ namespace Capitan360.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanySmsPatternsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanySmsPatternsDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<CompanySmsPatternsDto>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("دریافت پترن", "N2")]
         public async Task<ActionResult<ApiResponse<CompanySmsPatternsDto>>> GetCompanySmsPatternsById([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -51,7 +51,7 @@ namespace Capitan360.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("حذف پترن", "N4")]
         public async Task<ActionResult<ApiResponse<int>>> DeleteCompanySmsPatterns([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -62,7 +62,7 @@ namespace Capitan360.Api.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("آپدیت پترن", "N5")]
         public async Task<ActionResult<ApiResponse<int>>> UpdateCompanySmsPatterns([FromRoute] int id, UpdateCompanySmsPatternsCommand companySmsPatternsCommand, CancellationToken cancellationToken)
         {

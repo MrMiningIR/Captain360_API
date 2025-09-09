@@ -30,13 +30,24 @@ public class PackageTypeService(
     ICompanyPackageTypeRepository companyPackageTypeRepository,
     ICompanyRepository companyRepository) : IPackageTypeService
 {
-    public async Task<ApiResponse<int>> CreatePackageTypeAsync(CreatePackageTypeCommand command,
+    public async Task<ApiResponse<int>> CreatePackageTypeAsync(CreatePackageTypeCommand command,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("CreatePackageType is Called with {@CreatePackageTypeCommand}", command);
 
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(command.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
         if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, null, command.CompanyTypeId, cancellationToken))
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
+
 
         int existingCount = await packageTypeRepository.GetCountPackageTypeAsync(command.CompanyTypeId, cancellationToken);
 
@@ -65,50 +76,74 @@ public class PackageTypeService(
         return ApiResponse<int>.Ok(packageTypeId, "بسته بندی با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypesAsync(
-        GetAllPackageTypesQuery allPackageTypesQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypesAsync(//ch**
+        GetAllPackageTypesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllPackageTypesByCompanyType is Called");
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<PagedResult<PackageTypeDto>>.Error(401, "کاربر اهراز هویت نشده است");
 
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId))
+            return ApiResponse<PagedResult<PackageTypeDto>>.Error(403, "مجوز این فعالیت را ندارید");
         var (packageTypes, totalCount) = await packageTypeRepository.GetMatchingAllPackageTypesAsync(
-            allPackageTypesQuery.SearchPhrase,
-            allPackageTypesQuery.CompanyTypeId,
-            allPackageTypesQuery.Active,
-            allPackageTypesQuery.PageSize,
-            allPackageTypesQuery.PageNumber,
-            allPackageTypesQuery.SortBy,
-            allPackageTypesQuery.SortDirection,
+            query.SearchPhrase,
+            query.CompanyTypeId,
+            query.Active, true,
+            query.PageSize,
+            query.PageNumber,
+            query.SortBy,
+            query.SortDirection,
             cancellationToken);
         var packageTypeDto = mapper.Map<IReadOnlyList<PackageTypeDto>>(packageTypes) ?? Array.Empty<PackageTypeDto>();
         logger.LogInformation("Retrieved {Count} package types", packageTypeDto.Count);
 
-        var data = new PagedResult<PackageTypeDto>(packageTypeDto, totalCount, allPackageTypesQuery.PageSize,
-            allPackageTypesQuery.PageNumber);
+        var data = new PagedResult<PackageTypeDto>(packageTypeDto, totalCount, query.PageSize,
+            query.PageNumber);
         return ApiResponse<PagedResult<PackageTypeDto>>.Ok(data, "بسته‌بندی‌ها با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<PackageTypeDto>> GetPackageTypeByIdAsync(
+    public async Task<ApiResponse<PackageTypeDto>> GetPackageTypeByIdAsync(//ch**
         GetPackageTypeByIdQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetPackageTypeById is Called with ID: {Id}", query.Id);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(query.Id, false, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(query.Id, false, true, cancellationToken);
         if (packageType is null)
-            return ApiResponse<PackageTypeDto>.Error(404, $"نوع پکیج با شناسه {query.Id} یافت نشد");
+            return ApiResponse<PackageTypeDto>.Error(400, $"نوع پکیج با شناسه {query.Id} یافت نشد");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<PackageTypeDto>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
+            return ApiResponse<PackageTypeDto>.Error(403, "مجوز این فعالیت را ندارید");
 
         var result = mapper.Map<PackageTypeDto>(packageType);
         logger.LogInformation("PackageType retrieved successfully with ID: {Id}", query.Id);
         return ApiResponse<PackageTypeDto>.Ok(result, "بسته‌بندی با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<int>> DeletePackageTypeAsync(DeletePackageTypeCommand command,
+    public async Task<ApiResponse<int>> DeletePackageTypeAsync(DeletePackageTypeCommand command,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("DeletePackageType is Called with ID: {Id}", command.Id);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, true, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (packageType is null)
-            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
 
         packageTypeRepository.Delete(packageType);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -116,16 +151,26 @@ public class PackageTypeService(
         return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت حذف شد");
     }
 
-    public async Task<ApiResponse<PackageTypeDto>> UpdatePackageTypeAsync(UpdatePackageTypeCommand command,
+    public async Task<ApiResponse<PackageTypeDto>> UpdatePackageTypeAsync(UpdatePackageTypeCommand command,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdatePackageType is Called with {@UpdatePackageTypeCommand}", command);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, true, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, true, false, cancellationToken);
         if (packageType is null)
-            return ApiResponse<PackageTypeDto>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<PackageTypeDto>.Error(400, $"بسته بندی نامعتبر است");
 
-        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, command.Id, command.CompanyTypeId, cancellationToken))
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<PackageTypeDto>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
+            return ApiResponse<PackageTypeDto>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
+        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, command.Id, packageType.CompanyTypeId, cancellationToken))
             return ApiResponse<PackageTypeDto>.Error(400, "نام بسته بندی تکراری است");
 
         var updatedPackageType = mapper.Map(command, packageType);
@@ -139,14 +184,21 @@ public class PackageTypeService(
         return ApiResponse<PackageTypeDto>.Ok(updatedPackageTypeDto, "بسته‌بندی با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<int>> MovePackageTypeUpAsync(MovePackageTypeUpCommand command,
+    public async Task<ApiResponse<int>> MovePackageTypeUpAsync(MovePackageTypeUpCommand command,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("MovePackageTypeUp is Called with {@MovePackageTypeUpCommand}", command);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (packageType == null)
-            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
+            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
         if (packageType.PackageTypeOrder == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -160,17 +212,24 @@ public class PackageTypeService(
 
         logger.LogInformation(
             "PackageType moved up successfully.  PackageTypeId: {PackageTypeId}", command.Id);
-        return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
+        return ApiResponse<int>.Ok(command.Id, "بسته بندی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<int>> MovePackageTypeDownAsync(
+    public async Task<ApiResponse<int>> MovePackageTypeDownAsync(//ch**
         MovePackageTypeDownCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("MovePackageTypeUp is Called with {@MovePackageTypeUpCommand}", command);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (packageType == null)
             return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
+            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
         if (packageType.PackageTypeOrder == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -183,19 +242,27 @@ public class PackageTypeService(
         await packageTypeRepository.MovePackageTypeDownAsync(command.Id, cancellationToken);
 
         logger.LogInformation(
-            "PackageType moved up successfully.  PackageTypeId: {PackageTypeId}", command.Id);
-        return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
+            "PackageType moved down successfully.  PackageTypeId: {PackageTypeId}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "بسته بندی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<int>> SetPackageTypeActivityStatusAsync(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> SetPackageTypeActivityStatusAsync(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken)//ch**
     {
         logger.LogInformation("SetPackageTypeActivityStatus Called with {@UpdateActiveStatePackageTypeCommand}", command);
 
         var packageType =
-            await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, true, cancellationToken);
+            await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, true, false, cancellationToken);
 
         if (packageType is null)
-            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
         packageType.PackageTypeActive = !packageType.PackageTypeActive;
 

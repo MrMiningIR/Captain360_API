@@ -28,7 +28,7 @@ public class CompanyDomesticPathStructPriceController(ICompanyDomesticPathStruct
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("ثبت هزینه ها - مبدا،مقصد", "I2")]
     public async Task<ActionResult<ApiResponse<List<int>>>> UpdateCompanyDomesticPathStructPrice(
         [FromBody] UpdateCompanyDomesticPathListStructPriceCommand command, CancellationToken cancellationToken)

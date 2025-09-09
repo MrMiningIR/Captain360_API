@@ -63,7 +63,7 @@ public class AreaService(
 
         var area = await areaRepository.GetAreaById(query.Id, cancellationToken);
         if (area is null)
-            return ApiResponse<AreaDto>.Error(404, $"منطقه با شناسه {query.Id} یافت نشد");
+            return ApiResponse<AreaDto>.Error(400, $"منطقه با شناسه {query.Id} یافت نشد");
 
         var result = mapper.Map<AreaDto>(area);
         logger.LogInformation("Area retrieved successfully with ID: {Id}", query.Id);
@@ -78,7 +78,7 @@ public class AreaService(
 
         var area = await areaRepository.GetAreaById(command.Id, cancellationToken);
         if (area is null)
-            return ApiResponse<object>.Error(404, $"منطقه با شناسه {command.Id} یافت نشد");
+            return ApiResponse<object>.Error(400, $"منطقه با شناسه {command.Id} یافت نشد");
 
         areaRepository.Delete(area, Guid.NewGuid().ToString());
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -94,7 +94,7 @@ public class AreaService(
 
         var area = await areaRepository.GetAreaById(command.Id, cancellationToken);
         if (area is null)
-            return ApiResponse<AreaDto>.Error(404, $"منطقه با شناسه {command.Id} یافت نشد");
+            return ApiResponse<AreaDto>.Error(400, $"منطقه با شناسه {command.Id} یافت نشد");
 
         var updatedArea = mapper.Map(command, area);
         areaRepository.UpdateShadows(updatedArea, Guid.NewGuid().ToString());

@@ -6,13 +6,12 @@ namespace Capitan360.Domain.Repositories.CompanyRepo;
 public interface ICompanyPreferencesRepository
 {
     Task<int> CreateCompanyPreferencesAsync(CompanyPreferences companyPreferences, CancellationToken cancellationToken);
-    void Delete(CompanyPreferences companyPreferences, string userId);
 
-    Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int id, bool tracked,
-        CancellationToken cancellationToken);
-    Task<CompanyPreferences?> GetCompanyPreferencesByIdAsync(int id, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyPreferences?> GetCompanyPreferencesByIdAsync(int companyPreferencesId, bool tracked, bool loadData, CancellationToken cancellationToken);
 
+    Task DeleteCompanyPreferencesAsync(CompanyPreferences companyPreferences);
 
-    Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string? searchPhrase, int pageSize,
-        int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyPreferences>, int)> GetMatchingAllCompanyPreferencesAsync(string? searchPhrase, string? sortBy, int companyTypeId, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+
+    Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
 }

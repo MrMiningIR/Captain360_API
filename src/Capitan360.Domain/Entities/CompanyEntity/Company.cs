@@ -25,7 +25,7 @@ public class Company : Entity
 
     [ForeignKey(nameof(City))]
     public int CityId { get; set; }
-public Area? City { get; set; } 
+    public Area? City { get; set; }
 
     public string Code { get; set; } = default!;
     public string MobileCounter { get; set; } = default!;

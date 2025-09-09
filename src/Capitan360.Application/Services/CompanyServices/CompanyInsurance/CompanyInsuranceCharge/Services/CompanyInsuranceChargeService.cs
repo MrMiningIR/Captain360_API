@@ -223,7 +223,7 @@ public class CompanyInsuranceChargeService(
 
         var companyInsuranceCharge = await companyInsuranceChargeRepository.GetCompanyInsuranceChargeById(query.Id, cancellationToken);
         if (companyInsuranceCharge == null)
-            return ApiResponse<CompanyInsuranceChargeDto>.Error(404, $"شارژ بیمه شرکت با شناسه {query.Id} یافت نشد");
+            return ApiResponse<CompanyInsuranceChargeDto>.Error(400, $"شارژ بیمه شرکت با شناسه {query.Id} یافت نشد");
 
         var result = mapper.Map<CompanyInsuranceChargeDto>(companyInsuranceCharge);
         logger.LogInformation("CompanyInsuranceCharge retrieved successfully with ID: {Id}", query.Id);
@@ -239,7 +239,7 @@ public class CompanyInsuranceChargeService(
 
         var companyInsuranceCharge = await companyInsuranceChargeRepository.GetCompanyInsuranceChargeById(command.Id, cancellationToken);
         if (companyInsuranceCharge == null)
-            return ApiResponse<object>.Error(404, $"شارژ بیمه شرکت با شناسه {command.Id} یافت نشد");
+            return ApiResponse<object>.Error(400, $"شارژ بیمه شرکت با شناسه {command.Id} یافت نشد");
 
         companyInsuranceChargeRepository.Delete(companyInsuranceCharge);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -443,7 +443,7 @@ public class CompanyInsuranceChargeService(
         if (query.CompanyInsuranceId <= 0)
             return ApiResponse<List<CompanyInsuranceChargeTableDataDto>>.Error(400, "شرکت بیمه وجود ندارد یا شناسه, و اطلاعات ارسالی ان اشتباه است");
 
-        var companyInsurance = await companyInsuranceRepository.GetCompanyInsuranceById(query.CompanyInsuranceId, cancellationToken);
+        var companyInsurance = await companyInsuranceRepository.GetCompanyInsuranceByIdAsync(query.CompanyInsuranceId, false, false, cancellationToken);
         if (companyInsurance is null)
             return ApiResponse<List<CompanyInsuranceChargeTableDataDto>>.Error(400, "شرکت بیمه وجود ندارد یا شناسه ان اشتباه است");
 

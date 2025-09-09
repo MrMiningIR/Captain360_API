@@ -17,7 +17,7 @@ public interface IPackageTypeService
      CancellationToken cancellationToken);
 
     Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypesAsync(
-        GetAllPackageTypesQuery allPackageTypesQuery, CancellationToken cancellationToken);
+        GetAllPackageTypesQuery query, CancellationToken cancellationToken);
 
     Task<ApiResponse<PackageTypeDto>> GetPackageTypeByIdAsync(
         GetPackageTypeByIdQuery query, CancellationToken cancellationToken);

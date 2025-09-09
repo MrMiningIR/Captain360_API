@@ -29,13 +29,28 @@ public class ContentTypeService(
     ICompanyRepository companyRepository)
     : IContentTypeService
 {
-    public async Task<ApiResponse<int>> CreateContentTypeAsync(CreateContentTypeCommand command,
+    public async Task<ApiResponse<int>> CreateContentTypeAsync(CreateContentTypeCommand command, //Ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateContentType is Called with {@CreateContentTypeCommand}", command);
 
         if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, null, command.CompanyTypeId, cancellationToken))
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
+
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(command.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, null, command.CompanyTypeId, cancellationToken))
+            return ApiResponse<int>.Error(400, "نام محتوی بار تکراری است");
+
+
 
         int existingCount = await contentTypeRepository.GetCountContentTypeAsync(command.CompanyTypeId, cancellationToken);
 
@@ -65,70 +80,109 @@ public class ContentTypeService(
         return ApiResponse<int>.Ok(contentTypeId, "بسته بندی با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<PagedResult<ContentTypeDto>>> GetAllContentTypes(
-        GetAllContentTypesQuery allContentTypeQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<ContentTypeDto>>> GetAllContentTypes(//Ch
+        GetAllContentTypesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllContentTypesByCompanyType is Called");
 
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<PagedResult<ContentTypeDto>>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId))
+            return ApiResponse<PagedResult<ContentTypeDto>>.Error(403, "مجوز این فعالیت را ندارید");
+
+
         var (contentTypes, totalCount) = await contentTypeRepository.GetMatchingAllContentTypesAsync(
-            allContentTypeQuery.SearchPhrase,
-            allContentTypeQuery.CompanyTypeId,
-            allContentTypeQuery.Active,
-            allContentTypeQuery.PageSize,
-            allContentTypeQuery.PageNumber,
-            allContentTypeQuery.SortBy,
-            allContentTypeQuery.SortDirection,
+            query.SearchPhrase,
+            query.SortBy,
+            query.CompanyTypeId,
+            query.Active,
+            true,
+            query.PageNumber,
+            query.PageSize,
+          query.SortDirection,
             cancellationToken);
         var contentTypeDto = mapper.Map<IReadOnlyList<ContentTypeDto>>(contentTypes) ?? Array.Empty<ContentTypeDto>();
         logger.LogInformation("Retrieved {Count} content types", contentTypeDto.Count);
 
-        var data = new PagedResult<ContentTypeDto>(contentTypeDto, totalCount, allContentTypeQuery.PageSize,
-            allContentTypeQuery.PageNumber);
+        var data = new PagedResult<ContentTypeDto>(contentTypeDto, totalCount, query.PageSize,
+            query.PageNumber);
 
-        return ApiResponse<PagedResult<ContentTypeDto>>.Ok(data, "محتوی‌ها با موفقیت دریافت شدند");
+        return ApiResponse<PagedResult<ContentTypeDto>>.Ok(data, "محتو‌های بار با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<ContentTypeDto>> GetContentTypeByIdAsync(
+    public async Task<ApiResponse<ContentTypeDto>> GetContentTypeByIdAsync(//ch**
         GetContentTypeByIdQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetContentTypeById is Called with ID: {Id}", query.Id);
 
-        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(query.Id, false, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(query.Id, false, false, cancellationToken);
         if (contentType is null)
-            return ApiResponse<ContentTypeDto>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<ContentTypeDto>.Error(400, $"بسته بندی نامعتبر است");
+
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<ContentTypeDto>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
+            return ApiResponse<ContentTypeDto>.Error(403, "مجوز این فعالیت را ندارید");
+
+
 
         var result = mapper.Map<ContentTypeDto>(contentType);
         logger.LogInformation("ContentType retrieved successfully with ID: {Id}", query.Id);
         return ApiResponse<ContentTypeDto>.Ok(result, "محتوی با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<int>> DeleteContentTypeAsync(DeleteContentTypeCommand command,
-        CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteContentTypeAsync(DeleteContentTypeCommand command //ch**
+       , CancellationToken cancellationToken)
     {
         logger.LogInformation("DeleteContentType is Called with ID: {Id}", command.Id);
 
-        var contentType =
-            await contentTypeRepository.GetContentTypeByIdAsync(command.Id, true, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, true, false, cancellationToken);
         if (contentType is null)
-            return ApiResponse<int>.Error(404, $"نوع محتوی با شناسه {command.Id} یافت نشد");
+            return ApiResponse<int>.Error(400, $"محتوی بار نامعتبر است");
 
-        contentTypeRepository.Delete(contentType);
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
+            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+
+        await contentTypeRepository.Delete(contentType);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
         logger.LogInformation("ContentType soft-deleted successfully with ID: {Id}", command.Id);
-        return ApiResponse<int>.Deleted("ContentType deleted successfully");
+        return ApiResponse<int>.Ok(command.Id, "محتوی بار با موفقیت حذف شد");
     }
 
-    public async Task<ApiResponse<ContentTypeDto>> UpdateContentTypeAsync(UpdateContentTypeCommand command,
+    public async Task<ApiResponse<ContentTypeDto>> UpdateContentTypeAsync(UpdateContentTypeCommand command,//Ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateContentType is Called with {@UpdateContentTypeCommand}", command);
 
-        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, true, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, true, cancellationToken);
         if (contentType is null)
-            return ApiResponse<ContentTypeDto>.Error(404, $"نوع محتوی با شناسه {command.Id} یافت نشد");
+            return ApiResponse<ContentTypeDto>.Error(400, $"محتوی بار نامعتبر است");
 
-        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.Id, command.CompanyTypeId, cancellationToken))
-            return ApiResponse<ContentTypeDto>.Error(400, "نام بسته بندی تکراری است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<ContentTypeDto>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
+            return ApiResponse<ContentTypeDto>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.Id, contentType.CompanyTypeId, cancellationToken))
+            return ApiResponse<ContentTypeDto>.Error(400, "نام محتوی بار تکراری است");
 
         var updatedContentType = mapper.Map(command, contentType);
 
@@ -139,13 +193,24 @@ public class ContentTypeService(
         return ApiResponse<ContentTypeDto>.Ok(updatedContentTypeDto, "محتوی با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveContentTypeUpCommand command,
+    public async Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveContentTypeUpCommand command, //ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("MoveContentTypeUp is Called with {@MoveContentTypeUpCommand}", command);
-        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, cancellationToken);
+
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (contentType == null)
-            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"محتوی بار نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
         if (contentType.ContentTypeOrder == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
@@ -160,19 +225,29 @@ public class ContentTypeService(
         return ApiResponse<int>.Ok(command.Id, "محتوی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<int>> MoveContentTypeDownAsync(
+    public async Task<ApiResponse<int>> MoveContentTypeDownAsync(//Ch**
         MoveContentTypeDownCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("MoveContentTypeDown is Called with {@MoveContentTypeDownCommand}", command);
 
-        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, cancellationToken);
+        var contentType = await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (contentType == null)
-            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+        if (contentType.ContentTypeOrder == 1)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
+
 
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
 
-        if (contentType.ContentTypeOrder == count)
-            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         if (count <= 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -188,16 +263,28 @@ public class ContentTypeService(
         logger.LogInformation("SetContentActivityStatus Called with {@UpdateActiveStateContentTypeCommand}", command);
 
         var contentType =
-            await contentTypeRepository.GetContentTypeByIdAsync(command.Id, true, cancellationToken);
+            await contentTypeRepository.GetContentTypeByIdAsync(command.Id, false, true, cancellationToken);
 
         if (contentType is null)
-            return ApiResponse<int>.Error(404, $"بسته بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"محتوی بار نامعتبر است");
+
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
 
         contentType.ContentTypeActive = !contentType.ContentTypeActive;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("SetContentActivityStatus Updated successfully with ID: {Id}", command.Id);
+        logger.LogInformation("وضعیت محتوی بار با موفقیت به‌روزرسانی شد: {Id}", command.Id);
         return ApiResponse<int>.Ok(command.Id, "وضعیت بسته بندی با موفقیت به‌روزرسانی شد");
-    }
+    }//Ch
 }

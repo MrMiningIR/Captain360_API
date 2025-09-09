@@ -1,15 +1,23 @@
 ﻿using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.AddressEntity;
 using Capitan360.Domain.Repositories.AddressRepo;
 using Capitan360.Infrastructure.Persistence;
-using System.Linq.Expressions;
-using Capitan360.Domain.Entities.AddressEntity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.AddressImpl;
 
 public class AreaRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IAreaRepository
+
 {
+    public async Task<bool> CheckExistAreaByIdANdParentId(int areaId, int? areaLevelId, int? areaParentId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Areas.AnyAsync(ar => ar.Id == areaId &&
+                                                    (areaLevelId == null || ar.LevelId == areaLevelId) &&
+                                                    (areaParentId == null || ar.ParentId == areaParentId), cancellationToken: cancellationToken);
+    }
+
     public async Task<int> CreateAreaAsync(Area areaEntity, string userId, CancellationToken cancellationToken)
     {
         dbContext.Entry(areaEntity).Property("CreatedBy").CurrentValue = userId;
@@ -157,6 +165,11 @@ public class AreaRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWo
             .ToListAsync(cancellationToken) : await baseQuery.ToListAsync(cancellationToken);
 
         return (areas, totalCount);
+    }
+
+    public async Task<List<Area>> GetAllCities(CancellationToken cancellationToken)
+    {
+        return await dbContext.Areas.AsNoTracking().Where(x => x.LevelId == 3).ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken)

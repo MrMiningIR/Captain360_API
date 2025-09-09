@@ -23,7 +23,7 @@ public class ApiResponseFilter : IDocumentFilter
                         }
                     }
                 });
-                operation.Responses.TryAdd("404", new OpenApiResponse
+                operation.Responses.TryAdd("400", new OpenApiResponse
                 {
                     Description = "Not Found",
                     Content = new Dictionary<string, OpenApiMediaType>

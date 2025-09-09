@@ -1,4 +1,5 @@
 ﻿using Capitan360.Domain.Constants;
+using System.ComponentModel;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Queries.GetAllCompanyDomesticPaths;
 

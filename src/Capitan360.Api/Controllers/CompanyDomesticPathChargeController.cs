@@ -28,7 +28,7 @@ namespace Capitan360.Api.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<List<int>>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("ثبت نرخنامه", "G2")]
         public async Task<ActionResult<ApiResponse<List<int>>>> UpdateCompanyDomesticPathCharge(
             [FromBody] UpdateCompanyDomesticPathChargeCommand command, CancellationToken cancellationToken)

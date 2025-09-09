@@ -4,6 +4,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Command
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Commands.UpdateCompanyCommissions;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Dtos;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries.GetAllCompanyCommissions;
+using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries.GetCompanyCommissionsByCompanyId;
 using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries.GetCompanyCommissionsById;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyCommissions.Services;
@@ -11,8 +12,13 @@ namespace Capitan360.Application.Services.CompanyServices.CompanyCommissions.Ser
 public interface ICompanyCommissionsService
 {
     Task<ApiResponse<int>> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand companyCommissions, CancellationToken cancellationToken);
-    Task<ApiResponse<PagedResult<CompanyCommissionsDto>>> GetAllCompanyCommissions(GetAllCompanyCommissionsQuery allCompanyCommissionsQuery, CancellationToken cancellationToken);
-    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery id, CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<CompanyCommissionsDto>>> GetAllCompanyCommissionsAsync(GetAllCompanyCommissionsQuery query, CancellationToken cancellationToken);
+    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery query, CancellationToken cancellationToken);
     Task<ApiResponse<int>> DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand id, CancellationToken cancellationToken);
-    Task<ApiResponse<int>> UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<CompanyCommissionsDto>> UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command,
+        CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByCompanyIdAsync(
+       GetCompanyCommissionsByCompanyId.GetCompanyCommissionsByCompanyIdQuery query,
+       CancellationToken cancellationToken);
 }

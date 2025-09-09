@@ -22,14 +22,14 @@ namespace Capitan360.Api.Controllers
         [PermissionFilter("دریافت ترجیحات شرکت ها", "M1")]
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyPreferencesDto>>>> GetAllCompanyPreferences([FromQuery] GetAllCompanyPreferencesQuery getAllCompanyPreferencesQuery, CancellationToken cancellationToken)
         {
-            var response = await companyPreferencesService.GetAllCompanyPreferences(getAllCompanyPreferencesQuery, cancellationToken);
+            var response = await companyPreferencesService.GetAllCompanyPreferencesAsync(getAllCompanyPreferencesQuery, cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("دریافت ترجیح شرکت", "M2")]
         public async Task<ActionResult<ApiResponse<CompanyPreferencesDto>>> GetCompanyPreferencesById([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -50,7 +50,7 @@ namespace Capitan360.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("حذف ترجیح", "M4")]
         public async Task<IActionResult> DeleteCompanyPreferences([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -61,7 +61,7 @@ namespace Capitan360.Api.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("آپدیت ترجیح", "M5")]
         public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPreferences([FromRoute] int id, UpdateCompanyPreferencesCommand updateCompanyPreferencesCommand, CancellationToken cancellationToken)
         {

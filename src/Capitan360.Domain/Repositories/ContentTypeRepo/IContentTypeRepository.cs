@@ -8,12 +8,14 @@ public interface IContentTypeRepository
 {
     Task<int> CreateContentTypeAsync(ContentType contentType, CancellationToken cancellationToken);
 
-    void Delete(ContentType contentType);
+    Task Delete(ContentType contentType);
 
-    Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool tracked, CancellationToken cancellationToken);
+    Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool loadData, bool tracked,
+        CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypesAsync(string? searchPhrase, int companyTypeId, int active,
-        int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypesAsync(string? searchPhrase, string? sortBy,
+        int companyTypeId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection,
+        CancellationToken cancellationToken);
 
     Task<bool> CheckExistContentTypeNameAsync(string contentTypeName, int? currentContentTypeId, int companyTypeId, CancellationToken cancellationToken);
 
@@ -23,5 +25,8 @@ public interface IContentTypeRepository
 
     Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken);
 
-    Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken);
+    Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, bool tracked,
+        bool loadData, CancellationToken cancellationToken);
+
+
 }

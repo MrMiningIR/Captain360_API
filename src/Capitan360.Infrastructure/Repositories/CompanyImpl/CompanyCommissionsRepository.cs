@@ -10,7 +10,7 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyCommissionsRepository
 {
-    public async Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions,
+    public async Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions,//ch**
         CancellationToken cancellationToken)
     {
         dbContext.CompanyCommissions.Add(companyCommissions);
@@ -18,51 +18,68 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
         return companyCommissions.Id;
     }
 
-    public void Delete(CompanyCommissions companyCommissions)
+    public async Task DeleteCompanyCommissionsAsync(CompanyCommissions companyCommissions) //ch**
     {
-        dbContext.Entry(companyCommissions).Property("Deleted").CurrentValue = true;
+        await Task.Yield();
 
     }
 
 
 
-    public async Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int companyCommissionsId, bool tracked,
-        CancellationToken cancellationToken)
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int companyCommissionsId, bool tracked, bool loadData, CancellationToken cancellationToken)//ch**
     {
-        return tracked ? await dbContext.CompanyCommissions.SingleOrDefaultAsync(a => a.Id == companyCommissionsId, cancellationToken) :
-                         await dbContext.CompanyCommissions.AsNoTracking().SingleOrDefaultAsync(a => a.Id == companyCommissionsId, cancellationToken);
+        IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.SingleOrDefaultAsync(a => a.Id == companyCommissionsId, cancellationToken);
     }
-    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken)//ch**
     {
-        return tracked ? await dbContext.CompanyCommissions.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken) :
-                         await dbContext.CompanyCommissions.AsNoTracking().SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
+        IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyCommissions>, int)> GetMatchingAllCompanyCommissionsAsync(string? searchPhrase, string? sortBy, int companyTypeId, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)//ch**
     {
-        var baseQuery = dbContext.CompanyCommissions.AsNoTracking();
+        var searchPhraseLower = searchPhrase?.ToLower();
+        var baseQuery = dbContext.CompanyCommissions.AsNoTracking()
+                                                    .Where(cc => searchPhraseLower == null || cc.Company!.Name.ToLower().Contains(searchPhraseLower));
 
-        if (!string.IsNullOrEmpty(searchPhrase))
-        {
-            var searchPhraseLower = searchPhrase.ToLower();
-            baseQuery = baseQuery.Where(cc => cc.CommissionFromCaptainCargoWebSite.ToString().Contains(searchPhraseLower));
-        }
+        if (loadData)
+            baseQuery = baseQuery.Include(a => a.Company);
+
+        if (companyTypeId > 1)
+            baseQuery = baseQuery.Where(a => a.Company!.CompanyTypeId == companyTypeId);
+
+        if (companyId != 0)
+            baseQuery = baseQuery.Where(a => a.CompanyId == companyId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
-        {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanyCommissions, object>>>
+
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyCommissions, object>>>
             {
-                { nameof(CompanyCommissions.CommissionFromCaptainCargoWebSite), cc => cc.CommissionFromCaptainCargoWebSite },
-                { nameof(CompanyCommissions.CompanyId), cc => cc.CompanyId }
+                { nameof(CompanyCommissions.Company.Name), cc => cc.Company !.Name }
             };
 
-            var selectedColumn = columnsSelector[sortBy];
-            baseQuery = sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColumn)
-                : baseQuery.OrderByDescending(selectedColumn);
-        }
+        sortBy ??= nameof(CompanyCommissions.Company.Name);
+
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
 
         var companyCommissions = await baseQuery
             .Skip(pageSize * (pageNumber - 1))

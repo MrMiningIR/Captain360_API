@@ -9,9 +9,9 @@ public class CompanyContentTypeProfile : Profile
 {
     public CompanyContentTypeProfile()
     {
-        CreateMap<UpdateCompanyContentTypeNameAndDescriptionCommand, CompanyContentType>()
-             .ForMember(dest => dest.CompanyContentTypeName, opt => opt.MapFrom(src => src.CompanyContentTypeName))
- .ForMember(dest => dest.CompanyContentTypeDescription, opt => opt.MapFrom(src => src.CompanyContentTypeDescription));
+        CreateMap<UpdateCompanyContentTypeNameCommand, CompanyContentType>()
+            .ForMember(dest => dest.CompanyContentTypeName, opt => opt.MapFrom(src => src.CompanyContentTypeName));
+
         CreateMap<CompanyContentType, CompanyContentTypeDto>()
             .ForMember(dest => dest.CompanyContentTypeName, opt => opt.MapFrom(src => src.CompanyContentTypeName))
             .ForMember(dest => dest.ContentTypeName, opt => opt.MapFrom(src => src.ContentType.ContentTypeName));

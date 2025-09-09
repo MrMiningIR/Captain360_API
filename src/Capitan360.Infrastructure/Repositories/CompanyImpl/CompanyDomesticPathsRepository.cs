@@ -11,6 +11,12 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
     : ICompanyDomesticPathsRepository
 {
+    public async Task<bool> CheckExistCompanyDomesticPathPathAsync(int sourceCityId, int destinationCityId, int? currentCompanyDomesticPathId, int companyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticPaths.AnyAsync(cdp => cdp.CompanyId == companyId && (currentCompanyDomesticPathId == null || cdp.Id != currentCompanyDomesticPathId) &&
+                                                                    cdp.SourceCityId == sourceCityId && cdp.DestinationCityId == destinationCityId, cancellationToken);
+    }
+
     public async Task<int> CreateCompanyDomesticPathAsync(CompanyDomesticPaths companyDomesticPath, CancellationToken cancellationToken)
     {
         dbContext.CompanyDomesticPaths.Add(companyDomesticPath);
@@ -18,83 +24,83 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
         return companyDomesticPath.Id;
     }
 
-    public void Delete(CompanyDomesticPaths companyDomesticPath)
+    public async Task<CompanyDomesticPaths?> GetCompanyDomesticPathByIdAsync(int companyDomesticPathId, bool tracked, bool loadData, CancellationToken cancellationToken)
     {
-        dbContext.Entry(companyDomesticPath).Property("Deleted").CurrentValue = true;
+        IQueryable<CompanyDomesticPaths> query = dbContext.CompanyDomesticPaths;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+        {
+            query = query.Include(a => a.Company);
+            query = query.Include(a => a.SourceCountry);
+            query = query.Include(a => a.SourceProvince);
+            query = query.Include(a => a.SourceCity);
+            query = query.Include(a => a.DestinationCountry);
+            query = query.Include(a => a.DestinationProvince);
+            query = query.Include(a => a.DestinationCity);
+        }
+
+        return await query.SingleOrDefaultAsync(a => a.Id == companyDomesticPathId, cancellationToken);
     }
 
-    public async Task<CompanyDomesticPaths?> GetCompanyDomesticPathById(int id, CancellationToken cancellationToken, bool track = false)
+    public async Task DeleteCompanyDomesticPathAsync(CompanyDomesticPaths companyDomesticPath)
     {
-        if (track)
-        {
-            return await dbContext.CompanyDomesticPaths
-
-    .SingleOrDefaultAsync(cu => cu.Id == id, cancellationToken);
-        }
-        else
-        {
-            return await dbContext.CompanyDomesticPaths.AsNoTracking()
-
-    .SingleOrDefaultAsync(cu => cu.Id == id, cancellationToken);
-        }
+        await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyDomesticPaths>, int)> GetMatchingAllCompanyDomesticPaths(
-        string? searchPhrase, int companyId, int pageSize, int pageNumber,
-        int status,
-        string? sortBy, int? sourceCountryId, int? sourceProvinceId, int? sourceCityId, int? destinationCountryId,
-        int? destinationProvinceId, int? destinationCityId, SortDirection sortDirection,
-        CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyDomesticPaths>, int)> GetMatchingAllCompanyDomesticPathsAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int active, int sourceCityId, int destinationCityId, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
         var baseQuery = dbContext.CompanyDomesticPaths.AsNoTracking()
-            .Where(c => companyId == 0 || c.CompanyId == companyId)
-            .Include(a => a.SourceProvince)
-            .Include(a => a.SourceCity)
-            .Include(a => a.DestinationProvince)
-            .Include(a => a.DestinationCity)
-            .Where(cu => string.IsNullOrEmpty(searchPhraseLower) ||
-                         cu.DescriptionForSearch.ToLower().Contains(searchPhraseLower) ||
-                         cu.SourceCity.PersianName.ToLower().Contains(searchPhraseLower) ||
-                         cu.DestinationCity.PersianName.ToLower().Contains(searchPhraseLower))
+                                                      .Where(cdp => searchPhraseLower == null || cdp.SourceCity.PersianName.ToLower().Contains(searchPhraseLower) || cdp.SourceCity.EnglishName.ToLower().Contains(searchPhraseLower) ||
+                                                                                                 cdp.DestinationCountry.PersianName.ToLower().Contains(searchPhraseLower) || cdp.DestinationCountry.EnglishName.ToLower().Contains(searchPhraseLower));
 
-            ;
+        baseQuery = baseQuery.Where(pt => pt.CompanyId == companyId);
 
-        if (sourceCountryId > 0)
-            baseQuery = baseQuery.Where(x => x.SourceCountryId == sourceCountryId);
-        if (sourceProvinceId > 0)
-            baseQuery = baseQuery.Where(x => x.SourceProvinceId == sourceProvinceId);
-        if (sourceCityId > 0)
-            baseQuery = baseQuery.Where(x => x.SourceCityId == sourceCityId);
+        baseQuery = active switch
+        {
+            1 => baseQuery.Where(a => a.Active),
+            0 => baseQuery.Where(a => !a.Active),
+            _ => baseQuery
+        };
 
-        if (destinationCountryId > 0)
-            baseQuery = baseQuery.Where(x => x.DestinationCountryId == destinationCountryId);
-        if (destinationProvinceId > 0)
-            baseQuery = baseQuery.Where(x => x.DestinationProvinceId == destinationProvinceId);
-        if (destinationCityId > 0)
-            baseQuery = baseQuery.Where(x => x.DestinationCityId == destinationCityId);
+        if (loadData)
+        {
+            baseQuery = baseQuery.Include(a => a.Company);
+            baseQuery = baseQuery.Include(a => a.SourceCountry);
+            baseQuery = baseQuery.Include(a => a.SourceProvince);
+            baseQuery = baseQuery.Include(a => a.SourceCity);
+            baseQuery = baseQuery.Include(a => a.DestinationCountry);
+            baseQuery = baseQuery.Include(a => a.DestinationProvince);
+            baseQuery = baseQuery.Include(a => a.DestinationCity);
+        }
 
-        if (status is > -1 and < 2)
-            baseQuery = baseQuery.Where(x => x.Active == status);
+        if (sourceCityId != 0)
+        {
+            baseQuery = baseQuery.Where(pt => pt.SourceCityId == sourceCityId);
+        }
+
+        if (destinationCityId != 0)
+        {
+            baseQuery = baseQuery.Where(pt => pt.DestinationCityId == destinationCityId);
+        }
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPaths, object>>>
         {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPaths, object>>>
-            {
-                { nameof(CompanyDomesticPaths.Description), cu => cu.Description },
-                { nameof(CompanyDomesticPaths.Active), cu => cu.Active },
-                { nameof(CompanyDomesticPaths.EntranceFee), cu => cu.EntranceFee },
-                { nameof(CompanyDomesticPaths.EntranceFeeWeight), cu => cu.EntranceFeeWeight },
-                { nameof(CompanyDomesticPaths.EntranceFeeType), cu => cu.EntranceFeeType }
-            };
+            { nameof(CompanyDomesticPaths.SourceCity.PersianName), cdp => cdp.SourceCity.PersianName},
+            { nameof(CompanyDomesticPaths.DestinationCity.PersianName), cdp => cdp.DestinationCity.PersianName},
+        };
 
-            var selectedColumn = columnsSelector[sortBy];
-            baseQuery = sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColumn)
-                : baseQuery.OrderByDescending(selectedColumn);
-        }
+        sortBy ??= nameof(CompanyDomesticPaths.DestinationCity.PersianName);
+
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
 
         var companyDomesticPaths = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
@@ -104,18 +110,25 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
         return (companyDomesticPaths, totalCount);
     }
 
-    public async Task<bool> CheckExistPath(int sourceCityId, int destinationCityId, int companyId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyDomesticPaths>?> GetCompanyDomesticPathsByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyDomesticPaths.AnyAsync(
-            a => a.CompanyId == companyId && a.SourceCityId == sourceCityId && a.DestinationCityId == destinationCityId,
-            cancellationToken);
-    }
+        var baseQuery = dbContext.CompanyDomesticPaths.AsNoTracking()
+                                                      .Where(cdp => cdp.CompanyId == companyId);
+        if (loadData)
+        {
+            baseQuery = baseQuery.Include(a => a.Company);
+            baseQuery = baseQuery.Include(a => a.SourceCountry);
+            baseQuery = baseQuery.Include(a => a.SourceProvince);
+            baseQuery = baseQuery.Include(a => a.SourceCity);
+            baseQuery = baseQuery.Include(a => a.DestinationCountry);
+            baseQuery = baseQuery.Include(a => a.DestinationProvince);
+            baseQuery = baseQuery.Include(a => a.DestinationCity);
+        }
 
-    public async Task<CompanyDomesticPaths?> CheckExistPath(int domesticPathId, CancellationToken cancellationToken)
-    {
-        var result = await dbContext.CompanyDomesticPaths.
-            SingleOrDefaultAsync(x => x.Id == domesticPathId, cancellationToken: cancellationToken);
+        baseQuery = baseQuery.OrderBy(cdp => cdp.DestinationCity.PersianName);
 
-        return result;
+        var companyDomesticPaths = await baseQuery.ToListAsync(cancellationToken);
+
+        return companyDomesticPaths;
     }
 }

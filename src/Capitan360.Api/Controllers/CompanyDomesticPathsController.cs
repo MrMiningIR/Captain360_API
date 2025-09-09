@@ -23,14 +23,14 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyDomesticPathDto>>>> GetAllCompanyDomesticPaths(
         [FromQuery] GetAllCompanyDomesticPathsQuery query, CancellationToken cancellationToken)
     {
-        var response = await companyDomesticPathsService.GetAllCompanyDomesticPaths(query, cancellationToken);
+        var response = await companyDomesticPathsService.GetAllCompanyDomesticPathsAsync(query, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyDomesticPathDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDomesticPathDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<CompanyDomesticPathDto>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("دریافت مسیر", "H2")]
     public async Task<ActionResult<ApiResponse<CompanyDomesticPathDto>>> GetCompanyDomesticPathById(
         [FromRoute] int id, CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("حذف مسیر", "H4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompanyDomesticPath(
         [FromRoute] int id, CancellationToken cancellationToken)
@@ -65,7 +65,7 @@ public class CompanyDomesticPathsController(ICompanyDomesticPathsService company
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("آپدیت مسیر", "H5")]
     public async Task<ActionResult<ApiResponse<CompanyDomesticPathDto>>> UpdateCompanyDomesticPath(
         [FromRoute] int id, [FromBody] UpdateCompanyDomesticPathCommand command, CancellationToken cancellationToken)

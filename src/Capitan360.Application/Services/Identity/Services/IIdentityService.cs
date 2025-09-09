@@ -1,4 +1,5 @@
 ﻿using Capitan360.Application.Common;
+using Capitan360.Application.Services.AddressService.Dtos;
 using Capitan360.Application.Services.Dtos;
 using Capitan360.Application.Services.Identity.Commands.AddUserGroup;
 using Capitan360.Application.Services.Identity.Commands.ChangePassword;
@@ -58,6 +59,7 @@ public interface IIdentityService
 
     Task<ApiResponse<PagedResult<RoleDto>>> GetRoles(CancellationToken cancellationToken);
     Task<ApiResponse<List<CompanyItemDto>>> GetCompaniesList(int companyTypeId, CancellationToken cancellationToken);
+    Task<ApiResponse<List<CityAreaDto>>> GetCityList(CancellationToken cancellationToken);
 
     Task<ApiResponse<string>> ChangePassword(ChangePasswordCommand changePasswordCommand);
     Task<ApiResponse<string>> SetUserActivityStatus(ChangeUserActivityCommand activityCommand, CancellationToken cancellationToken);

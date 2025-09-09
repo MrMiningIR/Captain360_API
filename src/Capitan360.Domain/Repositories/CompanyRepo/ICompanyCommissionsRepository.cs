@@ -7,13 +7,17 @@ public interface ICompanyCommissionsRepository
 {
     Task<int> CreateCompanyCommissionsAsync(CompanyCommissions companyCommissions, CancellationToken cancellationToken);
 
-    void Delete(CompanyCommissions companyCommissions);
+    Task DeleteCompanyCommissionsAsync(CompanyCommissions companyCommissions);
 
-    Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int id, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int id, bool tracked, bool loadData,
+        CancellationToken cancellationToken);
 
     Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool tracked,
+        bool loadData,
         CancellationToken cancellationToken);
 
 
-    Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyCommissions>, int)> GetMatchingAllCompanyCommissionsAsync(string? searchPhrase, string? sortBy,
+        int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection,
+        CancellationToken cancellationToken);
 }

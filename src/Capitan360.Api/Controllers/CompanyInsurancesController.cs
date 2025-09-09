@@ -22,14 +22,14 @@ public class CompanyInsurancesController(ICompanyInsuranceService companyInsuran
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyInsuranceDto>>>> GetAllCompanyInsurances(
         [FromQuery] GetAllCompanyInsurancesQuery query, CancellationToken cancellationToken)
     {
-        var response = await companyInsuranceService.GetAllCompanyInsurances(query, cancellationToken);
+        var response = await companyInsuranceService.GetAllCompanyInsurancesAsync(query, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyInsuranceDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyInsuranceDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<CompanyInsuranceDto>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("دریافت بیمه", "K2")]
     public async Task<ActionResult<ApiResponse<CompanyInsuranceDto>>> GetCompanyInsuranceById(
         [FromRoute] int id, CancellationToken cancellationToken)
@@ -52,7 +52,7 @@ public class CompanyInsurancesController(ICompanyInsuranceService companyInsuran
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("حذف بیمه", "K4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompanyInsurance(
         [FromRoute] int id, CancellationToken cancellationToken)

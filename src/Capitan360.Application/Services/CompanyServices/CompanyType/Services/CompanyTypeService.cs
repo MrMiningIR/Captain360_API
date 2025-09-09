@@ -8,7 +8,6 @@ using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetAll
 using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetCompanyTypeById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -22,72 +21,107 @@ public class CompanyTypeService(
     ICompanyTypeRepository companyTypeRepository
 ) : ICompanyTypeService
 {
-    public async Task<int> CreateCompanyTypeAsync(CreateCompanyTypeCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> CreateCompanyTypeAsync(CreateCompanyTypeCommand createCompanyTypeCommand, CancellationToken cancellationToken)//ch**
     {
-        logger.LogInformation("CreateCompanyType is Called with {@CreateCompanyTypeCommand}", command);
-        var companyType = mapper.Map<Domain.Entities.CompanyEntity.CompanyType>(command) ?? throw new ArgumentNullException(nameof(command));
-        var companyTypeId = await companyTypeRepository.CreateCompanyTypeAsync(companyType, Guid.NewGuid().ToString(), cancellationToken);
+        logger.LogInformation("CreateCompanyType is Called with {@CreateCompanyTypeCommand}", createCompanyTypeCommand);
+
+
+
+        if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(createCompanyTypeCommand.TypeName, null, cancellationToken))
+            return ApiResponse<int>.Error(400, "نام نوع شرکت تکراری است");
+
+        var companyType = mapper.Map<Capitan360.Domain.Entities.CompanyEntity.CompanyType>(createCompanyTypeCommand) ?? null;
+        if (companyType == null)
+            return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
+
+        var companyTypeId = await companyTypeRepository.CreateCompanyTypeAsync(companyType, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
         logger.LogInformation("CompanyType created successfully with ID: {CompanyTypeId}", companyTypeId);
-        return companyTypeId;
+        return ApiResponse<int>.Ok(companyTypeId, "نوع شرکت با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<PagedResult<CompanyTypeDto>>> GetAllCompanyTypes(GetAllCompanyTypesQuery allCompanyTypesQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyTypeAsync(DeleteCompanyTypeCommand deleteCompanyTypeCommand, CancellationToken cancellationToken)//ch**
     {
-        logger.LogInformation("GetAllCompanyTypes is Called");
-        if (allCompanyTypesQuery.PageSize <= 0 || allCompanyTypesQuery.PageNumber <= 0)
-            return ApiResponse<PagedResult<CompanyTypeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+        logger.LogInformation("DeleteCompanyType is Called with ID: {Id}", deleteCompanyTypeCommand.Id);
 
-        var (companyTypes, totalCount) = await companyTypeRepository.GetMatchingAllCompanyTypes(
-            allCompanyTypesQuery.SearchPhrase,
-            allCompanyTypesQuery.PageSize,
-            allCompanyTypesQuery.PageNumber,
-            allCompanyTypesQuery.SortBy,
-            allCompanyTypesQuery.SortDirection,
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+
+        if (!user.IsSuperAdmin())
+            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+
+        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(deleteCompanyTypeCommand.Id, true, false, cancellationToken);
+        if (companyType is null)
+            return ApiResponse<int>.Error(400, $"نوع شرکت نامعتبر است");
+
+        await companyTypeRepository.DeleteCompanyTypeAsync(companyType);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("CompanyType soft-deleted successfully with ID: {Id}", deleteCompanyTypeCommand.Id);
+        return ApiResponse<int>.Ok(deleteCompanyTypeCommand.Id, "نوع شرکت با موفقیت حذف شد");
+    }
+
+    public async Task<ApiResponse<CompanyTypeDto>> UpdateCompanyTypeAsync(UpdateCompanyTypeCommand updateCompanyTypeCommand, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("UpdateCompanyType is Called with {@UpdateCompanyTypeCommand}", updateCompanyTypeCommand);
+
+
+
+        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(updateCompanyTypeCommand.Id, true, false, cancellationToken);
+        if (companyType is null)
+            return ApiResponse<CompanyTypeDto>.Error(400, $"نوع شرکت نامعتبر است");
+
+        if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(updateCompanyTypeCommand.TypeName, updateCompanyTypeCommand.Id, cancellationToken))
+            return ApiResponse<CompanyTypeDto>.Error(400, "نام نوع شرکت تکراری است");
+
+        var updatedCompanyType = mapper.Map(updateCompanyTypeCommand, companyType);
+
+        if (updatedCompanyType == null)
+            return ApiResponse<CompanyTypeDto>.Error(400, "مشکل در عملیات تبدیل");
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("نوع شرکت با موفقیت به‌روزرسانی شد: {Id}", updateCompanyTypeCommand.Id);
+
+        var updatedCompanyTypeDto = mapper.Map<CompanyTypeDto>(updatedCompanyType);
+        return ApiResponse<CompanyTypeDto>.Ok(updatedCompanyTypeDto, "نوع شرکت با موفقیت به‌روزرسانی شد");
+    }
+
+    public async Task<ApiResponse<PagedResult<CompanyTypeDto>>> GetAllCompanyTypesAsync(GetAllCompanyTypesQuery getAllCompanyTypesQuery, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetAllCompanyTypesByCompanyType is Called");
+
+
+
+        var (companyTypes, totalCount) = await companyTypeRepository.GetMatchingAllCompanyTypesAsync(
+            getAllCompanyTypesQuery.SearchPhrase,
+            getAllCompanyTypesQuery.SortBy,
+            true,
+            getAllCompanyTypesQuery.PageNumber,
+            getAllCompanyTypesQuery.PageSize,
+            getAllCompanyTypesQuery.SortDirection,
             cancellationToken);
+
         var companyTypeDto = mapper.Map<IReadOnlyList<CompanyTypeDto>>(companyTypes) ?? Array.Empty<CompanyTypeDto>();
-        logger.LogInformation("Retrieved {Count} company types", companyTypeDto.Count);
+        logger.LogInformation("Retrieved {Count} package types", companyTypeDto.Count);
 
-        var data = new PagedResult<CompanyTypeDto>(companyTypeDto, totalCount, allCompanyTypesQuery.PageSize, allCompanyTypesQuery.PageNumber);
-
-        return ApiResponse<PagedResult<CompanyTypeDto>>.Ok(data, "CompaniesType retrieved successfully");
+        var data = new PagedResult<CompanyTypeDto>(companyTypeDto, totalCount, getAllCompanyTypesQuery.PageSize, getAllCompanyTypesQuery.PageNumber);
+        return ApiResponse<PagedResult<CompanyTypeDto>>.Ok(data, "نوع شرکت‌ها با موفقیت دریافت شدند");
     }
 
     public async Task<ApiResponse<CompanyTypeDto>> GetCompanyTypeByIdAsync(GetCompanyTypeByIdQuery getCompanyTypeByIdQuery, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCompanyTypeById is Called with ID: {Id}", getCompanyTypeByIdQuery.Id);
-        if (getCompanyTypeByIdQuery.Id <= 0)
-            return ApiResponse<CompanyTypeDto>.Error(400, "شناسه نوع شرکت باید بزرگ‌تر از صفر باشد");
 
-        var companyType = await companyTypeRepository.GetCompanyTypeById(getCompanyTypeByIdQuery.Id, cancellationToken);
 
+
+        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(getCompanyTypeByIdQuery.Id, false, true, cancellationToken);
         if (companyType is null)
-            return ApiResponse<CompanyTypeDto>.Error(404, $"نوع شرکت با شناسه {getCompanyTypeByIdQuery.Id} یافت نشد");
+            return ApiResponse<CompanyTypeDto>.Error(400, $"نوع شرکت یافت نشد");
 
         var result = mapper.Map<CompanyTypeDto>(companyType);
         logger.LogInformation("CompanyType retrieved successfully with ID: {Id}", getCompanyTypeByIdQuery.Id);
-        return ApiResponse<CompanyTypeDto>.Ok(result, "CompanyType retrieved successfully");
-    }
-
-    public async Task DeleteCompanyTypeAsync(DeleteCompanyTypeCommand deleteCompanyTypeCommand, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("DeleteCompanyType is Called with ID: {Id}", deleteCompanyTypeCommand.Id);
-        if (deleteCompanyTypeCommand.Id <= 0)
-            throw new ArgumentException("شناسه نوع شرکت باید بزرگ‌تر از صفر باشد");
-        var companyType = await companyTypeRepository.GetCompanyTypeById(deleteCompanyTypeCommand.Id, cancellationToken)
-                          ?? throw new KeyNotFoundException($"نوع شرکت با شناسه {deleteCompanyTypeCommand.Id} یافت نشد");
-        companyTypeRepository.Delete(companyType, Guid.NewGuid().ToString());
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("CompanyType soft-deleted successfully with ID: {Id}", deleteCompanyTypeCommand.Id);
-    }
-
-    public async Task UpdateCompanyTypeAsync(UpdateCompanyTypeCommand command, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("UpdateCompanyType is Called with {@UpdateCompanyTypeCommand}", command);
-        var companyType = await companyTypeRepository.GetCompanyTypeById(command.Id, cancellationToken)
-                          ?? throw new NotFoundException($"نوع شرکت با شناسه {command.Id} یافت نشد");
-        mapper.Map(command, companyType);
-        companyTypeRepository.UpdateShadows(companyType, Guid.NewGuid().ToString());
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("CompanyType updated successfully with ID: {Id}", command.Id);
+        return ApiResponse<CompanyTypeDto>.Ok(result, "نوع شرکت با موفقیت دریافت شد");
     }
 }

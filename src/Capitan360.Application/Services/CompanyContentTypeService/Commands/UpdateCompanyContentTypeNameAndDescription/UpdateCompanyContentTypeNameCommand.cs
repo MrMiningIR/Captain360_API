@@ -1,7 +1,7 @@
 ﻿namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateCompanyContentTypeNameAndDescription;
 
-public record UpdateCompanyContentTypeNameAndDescriptionCommand(string CompanyContentTypeName, string? CompanyContentTypeDescription)
+public record UpdateCompanyContentTypeNameCommand(
+   string CompanyContentTypeName)
 {
     public int Id { get; set; }
-
 }

@@ -32,7 +32,7 @@ namespace Capitan360.Api.Controllers
         [HttpGet("GetUserByIdAndCompanyId/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("دریافت کاربر بر اساس شناسه کاربر و شناسه کمپانی", "B2")]
         public async Task<ActionResult<ApiResponse<UserDto>>> GetUserByIdAndCompanyId([FromRoute] int companyId,
     [FromRoute] string userId, CancellationToken cancellationToken)

@@ -10,16 +10,16 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanySmsPatternsRepository
 {
-    public async Task<int> CreateCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, CancellationToken cancellationToken) //ch**
     {
         dbContext.CompanySmsPatterns.Add(companySmsPatterns);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companySmsPatterns.Id;
     }
 
-    public void Delete(CompanySmsPatterns companySmsPatterns, string userId)
+    public async Task DeleteCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, string userId) //ch**
     {
-        dbContext.Entry(companySmsPatterns).Property("Deleted").CurrentValue = true;
+        await Task.Yield();
     }
 
     public async Task<IReadOnlyList<CompanySmsPatterns>> GetAllCompanySmsPatternsAsync(CancellationToken cancellationToken)
@@ -27,38 +27,65 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
         return await dbContext.CompanySmsPatterns.ToListAsync(cancellationToken);
     }
 
-    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool tracked,
-        CancellationToken cancellationToken)
+    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool tracked, bool loadData, CancellationToken cancellationToken)//ch**
     {
-        return tracked ? await dbContext.CompanySmsPatterns.SingleOrDefaultAsync(a => a.Id == companySmsPatternsId, cancellationToken) :
-                 await dbContext.CompanySmsPatterns.AsNoTracking().SingleOrDefaultAsync(a => a.Id == companySmsPatternsId, cancellationToken);
+        IQueryable<CompanySmsPatterns> query = dbContext.CompanySmsPatterns;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.SingleOrDefaultAsync(a => a.Id == companySmsPatternsId, cancellationToken);
     }
-    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken)//ch**
     {
-        return tracked ? await dbContext.CompanySmsPatterns.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken) :
-                         await dbContext.CompanySmsPatterns.AsNoTracking().SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
+        IQueryable<CompanySmsPatterns> query = dbContext.CompanySmsPatterns;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(a => a.Company);
+
+        return await query.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
     }
-    public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetAllCompanySmsPatterns(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetMatchingAllCompanySmsPatternsAsync
+        (string? searchPhrase, string? sortBy, int companyTypeId, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)//ch**
     {
         var searchPhraseLower = searchPhrase?.ToLower();
-        var baseQuery = dbContext.CompanySmsPatterns
-            .Where(csp => searchPhraseLower == null || csp.PatternSmsIssueSender.ToLower().Contains(searchPhraseLower));
+        var baseQuery = dbContext.CompanySmsPatterns.AsNoTracking()
+                                                    .Where(cc => searchPhraseLower == null || cc.Company.Name.ToLower().Contains(searchPhraseLower) ||
+                                                                                              cc.SmsPanelNumber.ToLower().Contains(searchPhraseLower) ||
+                                                                                              cc.SmsPanelUserName.ToLower().Contains(searchPhraseLower));
+
+
+        if (loadData)
+            baseQuery = baseQuery.Include(a => a.Company);
+
+        if (companyTypeId > 1)
+            baseQuery = baseQuery.Where(a => a.Company.CompanyTypeId == companyTypeId);
+
+        if (companyId != 0)
+            baseQuery = baseQuery.Where(a => a.CompanyId == companyId);
+
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
-        {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanySmsPatterns, object>>>
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanySmsPatterns, object>>>
             {
                 { nameof(CompanySmsPatterns.PatternSmsIssueSender), csp => csp.PatternSmsIssueSender },
                 { nameof(CompanySmsPatterns.CompanyId), csp => csp.CompanyId }
             };
-
-            var selectedColumn = columnsSelector[sortBy];
-            baseQuery = sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColumn)
-                : baseQuery.OrderByDescending(selectedColumn);
+        if (sortBy == null)
+        {
+            sortBy ??= nameof(CompanySmsPatterns.CompanyId);
         }
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
 
         var companySmsPatterns = await baseQuery
             .Skip(pageSize * (pageNumber - 1))

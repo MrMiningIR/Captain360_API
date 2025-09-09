@@ -32,7 +32,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("دریافت شرکت", "D2")]
     public async Task<ActionResult<ApiResponse<CompanyDto>>> GetCompanyById(
         [FromRoute] int id, [FromQuery] int userCompanyTypeId, CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("حذف شرکت", "D4")]
     public async Task<ActionResult<ApiResponse<int>>> DeleteCompany(
         [FromRoute] int id, CancellationToken cancellationToken)
@@ -68,7 +68,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status404NotFound)]
+
     [PermissionFilter("آپدیت شرکت", "D5")]
     public async Task<ActionResult<ApiResponse<CompanyDto?>>> UpdateCompany([FromRoute] int id,
 
@@ -86,7 +86,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     [PermissionFilter("تغییر وضعیت شرکت", "D6")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
     public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyActiveStatus([FromBody] UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken)
     {
         var response = await companyService.SetCompanyActivityStatus(command, cancellationToken);

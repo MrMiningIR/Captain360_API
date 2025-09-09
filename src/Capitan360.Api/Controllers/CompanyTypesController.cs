@@ -20,14 +20,14 @@ namespace Capitan360.Api.Controllers
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyTypeDto>>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyTypeDto>>>> GetAllCompanyTypes([FromQuery] GetAllCompanyTypesQuery getAllCompanyTypesQuery, CancellationToken cancellationToken)
         {
-            var response = await companyTypeService.GetAllCompanyTypes(getAllCompanyTypesQuery, cancellationToken);
+            var response = await companyTypeService.GetAllCompanyTypesAsync(getAllCompanyTypesQuery, cancellationToken);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanyTypeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanyTypeDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<CompanyTypeDto>), StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<ApiResponse<CompanyDto>>> GetCompanyTypeById([FromRoute] int id, CancellationToken cancellationToken)
         {
             var response = await companyTypeService.GetCompanyTypeByIdAsync(new GetCompanyTypeByIdQuery(id), cancellationToken);

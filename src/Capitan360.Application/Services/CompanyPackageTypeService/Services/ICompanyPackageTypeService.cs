@@ -20,7 +20,7 @@ public interface ICompanyPackageTypeService
     Task<ApiResponse<CompanyPackageTypeDto>> GetCompanyPackageTypeByIdAsync(GetCompanyPackageTypeByIdQuery query,
         CancellationToken cancellationToken);
 
-    Task<ApiResponse<int>> UpdateCompanyPackageTypeNameAndDescriptionAsync(UpdateCompanyPackageTypeNameAndDescriptionCommand command,
+    Task<ApiResponse<int>> UpdateCompanyPackageTypeNameAsync(UpdateCompanyPackageTypeNameAndDescriptionCommand command,
         CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> SetCompanyPackageContentActivityStatusAsync(

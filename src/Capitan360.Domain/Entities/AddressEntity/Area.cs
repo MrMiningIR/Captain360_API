@@ -1,4 +1,5 @@
 ﻿using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Constants;
 
 namespace Capitan360.Domain.Entities.AddressEntity;
 
@@ -18,7 +19,7 @@ public class Area : Entity
     public double Latitude { get; set; }
     public double Longitude { get; set; }
 
-    public  Area Parent { get; set; } = null!;
+    public Area Parent { get; set; } = null!;
     public virtual ICollection<Area> Children { get; set; } = [];
 
 

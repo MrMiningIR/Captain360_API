@@ -15,7 +15,7 @@ public interface IContentTypeService
 {
 
     Task<ApiResponse<int>> CreateContentTypeAsync(CreateContentTypeCommand contentType, CancellationToken cancellationToken);
-    Task<ApiResponse<PagedResult<ContentTypeDto>>> GetAllContentTypes(GetAllContentTypesQuery allContentTypesQuery, CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<ContentTypeDto>>> GetAllContentTypes(GetAllContentTypesQuery query, CancellationToken cancellationToken);
     Task<ApiResponse<ContentTypeDto>> GetContentTypeByIdAsync(GetContentTypeByIdQuery id, CancellationToken cancellationToken);
     Task<ApiResponse<int>> DeleteContentTypeAsync(DeleteContentTypeCommand id, CancellationToken cancellationToken);
     Task<ApiResponse<ContentTypeDto>> UpdateContentTypeAsync(UpdateContentTypeCommand command, CancellationToken cancellationToken);

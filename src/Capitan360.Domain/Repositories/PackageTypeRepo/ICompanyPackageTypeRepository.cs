@@ -20,5 +20,12 @@ public interface ICompanyPackageTypeRepository
     Task AddPackageTypesToCompanyPackageTypeAsync(List<CompanyPackageTypeTransfer> relatedPackageTypes, int companyId, CancellationToken cancellationToken);
     Task DeleteAllPackagesByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
     Task<bool> CheckExistAnyItemAsync(int companyId, CancellationToken cancellationToken);
-    Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool tracked, bool loadData,
+        CancellationToken cancellationToken);
+
+    Task DeleteCompanyPackageTypeAsync(CompanyPackageType companyPackageType);
+
+    Task<(IReadOnlyList<CompanyPackageType>, int)> GetMatchingAllCompanyPackageTypesAsync(string? searchPhrase,
+        string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection,
+        CancellationToken cancellationToken);
 }

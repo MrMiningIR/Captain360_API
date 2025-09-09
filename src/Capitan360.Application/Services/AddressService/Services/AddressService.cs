@@ -83,7 +83,7 @@ public class AddressService(
             throw new ArgumentException("شناسه آدرس باید بزرگ‌تر از صفر باشد");
         var address = await addressRepository.GetAddressById(getAddressByIdQuery.Id, cancellationToken);
         if (address is null)
-            return ApiResponse<AddressDto>.Error(404, $"آدرس با شناسه {getAddressByIdQuery.Id} یافت نشد");
+            return ApiResponse<AddressDto>.Error(400, $"آدرس با شناسه {getAddressByIdQuery.Id} یافت نشد");
 
         var result = mapper.Map<AddressDto>(address);
         logger.LogInformation("Address retrieved successfully with ID: {Id}", getAddressByIdQuery.Id);
@@ -100,7 +100,7 @@ public class AddressService(
 
         var address = await addressRepository.GetAddressById(deleteAddressCommand.Id, cancellationToken);
         if (address is null)
-            return ApiResponse<object>.Error(404, $"آدرس با شناسه {deleteAddressCommand.Id} یافت نشد");
+            return ApiResponse<object>.Error(400, $"آدرس با شناسه {deleteAddressCommand.Id} یافت نشد");
 
         addressRepository.Delete(address);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -116,7 +116,7 @@ public class AddressService(
 
         var address = await addressRepository.GetAddressById(updateAddressCommand.Id, cancellationToken);
         if (address is null)
-            return ApiResponse<AddressDto>.Error(404, $"آدرس با شناسه {updateAddressCommand.Id} یافت نشد");
+            return ApiResponse<AddressDto>.Error(400, $"آدرس با شناسه {updateAddressCommand.Id} یافت نشد");
 
         var updatedAddress = mapper.Map(updateAddressCommand, address);
 
@@ -137,10 +137,10 @@ public class AddressService(
 
         // await unitOfWork.BeginTransactionAsync(cancellationToken);
         var company =
-            await companyRepository.GetCompanyByIdAsync(addNewAddressToCompanyCommand.CompanyId, cancellationToken, tracked: true, userCompanyTypeId: addNewAddressToCompanyCommand.UserCompanyTypeId);
+            await companyRepository.GetCompanyByIdAsync(addNewAddressToCompanyCommand.CompanyId, tracked: false, loadData: false, cancellationToken: cancellationToken);
 
         if (company == null)
-            return ApiResponse<int>.Error(404, $"شرکت با شناسه {addNewAddressToCompanyCommand.CompanyId} یافت نشد");
+            return ApiResponse<int>.Error(400, $"شرکت با شناسه {addNewAddressToCompanyCommand.CompanyId} یافت نشد");
 
         var lastOrderAddress = await addressRepository.OrderAddress(addNewAddressToCompanyCommand.CompanyId, cancellationToken);
 
@@ -163,10 +163,10 @@ public class AddressService(
     public async Task<ApiResponse<object>> MoveAddressUpAsync(MoveAddressUpCommand moveAddressUpCommand, CancellationToken cancellationToken)
     {
         var company =
-            await companyRepository.GetCompanyByIdAsync(moveAddressUpCommand.CompanyId, cancellationToken, false);
+            await companyRepository.GetCompanyByIdAsync(moveAddressUpCommand.CompanyId, false, false, cancellationToken);
 
         if (company == null)
-            return ApiResponse<object>.Error(404, $"شرکت با شناسه {moveAddressUpCommand.CompanyId} یافت نشد");
+            return ApiResponse<object>.Error(400, $"شرکت با شناسه {moveAddressUpCommand.CompanyId} یافت نشد");
         await addressRepository.MoveAddressUpAsync(moveAddressUpCommand.CompanyId, moveAddressUpCommand.AddressId, cancellationToken);
 
         logger.LogInformation("Address moved up successfully. CompanyId: {CompanyId}, AddressId: {AddressId}", moveAddressUpCommand.CompanyId, moveAddressUpCommand.AddressId);
@@ -176,10 +176,10 @@ public class AddressService(
     public async Task<ApiResponse<object>> MoveAddressDownAsync(MoveAddressDownCommand moveAddressDownCommand, CancellationToken cancellationToken)
     {
         var company =
-            await companyRepository.GetCompanyByIdAsync(moveAddressDownCommand.CompanyId, cancellationToken, false);
+            await companyRepository.GetCompanyByIdAsync(moveAddressDownCommand.CompanyId, false, false, cancellationToken);
 
         if (company == null)
-            return ApiResponse<object>.Error(404, $"شرکت با شناسه {moveAddressDownCommand.CompanyId} یافت نشد");
+            return ApiResponse<object>.Error(400, $"شرکت با شناسه {moveAddressDownCommand.CompanyId} یافت نشد");
         await addressRepository.MoveAddressDownAsync(moveAddressDownCommand.CompanyId, moveAddressDownCommand.AddressId, cancellationToken);
 
         logger.LogInformation("Address moved down successfully. CompanyId: {CompanyId}, AddressId: {AddressId}", moveAddressDownCommand.CompanyId, moveAddressDownCommand.AddressId);

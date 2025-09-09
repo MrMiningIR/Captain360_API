@@ -30,9 +30,9 @@ internal class CompanySmsPatternsConfigurations : BaseEntityConfiguration<Compan
         builder.Property(x => x.PatternSmsCancelByCustomerReceiver).IsRequired(false).HasMaxLength(500);
         builder.Property(x => x.PatternSmsCancelByCustomerCompany).IsRequired(false).HasMaxLength(500);
         builder.Property(x => x.PatternSmsSendManifestReceiverCompany).IsRequired(false).HasMaxLength(500);
-        builder.Property(x => x.SMSPanelNumber).IsRequired(false).HasMaxLength(100);
-        builder.Property(x => x.SMSPanelPassword).IsRequired(false).HasMaxLength(100);
-        builder.Property(x => x.SMSPanelUserName).IsRequired(false).HasMaxLength(100);
+        builder.Property(x => x.SmsPanelNumber).IsRequired(false).HasMaxLength(100);
+        builder.Property(x => x.SmsPanelPassword).IsRequired(false).HasMaxLength(100);
+        builder.Property(x => x.SmsPanelUserName).IsRequired(false).HasMaxLength(100);
 
 
         builder.HasOne(x => x.Company).WithOne(x => x.CompanySmsPatterns)

@@ -10,11 +10,13 @@ namespace Capitan360.Application.Services.CompanyServices.CompanyType.Services;
 
 public interface ICompanyTypeService
 {
-    Task<int> CreateCompanyTypeAsync(CreateCompanyTypeCommand companyType, CancellationToken cancellationToken);
-    Task<ApiResponse<PagedResult<CompanyTypeDto>>> GetAllCompanyTypes(GetAllCompanyTypesQuery allCompanyTypesQuery,
-        CancellationToken cancellationToken);
-    Task<ApiResponse<CompanyTypeDto>> GetCompanyTypeByIdAsync(GetCompanyTypeByIdQuery id,
-        CancellationToken cancellationToken);
-    Task DeleteCompanyTypeAsync(DeleteCompanyTypeCommand id, CancellationToken cancellationToken);
-    Task UpdateCompanyTypeAsync(UpdateCompanyTypeCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<int>> CreateCompanyTypeAsync(CreateCompanyTypeCommand createCompanyTypeCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> DeleteCompanyTypeAsync(DeleteCompanyTypeCommand deleteCompanyTypeCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyTypeDto>> UpdateCompanyTypeAsync(UpdateCompanyTypeCommand updateCompanyTypeCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<PagedResult<CompanyTypeDto>>> GetAllCompanyTypesAsync(GetAllCompanyTypesQuery getAllCompanyTypesQuery, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyTypeDto>> GetCompanyTypeByIdAsync(GetCompanyTypeByIdQuery getCompanyTypeByIdQuery, CancellationToken cancellationToken);
 }

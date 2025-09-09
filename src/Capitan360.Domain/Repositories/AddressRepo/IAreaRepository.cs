@@ -14,11 +14,17 @@ public interface IAreaRepository
         string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<(IReadOnlyList<Area>, int)> GetAllProvince(string? searchPhrase, int pageSize, int pageNumber,
-    string? sortBy, SortDirection sortDirection,bool ignorePageSize, CancellationToken cancellationToken);
+    string? sortBy, SortDirection sortDirection, bool ignorePageSize, CancellationToken cancellationToken);
 
     Task<(IReadOnlyList<Area>, int)> GetAllCity(string? searchPhrase, int pageSize, int pageNumber,
-string? sortBy, SortDirection sortDirection,int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
+string? sortBy, SortDirection sortDirection, int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
+
+    Task<List<Area>> GetAllCities(CancellationToken cancellationToken);
 
     Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken);
     Task<IReadOnlyList<Area>> GetDistrictAreasByCityIdAsync(int parentId, CancellationToken cancellationToken);
+
+
+    Task<bool> CheckExistAreaByIdANdParentId(int areaId, int? areaLevelId, int? areaParentId, CancellationToken cancellationToken);
+
 }

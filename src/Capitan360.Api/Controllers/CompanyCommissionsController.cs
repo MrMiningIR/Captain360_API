@@ -24,14 +24,14 @@ namespace Capitan360.Api.Controllers
 
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyCommissionsDto>>>> GetAllCompanyCommissions([FromQuery] GetAllCompanyCommissionsQuery getAllCompanyCommissionsQuery, CancellationToken cancellationToken)
         {
-            var response = await companyCommissionsService.GetAllCompanyCommissions(getAllCompanyCommissionsQuery, cancellationToken);
+            var response = await companyCommissionsService.GetAllCompanyCommissionsAsync(getAllCompanyCommissionsQuery, cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("دریافت کمیسیسون", "E2")]
         public async Task<ActionResult<ApiResponse<CompanyCommissionsDto>>> GetCompanyCommissionsById([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -52,7 +52,7 @@ namespace Capitan360.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("حذف کمیسیون", "E4")]
         public async Task<ActionResult<ApiResponse<int>>> DeleteCompanyCommissions([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -63,7 +63,7 @@ namespace Capitan360.Api.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
+
         [PermissionFilter("آپدیت کمیسیون", "E5")]
         public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyCommissions([FromRoute] int id, UpdateCompanyCommissionsCommand updateCompanyCommissionsCommand, CancellationToken cancellationToken)
         {

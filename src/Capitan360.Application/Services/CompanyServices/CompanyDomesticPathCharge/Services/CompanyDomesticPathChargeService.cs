@@ -195,7 +195,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                 var existingPrices = await pathChargeRepository.GetExistingStructPaths(submittedPriceIds, cancellationToken);
 
                 //if (existingPrices.Count != submittedPriceIds.Count)
-                //    return ApiResponse<List<int>>.Error(404, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
+                //    return ApiResponse<List<int>>.Error(400, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
 
                 var pricesToUpdate = new List<Domain.Entities.CompanyEntity.CompanyDomesticPathCharge>();
 
@@ -345,7 +345,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
         if (query.CompanyDomesticPathId <= 0)
             return ApiResponse<List<PathChargeTableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه, و اطلاعات ارسالی ان اشتباه است");
 
-        var domesticPth = await domesticPathsRepository.CheckExistPath(query.CompanyDomesticPathId, cancellationToken);
+        var domesticPth = await domesticPathsRepository.GetCompanyDomesticPathByIdAsync(query.CompanyDomesticPathId, false, false, cancellationToken);
         if (domesticPth is null)
             return ApiResponse<List<PathChargeTableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه ان اشتباه است");
 

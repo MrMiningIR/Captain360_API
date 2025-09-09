@@ -10,9 +10,12 @@ public interface IPackageTypeRepository
 
     void Delete(PackageType packageType);
 
-    Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool tracked, CancellationToken cancellationToken);
+    Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool tracked, bool loadData,
+        CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypesAsync(string? searchPhrase, int companyTypeId, int active,
+    Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypesAsync(string? searchPhrase, int companyTypeId,
+        int active,
+        bool loadData,
         int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int? currentPackageTypeId, int companyTypeId, CancellationToken cancellationToken);
@@ -23,5 +26,8 @@ public interface IPackageTypeRepository
 
     Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken);
 
-    Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken);
+    Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int companyTypeId, bool tracked,
+        bool loadData, CancellationToken cancellationToken);
+
+    Task DeletePackageTypeAsync(PackageType packageType);
 }

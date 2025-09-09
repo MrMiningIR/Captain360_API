@@ -15,9 +15,9 @@ public class GetAllCompanyUrisQueryValidator : AbstractValidator<GetAllCompanyUr
 
     public GetAllCompanyUrisQueryValidator()
     {
-        RuleFor(r => r.CompanyId)
-            .GreaterThan(0)
-            .WithMessage("شناسه شرکت معتبر نیست.");
+        //RuleFor(r => r.CompanyId)
+        //    .GreaterThan(0)
+        //    .WithMessage("شناسه شرکت معتبر نیست.");
         RuleFor(r => r.PageNumber)
             .GreaterThanOrEqualTo(1);
 

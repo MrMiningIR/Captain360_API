@@ -5,10 +5,18 @@ namespace Capitan360.Domain.Repositories.CompanyRepo;
 
 public interface ICompanyInsuranceRepository
 {
+    Task<bool> CheckExistCompanyInsuranceNameAsync(string companyInsuranceName, int? currentCompanyInsuranceId, int companyId, CancellationToken cancellationToken);
+
+    Task<bool> CheckExistCompanyInsuranceCodeAsync(string companyInsuranceCode, int? currentCompanyInsuranceId, int companyId, CancellationToken cancellationToken);
+
     Task<int> CreateCompanyInsuranceAsync(CompanyInsurance companyInsurance, CancellationToken cancellationToken);
-    void Delete(CompanyInsurance companyInsurance);
-    Task<CompanyInsurance?> GetCompanyInsuranceById(int id, CancellationToken cancellationToken, bool track = false);
-    Task<(IReadOnlyList<CompanyInsurance>, int)> GetMatchingAllCompanyInsurances(string? searchPhrase, int companyTypeId, int companyId, int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
-    Task<bool> CheckExistCompanyInsuranceName(string name, int companyTypeId, int companyId, CancellationToken cancellationToken);
+
+    Task<CompanyInsurance?> GetCompanyInsuranceByIdAsync(int companyInsuranceId, bool tracked, bool loadData, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<CompanyInsurance>?> GetCompanyInsuranceByCompanyIdAsync(int companyInsuranceCompanyId, bool tracked, bool loadData, CancellationToken cancellationToken);
+
+    Task DeleteCompanyInsuranceAsync(CompanyInsurance companyInsurance);
+
+    Task<(IReadOnlyList<CompanyInsurance>, int)> GetMatchingAllCompanyInsurancesAsync(string? searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
 }

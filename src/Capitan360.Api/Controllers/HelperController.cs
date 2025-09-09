@@ -1,4 +1,5 @@
 ﻿using Capitan360.Application.Common;
+using Capitan360.Application.Services.AddressService.Dtos;
 using Capitan360.Application.Services.Dtos;
 using Capitan360.Application.Services.Identity.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +74,16 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+
+        [HttpGet("GetAllCities")]
+        [ProducesResponseType(typeof(ApiResponse<List<CityAreaDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<CityAreaDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ApiResponse<List<CompanyItemDto>>>> GetAllCities(CancellationToken cancellationToken)
+        {
+            var response = await identityService.GetCityList(cancellationToken);
+
+            return StatusCode(response.StatusCode, response);
+        }
 
     }
 }

@@ -61,7 +61,7 @@ namespace Capitan360.Api.Controllers
         [HttpGet("GetAreaById/{id}")]
         [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<ApiResponse<AreaDto>>> GetAreaById(
             [FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -84,7 +84,7 @@ namespace Capitan360.Api.Controllers
         [HttpDelete("DeleteArea/{id}")]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<ApiResponse<object>>> DeleteArea(
             [FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -95,7 +95,7 @@ namespace Capitan360.Api.Controllers
         [HttpPut("UpdateArea/{id}")]
         [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<ApiResponse<AreaDto>>> UpdateArea(
             [FromBody] UpdateAreaCommand updateAreaCommand, CancellationToken cancellationToken)
         {

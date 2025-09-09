@@ -3,11 +3,14 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateActiveStateCompanyPackageType;
+using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageType;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageTypeNameAndDescription;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCompanyPackageTypes;
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
+using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Microsoft.Extensions.Logging;
 
@@ -20,21 +23,38 @@ public class CompanyPackageTypeService(
     IMapper mapper,
     IUnitOfWork unitOfWork,
     ICompanyPackageTypeRepository companyPackageTypeRepository,
-    IPackageTypeRepository packageTypeRepository) : ICompanyPackageTypeService
+    IPackageTypeRepository packageTypeRepository, ICompanyRepository companyRepository, IUserContext userContext) : ICompanyPackageTypeService
 {
-    public async Task<ApiResponse<PagedResult<CompanyPackageTypeDto>>> GetAllCompanyPackageTypesByCompanyAsync(
+    public async Task<ApiResponse<PagedResult<CompanyPackageTypeDto>>> GetAllCompanyPackageTypesByCompanyAsync(//ch**
         GetAllCompanyPackageTypesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyPackageTypesByCompany is Called");
 
-        var (companyPackageTypes, totalCount) = await companyPackageTypeRepository.GetAllCompanyPackageTypesAsync(
-            query.SearchPhrase,
-            query.CompanyId,
-            query.Active,
-            query.PageSize,
-            query.PageNumber,
-            query.SortBy,
-            query.SortDirection,
+
+        var company = await companyRepository.GetCompanyByIdAsync(query.CompanyId, false, false, cancellationToken);
+        if (company is null)
+            return ApiResponse<PagedResult<CompanyPackageTypeDto>>.Error(400, $"شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<PagedResult<CompanyPackageTypeDto>>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<PagedResult<CompanyPackageTypeDto>>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
+
+
+        var (companyPackageTypes, totalCount) = await companyPackageTypeRepository.GetMatchingAllCompanyPackageTypesAsync(
+          query.SearchPhrase,
+          query.SortBy,
+          query.CompanyId,
+            true,
+          query.PageNumber,
+          query.PageSize,
+          query.SortDirection,
             cancellationToken);
 
         var companyPackageTypeDto = mapper.Map<IReadOnlyList<CompanyPackageTypeDto>>(companyPackageTypes) ?? Array.Empty<CompanyPackageTypeDto>();
@@ -45,11 +65,30 @@ public class CompanyPackageTypeService(
         return ApiResponse<PagedResult<CompanyPackageTypeDto>>.Ok(data, "بسته‌بندی‌ها با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<int>> MoveCompanyPackageTypeUpAsync(MoveCompanyPackageTypeUpCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> MoveCompanyPackageTypeUpAsync(MoveCompanyPackageTypeUpCommand command, CancellationToken cancellationToken)//ch**
     {
-        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, cancellationToken);
+
+        logger.LogInformation("MoveCompanyPackageTypeUp is Called with {@MoveCompanyPackageTypeUpCommand}", command);
+
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (companyPackageType == null)
-            return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"بسته‌بندی نامعتبر است");
+
+
+        var company = await companyRepository.GetCompanyByIdAsync(companyPackageType.CompanyId, false, false, cancellationToken);
+        if (company == null)
+            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
 
         if (companyPackageType.CompanyPackageTypeOrder == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -65,11 +104,29 @@ public class CompanyPackageTypeService(
         return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<int>> MoveCompanyPackageTypeDownAsync(MoveCompanyPackageTypeDownCommand command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> MoveCompanyPackageTypeDownAsync(MoveCompanyPackageTypeDownCommand command, CancellationToken cancellationToken)//ch**
     {
-        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, cancellationToken);
+        logger.LogInformation("MoveCompanyPackageTypeUp is Called with {@MoveCompanyPackageTypeUpCommand}", command);
+
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (companyPackageType == null)
-            return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
+            return ApiResponse<int>.Error(400, $"بسته‌بندی نامعتبر است");
+
+
+        var company = await companyRepository.GetCompanyByIdAsync(companyPackageType.CompanyId, false, false, cancellationToken);
+        if (company == null)
+            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
 
         if (companyPackageType.CompanyPackageTypeOrder == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -85,56 +142,137 @@ public class CompanyPackageTypeService(
         return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<CompanyPackageTypeDto>> GetCompanyPackageTypeByIdAsync(GetCompanyPackageTypeByIdQuery query,
+    public async Task<ApiResponse<CompanyPackageTypeDto>> GetCompanyPackageTypeByIdAsync(GetCompanyPackageTypeByIdQuery query,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCompanyPackageTypeByIdQuery is Called with ID: {Id}", query.Id);
 
-        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(query.Id, false, cancellationToken);
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(query.Id, false, false, cancellationToken);
         if (companyPackageType is null)
-            return ApiResponse<CompanyPackageTypeDto>.Error(404, $"نوع بسته‌بندی با شناسه {query.Id} یافت نشد");
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, $"نوع بسته‌بندی با شناسه {query.Id} یافت نشد");
+
+        var company = await companyRepository.GetCompanyByIdAsync(companyPackageType.CompanyId, false, false, cancellationToken);
+        if (company is null)
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, $"شرکت نامعتبر است");
+
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<CompanyPackageTypeDto>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<CompanyPackageTypeDto>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
 
         var result = mapper.Map<CompanyPackageTypeDto>(companyPackageType);
         logger.LogInformation("PackageType retrieved successfully with ID: {Id}", query.Id);
         return ApiResponse<CompanyPackageTypeDto>.Ok(result, "بسته‌بندی با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<int>> UpdateCompanyPackageTypeNameAndDescriptionAsync(UpdateCompanyPackageTypeNameAndDescriptionCommand command,
+    public async Task<ApiResponse<int>> UpdateCompanyPackageTypeNameAsync(UpdateCompanyPackageTypeNameAndDescriptionCommand command,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateCompanyPackageTypeNameAsync is Called with {@UpdateCompanyPackageTypeNameAndDescriptionCommand}", command);
-        var receivedCompanyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, true, cancellationToken);
-        if (receivedCompanyPackageType == null)
-            return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, true, false, cancellationToken);
+        if (companyPackageType == null)
+            return ApiResponse<int>.Error(400, $"بسته‌بندی نامعتبر است");
 
-        logger.LogInformation("ExistedCompanyPackageType {@CompanyPackageType}", receivedCompanyPackageType);
+        var company = await companyRepository.GetCompanyByIdAsync(companyPackageType.CompanyId, false, false, cancellationToken);
+        if (company == null)
+            logger.LogInformation("ExistedCompanyPackageType {@CompanyPackageType}", companyPackageType);
 
-        var companyPackageType = mapper.Map(command, receivedCompanyPackageType);
-        if (companyPackageType is null)
-            return ApiResponse<int>.Error(500, "خطا در عملیات تبدیل");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+        if (await companyPackageTypeRepository.CheckExistCompanyPackageTypeNameAsync(command.CompanyPackageTypeName, command.Id, companyPackageType.CompanyId, cancellationToken))
+            return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
+
+
+        companyPackageType.CompanyPackageTypeName = companyPackageType.CompanyPackageTypeName;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
 
         return ApiResponse<int>.Ok(command.Id, "اطلاعات با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<int>> SetCompanyPackageContentActivityStatusAsync(
+    public async Task<ApiResponse<int>> SetCompanyPackageContentActivityStatusAsync(//ch**
         UpdateActiveStateCompanyPackageTypeCommand command,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("SetCompanyPackageContentActivityStatus Called with {@UpdateActiveStateCompanyPackageTypeCommand}", command);
 
-        var companyPackage =
-            await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, true, cancellationToken);
+        var companyPackageType =
+            await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, true, false, cancellationToken);
 
-        if (companyPackage is null)
-            return ApiResponse<int>.Error(404, $"بسته‌بندی نامعتبر است");
+        if (companyPackageType is null)
+            return ApiResponse<int>.Error(400, $"بسته‌بندی نامعتبر است");
 
-        companyPackage.CompanyPackageTypeActive = !companyPackage.CompanyPackageTypeActive;
+
+        var company = await companyRepository.GetCompanyByIdAsync(companyPackageType.CompanyId, false, false, cancellationToken);
+        if (company == null)
+            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+
+
+
+
+        companyPackageType.CompanyPackageTypeActive = !companyPackageType.CompanyPackageTypeActive;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("SetCompanyPackageContentActivityStatus Updated successfully with ID: {Id}", command.Id);
         return ApiResponse<int>.Ok(command.Id, "وضعیت بسته‌بندی با موفقیت به‌روزرسانی شد");
+    }
+
+
+    public async Task<ApiResponse<CompanyPackageTypeDto>> UpdateCompanyPackageTypeAsync(UpdateCompanyPackageTypeCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("UpdateCompanyPackageTypeAsync is Called with {@UpdateCompanyPackageTypeCommand}", command);
+        var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, true, false, cancellationToken);
+        if (companyPackageType == null)
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, $"بسته بندی نامعتبر است");
+
+        var company = await companyRepository.GetCompanyByIdAsync(companyPackageType.CompanyId, false, false, cancellationToken);
+        if (company == null)
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, $"شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, "مشکل در دریافت اطلاعات");
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, "مجوز این فعالیت را ندارید");
+
+        if (await companyPackageTypeRepository.CheckExistCompanyPackageTypeNameAsync(command.CompanyPackageTypeName, command.Id, companyPackageType.CompanyId, cancellationToken))
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, "نام بسته بندی تکراری است");
+
+        var updatedComapnyPackageType = mapper.Map(command, companyPackageType);
+        if (updatedComapnyPackageType is null)
+            return ApiResponse<CompanyPackageTypeDto>.Error(400, "خطا در عملیات تبدیل");
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("بسته بندی با موفقیت به‌روزرسانی شد: {Id}", command.Id);
+
+        var updatedComapnyPackageTypeDto = mapper.Map<CompanyPackageTypeDto>(updatedComapnyPackageType);
+        return ApiResponse<CompanyPackageTypeDto>.Ok(updatedComapnyPackageTypeDto, "بسته بندی با موفقیت به‌روزرسانی شد");
     }
 }

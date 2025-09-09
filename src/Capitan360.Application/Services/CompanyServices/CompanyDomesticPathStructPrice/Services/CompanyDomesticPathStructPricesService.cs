@@ -178,7 +178,7 @@ public class CompanyDomesticPathStructPricesService(
 
         var price = await companyDomesticPathStructPricesRepository.GetCompanyDomesticPathStructPriceById(query.Id, cancellationToken);
         if (price is null)
-            return ApiResponse<CompanyDomesticPathStructPriceDto>.Error(404, $"قیمت ساختار مسیر با شناسه {query.Id} یافت نشد");
+            return ApiResponse<CompanyDomesticPathStructPriceDto>.Error(400, $"قیمت ساختار مسیر با شناسه {query.Id} یافت نشد");
 
         var result = mapper.Map<CompanyDomesticPathStructPriceDto>(price);
         logger.LogInformation("CompanyDomesticPathStructPrice retrieved successfully with ID: {Id}", query.Id);
@@ -194,7 +194,7 @@ public class CompanyDomesticPathStructPricesService(
 
         var price = await companyDomesticPathStructPricesRepository.GetCompanyDomesticPathStructPriceById(command.Id, cancellationToken);
         if (price is null)
-            return ApiResponse<object>.Error(404, $"قیمت ساختار مسیر با شناسه {command.Id} یافت نشد");
+            return ApiResponse<object>.Error(400, $"قیمت ساختار مسیر با شناسه {command.Id} یافت نشد");
 
         companyDomesticPathStructPricesRepository.Delete(price);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -258,7 +258,7 @@ public class CompanyDomesticPathStructPricesService(
         //    var existingPrices = await companyDomesticPathStructPricesRepository.GetExistingStructPaths(submittedPriceIds, cancellationToken);
 
         //    //if (existingPrices.Count != submittedPriceIds.Count)
-        //    //    return ApiResponse<List<int>>.Error(404, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
+        //    //    return ApiResponse<List<int>>.Error(400, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
 
         //    var pricesToUpdate = new List<CompanyDomesticPathStructPrices>();
         //    var priceIdsToDelete = new List<int>();
@@ -422,7 +422,7 @@ public class CompanyDomesticPathStructPricesService(
                 var existingPrices = await companyDomesticPathStructPricesRepository.GetExistingStructPaths(submittedPriceIds, cancellationToken);
 
                 //if (existingPrices.Count != submittedPriceIds.Count)
-                //    return ApiResponse<List<int>>.Error(404, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
+                //    return ApiResponse<List<int>>.Error(400, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
 
                 var pricesToUpdate = new List<CompanyDomesticPathStructPrices>();
                 var priceIdsToDelete = new List<int>();
@@ -578,7 +578,7 @@ public class CompanyDomesticPathStructPricesService(
             return ApiResponse<List<TableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه, و اطلاعات ارسالی ان اشتباه است");
 
 
-        var domesticPth = await domesticPathsRepository.CheckExistPath(query.CompanyDomesticPathId, cancellationToken);
+        var domesticPth = await domesticPathsRepository.GetCompanyDomesticPathByIdAsync(query.CompanyDomesticPathId, false, false, cancellationToken);
         if (domesticPth is null)
             return ApiResponse<List<TableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه ان اشتباه است");
 

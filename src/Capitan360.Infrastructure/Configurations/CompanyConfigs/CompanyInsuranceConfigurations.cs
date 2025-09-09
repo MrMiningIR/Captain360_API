@@ -16,7 +16,7 @@ public class CompanyInsuranceConfigurations : BaseEntityConfiguration<CompanyIns
         builder.Property(x => x.Tax).HasColumnType("decimal(18,2)").IsRequired();
         builder.Property(x => x.Scale).HasColumnType("decimal(18,2)").IsRequired();
         builder.Property(x => x.Active);
-        builder.Property(x => x.CompanyTypeId).IsRequired();
+
 
 
         // 1 to n
@@ -25,13 +25,6 @@ public class CompanyInsuranceConfigurations : BaseEntityConfiguration<CompanyIns
             .HasForeignKey(x => x.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
 
-
-
-        //  1 to 0 : we don't need to set anything in  CompanyType
-        builder.HasOne(x => x.CompanyType)
-            .WithMany()
-            .HasForeignKey(x => x.CompanyTypeId)
-            .OnDelete(DeleteBehavior.NoAction);
 
 
         // One to n :  CompanyInsurance Vs CompanyInsuranceCharge

@@ -33,21 +33,21 @@ public class GetAllCompanyDomesticPathsQueryValidator : AbstractValidator<GetAll
             .WithMessage($"مرتب‌سازی اختیاری است یا باید در [{string.Join(",", _allowedSortByColumnNames)}] باشد");
 
 
-        RuleFor(r => r.SourceCountryId)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("شناسه کشور معتبر نیست.");
-        RuleFor(r => r.SourceProvinceId)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("شناسه استان معتبر نیست.");
-        RuleFor(r => r.SourceCityId)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("شناسه شهر معتبر نیست.");
-        RuleFor(r => r.DestinationCountryId)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("شناسه کشور معتبر نیست.");
-        RuleFor(r => r.DestinationProvinceId)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("شناسه استان معتبر نیست.");
+        //RuleFor(r => r.SourceCountryId)
+        //    .GreaterThanOrEqualTo(0)
+        //    .WithMessage("شناسه کشور معتبر نیست.");
+        //RuleFor(r => r.SourceProvinceId)
+        //    .GreaterThanOrEqualTo(0)
+        //    .WithMessage("شناسه استان معتبر نیست.");
+        //RuleFor(r => r.SourceCityId)
+        //    .GreaterThanOrEqualTo(0)
+        //    .WithMessage("شناسه شهر معتبر نیست.");
+        //RuleFor(r => r.DestinationCountryId)
+        //    .GreaterThanOrEqualTo(0)
+        //    .WithMessage("شناسه کشور معتبر نیست.");
+        //RuleFor(r => r.DestinationProvinceId)
+        //    .GreaterThanOrEqualTo(0)
+        //    .WithMessage("شناسه استان معتبر نیست.");
         RuleFor(r => r.DestinationCityId)
             .GreaterThanOrEqualTo(0)
             .WithMessage("شناسه شهر معتبر نیست.");
