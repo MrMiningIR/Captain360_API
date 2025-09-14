@@ -1,10 +1,10 @@
 ﻿using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.CompanyEntity;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Infrastructure.Persistence;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Capitan360.Domain.Enums;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 

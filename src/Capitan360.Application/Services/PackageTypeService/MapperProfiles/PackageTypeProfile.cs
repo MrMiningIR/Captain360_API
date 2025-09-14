@@ -2,7 +2,7 @@
 using Capitan360.Application.Services.PackageTypeService.Commands.CreatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Commands.UpdatePackageType;
 using Capitan360.Application.Services.PackageTypeService.Dtos;
-using Capitan360.Domain.Entities.PackageEntity;
+using Capitan360.Domain.Entities.PackageTypes;
 
 namespace Capitan360.Application.Services.PackageTypeService.MapperProfiles;
 

@@ -11,7 +11,8 @@ using Capitan360.Application.Services.PackageTypeService.Dtos;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetAllPackageTypes;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetPackageTypeById;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Entities.PackageEntity;
+using Capitan360.Domain.Entities.PackageTypes;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Microsoft.Extensions.Logging;
@@ -55,7 +56,7 @@ public class PackageTypeService(
         if (packageType == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
 
-        packageType.PackageTypeOrder = existingCount + 1;
+        packageType.Order = existingCount + 1;
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
@@ -87,13 +88,13 @@ public class PackageTypeService(
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId))
             return ApiResponse<PagedResult<PackageTypeDto>>.Error(403, "مجوز این فعالیت را ندارید");
-        var (packageTypes, totalCount) = await packageTypeRepository.GetMatchingAllPackageTypesAsync(
+        var (packageTypes, totalCount) = await packageTypeRepository.GetAllPackageTypesAsync(
             query.SearchPhrase,
+            query.SortBy,
             query.CompanyTypeId,
-            query.Active, true,
+            true,
             query.PageSize,
             query.PageNumber,
-            query.SortBy,
             query.SortDirection,
             cancellationToken);
         var packageTypeDto = mapper.Map<IReadOnlyList<PackageTypeDto>>(packageTypes) ?? Array.Empty<PackageTypeDto>();
@@ -145,7 +146,7 @@ public class PackageTypeService(
 
 
 
-        packageTypeRepository.Delete(packageType);
+        packageTypeRepository.DeletePackageTypeAsync(packageType);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("PackageType soft-deleted successfully with ID: {Id}", command.Id);
         return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت حذف شد");
@@ -200,7 +201,7 @@ public class PackageTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
             return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
-        if (packageType.PackageTypeOrder == 1)
+        if (packageType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await packageTypeRepository.GetCountPackageTypeAsync(packageType.CompanyTypeId, cancellationToken);
@@ -231,7 +232,7 @@ public class PackageTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
             return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
-        if (packageType.PackageTypeOrder == 1)
+        if (packageType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await packageTypeRepository.GetCountPackageTypeAsync(packageType.CompanyTypeId, cancellationToken);
@@ -264,7 +265,7 @@ public class PackageTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        packageType.PackageTypeActive = !packageType.PackageTypeActive;
+        packageType.Active = !packageType.Active;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

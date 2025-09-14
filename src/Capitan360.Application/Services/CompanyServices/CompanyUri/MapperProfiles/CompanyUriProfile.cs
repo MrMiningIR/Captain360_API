@@ -9,9 +9,9 @@ public class CompanyUriProfile : Profile
 {
     public CompanyUriProfile()
     {
-        CreateMap<CreateCompanyUriCommand, Domain.Entities.CompanyEntity.CompanyUri>();
-        CreateMap<UpdateCompanyUriCommand, Domain.Entities.CompanyEntity.CompanyUri>();
+        CreateMap<CreateCompanyUriCommand, Domain.Entities.Companies.CompanyUri>();
+        CreateMap<UpdateCompanyUriCommand, Domain.Entities.Companies.CompanyUri>();
 
-        CreateMap<Domain.Entities.CompanyEntity.CompanyUri, CompanyUriDto>();
+        CreateMap<Domain.Entities.Companies.CompanyUri, CompanyUriDto>();
     }
 }

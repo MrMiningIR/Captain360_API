@@ -2,7 +2,7 @@
 using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentType;
 using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
 using Capitan360.Application.Services.ContentTypeService.Dtos;
-using Capitan360.Domain.Entities.ContentEntity;
+using Capitan360.Domain.Entities.ContentTypes;
 
 namespace Capitan360.Application.Services.ContentTypeService.MapperProfiles;
 

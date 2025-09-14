@@ -5,8 +5,8 @@ using Capitan360.Application.Services.AddressService.Commands.UpdateAddress;
 using Capitan360.Application.Services.AddressService.Commands.UpdateCompanyAddress;
 using Capitan360.Application.Services.AddressService.Dtos;
 using Capitan360.Application.Services.CompanyServices.Company.Commands.CreateCompany;
-using Capitan360.Domain.Entities.AddressEntity;
-using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Services.AddressService.MapperProfiles;
 

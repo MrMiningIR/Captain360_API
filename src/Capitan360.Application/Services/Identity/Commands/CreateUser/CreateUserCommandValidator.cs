@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Constants;
+﻿using Capitan360.Domain.Enums;
 using FluentValidation;
 
 namespace Capitan360.Application.Services.Identity.Commands.CreateUser;

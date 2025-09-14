@@ -1,6 +1,7 @@
 ﻿using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.AuthorizationEntity;
 using Capitan360.Domain.Entities.UserEntity;
+using Capitan360.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

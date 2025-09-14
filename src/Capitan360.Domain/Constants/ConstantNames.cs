@@ -1,7 +1,55 @@
-﻿namespace Capitan360.Domain.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Capitan360.Domain.Constants;
 
 public static class ConstantNames
 {
+    // Waybill/Manifest State Names
+    public const string Ready = "خام";
+    public const string Issued = "صادر شده";
+    public const string Collectiong = "درحال جمع آوری";
+    public const string ReceivedAtSenderCompany = "رسیده به شرکت مبدا";
+    public const string Manifested = "مانیفست شده";
+    public const string AirlineDelivery = "تحویل ایرلاین";
+    public const string ReceivedAtReceiverCompany = "رسیده به شرکت مقصد";
+    public const string Distribution = "در حال توزیع";
+    public const string Delivery = "تحویل شده";
+
+
+    // Area Names
+    public const string Country = "کشور";
+    public const string Province = "استان";
+    public const string City = "شهر";
+    public const string RegionMunicipality = "منطقه شهرداری";
+
+
+    // weight Names
+    public const string WeightTypeMinName = "وزن کمینه";
+    public const string WeightTypeNormalName = "وزن نرمال";
+    public const string WeightType1Name = "وزن اول";
+    public const string WeightType2Name = "وزن دوم";
+    public const string WeightType3Name = "وزن سوم";
+    public const string WeightType4Name = "وزن چهارم";
+    public const string WeightType5Name = "وزن پنجم";
+    public const string WeightType6Name = "وزن ششم";
+    public const string WeightType7Name = "وزن هفتم";
+    public const string WeightType8Name = "وزن هشتم";
+    public const string WeightType9Name = "وزن نهم";
+    public const string WeightType10Name = "وزن دهم";
+    public const string WeightType11Name = "وزن یازدهم";
+
+
+    // Rate Names
+    public const string RateOne = "نرخ اول";
+    public const string RateTwo = "نرخ دوم";
+    public const string RateThree = "نرخ سوم";
+    public const string RateFour = "نرخ چهارم";
+    public const string RateFive = "نرخ پنجم";
+    public const string RateSix = "نرخ ششم";
+    public const string RateSeven = "نرخ هفتم";
+    public const string RateEight = "نرخ هشتم";
+    public const string RateNine = "نرخ نهم";
+    public const string RateTen = "نرخ دهم";
 
 
     // Path Struct Name
@@ -16,36 +64,34 @@ public static class ConstantNames
     public const string PathStructType9Name = "هزینه توزیع - بارخروجی";
     public const string PathStructType10Name = "هزینه متفرقه مقصد - بار خروجی";
 
-    // weight Names
 
-    public const string WeightTypeNormalName = "نرمال";
-    public const string WeightTypeMinName = "وزن کمینه";
-    public const string WeightType1Name = "وزن اول";
-    public const string WeightType2Name = "وزن دوم";
-    public const string WeightType3Name = "وزن سوم";
-    public const string WeightType4Name = "وزن چهارم";
-    public const string WeightType5Name = "وزن پنجم";
-    public const string WeightType6Name = "وزن ششم";
-    public const string WeightType7Name = "وزن هفتم";
-    public const string WeightType8Name = "وزن هشتم";
-    public const string WeightType9Name = "وزن نهم";
-    public const string WeightType10Name = "وزن دهم";
-    public const string WeightType11Name = "وزن یازدهم";
+    //Type Of Customer&MoadianFactorType Names
+    public const string Haghigh = "حقیقی";
+    public const string Hoghoghi = "حقوقی";
+    public const string Unknown = "نامشخص";
 
 
+    //Entrance Fee Type Names
+    public const string WithoutEntrance = "بدون هزینه ورودی";
+    public const string WithEntranceMinusEntranceFeeWeight = "کم شدن وزن ورودی";
+    public const string WithEntrancePlusEntranceFeeWeight = "کم نشدن وزن ورودی";
 
-    // Rate Names
 
-    public const string RateOne = "نرخ اول";
-    public const string RateTwo = "نرخ دوم";
-    public const string RateThree = "نرخ سوم";
-    public const string RateFour = "نرخ چهارم";
-    public const string RateFive = "نرخ پنجم";
-    public const string RateSix = "نرخ ششم";
-    public const string RateSeven = "نرخ هفتم";
-    public const string RateEight = "نرخ هشتم";
-    public const string RateNine = "نرخ نهم";
-    public const string RateTen = "نرخ دهم";
+    //Address Type Names
+    public const string UserAddress = "آدرس کاربر";
+    public const string CompanyAddress = "آدرس شرکت";
+
+
+    //Sort Direction Names
+    public const string Ascending = "صعودی";
+    public const string Descending = "نزولی";
+
+
+
+
+
+
+
 
 
     // Custom Claim Names
@@ -58,10 +104,7 @@ public static class ConstantNames
     public const string IsParentCompany = "IsParentCompany";
     public const string CompanyName = "CompanyName";
 
-
-
     // RoleName
-
     public const string UserTableName = "Users";
     public const string RoleTableName = "Roles";
     public const string UserRole = "User";
@@ -69,7 +112,6 @@ public static class ConstantNames
     public const string SuperAdminRole = "SuperAdmin";
 
     // Default Permission
-
     public const string ViewUsers = "ViewUsers";
     public const string EditUsers = "EditUsers";
     public const string DeleteUsers = "DeleteUsers";
@@ -81,7 +123,6 @@ public static class ConstantNames
 
 
     // Default Groups
-
     public const string AdminGroup = "AdminGroup";
     public const string ViewerGroup = "ViewerGroup";
     public const string EditorGroup = "EditorGroup";
@@ -99,7 +140,6 @@ public static class ConstantNames
 
 
     // Cache Prefix
-
     public const string CachePrefix = "Cap:";
     public const string NormalUser = "کاربرعادی";
     public const string SpecialUser = "کاربرویژه";

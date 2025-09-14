@@ -9,9 +9,9 @@ public class UserPermissionProfile : Profile
 {
     public UserPermissionProfile()
     {
-        CreateMap<AssignUserPermissionCommand, Domain.Entities.AuthorizationEntity.UserPermission>();
-        CreateMap<RemoveUserPermissionCommand, Domain.Entities.AuthorizationEntity.UserPermission>();
-        CreateMap<Domain.Entities.AuthorizationEntity.UserPermission, UserPermissionDto>()
+        CreateMap<AssignUserPermissionCommand, Domain.Entities.Authorizations.UserPermission>();
+        CreateMap<RemoveUserPermissionCommand, Domain.Entities.Authorizations.UserPermission>();
+        CreateMap<Domain.Entities.Authorizations.UserPermission, UserPermissionDto>()
             .ForMember(des => des.PermissionName, opt =>
                 opt.MapFrom(x => x.Permission.Name))
             .ForMember(des => des.DisplayPermissionName, opt =>

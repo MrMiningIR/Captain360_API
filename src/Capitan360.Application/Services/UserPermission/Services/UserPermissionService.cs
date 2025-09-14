@@ -6,6 +6,7 @@ using Capitan360.Application.Services.UserPermission.Commands.UpDeInlUserPermiss
 using Capitan360.Application.Services.UserPermission.Dtos;
 using Capitan360.Application.Services.UserPermission.Queries.GetUserPermissions;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.Identity;
 using Capitan360.Domain.Repositories.PermissionRepository;
 using Microsoft.Extensions.Logging;
@@ -21,7 +22,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("AssignPermissionToUser Called with {@AssignPermission}", command);
 
-        var mappedUserPermission = mapper.Map<Domain.Entities.AuthorizationEntity.UserPermission>(command);
+        var mappedUserPermission = mapper.Map<Domain.Entities.Authorizations.UserPermission>(command);
 
         if (mappedUserPermission == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
@@ -46,7 +47,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("AssignPermissionsToUser Called with {@AssignPermissions}", commands);
 
-        var mappedUserPermissions = mapper.Map<List<Domain.Entities.AuthorizationEntity.UserPermission>>(commands.PermissionList);
+        var mappedUserPermissions = mapper.Map<List<Domain.Entities.Authorizations.UserPermission>>(commands.PermissionList);
 
         if (mappedUserPermissions == null)
             return ApiResponse<List<int>>.Error(400, "مشکل در عملیات تبدیل");
@@ -97,7 +98,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("RemovePermissionsFromUser Called with {@RemovePermissions}", commands);
 
-        var mappedUserPermissions = mapper.Map<List<Domain.Entities.AuthorizationEntity.UserPermission>>(commands.PermissionList);
+        var mappedUserPermissions = mapper.Map<List<Domain.Entities.Authorizations.UserPermission>>(commands.PermissionList);
 
         if (mappedUserPermissions == null)
             return ApiResponse<List<int>>.Error(400, "مشکل در عملیات تبدیل");

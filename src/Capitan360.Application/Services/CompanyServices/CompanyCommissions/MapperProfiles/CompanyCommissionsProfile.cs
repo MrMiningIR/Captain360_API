@@ -9,10 +9,10 @@ public class CompanyCommissionsProfile : Profile
 {
     public CompanyCommissionsProfile()
     {
-        CreateMap<Domain.Entities.CompanyEntity.CompanyCommissions, CompanyCommissionsDto>();
-        CreateMap<CreateCompanyCommissionsCommand, Domain.Entities.CompanyEntity.CompanyCommissions>();
-        CreateMap<UpdateCompanyCommissionsCommand, Domain.Entities.CompanyEntity.CompanyCommissions>();
-        //CreateMap<UpdateCompanyCommissionsCommand, Domain.Entities.CompanyEntity.CompanyCommissions>()
+        CreateMap<Domain.Entities.Companies.CompanyCommissions, CompanyCommissionsDto>();
+        CreateMap<CreateCompanyCommissionsCommand, Domain.Entities.Companies.CompanyCommissions>();
+        CreateMap<UpdateCompanyCommissionsCommand, Domain.Entities.Companies.CompanyCommissions>();
+        //CreateMap<UpdateCompanyCommissionsCommand, Domain.Entities.Companies.CompanyCommissions>()
         //    .ForMember(dest => dest.CommissionFromCaptainCargoWebSite, opt => opt.Condition(src => src.CommissionFromCaptainCargoWebSite.HasValue))
         //    .ForMember(dest => dest.CommissionFromCompanyWebSite, opt => opt.Condition(src => src.CommissionFromCompanyWebSite.HasValue))
         //    .ForMember(dest => dest.CommissionFromCaptainCargoWebService, opt => opt.Condition(src => src.CommissionFromCaptainCargoWebService.HasValue))

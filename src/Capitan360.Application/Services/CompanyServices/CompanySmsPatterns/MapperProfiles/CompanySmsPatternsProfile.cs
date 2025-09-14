@@ -9,8 +9,8 @@ public class CompanySmsPatternsProfile : Profile
 {
     public CompanySmsPatternsProfile()
     {
-        CreateMap<CreateCompanySmsPatternsCommand, Domain.Entities.CompanyEntity.CompanySmsPatterns>();
-        CreateMap<UpdateCompanySmsPatternsCommand, Domain.Entities.CompanyEntity.CompanySmsPatterns>()
+        CreateMap<CreateCompanySmsPatternsCommand, Domain.Entities.Companies.CompanySmsPatterns>();
+        CreateMap<UpdateCompanySmsPatternsCommand, Domain.Entities.Companies.CompanySmsPatterns>()
             // .ForMember(dest => dest.CompanyId, opt => opt.Condition(src => src.CompanyId.HasValue))
             .ForMember(dest => dest.PatternSmsIssueSender, opt => opt.Condition(src => src.PatternSmsIssueSender != null))
             .ForMember(dest => dest.PatternSmsIssueReceiver, opt => opt.Condition(src => src.PatternSmsIssueReceiver != null))
@@ -34,6 +34,6 @@ public class CompanySmsPatternsProfile : Profile
             .ForMember(dest => dest.PatternSmsCancelByCustomerCompany, opt => opt.Condition(src => src.PatternSmsCancelByCustomerCompany != null))
             .ForMember(dest => dest.PatternSmsSendManifestReceiverCompany, opt => opt.Condition(src => src.PatternSmsSendManifestReceiverCompany != null))
             .ForMember(dest => dest.Company, opt => opt.Ignore());
-        CreateMap<Domain.Entities.CompanyEntity.CompanySmsPatterns, CompanySmsPatternsDto>();
+        CreateMap<Domain.Entities.Companies.CompanySmsPatterns, CompanySmsPatternsDto>();
     }
 }

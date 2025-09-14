@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Entities.CompanyEntity;
+﻿using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Services.AddressService.Services;
 

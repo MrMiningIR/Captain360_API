@@ -1,5 +1,5 @@
-﻿using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.CompanyEntity;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyInsurance.Dtos;
 

@@ -2,7 +2,7 @@
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Commands.CreateCompanyDomesticPath;
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Commands.UpdateCompanyDomesticPath;
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Dtos;
-using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.MapperProfiles;
 

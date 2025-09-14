@@ -7,9 +7,9 @@ using Capitan360.Application.Services.CompanyServices.CompanyInsurance.CompanyIn
 using Capitan360.Application.Services.CompanyServices.CompanyInsurance.CompanyInsuranceCharge.Queries.GetCompanyInsuranceChargeById;
 using Capitan360.Application.Services.CompanyServices.CompanyInsurance.Dtos;
 using Capitan360.Application.Services.Identity.Services;
-using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -83,7 +83,7 @@ public class CompanyInsuranceChargeService(
         //if (subTwoItems.Any(a => a is { RateDiff: 0, RateSettlement: 0 }))
         //    subTwoItems.RemoveAll(a => a is { RateDiff: 0, RateSettlement: 0 });
 
-        var companyInsuranceEntities = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyInsuranceCharge>>(command.CompanyInsuranceChargeList);
+        var companyInsuranceEntities = mapper.Map<List<Domain.Entities.Companies.CompanyInsuranceCharge>>(command.CompanyInsuranceChargeList);
         if (companyInsuranceEntities == null || !companyInsuranceEntities.Any())
             return ApiResponse<List<int>>.Error(500, "مشکل در عملیات تبدیل");
 
@@ -266,7 +266,7 @@ public class CompanyInsuranceChargeService(
                 await companyInsuranceChargeRepository.GetExistingCompanyInsuranceCharge(
                     mainUpdateList.Select(a => a.Id).ToList(), cancellationToken);
 
-            var mainItemsShouldBeUpdated = new List<Domain.Entities.CompanyEntity.CompanyInsuranceCharge>();
+            var mainItemsShouldBeUpdated = new List<Domain.Entities.Companies.CompanyInsuranceCharge>();
 
             foreach (var item in mainUpdateList)
             {
@@ -309,7 +309,7 @@ public class CompanyInsuranceChargeService(
 
         if (mainInsertList.Any())
         {
-            var newMainItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyInsuranceCharge>>(mainInsertList);
+            var newMainItems = mapper.Map<List<Capitan360.Domain.Entities.Companies.CompanyInsuranceCharge>>(mainInsertList);
 
             for (int i = 0; i < newMainItems.Count; i++)
             {

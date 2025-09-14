@@ -9,6 +9,7 @@ using Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Queries
 using Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Queries.GetCompanySmsPatternsById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -37,7 +38,7 @@ public class CompanySmsPatternsService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        var companySmsPatterns = mapper.Map<Domain.Entities.CompanyEntity.CompanySmsPatterns>(command);
+        var companySmsPatterns = mapper.Map<Domain.Entities.Companies.CompanySmsPatterns>(command);
         if (companySmsPatterns is null)
             return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
 

@@ -8,9 +8,10 @@ using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructP
 using Capitan360.Application.Services.Dtos;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.AddressEntity;
-using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.AddressRepo;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
@@ -112,7 +113,7 @@ public class CompanyDomesticPathStructPricesService(
 
         //// مپینگ و ذخیره DomesticPathStructPriceMunicipalAreas
         var municipalAreasItems =
-            new List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>();
+            new List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>();
         for (int i = 0; i < command.CreateCompanyDomesticPathStructPrices.Count; i++)
         {
             var commandItem = command.CreateCompanyDomesticPathStructPrices[i];
@@ -121,7 +122,7 @@ public class CompanyDomesticPathStructPricesService(
             if (commandItem.StructPriceArea.DomesticPathStructPriceMunicipalAreas.Any())
             {
                 var mappedItems =
-                    mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>>(
+                    mapper.Map<List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>>(
                         commandItem.StructPriceArea.DomesticPathStructPriceMunicipalAreas);
 
                 foreach (var mappedItem in mappedItems)
@@ -330,7 +331,7 @@ public class CompanyDomesticPathStructPricesService(
         //    // درج آیتم‌های جدید
         //    if (itemsToInsert.Any())
         //    {
-        //        var newMunicipalItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToInsert);
+        //        var newMunicipalItems = mapper.Map<List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToInsert);
         //        foreach (var newItem in newMunicipalItems)
         //        {
         //            newItem.CompanyDomesticPathStructPriceId = item.Id ?? 0; // تنظیم کلید خارجی
@@ -341,7 +342,7 @@ public class CompanyDomesticPathStructPricesService(
         //    // به‌روزرسانی آیتم‌های موجود
         //    if (itemsToUpdate.Any())
         //    {
-        //        var updateMunicipalItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToUpdate);
+        //        var updateMunicipalItems = mapper.Map<List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToUpdate);
         //        var updatedMunicipalIds = await companyDomesticPathStructPriceMunicipalAreasRepository.Update(updateMunicipalItems, cancellationToken);
         //    }
         //}
@@ -513,7 +514,7 @@ public class CompanyDomesticPathStructPricesService(
                 // درج آیتم‌های جدید
                 if (itemsToInsert.Any())
                 {
-                    var newMunicipalItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToInsert);
+                    var newMunicipalItems = mapper.Map<List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToInsert);
                     foreach (var newItem in newMunicipalItems)
                     {
                         newItem.CompanyDomesticPathStructPriceId = actualPriceId;
@@ -525,7 +526,7 @@ public class CompanyDomesticPathStructPricesService(
                 // به‌روزرسانی آیتم‌های موجود
                 if (itemsToUpdate.Any())
                 {
-                    var updateMunicipalItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToUpdate);
+                    var updateMunicipalItems = mapper.Map<List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>>(itemsToUpdate);
                     foreach (var updateItem in updateMunicipalItems)
                     {
                         updateItem.CompanyDomesticPathStructPriceId = actualPriceId;

@@ -9,16 +9,16 @@ public class CompanyDomesticPathChargeProfile : Profile
 {
     public CompanyDomesticPathChargeProfile()
     {
-        CreateMap<CreateCompanyDomesticPathChargeItemCommand, Domain.Entities.CompanyEntity.CompanyDomesticPathCharge>();
-        CreateMap<Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType, CompanyDomesticPathChargeContentTypeDto>();
+        CreateMap<CreateCompanyDomesticPathChargeItemCommand, Domain.Entities.Companies.CompanyDomesticPathCharge>();
+        CreateMap<Domain.Entities.Companies.CompanyDomesticPathChargeContentType, CompanyDomesticPathChargeContentTypeDto>();
 
-        CreateMap<Domain.Entities.CompanyEntity.CompanyDomesticPathCharge, CompanyDomesticPathChargeDto>()
+        CreateMap<Domain.Entities.Companies.CompanyDomesticPathCharge, CompanyDomesticPathChargeDto>()
                  .ForMember(dest => dest.CompanyDomesticPathChargeContentTypesDtos,
                      opt => opt.MapFrom(src =>
-                         src.CompanyDomesticPathChargeContentTypes ?? new List<Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType>()));
+                         src.CompanyDomesticPathChargeContentTypes ?? new List<Domain.Entities.Companies.CompanyDomesticPathChargeContentType>()));
 
 
-        CreateMap<UpdateCompanyDomesticPathChargeItemCommand, Domain.Entities.CompanyEntity.CompanyDomesticPathCharge>();
-        CreateMap<UpdateCompanyDomesticPathContentItemCommand, Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType>();
+        CreateMap<UpdateCompanyDomesticPathChargeItemCommand, Domain.Entities.Companies.CompanyDomesticPathCharge>();
+        CreateMap<UpdateCompanyDomesticPathContentItemCommand, Domain.Entities.Companies.CompanyDomesticPathChargeContentType>();
     }
 }

@@ -9,9 +9,9 @@ public class CompanyPreferencesProfile : Profile
 {
     public CompanyPreferencesProfile()
     {
-        CreateMap<CreateCompanyPreferencesCommand, Domain.Entities.CompanyEntity.CompanyPreferences>();
-        CreateMap<UpdateCompanyPreferencesCommand, Domain.Entities.CompanyEntity.CompanyPreferences>()
+        CreateMap<CreateCompanyPreferencesCommand, Domain.Entities.Companies.CompanyPreferences>();
+        CreateMap<UpdateCompanyPreferencesCommand, Domain.Entities.Companies.CompanyPreferences>()
           .ForMember(dest => dest.Company, opt => opt.Ignore());
-        CreateMap<Domain.Entities.CompanyEntity.CompanyPreferences, CompanyPreferencesDto>();
+        CreateMap<Domain.Entities.Companies.CompanyPreferences, CompanyPreferencesDto>();
     }
 }

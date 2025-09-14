@@ -13,6 +13,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Queries
 using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Queries.GetCompanyPreferencesById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -42,7 +43,7 @@ public class CompanyPreferencesService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
-        var companyPreferences = mapper.Map<Domain.Entities.CompanyEntity.CompanyPreferences>(createCompanyPreferencesCommand);
+        var companyPreferences = mapper.Map<Domain.Entities.Companies.CompanyPreferences>(createCompanyPreferencesCommand);
         if (companyPreferences is null)
             return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
 
@@ -250,7 +251,7 @@ public class CompanyPreferencesService(
                 return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "مجوز این فعالیت را ندارید");
         }
 
-        var (companyPreferences, totalCount) = await companyPreferencesRepository.GetMatchingAllCompanyPreferencesAsync(
+        var (companyPreferences, totalCount) = await companyPreferencesRepository.GetAllCompanyPreferencesAsync(
             getAllCompanyPreferencesQuery.SearchPhrase,
             getAllCompanyPreferencesQuery.SortBy,
             getAllCompanyPreferencesQuery.CompanyTypeId,

@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.PackageEntity;
+using Capitan360.Domain.Enums;
 using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

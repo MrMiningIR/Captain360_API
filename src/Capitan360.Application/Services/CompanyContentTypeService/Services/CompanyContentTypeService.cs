@@ -10,6 +10,7 @@ using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetAllCo
 using Capitan360.Application.Services.CompanyContentTypeService.Queries.GetCompanyContentTypeById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.ContentTypeRepo;
 using Microsoft.Extensions.Logging;
@@ -43,7 +44,7 @@ public class CompanyContentTypeService(
 
 
 
-        var (companyContentTypes, totalCount) = await companyContentTypeRepository.GetMatchingAllCompanyContentTypesAsync(
+        var (companyContentTypes, totalCount) = await companyContentTypeRepository.GetAllCompanyContentTypesAsync(
             query.SearchPhrase,
             query.SortBy,
             query.CompanyId,
@@ -80,7 +81,7 @@ public class CompanyContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        if (companyContentType.CompanyContentTypeOrder == 1)
+        if (companyContentType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
@@ -114,7 +115,7 @@ public class CompanyContentTypeService(
 
 
 
-        if (companyContentType.CompanyContentTypeOrder == 1)
+        if (companyContentType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
@@ -180,7 +181,7 @@ public class CompanyContentTypeService(
         if (await companyContentTypeRepository.CheckExistCompanyContentTypeNameAsync(command.CompanyContentTypeName, command.Id, companyContentType.CompanyId, cancellationToken))
             return ApiResponse<int>.Error(400, "نام محتوی بار تکراری است");
 
-        companyContentType.CompanyContentTypeName = companyContentType.CompanyContentTypeName;
+        companyContentType.Name = companyContentType.Name;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -213,7 +214,7 @@ public class CompanyContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        companyContentType.CompanyContentTypeActive = !companyContentType.CompanyContentTypeActive;
+        companyContentType.Active = !companyContentType.Active;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

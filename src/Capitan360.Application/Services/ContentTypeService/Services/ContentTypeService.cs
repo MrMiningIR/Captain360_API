@@ -11,7 +11,8 @@ using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTy
 using Capitan360.Application.Services.ContentTypeService.Queries.GetContentTypeById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Entities.ContentEntity;
+using Capitan360.Domain.Entities.ContentTypes;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.ContentTypeRepo;
 using Microsoft.Extensions.Logging;
@@ -60,7 +61,7 @@ public class ContentTypeService(
 
         //--
 
-        contentType.ContentTypeOrder = existingCount + 1;
+        contentType.Order = existingCount + 1;
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
         var contentTypeId = await contentTypeRepository.CreateContentTypeAsync(contentType, cancellationToken);
@@ -94,11 +95,10 @@ public class ContentTypeService(
             return ApiResponse<PagedResult<ContentTypeDto>>.Error(403, "مجوز این فعالیت را ندارید");
 
 
-        var (contentTypes, totalCount) = await contentTypeRepository.GetMatchingAllContentTypesAsync(
+        var (contentTypes, totalCount) = await contentTypeRepository.GetAllContentTypesAsync(
             query.SearchPhrase,
             query.SortBy,
             query.CompanyTypeId,
-            query.Active,
             true,
             query.PageNumber,
             query.PageSize,
@@ -154,7 +154,7 @@ public class ContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
             return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
-        await contentTypeRepository.Delete(contentType);
+        await contentTypeRepository.DeletePackageTypeAsync(contentType);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("ContentType soft-deleted successfully with ID: {Id}", command.Id);
@@ -211,7 +211,7 @@ public class ContentTypeService(
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
 
-        if (contentType.ContentTypeOrder == 1)
+        if (contentType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
@@ -242,7 +242,7 @@ public class ContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        if (contentType.ContentTypeOrder == 1)
+        if (contentType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
 
@@ -280,7 +280,7 @@ public class ContentTypeService(
 
 
 
-        contentType.ContentTypeActive = !contentType.ContentTypeActive;
+        contentType.Active = !contentType.Active;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

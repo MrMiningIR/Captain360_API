@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Capitan360.Domain.Constants;
+using Capitan360.Domain.Enums;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyPreferences.Queries.GetAllCompanyPreferences;
 

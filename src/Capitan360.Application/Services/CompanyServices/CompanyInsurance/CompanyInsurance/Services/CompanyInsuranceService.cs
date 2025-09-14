@@ -9,6 +9,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyInsurance.CompanyIn
 using Capitan360.Application.Services.CompanyServices.CompanyInsurance.Dtos;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -45,7 +46,7 @@ public class CompanyInsuranceService(
         if (await companyInsuranceRepository.CheckExistCompanyInsuranceCodeAsync(createCompanyInsuranceCommand.Code, null, createCompanyInsuranceCommand.CompanyId, cancellationToken))
             return ApiResponse<int>.Error(400, "کد شرکت بیمه تکراری است");
 
-        var companyInsurance = mapper.Map<Domain.Entities.CompanyEntity.CompanyInsurance>(createCompanyInsuranceCommand) ?? null;
+        var companyInsurance = mapper.Map<Domain.Entities.Companies.CompanyInsurance>(createCompanyInsuranceCommand) ?? null;
         if (companyInsurance == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
 

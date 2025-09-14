@@ -10,8 +10,9 @@ using Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Querie
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Queries.GetCompanyDomesticPathById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.AddressRepo;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;

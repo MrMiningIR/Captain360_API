@@ -10,8 +10,9 @@ using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructP
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Queries;
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Services;
 using Capitan360.Application.Services.Identity.Services;
-using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -84,7 +85,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
         }
 
         //TODO
-        var items = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathCharge>>(command.ChargeItems);
+        var items = mapper.Map<List<Capitan360.Domain.Entities.Companies.CompanyDomesticPathCharge>>(command.ChargeItems);
         if (items == null || !items.Any())
             return ApiResponse<List<int>>.Error(500, "مشکل در عملیات تبدیل");
 
@@ -97,7 +98,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
 
         // مپینگ و ذخیره DomesticPathChargeContentType
 
-        var contentTypeLists = new List<Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType>();
+        var contentTypeLists = new List<CompanyDomesticPathChargeContentType>();
 
         for (int i = 0; i < command.ChargeItems.Count; i++)
         {
@@ -107,7 +108,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
             if (commandItem.ContentItems != null && commandItem.ContentItems.ContentItemsList.Any())
             {
                 //TODO
-                var mappedItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType>>
+                var mappedItems = mapper.Map<List<CompanyDomesticPathChargeContentType>>
                     (commandItem.ContentItems.ContentItemsList);
 
                 foreach (var mappedItem in mappedItems)
@@ -162,7 +163,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
             // Handle Insert
             if (companyDomesticPathChargeInsertList.Any())
             {
-                var newPrices = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathCharge>>(companyDomesticPathChargeInsertList);
+                var newPrices = mapper.Map<List<Capitan360.Domain.Entities.Companies.CompanyDomesticPathCharge>>(companyDomesticPathChargeInsertList);
                 for (int i = 0; i < newPrices.Count; i++)
                 {
                     priceIdMap.Add(i, -1); // اندیس موقت
@@ -196,7 +197,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                 //if (existingPrices.Count != submittedPriceIds.Count)
                 //    return ApiResponse<List<int>>.Error(400, "یک یا چند قیمت با شناسه‌های ارائه‌شده یافت نشد");
 
-                var pricesToUpdate = new List<Domain.Entities.CompanyEntity.CompanyDomesticPathCharge>();
+                var pricesToUpdate = new List<Capitan360.Domain.Entities.Companies.CompanyDomesticPathCharge>();
 
                 foreach (var item in companyDomesticPathChargeUpdateList)
                 {
@@ -266,7 +267,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                 // درج آیتم‌های جدید
                 if (companyDomesticPathChargeContentInsertList.Any())
                 {
-                    var newContentTypeItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType>>(companyDomesticPathChargeContentInsertList);
+                    var newContentTypeItems = mapper.Map<List<CompanyDomesticPathChargeContentType>>(companyDomesticPathChargeContentInsertList);
                     foreach (var newItem in newContentTypeItems)
                     {
                         newItem.CompanyDomesticPathChargeId = actualPriceId;
@@ -279,7 +280,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
                 // به‌روزرسانی آیتم‌های موجود
                 if (companyDomesticPathChargeContentUpdateList.Any())
                 {
-                    var updateContentItems = mapper.Map<List<Domain.Entities.CompanyEntity.CompanyDomesticPathChargeContentType>>(companyDomesticPathChargeContentUpdateList);
+                    var updateContentItems = mapper.Map<List<CompanyDomesticPathChargeContentType>>(companyDomesticPathChargeContentUpdateList);
                     foreach (var updateItem in updateContentItems)
                     {
                         updateItem.CompanyDomesticPathChargeId = actualPriceId;
@@ -352,8 +353,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
     "", query.CompanyDomesticPathId, 100, 1,
      null, SortDirection.Ascending, cancellationToken);
 
-        var (contentTypesData, total) = await companyContentTypeRepository
-            .GetCompanyContentTypesAsync("", domesticPth.CompanyId, 1, 100, 1, null, SortDirection.Ascending, cancellationToken);
+        var (contentTypesData, total) = await companyContentTypeRepository.GetCompanyContentTypesAsync("", domesticPth.CompanyId, 1, 100, 1, null, SortDirection.Ascending, cancellationToken);
 
         var weightTypes = identityService.GetWeightTypeList();
 

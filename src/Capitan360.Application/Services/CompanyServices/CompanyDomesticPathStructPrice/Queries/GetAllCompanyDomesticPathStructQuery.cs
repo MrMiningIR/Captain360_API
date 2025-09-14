@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Constants;
+﻿using Capitan360.Domain.Enums;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Queries;
 

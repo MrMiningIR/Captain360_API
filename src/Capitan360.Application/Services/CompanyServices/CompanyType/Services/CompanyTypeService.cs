@@ -8,6 +8,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetAll
 using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetCompanyTypeById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +31,7 @@ public class CompanyTypeService(
         if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(createCompanyTypeCommand.TypeName, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام نوع شرکت تکراری است");
 
-        var companyType = mapper.Map<Capitan360.Domain.Entities.CompanyEntity.CompanyType>(createCompanyTypeCommand) ?? null;
+        var companyType = mapper.Map<Capitan360.Domain.Entities.Companies.CompanyType>(createCompanyTypeCommand) ?? null;
         if (companyType == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
 
@@ -94,7 +95,7 @@ public class CompanyTypeService(
 
 
 
-        var (companyTypes, totalCount) = await companyTypeRepository.GetMatchingAllCompanyTypesAsync(
+        var (companyTypes, totalCount) = await companyTypeRepository.GetAllCompanyTypesAsync(
             getAllCompanyTypesQuery.SearchPhrase,
             getAllCompanyTypesQuery.SortBy,
             true,

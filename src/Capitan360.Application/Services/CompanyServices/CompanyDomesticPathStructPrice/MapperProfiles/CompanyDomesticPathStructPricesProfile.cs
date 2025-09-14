@@ -2,7 +2,7 @@
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Commands.Create;
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Commands.Update;
 using Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Dtos;
-using Capitan360.Domain.Entities.CompanyEntity;
+using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.MapperProfiles;
 
@@ -57,14 +57,14 @@ public class CompanyDomesticPathStructPricesProfile : Profile
             .ForMember(dest => dest.WeightType, opt => opt.MapFrom(src => src.WeightType))
             .ForMember(dest => dest.PathStructType, opt => opt.MapFrom(src=>src.PathStructType)); // PathStructType توسط سیستم پر می‌شود
         CreateMap<CompanyDomesticPathStructPrices, CompanyDomesticPathStructPriceDto>();
-        CreateMap<CreateCompanyDomesticPathStructPriceMunicipalAreasItem,Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>();
-        CreateMap<UpdateCompanyDomesticPathStructPriceMunicipalAreasItem,Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>();
+        CreateMap<CreateCompanyDomesticPathStructPriceMunicipalAreasItem,Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>();
+        CreateMap<UpdateCompanyDomesticPathStructPriceMunicipalAreasItem,Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>();
 
         CreateMap<CompanyDomesticPathStructPrices, CompanyDomesticPathStructPriceDto>()
             .ForMember(dest => dest.CompanyDomesticPathStructPriceMunicipalAreasDtos,
-                opt => opt.MapFrom(src => src.CompanyDomesticPathStructPriceMunicipalAreas ?? new List<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas>()));
+                opt => opt.MapFrom(src => src.CompanyDomesticPathStructPriceMunicipalAreas ?? new List<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas>()));
 
-        CreateMap<Domain.Entities.CompanyEntity.CompanyDomesticPathStructPriceMunicipalAreas, CompanyDomesticPathStructPriceMunicipalAreasDto>();
+        CreateMap<Domain.Entities.Companies.CompanyDomesticPathStructPriceMunicipalAreas, CompanyDomesticPathStructPriceMunicipalAreasDto>();
 
 
     }

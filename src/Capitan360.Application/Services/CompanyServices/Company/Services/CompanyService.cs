@@ -9,7 +9,8 @@ using Capitan360.Application.Services.CompanyServices.Company.Queries.GetAllComp
 using Capitan360.Application.Services.CompanyServices.Company.Queries.GetCompanyById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.AddressRepo;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.ContentTypeRepo;
@@ -59,7 +60,7 @@ public class CompanyService(
             !await areaRepository.CheckExistAreaByIdANdParentId(createCompanyCommand.CountryId, (int)AreaType.Country, null, cancellationToken))
             return ApiResponse<int>.Error(400, "اطلاعات شهر نامعتبر است");
 
-        var companyEntity = mapper.Map<Domain.Entities.CompanyEntity.Company>(createCompanyCommand);
+        var companyEntity = mapper.Map<Domain.Entities.Companies.Company>(createCompanyCommand);
         if (companyEntity is null)
             return ApiResponse<int>.Error(500, "مشکل در عملیات تبدیل");
 
@@ -81,7 +82,7 @@ public class CompanyService(
         }
 
         await preferencesRepository.CreateCompanyPreferencesAsync(
-            new Domain.Entities.CompanyEntity.CompanyPreferences()
+            new Domain.Entities.Companies.CompanyPreferences()
             {
                 CompanyId = companyId,
                 ActiveInternationalAirlineCargo = false,
@@ -116,7 +117,7 @@ public class CompanyService(
             }, cancellationToken);
 
         await companySmsPatternsRepository.CreateCompanySmsPatternsAsync(
-        new Domain.Entities.CompanyEntity.CompanySmsPatterns
+        new Domain.Entities.Companies.CompanySmsPatterns
         {
             CompanyId = companyId,
             PatternSmsCancelByCustomerCompany = null,
@@ -146,7 +147,7 @@ public class CompanyService(
         }, cancellationToken);
 
         await commissionsRepository.CreateCompanyCommissionsAsync(
-            new Domain.Entities.CompanyEntity.CompanyCommissions()
+            new Domain.Entities.Companies.CompanyCommissions()
             {
                 CompanyId = companyId,
                 CommissionFromCaptainCargoDesktop = 0,

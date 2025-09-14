@@ -10,6 +10,7 @@ using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCo
 using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.CompanyRepo;
 using Capitan360.Domain.Repositories.PackageTypeRepo;
 using Microsoft.Extensions.Logging;
@@ -47,7 +48,7 @@ public class CompanyPackageTypeService(
 
 
 
-        var (companyPackageTypes, totalCount) = await companyPackageTypeRepository.GetMatchingAllCompanyPackageTypesAsync(
+        var (companyPackageTypes, totalCount) = await companyPackageTypeRepository.GetAllCompanyPackageTypesAsync(
           query.SearchPhrase,
           query.SortBy,
           query.CompanyId,
@@ -90,7 +91,7 @@ public class CompanyPackageTypeService(
 
 
 
-        if (companyPackageType.CompanyPackageTypeOrder == 1)
+        if (companyPackageType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
@@ -128,7 +129,7 @@ public class CompanyPackageTypeService(
 
 
 
-        if (companyPackageType.CompanyPackageTypeOrder == 1)
+        if (companyPackageType.Order == 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
@@ -198,7 +199,7 @@ public class CompanyPackageTypeService(
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
 
 
-        companyPackageType.CompanyPackageTypeName = companyPackageType.CompanyPackageTypeName;
+        companyPackageType.Name = companyPackageType.Name;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -234,7 +235,7 @@ public class CompanyPackageTypeService(
 
 
 
-        companyPackageType.CompanyPackageTypeActive = !companyPackageType.CompanyPackageTypeActive;
+        companyPackageType.Active = !companyPackageType.Active;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

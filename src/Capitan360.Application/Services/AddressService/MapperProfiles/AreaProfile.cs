@@ -2,7 +2,7 @@
 using Capitan360.Application.Services.AddressService.Commands.CreateArea;
 using Capitan360.Application.Services.AddressService.Commands.UpdateArea;
 using Capitan360.Application.Services.AddressService.Dtos;
-using Capitan360.Domain.Entities.AddressEntity;
+using Capitan360.Domain.Entities.Addresses;
 
 namespace Capitan360.Application.Services.AddressService.MapperProfiles;
 

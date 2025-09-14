@@ -1,7 +1,6 @@
-﻿using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.AddressEntity;
-using Capitan360.Domain.Repositories.AddressRepo;
+﻿using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Repositories.Address;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
