@@ -8,8 +8,7 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
-public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
-    : ICompanyPreferencesRepository
+public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyPreferencesRepository
 {
     public async Task<int> CreateCompanyPreferencesAsync(CompanyPreferences companyPreferences, CancellationToken cancellationToken)
     {
@@ -26,9 +25,9 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
             query = query.AsNoTracking();
 
         if (loadData)
-            query = query.Include(a => a.Company);
+            query = query.Include(item =>item.Company);
 
-        return await query.SingleOrDefaultAsync(a => a.Id == companyPreferencesId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item =>item.Id == companyPreferencesId, cancellationToken);
     }
 
     public async Task DeleteCompanyPreferencesAsync(CompanyPreferences companyPreferences)
@@ -36,35 +35,37 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyPreferences>, int)> GetMatchingAllCompanyPreferencesAsync(string? searchPhrase, string? sortBy, int companyTypeId, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
         var baseQuery = dbContext.CompanyPreferences.AsNoTracking()
-                                                    .Where(cc => searchPhraseLower == null || cc.Company.Name.ToLower().Contains(searchPhraseLower) ||
-                                                                                              cc.CaptainCargoCode.ToLower().Contains(searchPhraseLower) ||
-                                                                                              cc.CaptainCargoName.ToLower().Contains(searchPhraseLower));
+                                                    .Where(item => searchPhraseLower == null || item.Company.Name.ToLower().Contains(searchPhraseLower) ||
+                                                                                                item.CaptainCargoCode.ToLower().Contains(searchPhraseLower) ||
+                                                                                                item.CaptainCargoName.ToLower().Contains(searchPhraseLower));
 
         if (loadData)
-            baseQuery = baseQuery.Include(a => a.Company);
+            baseQuery = baseQuery.Include(item =>item.Company);
 
-        if (companyTypeId != 0)
-            baseQuery = baseQuery.Where(a => a.Company.CompanyTypeId == companyTypeId);
+        if (CompanyTypeId != 0)
+            baseQuery = baseQuery.Where(item =>item.Company.CompanyTypeId == CompanyTypeId);
 
-        if (companyId != 0)
-            baseQuery = baseQuery.Where(a => a.CompanyId == companyId);
+        if (CompanyId != 0)
+            baseQuery = baseQuery.Where(item =>item.CompanyId == CompanyId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        var columnsSelector = new Dictionary<string, Expression<Func<CompanyPreferences, object>>>
+        if (sortBy != null)
+        {
+            var columnsSelector = new Dictionary<string, Expression<Func<CompanyPreferences, object>>>
             {
-                { nameof(CompanyPreferences.Company.Name), cc => cc.Company.Name }
+                { nameof(CompanyPreferences.Company.Name), item => item.Company.Name }
             };
-        sortBy ??= nameof(CompanyPreferences.Company.Name);
 
-        var selectedColumn = columnsSelector[sortBy];
-        baseQuery = sortDirection == SortDirection.Ascending
-            ? baseQuery.OrderBy(selectedColumn)
-            : baseQuery.OrderByDescending(selectedColumn);
+            var selectedColumn = columnsSelector[sortBy];
+            baseQuery = sortDirection == SortDirection.Ascending
+                ? baseQuery.OrderBy(selectedColumn)
+                : baseQuery.OrderByDescending(selectedColumn);
+        }
 
         var companyPreferences = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
@@ -82,8 +83,8 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
             query = query.AsNoTracking();
 
         if (loadData)
-            query = query.Include(a => a.Company);
+            query = query.Include(item =>item.Company);
 
-        return await query.SingleOrDefaultAsync(a => a.CompanyId == companyId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item =>item.CompanyId == companyId, cancellationToken);
     }
 }

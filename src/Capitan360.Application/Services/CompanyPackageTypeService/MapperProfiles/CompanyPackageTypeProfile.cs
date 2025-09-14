@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageTypeNameAndDescription;
 using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
-using Capitan360.Domain.Entities.CompanyPackageEntity;
+using Capitan360.Domain.Entities.CompanyEntity;
 
 namespace Capitan360.Application.Services.CompanyPackageTypeService.MapperProfiles;
 

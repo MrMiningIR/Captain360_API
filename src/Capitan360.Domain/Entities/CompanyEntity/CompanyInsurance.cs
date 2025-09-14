@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Capitan360.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 

@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Entities.CompanyPackageEntity;
+﻿using Capitan360.Domain.Entities.CompanyEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

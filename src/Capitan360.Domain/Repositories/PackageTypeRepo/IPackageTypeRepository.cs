@@ -6,28 +6,21 @@ namespace Capitan360.Domain.Repositories.PackageTypeRepo;
 
 public interface IPackageTypeRepository
 {
-    Task<int> CreatePackageTypeAsync(PackageType packageType, CancellationToken cancellationToken);
-
-    void Delete(PackageType packageType);
-
-    Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool tracked, bool loadData,
-        CancellationToken cancellationToken);
-
-    Task<(IReadOnlyList<PackageType>, int)> GetMatchingAllPackageTypesAsync(string? searchPhrase, int companyTypeId,
-        int active,
-        bool loadData,
-        int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
-
     Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int? currentPackageTypeId, int companyTypeId, CancellationToken cancellationToken);
 
     Task<int> GetCountPackageTypeAsync(int companyTypeId, CancellationToken cancellationToken);
+
+    Task<int> CreatePackageTypeAsync(PackageType packageType, CancellationToken cancellationToken);
+
+    Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
+
+    Task DeletePackageTypeAsync(PackageType packageType);
 
     Task MovePackageTypeUpAsync(int packageTypeId, CancellationToken cancellationToken);
 
     Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken);
 
-    Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int companyTypeId, bool tracked,
-        bool loadData, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<PackageType>, int)> GetAllPackageTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task DeletePackageTypeAsync(PackageType packageType);
+    Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int CompanyTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
 }

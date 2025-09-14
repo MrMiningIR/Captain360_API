@@ -13,13 +13,12 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 {
     public async Task<bool> CheckExistContentTypeNameAsync(string contentTypeName, int? currentContentTypeId, int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.ContentTypes.AnyAsync(pt => pt.CompanyTypeId == companyTypeId
-                                                           && (currentContentTypeId == null || pt.Id != currentContentTypeId) && pt.ContentTypeName.ToLower() == contentTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.ContentTypes.AnyAsync(item => item.CompanyTypeId == companyTypeId && (currentContentTypeId == null || item.Id != currentContentTypeId) && item.ContentTypeName.ToLower() == contentTypeName.ToLower().Trim(), cancellationToken);
     }
 
     public async Task<int> GetCountContentTypeAsync(int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.ContentTypes.CountAsync(pt => pt.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
+        return await dbContext.ContentTypes.CountAsync(item => item.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
     }
 
     public async Task<int> CreateContentTypeAsync(ContentType contentType, CancellationToken cancellationToken)
@@ -37,56 +36,65 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             query = query.AsNoTracking();
 
         if (loadData)
-            query = query.Include(a => a.CompanyType);
+            query = query.Include(item => item.CompanyType);
 
-        return await query.SingleOrDefaultAsync(a => a.Id == contentTypeId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken);
     }
 
-    public async Task Delete(ContentType contentType)
+    public async Task DeletePackageTypeAsync(ContentType contentType)
     {
         await Task.Yield();
     }
 
     public async Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken)
     {
-        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.Id == contentTypeId, cancellationToken: cancellationToken);
-        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType.CompanyTypeId && p.ContentTypeOrder == currentContentType.ContentTypeOrder - 1, cancellationToken: cancellationToken);
+        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken: cancellationToken);
+        if (currentContentType == null)
+            return;
 
-        if (nextContentType != null)
-            nextContentType.ContentTypeOrder++;
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentContentType.CompanyTypeId && item.ContentTypeOrder == currentContentType.ContentTypeOrder - 1, cancellationToken: cancellationToken);
+        if (nextContentType == null)
+            return;
 
-        if (currentContentType != null)
-            currentContentType.ContentTypeOrder--;
+        nextContentType.ContentTypeOrder++;
+        currentContentType.ContentTypeOrder--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypesAsync(string? searchPhrase,
-        string? sortBy, int companyTypeId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken)
+    {
+        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken: cancellationToken);
+        if (currentContentType == null)
+            return;
+
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentContentType.CompanyTypeId && item.ContentTypeOrder == currentContentType.ContentTypeOrder + 1, cancellationToken: cancellationToken);
+        if (nextContentType == null)
+            return;
+
+        nextContentType.ContentTypeOrder--;
+        currentContentType.ContentTypeOrder++;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<(IReadOnlyList<ContentType>, int)> GetAllContentTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
         var baseQuery = dbContext.ContentTypes.AsNoTracking()
-                                              .Where(pt => searchPhraseLower == null || pt.ContentTypeName.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => searchPhraseLower == null || item.ContentTypeName.ToLower().Contains(searchPhraseLower));
 
         if (loadData)
-            baseQuery = baseQuery.Include(a => a.CompanyType);
+            baseQuery = baseQuery.Include(item => item.CompanyType);
 
-
-        if (companyTypeId != 1)
-            baseQuery = baseQuery.Where(ct => ct.CompanyTypeId == companyTypeId);
-
-        baseQuery = active switch
-        {
-            1 => baseQuery.Where(a => a.ContentTypeActive),
-            0 => baseQuery.Where(a => !a.ContentTypeActive),
-            _ => baseQuery
-        };
+        if (companyTypeId != 0)
+            baseQuery = baseQuery.Where(item => item.CompanyTypeId == companyTypeId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         var columnsSelector = new Dictionary<string, Expression<Func<ContentType, object>>>
         {
-            { nameof(ContentType.ContentTypeOrder), pt => pt.ContentTypeOrder}
+            { nameof(ContentType.ContentTypeOrder), item => item.ContentTypeOrder}
         };
 
         sortBy ??= nameof(ContentType.ContentTypeOrder);
@@ -96,79 +104,31 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var contentTypes = await baseQuery
+        var ContentTypes = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (contentTypes, totalCount);
-    }
-
-    public async Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken)
-    {
-        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.Id == contentTypeId, cancellationToken: cancellationToken);
-
-        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(p => p.CompanyTypeId == currentContentType.CompanyTypeId && p.ContentTypeOrder == currentContentType.ContentTypeOrder + 1, cancellationToken: cancellationToken);
-
-        if (nextContentType != null)
-            nextContentType.ContentTypeOrder--;
-        if (currentContentType != null)
-            currentContentType.ContentTypeOrder++;
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return (ContentTypes, totalCount);
     }
 
     public async Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, bool tracked, bool loadData, CancellationToken cancellationToken)
     {
-        var baseQuery = dbContext.ContentTypes.Where(x => x.CompanyTypeId == companyTypeId);
+        var baseQuery = dbContext.ContentTypes.Where(item => item.CompanyTypeId == companyTypeId);
 
         if (loadData)
-            baseQuery = baseQuery.Include(a => a.CompanyType);
+            baseQuery = baseQuery.Include(item => item.CompanyType);
 
         if (!tracked)
             baseQuery = baseQuery.AsNoTracking();
 
-        return await baseQuery.Select(x => new CompanyContentTypeTransfer()
+        return await baseQuery.Select(item => new CompanyContentTypeTransfer()
         {
-            Id = x.Id,
-            ContentTypeActive = x.ContentTypeActive,
-            ContentTypeOrder = x.ContentTypeOrder,
-            ContentTypeName = x.ContentTypeName,
-            CompanyContentTypeDescription = x.ContentTypeDescription,
-        })
-                              .ToListAsync(cancellationToken);
+            Id = item.Id,
+            ContentTypeActive = item.ContentTypeActive,
+            ContentTypeOrder = item.ContentTypeOrder,
+            ContentTypeName = item.ContentTypeName,
+            CompanyContentTypeDescription = item.ContentTypeDescription,
+        }).ToListAsync(cancellationToken);
     }
-    //public async Task<(IReadOnlyList<ContentType>, int)> GetMatchingAllContentTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
-    //{
-    //    var searchPhraseLower = searchPhrase?.ToLower();
-    //    var baseQuery = dbContext.ContentTypes.AsNoTracking()
-    //                                          .Where(pt => searchPhraseLower == null || pt.ContentTypeName.ToLower().Contains(searchPhraseLower));
-
-    //    if (loadData)
-    //        baseQuery = baseQuery.Include(a => a.CompanyType);
-
-    //    if (companyTypeId != 0)
-    //        baseQuery = baseQuery.Where(pt => pt.CompanyTypeId == companyTypeId);
-
-    //    var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-    //    var columnsSelector = new Dictionary<string, Expression<Func<ContentType, object>>>
-    //    {
-    //        { nameof(ContentType.ContentTypeOrder), pt => pt.ContentTypeOrder}
-    //    };
-
-    //    sortBy ??= nameof(ContentType.ContentTypeOrder);
-
-    //    var selectedColumn = columnsSelector[sortBy];
-    //    baseQuery = sortDirection == SortDirection.Ascending
-    //        ? baseQuery.OrderBy(selectedColumn)
-    //        : baseQuery.OrderByDescending(selectedColumn);
-
-    //    var contentTypes = await baseQuery
-    //        .Skip(pageSize * (pageNumber - 1))
-    //        .Take(pageSize)
-    //        .ToListAsync(cancellationToken);
-
-    //    return (contentTypes, totalCount);
-    //}
 }

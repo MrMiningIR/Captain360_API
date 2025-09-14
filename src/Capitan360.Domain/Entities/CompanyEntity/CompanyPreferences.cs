@@ -1,5 +1,5 @@
-﻿using Capitan360.Domain.Abstractions;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Capitan360.Domain.Abstractions;
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 

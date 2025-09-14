@@ -17,6 +17,7 @@ public interface ICompanyInsuranceRepository
 
     Task DeleteCompanyInsuranceAsync(CompanyInsurance companyInsurance);
 
-    Task<(IReadOnlyList<CompanyInsurance>, int)> GetMatchingAllCompanyInsurancesAsync(string? searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyInsurance>, int)> GetAllCompanyInsurancesAsync(string? searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
+    Task<CompanyInsurance?> GetCompanyInsuranceByCodeAsync(string companyInsuranceCode, int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
 }

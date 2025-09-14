@@ -37,7 +37,7 @@ public class UserMapperProfile : Profile
              .ForMember(dest => dest.MoadianFactorType, opt => opt.MapFrom(src =>
                 src.Profile != null
                     ? src.Profile.MoadianFactorType
-                    : MoadianFactorType.Person))
+                    : MoadianFactorType.Haghigh))
               .ForMember(dest => dest.CompanyTypeId, opt => opt.MapFrom(src => src.CompanyType))
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles));
 

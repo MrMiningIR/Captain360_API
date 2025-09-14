@@ -2,10 +2,9 @@
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.AddressEntity;
 using Capitan360.Domain.Entities.AuthorizationEntity;
-using Capitan360.Domain.Entities.CompanyContentEntity;
 using Capitan360.Domain.Entities.CompanyEntity;
-using Capitan360.Domain.Entities.CompanyPackageEntity;
 using Capitan360.Domain.Entities.ContentEntity;
+using Capitan360.Domain.Entities.DomesticWaybillEntity;
 using Capitan360.Domain.Entities.PackageEntity;
 using Capitan360.Domain.Entities.UserEntity;
 using Capitan360.Domain.Exceptions;
@@ -42,6 +41,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     // public DbSet<CompanyAddress> CompanyAddresses { get; set; }
 
     public DbSet<CompanyCommissions> CompanyCommissions { get; set; }
+    public DbSet<CompanyBank> CompanyBanks { get; set; }
     public DbSet<CompanyPreferences> CompanyPreferences { get; set; }
     public DbSet<CompanySmsPatterns> CompanySmsPatterns { get; set; }
 
@@ -69,6 +69,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<UserPermissionVersionControl> UserPermissionVersionControls { get; set; }
 
+
+    public DbSet<DomesticWaybill> DomesticWaybills { get; set; }
+    public DbSet<DomesticWaybillPackageType> DomesticWaybillPackageTypes { get; set; }
+    public DbSet<DomesticWaybillPeriod> DomesticWaybillPeriods { get; set; }
+    public DbSet<ManifestForm> ManifestForms { get; set; }
+    public DbSet<ManifestFormPeriod> ManifestFormPeriods { get; set; }
 
 
 

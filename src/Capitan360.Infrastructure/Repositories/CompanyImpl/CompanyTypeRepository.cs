@@ -10,10 +10,9 @@ namespace Capitan360.Infrastructure.Repositories.CompanyImpl;
 
 public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyTypeRepository
 {
-
     public async Task<bool> CheckExistCompanyTypeNameAsync(string companyTypeName, int? currentCompanyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyTypes.AnyAsync(ct => (currentCompanyTypeId == null || ct.Id != currentCompanyTypeId) && ct.TypeName.ToLower() == companyTypeName.ToLower().Trim(), cancellationToken);
+        return await dbContext.CompanyTypes.AnyAsync(item => (currentCompanyTypeId == null || item.Id != currentCompanyTypeId) && item.TypeName.ToLower() == companyTypeName.ToLower().Trim(), cancellationToken);
     }
 
     public async Task<int> CreateCompanyTypeAsync(CompanyType companyType, CancellationToken cancellationToken)
@@ -30,7 +29,7 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(a => a.Id == companyTypeId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item =>item.Id == companyTypeId, cancellationToken);
     }
 
     public async Task DeleteCompanyTypeAsync(CompanyType companyType)
@@ -38,20 +37,20 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyType>, int)> GetMatchingAllCompanyTypesAsync(string? searchPhrase, string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyType>, int)> GetAllCompanyTypesAsync(string? searchPhrase, string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
         var baseQuery = dbContext.CompanyTypes.AsNoTracking()
-                                              .Where(ct => searchPhraseLower == null || ct.DisplayName.ToLower().Contains(searchPhraseLower) ||
-                                                                                        ct.TypeName.ToLower().Contains(searchPhraseLower) ||
-                                                                                        ct.Description.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => searchPhraseLower == null || item.DisplayName.ToLower().Contains(searchPhraseLower) ||
+                                                                                        item.TypeName.ToLower().Contains(searchPhraseLower) ||
+                                                                                        item.Description.ToLower().Contains(searchPhraseLower));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyType, object>>>
         {
-            { nameof(CompanyType.TypeName), pt => pt.TypeName},
-            { nameof(CompanyType.DisplayName), pt => pt.DisplayName}
+            { nameof(CompanyType.TypeName), item => item.TypeName},
+            { nameof(CompanyType.DisplayName), item => item.DisplayName}
         };
 
         sortBy ??= nameof(CompanyType.TypeName);

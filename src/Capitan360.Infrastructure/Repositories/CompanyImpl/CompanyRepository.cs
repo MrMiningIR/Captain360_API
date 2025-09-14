@@ -13,24 +13,24 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     public async Task<List<int>> GetCompaniesIdByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
-                                        .Where(x => x.CompanyTypeId == companyTypeId)
-                                        .Select(x => x.Id)
+                                        .Where(item =>  item.CompanyTypeId == companyTypeId)
+                                        .Select(item =>  item.Id)
                                         .ToListAsync(cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyNameAsync(string companyName, int? currentCompanyId, CancellationToken cancellationToken)
     {
-        return await dbContext.Companies.AnyAsync(cm => (currentCompanyId == null || cm.Id != currentCompanyId) && cm.Name.ToLower() == companyName.ToLower().Trim(), cancellationToken);
+        return await dbContext.Companies.AnyAsync(item => (currentCompanyId == null || item.Id != currentCompanyId) && item.Name.ToLower() == companyName.ToLower().Trim(), cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyCodeAsync(string companyCode, int? currentCompanyId, CancellationToken cancellationToken)
     {
-        return await dbContext.Companies.AnyAsync(cm => (currentCompanyId == null || cm.Id != currentCompanyId) && cm.Code.ToLower() == companyCode.ToLower().Trim(), cancellationToken);
+        return await dbContext.Companies.AnyAsync(item => (currentCompanyId == null || item.Id != currentCompanyId) && item.Code.ToLower() == companyCode.ToLower().Trim(), cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyIsParentCompanyAsync(int companyTypeId, int? currentCompanyId, CancellationToken cancellationToken)
     {
-        return await dbContext.Companies.AnyAsync(cm => (currentCompanyId == null || cm.Id != currentCompanyId) && cm.IsParentCompany == true && cm.CompanyTypeId == companyTypeId, cancellationToken);
+        return await dbContext.Companies.AnyAsync(item => (currentCompanyId == null || item.Id != currentCompanyId) && item.IsParentCompany == true && item.CompanyTypeId == companyTypeId, cancellationToken);
     }
 
     public async Task<int> CreateCompanyAsync(Company companyEntity, CancellationToken cancellationToken)
@@ -48,9 +48,9 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
             query = query.AsNoTracking();
 
         if (loadData)
-            query = query.Include(a => a.CompanyType);
+            query = query.Include(item =>item.CompanyType);
 
-        return await query.SingleOrDefaultAsync(a => a.Id == companyId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item =>item.Id == companyId, cancellationToken);
     }
 
     public async Task DeleteCompanyAsync(Company company)
@@ -58,36 +58,36 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<Company>, int)> GetMatchingAllCompaniesAsync(string? searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
 
         var baseQuery = dbContext.Companies.AsNoTracking()
-                                            .Where(com => searchPhraseLower == null || com.Name.ToLower().Contains(searchPhraseLower) ||
-                                                                                       com.Code.ToLower().Contains(searchPhraseLower));
+                                            .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower) ||
+                                                                                        item.Code.ToLower().Contains(searchPhraseLower));
         if (loadData)
-            baseQuery = baseQuery.Include(a => a.CompanyType);
+            baseQuery = baseQuery.Include(item =>item.CompanyType);
 
-        if (companyTypeId > 1)
-            baseQuery = baseQuery.Where(c => c.CompanyTypeId == companyTypeId);
+        if (companyTypeId != 0)
+            baseQuery = baseQuery.Where(item =>item.CompanyTypeId == companyTypeId);
 
         if (CompanyId != 0)
-            baseQuery = baseQuery.Where(c => c.Id == CompanyId);
+            baseQuery = baseQuery.Where(item =>item.Id == CompanyId);
 
         if (cityId != 0)
-            baseQuery = baseQuery.Where(c => c.CityId == cityId);
+            baseQuery = baseQuery.Where(item =>item.CityId == cityId);
 
         baseQuery = isParentCompany switch
         {
-            1 => baseQuery.Where(a => a.IsParentCompany),
-            0 => baseQuery.Where(a => !a.IsParentCompany),
+            1 => baseQuery.Where(item =>item.IsParentCompany),
+            0 => baseQuery.Where(item => !item.IsParentCompany),
             _ => baseQuery
         };
 
         baseQuery = active switch
         {
-            1 => baseQuery.Where(a => a.Active),
-            0 => baseQuery.Where(a => !a.Active),
+            1 => baseQuery.Where(item =>item.Active),
+            0 => baseQuery.Where(item => !item.Active),
             _ => baseQuery
         };
 
@@ -95,9 +95,9 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
         var columnsSelector = new Dictionary<string, Expression<Func<Company, object>>>
             {
-                { nameof(Company.Name), r => r.Name },
-                { nameof(Company.Code), r => r.Code },
-                { nameof(Company.Active), r => r.Active },
+                { nameof(Company.Name), item =>  item.Name },
+                { nameof(Company.Code), item =>  item.Code },
+                { nameof(Company.Active), item =>  item.Active },
             };
 
         sortBy ??= nameof(Company.Name);
@@ -115,13 +115,30 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         return (companies, totalCount);
     }
 
+    public async Task<Company?> GetCompanyByCodeAsync(string companyCode, bool tracked, bool loadData, CancellationToken cancellationToken)
+    {
+        IQueryable<Company> query = dbContext.Companies;
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        if (loadData)
+            query = query.Include(item =>item.CompanyType);
+
+        return await query.SingleOrDefaultAsync(item =>item.Code.ToLower() == companyCode.ToLower(), cancellationToken);
+    }
+
+
+
+
+
 
 
 
     public async Task<IReadOnlyList<Company>> GetAllCompaniesAsync(int companyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
-            .Where(x => companyTypeId == 0 || x.CompanyTypeId == companyTypeId)
+            .Where(item =>  companyTypeId == 0 || item.CompanyTypeId == companyTypeId)
 
             .ToListAsync(cancellationToken);
     }
@@ -129,6 +146,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     public async Task<bool> ValidateCompanyDataWithUserCompanyTypeAsync(int userCompanyType, int companyId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
-            .AnyAsync(x => x.Id == companyId && x.CompanyTypeId == userCompanyType, cancellationToken: cancellationToken);
+            .AnyAsync(item =>  item.Id == companyId && item.CompanyTypeId == userCompanyType, cancellationToken: cancellationToken);
     }
+
 }

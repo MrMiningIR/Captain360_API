@@ -1,5 +1,5 @@
-﻿using Capitan360.Domain.Abstractions;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Capitan360.Domain.Abstractions;
 
 namespace Capitan360.Domain.Entities.CompanyEntity;
 
@@ -7,7 +7,6 @@ public class CompanyCommissions : Entity
 {
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-
     public Company? Company { get; set; }
 
     public long CommissionFromCaptainCargoWebSite { get; set; }
