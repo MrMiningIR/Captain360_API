@@ -1,6 +1,6 @@
 ﻿using Capitan360.Domain.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
-using Capitan360.Domain.Entities.Authorizations;
+using Capitan360.Domain.Entities.Identities;
 
 namespace Capitan360.Domain.Repositories.Permissions;
 

@@ -9,12 +9,12 @@ using Capitan360.Application.Services.AddressService.Dtos;
 using Capitan360.Application.Services.AddressService.Queries.GetAddressById;
 using Capitan360.Application.Services.AddressService.Queries.GetAllAddresses;
 using Capitan360.Application.Services.Identity.Services;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.AddressRepo;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.AddressService.Services;
@@ -61,7 +61,7 @@ public class AddressService(
         if (!checkCompany)
             return ApiResponse<PagedResult<AddressDto>>.Error(400, "شرکت با این شناسه یافت نشد");
 
-        var (addresses, totalCount) = await addressRepository.GetMatchingAllAddressesByCompany(
+        var (addresses, totalCount) = await addressRepository.GetAllAddressesByCompany(
             allAddressQuery.SearchPhrase,
             allAddressQuery.CompanyId,
             allAddressQuery.Active,

@@ -11,17 +11,17 @@ public interface ICompanyRepository
 
     Task<bool> CheckExistCompanyCodeAsync(string companyCode, int? currentCompanyId, CancellationToken cancellationToken);
 
-    Task<bool> CheckExistCompanyIsParentCompanyAsync(int companyTypeId, int? currentCompanyId, CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyIsParentAsync(int companyTypeId, int? currentCompanyId, CancellationToken cancellationToken);
 
     Task<int> CreateCompanyAsync(Company company, CancellationToken cancellationToken);
 
-    Task<Company?> GetCompanyByIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<Company?> GetCompanyByIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 
     Task DeleteCompanyAsync(Company company);
 
     Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<Company?> GetCompanyByCodeAsync(string companyCode, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<Company?> GetCompanyByCodeAsync(string companyCode, bool loadData, bool tracked,CancellationToken cancellationToken);
 
 
 

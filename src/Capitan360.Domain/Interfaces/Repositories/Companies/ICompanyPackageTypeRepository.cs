@@ -9,15 +9,15 @@ public interface ICompanyPackageTypeRepository
 {
     Task CreateCompanyPackageTypesAsync(List<int> companiesId, PackageType packageType, CancellationToken cancellationToken);
 
-    Task<bool> CheckExistCompanyPackageTypeNameAsync(string companyPackageTypeName, int? currentCompanyPackageTypeId, int companyId, CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyPackageTypeNameAsync(string companyPackageTypeName, int companyId, int? currentCompanyPackageTypeId,  CancellationToken cancellationToken);
 
     Task<int> GetCountCompanyPackageTypeAsync(int companyId, CancellationToken cancellationToken);
 
-    Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task DeleteCompanyPackageTypeAsync(CompanyPackageType cmpanyPackageType);
+    Task DeleteCompanyPackageTypeAsync(int cmpanyPackageTypeId);
 
     Task MoveCompanyPackageTypeUpAsync(int companyPackageTypeId, CancellationToken cancellationToken);
 

@@ -41,7 +41,7 @@ public class UserMapperProfile : Profile
               .ForMember(dest => dest.CompanyTypeId, opt => opt.MapFrom(src => src.CompanyType))
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles));
 
-        CreateMap<Domain.Entities.Authorizations.Role, RoleDto>()
+        CreateMap<Domain.Entities.Identities.Role, RoleDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RolePersianName, opt => opt.MapFrom(src => src.PersianName))
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Name))

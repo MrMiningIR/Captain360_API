@@ -9,7 +9,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetCom
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyType.Services;
@@ -57,7 +57,7 @@ public class CompanyTypeService(
         if (companyType is null)
             return ApiResponse<int>.Error(400, $"نوع شرکت نامعتبر است");
 
-        await companyTypeRepository.DeleteCompanyTypeAsync(companyType);
+        await companyTypeRepository.DeleteCompanyTypeAsync(companyType.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyType soft-deleted successfully with ID: {Id}", deleteCompanyTypeCommand.Id);

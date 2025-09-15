@@ -10,9 +10,8 @@ using Capitan360.Application.Services.CompanyServices.CompanyUri.Queries.GetAllC
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Queries.GetCompanyUriByCompanyId;
 using Capitan360.Application.Services.CompanyServices.CompanyUri.Queries.GetCompanyUriById;
 using Capitan360.Application.Services.Identity.Services;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyUri.Services;
@@ -77,7 +76,7 @@ public class CompanyUriService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        await companyUriRepository.DeleteCompanyUriAsync(companyUri);
+        await companyUriRepository.DeleteCompanyUriAsync(companyUri.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyUri soft-deleted successfully with ID: {Id}", deleteCompanyUriCommand.Id);
@@ -135,7 +134,7 @@ public class CompanyUriService(
 
         if (companyUri.Captain360Uri)
         {
-            var listCompanyUri = await companyUriRepository.GetCompanyUriByCompanyIdAsync(companyUri.CompanyId, true, false, cancellationToken);
+            var listCompanyUri = await companyUriRepository.GetCompanyUriByCompanyIdAsync(companyUri.CompanyId, cancellationToken);
             if (listCompanyUri is null)
                 return ApiResponse<int>.Error(400, $"URI شرکت نامعتبر است");
 
@@ -248,7 +247,7 @@ public class CompanyUriService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<CompanyUriDto>.Error(403, "مجوز این فعالیت را ندارید");
 
-        var companyUri = await companyUriRepository.GetCompanyUriByCompanyIdAsync(getCompanyUriByCompanyIdQuery.CompanyId, false, true, cancellationToken);
+        var companyUri = await companyUriRepository.GetCompanyUriByCompanyIdAsync(getCompanyUriByCompanyIdQuery.CompanyId, cancellationToken);
         if (companyUri is null)
             return ApiResponse<CompanyUriDto>.Error(400, $"URI شرکت  یافت نشد");
 

@@ -1,13 +1,13 @@
-﻿
-using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Entities.AddressEntity;
-using Capitan360.Domain.Entities.AuthorizationEntity;
-using Capitan360.Domain.Entities.CompanyEntity;
-using Capitan360.Domain.Entities.ContentEntity;
-using Capitan360.Domain.Entities.DomesticWaybillEntity;
-using Capitan360.Domain.Entities.PackageEntity;
-using Capitan360.Domain.Entities.UserEntity;
+﻿using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.ContentTypes;
+using Capitan360.Domain.Entities.DomesticWaybills;
+using Capitan360.Domain.Entities.Identities;
+using Capitan360.Domain.Entities.ManifestForms;
+using Capitan360.Domain.Entities.PackageTypes;
+using Capitan360.Domain.Entities.Users;
 using Capitan360.Domain.Exceptions;
+using Capitan360.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

@@ -9,15 +9,15 @@ public interface ICompanyContentTypeRepository
 {
     Task CreateCompanyContentTypesAsync(List<int> companiesId, ContentType ContentType, CancellationToken cancellationToken);
 
-    Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int? currentCompanyContentTypeId, int companyId, CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int companyId, int? currentCompanyContentTypeId,  CancellationToken cancellationToken);
 
     Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken);
 
-    Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
-
-    Task DeleteCompanyContentTypeAsync(CompanyContentType cmpanyContentType);
+    Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+  
+    Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId);
 
     Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken);
 

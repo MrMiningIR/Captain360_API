@@ -10,7 +10,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyInsurance.Dtos;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyInsurance.CompanyInsurance.Services;
@@ -40,10 +40,10 @@ public class CompanyInsuranceService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        if (await companyInsuranceRepository.CheckExistCompanyInsuranceNameAsync(createCompanyInsuranceCommand.Name, null, createCompanyInsuranceCommand.CompanyId, cancellationToken))
+        if (await companyInsuranceRepository.CheckExistCompanyInsuranceNameAsync(createCompanyInsuranceCommand.Name, createCompanyInsuranceCommand.CompanyId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام شرکت بیمه تکراری است");
 
-        if (await companyInsuranceRepository.CheckExistCompanyInsuranceCodeAsync(createCompanyInsuranceCommand.Code, null, createCompanyInsuranceCommand.CompanyId, cancellationToken))
+        if (await companyInsuranceRepository.CheckExistCompanyInsuranceCodeAsync(createCompanyInsuranceCommand.Code, createCompanyInsuranceCommand.CompanyId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "کد شرکت بیمه تکراری است");
 
         var companyInsurance = mapper.Map<Domain.Entities.Companies.CompanyInsurance>(createCompanyInsuranceCommand) ?? null;
@@ -77,7 +77,7 @@ public class CompanyInsuranceService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        await companyInsuranceRepository.DeleteCompanyInsuranceAsync(companyInsurance);
+        await companyInsuranceRepository.DeleteCompanyInsuranceAsync(companyInsurance.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyInsurance soft-deleted successfully with ID: {Id}", deleteCompanyInsuranceCommand.Id);

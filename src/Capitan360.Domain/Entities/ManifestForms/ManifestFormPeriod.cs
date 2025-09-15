@@ -18,5 +18,5 @@ public class ManifestFormPeriod : BaseEntity
 
     public bool Active { get; set; }
 
-    public string? Description { get; set; }
+    public string Description { get; set; } =default!;
 }

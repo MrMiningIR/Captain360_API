@@ -11,7 +11,7 @@ public class CompanyUri : BaseEntity
 
     public string Uri { get; set; } = default!;
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = default!;
 
     public bool Active { get; set; }
 

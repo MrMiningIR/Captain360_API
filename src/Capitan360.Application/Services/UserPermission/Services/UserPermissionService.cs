@@ -5,10 +5,9 @@ using Capitan360.Application.Services.UserPermission.Commands.RemoveUserPermissi
 using Capitan360.Application.Services.UserPermission.Commands.UpDeInlUserPermissionById;
 using Capitan360.Application.Services.UserPermission.Dtos;
 using Capitan360.Application.Services.UserPermission.Queries.GetUserPermissions;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Identity;
-using Capitan360.Domain.Repositories.PermissionRepository;
+using Capitan360.Domain.Repositories.Identities;
+using Capitan360.Domain.Repositories.Permissions;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.UserPermission.Services;
@@ -22,7 +21,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("AssignPermissionToUser Called with {@AssignPermission}", command);
 
-        var mappedUserPermission = mapper.Map<Domain.Entities.Authorizations.UserPermission>(command);
+        var mappedUserPermission = mapper.Map<Domain.Entities.Identities.UserPermission>(command);
 
         if (mappedUserPermission == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
@@ -47,7 +46,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("AssignPermissionsToUser Called with {@AssignPermissions}", commands);
 
-        var mappedUserPermissions = mapper.Map<List<Domain.Entities.Authorizations.UserPermission>>(commands.PermissionList);
+        var mappedUserPermissions = mapper.Map<List<Domain.Entities.Identities.UserPermission>>(commands.PermissionList);
 
         if (mappedUserPermissions == null)
             return ApiResponse<List<int>>.Error(400, "مشکل در عملیات تبدیل");
@@ -98,7 +97,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("RemovePermissionsFromUser Called with {@RemovePermissions}", commands);
 
-        var mappedUserPermissions = mapper.Map<List<Domain.Entities.Authorizations.UserPermission>>(commands.PermissionList);
+        var mappedUserPermissions = mapper.Map<List<Domain.Entities.Identities.UserPermission>>(commands.PermissionList);
 
         if (mappedUserPermissions == null)
             return ApiResponse<List<int>>.Error(400, "مشکل در عملیات تبدیل");
@@ -123,7 +122,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
         logger.LogInformation("UserPermissionOperation Called with {@UpDeInlUser}", command);
         await unitOfWork.BeginTransactionAsync(ct);
 
-        var (currentPermissionsResult, _) = await userPermissionRepository.GetMatchingAllUserPermissions(command.UserId!, 100, 1, ct);
+        var (currentPermissionsResult, _) = await userPermissionRepository.GetAllUserPermissions(command.UserId!, 100, 1, ct);
         if (!command.PermissionIds.Any())
         {
             if (currentPermissionsResult.Any())
@@ -177,7 +176,7 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
     {
         logger.LogInformation("GetMatchingAllUserPermissions Called with {@GetAllUserPermissions}", query);
 
-        var (items, totalCount) = await userPermissionRepository.GetMatchingAllUserPermissions(query.UserId, query.PageSize, query.PageNumber,
+        var (items, totalCount) = await userPermissionRepository.GetAllUserPermissions(query.UserId, query.PageSize, query.PageNumber,
             cancellationToken);
         var mappedUserPermissionsDto = mapper.Map<IReadOnlyList<UserPermissionDto>>(items) ?? Array.Empty<UserPermissionDto>(); ;
 

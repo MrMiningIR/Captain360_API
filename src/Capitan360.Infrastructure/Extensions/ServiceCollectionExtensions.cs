@@ -1,23 +1,25 @@
 ﻿using Capitan360.Application.Services.Identity.CustomIdentityErrorDescriber;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.UserEntity;
-using Capitan360.Domain.Repositories.AddressRepo;
-using Capitan360.Domain.Repositories.CompanyRepo;
-using Capitan360.Domain.Repositories.ContentTypeRepo;
-using Capitan360.Domain.Repositories.Identity;
-using Capitan360.Domain.Repositories.PackageTypeRepo;
-using Capitan360.Domain.Repositories.PermissionRepository;
-using Capitan360.Domain.Repositories.User;
+using Capitan360.Domain.Entities.Users;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Repositories.ContentTypes;
+using Capitan360.Domain.Repositories.Identities;
+using Capitan360.Domain.Repositories.PackageTypes;
+using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Repositories.Users;
 using Capitan360.Infrastructure.Authorization.Requirements;
 using Capitan360.Infrastructure.Authorization.Services;
 using Capitan360.Infrastructure.Persistence;
-using Capitan360.Infrastructure.Repositories.AddressImpl;
-using Capitan360.Infrastructure.Repositories.CompanyImpl;
-using Capitan360.Infrastructure.Repositories.ContentTypeImpl;
-using Capitan360.Infrastructure.Repositories.Identity;
-using Capitan360.Infrastructure.Repositories.PackageTypeImpl;
-using Capitan360.Infrastructure.Repositories.UserRepositories;
+using Capitan360.Infrastructure.Repositories.Addresses;
+using Capitan360.Infrastructure.Repositories.Companies;
+using Capitan360.Infrastructure.Repositories.ContentTypes;
+using Capitan360.Infrastructure.Repositories.Identities;
+using Capitan360.Infrastructure.Repositories.PackageTypes;
+using Capitan360.Infrastructure.Repositories.Users;
 using Capitan360.Infrastructure.Seeders;
 using Capitan360.Infrastructure.Services;
 using Capitan360.Infrastructure.Services.Utilities;
@@ -31,7 +33,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
-using Role = Capitan360.Domain.Entities.AuthorizationEntity.Role;
 
 namespace Capitan360.Infrastructure.Extensions;
 
@@ -149,7 +150,7 @@ public static class ServiceCollectionExtensions
         service.AddScoped<IGroupRepository, GroupRepository>();
         service.AddScoped<IUserGroupRepository, UserGroupRepository>();
         service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-        service.AddScoped<ITokenService, TokenService>();
+        service.AddScoped<ITokenRepository, TokenRepository>();
         service.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
 
         service.AddScoped<ICompanyRepository, CompanyRepository>();

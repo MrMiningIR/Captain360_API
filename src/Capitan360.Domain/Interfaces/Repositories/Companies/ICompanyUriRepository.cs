@@ -9,11 +9,11 @@ public interface ICompanyUriRepository
 
     Task<int> CreateCompanyUriAsync(CompanyUri companyUri, CancellationToken cancellationToken);
 
-    Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyUri>?> GetCompanyUriByCompanyIdAsync(int companyUriCompanyId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyUri>?> GetCompanyUriByCompanyIdAsync(int companyUriCompanyId, CancellationToken cancellationToken);
 
-    Task DeleteCompanyUriAsync(CompanyUri companyUri);
+    Task DeleteCompanyUriAsync(int companyUriId);
 
     Task<(IReadOnlyList<CompanyUri>, int)> GetAllCompanyUrisAsync(string? searchPhrase, string? sortBy, int companyId, int active, int captain360Uri, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 }

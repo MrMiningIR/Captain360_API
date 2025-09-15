@@ -4,13 +4,13 @@ namespace Capitan360.Domain.Interfaces.Repositories.ManifestForms;
 
 public interface IManifestFormRepository
 {
-    Task<ManifestForm?> GetManifestFormByIdAsync(int manifestFormId, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<ManifestForm?> GetManifestFormByIdAsync(int manifestFormId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<ManifestForm?> GetManifestFormByNoAsync(long manifestFormNo, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<ManifestForm?> GetManifestFormByNoAsync(long manifestFormNo,  bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<ManifestForm?> GetManifestFormByNoAndCompanySenderIdAsync(long manifestFormNo, int companySenderId, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<ManifestForm?> GetManifestFormByNoAndCompanySenderIdAsync(long manifestFormNo, int companySenderId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<ManifestForm?> GetManifestFormByNoAndCompanyReceiverIdAsync(long manifestFormNo, int companyReceiverId, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<ManifestForm?> GetManifestFormByNoAndCompanyReceiverIdAsync(long manifestFormNo, int companyReceiverId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
     Task<bool> CheckExistManifestFormByIdAsync(int manifestFormId, CancellationToken cancellationToken);
 
@@ -33,6 +33,4 @@ public interface IManifestFormRepository
     Task<bool> AnyIssunedManifestFormByDomesticPeriodIdStartNumberEndNumberAsync(int domesticPeriod, long startNumber, long endNumber, CancellationToken cancellationToken);
 
     Task<bool> AnyIssunedManifestFormByDomesticPeriodIdAsync(int domesticPeriod, CancellationToken cancellationToken);
-
-    Task ChangeStateAsync(List<int> waybillIds, short state, CancellationToken cancellationToken);
 }

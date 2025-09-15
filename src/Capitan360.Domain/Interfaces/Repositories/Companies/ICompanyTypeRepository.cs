@@ -9,9 +9,9 @@ public interface ICompanyTypeRepository
 
     Task<int> CreateCompanyTypeAsync(CompanyType companyType, CancellationToken cancellationToken);
 
-    Task<CompanyType?> GetCompanyTypeByIdAsync(int companyTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanyType?> GetCompanyTypeByIdAsync(int companyTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 
-    Task DeleteCompanyTypeAsync(CompanyType companyType);
+    Task DeleteCompanyTypeAsync(int companyTypeId);
 
     Task<(IReadOnlyList<CompanyType>, int)> GetAllCompanyTypesAsync(string? searchPhrase, string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 }

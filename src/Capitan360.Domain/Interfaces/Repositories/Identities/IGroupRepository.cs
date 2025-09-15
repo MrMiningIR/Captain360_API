@@ -1,4 +1,5 @@
-﻿using Capitan360.Domain.Entities.Authorizations;
+﻿
+using Capitan360.Domain.Entities.Identities;
 
 namespace Capitan360.Domain.Repositories.Identities;
 

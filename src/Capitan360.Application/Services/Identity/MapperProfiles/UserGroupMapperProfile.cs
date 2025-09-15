@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Services.Identity.Commands.AddUserGroup;
-using Capitan360.Domain.Entities.Authorizations;
+using Capitan360.Domain.Entities.Identities;
 
 namespace Capitan360.Application.Services.Identity.Profiles;
 

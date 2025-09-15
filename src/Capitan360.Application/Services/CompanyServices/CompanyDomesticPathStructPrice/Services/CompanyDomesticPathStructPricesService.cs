@@ -12,8 +12,8 @@ using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.AddressRepo;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathStructPrice.Services;
@@ -155,7 +155,7 @@ public class CompanyDomesticPathStructPricesService(
         if (query.PageSize <= 0 || query.PageNumber <= 0)
             return ApiResponse<PagedResult<CompanyDomesticPathStructPriceDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (items, totalCount) = await companyDomesticPathStructPricesRepository.GetMatchingAllCompanyDomesticPathStructPrice(
+        var (items, totalCount) = await companyDomesticPathStructPricesRepository.GetAllCompanyDomesticPathStructPrice(
             query.SearchPhrase, query.CompanyDomesticPathId, query.PathStruct, query.PageSize, query.PageNumber,
             query.SortBy, query.SortDirection, cancellationToken);
 
@@ -584,7 +584,7 @@ public class CompanyDomesticPathStructPricesService(
             return ApiResponse<List<TableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه ان اشتباه است");
 
 
-        var (items, totalCount) = await companyDomesticPathStructPricesRepository.GetMatchingAllCompanyDomesticPathStructPrice(
+        var (items, totalCount) = await companyDomesticPathStructPricesRepository.GetAllCompanyDomesticPathStructPrice(
     "", query.CompanyDomesticPathId, query.PathStruct, 15, 1,
      null, SortDirection.Ascending, cancellationToken);
 

@@ -1,5 +1,5 @@
-﻿using Capitan360.Domain.Entities.Authorizations;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 

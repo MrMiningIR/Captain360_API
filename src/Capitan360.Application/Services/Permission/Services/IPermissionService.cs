@@ -102,7 +102,7 @@ public interface IPermissionService
     {
         public PermissionProfile()
         {
-            CreateMap<Domain.Entities.Authorizations.Permission, PermissionDto>();
+            CreateMap<Domain.Entities.Identities.Permission, PermissionDto>();
         }
     }
 
@@ -115,7 +115,7 @@ public interface IPermissionService
 
     Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
 
-    Task<ApiResponse<List<Domain.Entities.Authorizations.Permission>>> GetDbPermissions(CancellationToken ct);
+    Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken ct);
 
     Task<ApiResponse<List<int>>> GetDbPermissionsId(CancellationToken ct);
 }

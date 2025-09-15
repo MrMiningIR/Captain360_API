@@ -13,7 +13,7 @@ using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathCharge.Services;
@@ -316,7 +316,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
         if (query.PageSize <= 0 || query.PageNumber <= 0)
             return ApiResponse<PagedResult<CompanyDomesticPathChargeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (items, totalCount) = await pathChargeRepository.GetMatchingAllCompanyDomesticPathCharge(
+        var (items, totalCount) = await pathChargeRepository.GetAllCompanyDomesticPathCharge(
             query.SearchPhrase, query.CompanyDomesticPathId, query.PageSize, query.PageNumber,
             query.SortBy, query.SortDirection, cancellationToken);
 
@@ -349,11 +349,11 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
         if (domesticPth is null)
             return ApiResponse<List<PathChargeTableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه ان اشتباه است");
 
-        var (items, totalCount) = await pathChargeRepository.GetMatchingAllCompanyDomesticPathCharge(
+        var (items, totalCount) = await pathChargeRepository.GetAllCompanyDomesticPathCharge(
     "", query.CompanyDomesticPathId, 100, 1,
      null, SortDirection.Ascending, cancellationToken);
 
-        var (contentTypesData, total) = await companyContentTypeRepository.GetCompanyContentTypesAsync("", domesticPth.CompanyId, 1, 100, 1, null, SortDirection.Ascending, cancellationToken);
+        var (contentTypesData, total) = await companyContentTypeRepository.GetAllCompanyContentTypesAsync("",null, domesticPth.CompanyId, false, 1, 100,SortDirection.Ascending, cancellationToken);
 
         var weightTypes = identityService.GetWeightTypeList();
 
@@ -383,7 +383,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
             tableData.Add(new PathChargeTableDataDto
             {
                 ContentTypeId = content.ContentTypeId,
-                ContentTypeName = content.CompanyContentTypeName ?? "",
+                ContentTypeName = content.Name ?? "",
                 CompanyDomesticPathId = query.CompanyDomesticPathId,
                 Id = 0
             });

@@ -10,7 +10,7 @@ using Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Queries
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Services;

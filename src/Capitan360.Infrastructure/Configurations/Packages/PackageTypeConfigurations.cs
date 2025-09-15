@@ -3,7 +3,7 @@ using Capitan360.Infrastructure.Configurations.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.PackageConfigs;
+namespace Capitan360.Infrastructure.Configurations.PackageTypes;
 
 
 public class PackageTypeConfigurations : BaseEntityConfiguration<PackageType>

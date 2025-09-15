@@ -4,7 +4,7 @@ using Capitan360.Application.Services.Permission.Dtos;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.PermissionRepository;
+using Capitan360.Domain.Repositories.Permissions;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
@@ -111,7 +111,7 @@ public class PermissionService(IPermissionRepository permissionRepository,
                 {
                     permissionName = permission.PermissionName;
                     parentName = permission.Parent;
-                    await permissionRepository.AddPermissionToPermissionSource(new Domain.Entities.Authorizations.Permission
+                    await permissionRepository.AddPermissionToPermissionSource(new Domain.Entities.Identities.Permission
                     {
                         Name = permission.PermissionName,
                         Parent = permission.Parent,
@@ -154,13 +154,13 @@ public class PermissionService(IPermissionRepository permissionRepository,
         }
     }
 
-    public async Task<ApiResponse<List<Domain.Entities.Authorizations.Permission>>> GetDbPermissions(CancellationToken ct)
+    public async Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken ct)
     {
         var permissions = await permissionRepository.GetAllPolicy(ct);
         if (!permissions.Any())
-            return ApiResponse<List<Domain.Entities.Authorizations.Permission>>.Error(400, "در دیتابیس مجوزی وجود ندارد");
+            return ApiResponse<List<Domain.Entities.Identities.Permission>>.Error(400, "در دیتابیس مجوزی وجود ندارد");
 
-        return ApiResponse<List<Domain.Entities.Authorizations.Permission>>.Ok(permissions.ToList());
+        return ApiResponse<List<Domain.Entities.Identities.Permission>>.Ok(permissions.ToList());
     }
 
     public async Task<ApiResponse<List<int>>> GetDbPermissionsId(CancellationToken ct)

@@ -7,12 +7,12 @@ public interface ICompanySmsPatternsRepository
 {
     Task<int> CreateCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, CancellationToken cancellationToken);
 
-    Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 
-    Task DeleteCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns);
+    Task DeleteCompanySmsPatternsAsync(int companySmsPatternsId);
 
     Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetAllCompanySmsPatternsAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 }
 

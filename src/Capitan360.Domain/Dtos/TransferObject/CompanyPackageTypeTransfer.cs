@@ -4,9 +4,9 @@ public class CompanyPackageTypeTransfer
 {
     public int Id { get; set; }
 
-    public string PackageTypeName { get; set; } = default!;
-    public bool PackageTypeActive { get; set; }
+    public string Name { get; set; } = default!;
+    public bool Active { get; set; }
 
-    public int PackageTypeOrder { get; set; }
-    public string? CompanyPackageTypeDescription { get; set; }
+    public int Order { get; set; }
+    public string? Description { get; set; }
 }

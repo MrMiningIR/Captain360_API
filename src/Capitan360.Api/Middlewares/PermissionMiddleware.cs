@@ -1,9 +1,9 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.UserEntity;
+using Capitan360.Domain.Entities.Users;
 using Capitan360.Domain.Exceptions;
-using Capitan360.Domain.Repositories.PermissionRepository;
+using Capitan360.Domain.Repositories.Permissions;
 using Capitan360.Infrastructure.Authorization.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

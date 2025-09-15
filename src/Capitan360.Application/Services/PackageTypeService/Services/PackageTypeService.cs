@@ -10,11 +10,10 @@ using Capitan360.Application.Services.PackageTypeService.Commands.UpdatePackageT
 using Capitan360.Application.Services.PackageTypeService.Dtos;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetAllPackageTypes;
 using Capitan360.Application.Services.PackageTypeService.Queries.GetPackageTypeById;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
-using Capitan360.Domain.Repositories.PackageTypeRepo;
+using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Repositories.PackageTypes;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.PackageTypeService.Services;
@@ -46,7 +45,7 @@ public class PackageTypeService(
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
 
-        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, null, command.CompanyTypeId, cancellationToken))
+        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
 
 
@@ -146,7 +145,7 @@ public class PackageTypeService(
 
 
 
-        packageTypeRepository.DeletePackageTypeAsync(packageType);
+        await packageTypeRepository.DeletePackageTypeAsync(packageType.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("PackageType soft-deleted successfully with ID: {Id}", command.Id);
         return ApiResponse<int>.Ok(command.Id, "بسته‌بندی با موفقیت حذف شد");

@@ -10,7 +10,7 @@ using Capitan360.Application.Services.CompanyServices.CompanyCommissions.Queries
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyCommissions.Services;
@@ -173,7 +173,7 @@ public class CompanyCommissionsService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        await companyCommissionsRepository.DeleteCompanyCommissionsAsync(companyCommissions);
+        await companyCommissionsRepository.DeleteCompanyCommissionsAsync(companyCommissions.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyCommissions soft-deleted successfully with ID: {Id}", command.Id);

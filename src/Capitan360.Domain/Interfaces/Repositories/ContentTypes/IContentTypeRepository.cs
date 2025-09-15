@@ -6,15 +6,15 @@ namespace Capitan360.Domain.Repositories.ContentTypes;
 
 public interface IContentTypeRepository
 {
-    Task<bool> CheckExistContentTypeNameAsync(string contentTypeName, int? currentContentTypeId, int companyTypeId, CancellationToken cancellationToken);
+    Task<bool> CheckExistContentTypeNameAsync(string contentTypeName, int companyTypeId, int? currentContentTypeId,  CancellationToken cancellationToken);
 
     Task<int> GetCountContentTypeAsync(int companyTypeId, CancellationToken cancellationToken);
 
     Task<int> CreateContentTypeAsync(ContentType contentType, CancellationToken cancellationToken);
 
-    Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 
-    Task DeletePackageTypeAsync(ContentType contentType);
+    Task DeletePackageTypeAsync(int contentTypeId);
 
     Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken);
 
@@ -22,5 +22,5 @@ public interface IContentTypeRepository
 
     Task<(IReadOnlyList<ContentType>, int)> GetAllContentTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken);
 }

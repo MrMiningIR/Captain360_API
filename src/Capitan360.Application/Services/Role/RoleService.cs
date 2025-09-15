@@ -4,13 +4,13 @@ using Capitan360.Application.Services.Role.Commands.CreateRole;
 using Capitan360.Application.Services.Role.Commands.UpdateQuery;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Identity;
+using Capitan360.Domain.Repositories.Identities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.Role;
 
-public class RoleService(RoleManager<Domain.Entities.Authorizations.Role> roleManager,
+public class RoleService(RoleManager<Domain.Entities.Identities.Role> roleManager,
     ILogger<RoleService> logger, IIdentityRepository identityRepository, IUnitOfWork unitOfWork) : IRoleService
 {
     public async Task<ApiResponse<string>> CreateRole(CreateRoleCommand command)
@@ -21,7 +21,7 @@ public class RoleService(RoleManager<Domain.Entities.Authorizations.Role> roleMa
         if (exists)
             return ApiResponse<string>.Error(400, "نقشی با این نام در سیستم وجود دارد");
 
-        var newRole = new Domain.Entities.Authorizations.Role
+        var newRole = new Domain.Entities.Identities.Role
         {
             PersianName = command.PersianName,
             Name = command.RoleName,

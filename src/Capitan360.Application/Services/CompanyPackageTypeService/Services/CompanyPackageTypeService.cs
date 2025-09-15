@@ -11,8 +11,8 @@ using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompa
 using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
-using Capitan360.Domain.Repositories.PackageTypeRepo;
+using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Repositories.PackageTypes;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyPackageTypeService.Services;

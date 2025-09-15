@@ -13,8 +13,8 @@ using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.ContentTypes;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
-using Capitan360.Domain.Repositories.ContentTypeRepo;
+using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Repositories.ContentTypes;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.ContentTypeService.Services;
@@ -35,7 +35,7 @@ public class ContentTypeService(
     {
         logger.LogInformation("CreateContentType is Called with {@CreateContentTypeCommand}", command);
 
-        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, null, command.CompanyTypeId, cancellationToken))
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
 
 
@@ -48,7 +48,7 @@ public class ContentTypeService(
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
 
-        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, null, command.CompanyTypeId, cancellationToken))
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام محتوی بار تکراری است");
 
 
@@ -154,7 +154,7 @@ public class ContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
             return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
 
-        await contentTypeRepository.DeletePackageTypeAsync(contentType);
+        await contentTypeRepository.DeletePackageTypeAsync(contentType.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("ContentType soft-deleted successfully with ID: {Id}", command.Id);

@@ -11,10 +11,10 @@ using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.AddressRepo;
-using Capitan360.Domain.Repositories.CompanyRepo;
-using Capitan360.Domain.Repositories.ContentTypeRepo;
-using Capitan360.Domain.Repositories.PackageTypeRepo;
+using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Repositories.ContentTypes;
+using Capitan360.Domain.Repositories.PackageTypes;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.Company.Services;
@@ -52,12 +52,12 @@ public class CompanyService(
         if (await companyRepository.CheckExistCompanyCodeAsync(createCompanyCommand.Code, null, cancellationToken))
             return ApiResponse<int>.Error(400, "کد شرکت تکراری است");
 
-        if (createCompanyCommand.IsParentCompany && await companyRepository.CheckExistCompanyIsParentCompanyAsync(createCompanyCommand.CompanyTypeId, null, cancellationToken))
+        if (createCompanyCommand.IsParentCompany && await companyRepository.CheckExistCompanyIsParentAsync(createCompanyCommand.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نوع شرکت تکراری است");
 
-        if (!await areaRepository.CheckExistAreaByIdANdParentId(createCompanyCommand.CityId, (int)AreaType.City, createCompanyCommand.ProvinceId, cancellationToken) ||
-            !await areaRepository.CheckExistAreaByIdANdParentId(createCompanyCommand.ProvinceId, (int)AreaType.Province, createCompanyCommand.CountryId, cancellationToken) ||
-            !await areaRepository.CheckExistAreaByIdANdParentId(createCompanyCommand.CountryId, (int)AreaType.Country, null, cancellationToken))
+        if (!await areaRepository.CheckExistAreaByIdAndParentId(createCompanyCommand.CityId, (int)AreaType.City, createCompanyCommand.ProvinceId, cancellationToken) ||
+            !await areaRepository.CheckExistAreaByIdAndParentId(createCompanyCommand.ProvinceId, (int)AreaType.Province, createCompanyCommand.CountryId, cancellationToken) ||
+            !await areaRepository.CheckExistAreaByIdAndParentId(createCompanyCommand.CountryId, (int)AreaType.Country, null, cancellationToken))
             return ApiResponse<int>.Error(400, "اطلاعات شهر نامعتبر است");
 
         var companyEntity = mapper.Map<Domain.Entities.Companies.Company>(createCompanyCommand);
@@ -68,8 +68,8 @@ public class CompanyService(
 
         var companyId = await companyRepository.CreateCompanyAsync(companyEntity, cancellationToken);
 
-        var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeIdAsync(createCompanyCommand.CompanyTypeId, false, false, cancellationToken);
-        var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeIdAsync(createCompanyCommand.CompanyTypeId, false, false, cancellationToken);
+        var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeIdAsync(createCompanyCommand.CompanyTypeId, cancellationToken);
+        var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeIdAsync(createCompanyCommand.CompanyTypeId, cancellationToken);
 
         if (relatedContentTypes.Any())
         {

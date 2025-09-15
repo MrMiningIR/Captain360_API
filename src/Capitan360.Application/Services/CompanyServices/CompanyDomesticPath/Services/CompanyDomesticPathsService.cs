@@ -13,8 +13,8 @@ using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.AddressRepo;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPath.Services;
@@ -45,7 +45,7 @@ public class CompanyDomesticPathsService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        if (await companyDomesticPathsRepository.CheckExistCompanyDomesticPathPathAsync(createCompanyDomesticPathCommand.SourceCityId, createCompanyDomesticPathCommand.DestinationCityId, null, createCompanyDomesticPathCommand.CompanyId, cancellationToken))
+        if (await companyDomesticPathsRepository.CheckExistCompanyDomesticPathPathAsync(createCompanyDomesticPathCommand.SourceCityId, createCompanyDomesticPathCommand.DestinationCityId, createCompanyDomesticPathCommand.CompanyId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "مسیر تکراری است");
 
         if (company.CountryId != createCompanyDomesticPathCommand.SourceCountryId ||
@@ -53,9 +53,9 @@ public class CompanyDomesticPathsService(
             company.CityId != createCompanyDomesticPathCommand.SourceCityId)
             return ApiResponse<int>.Error(400, $"اطلاعات شهر مبدا نامعتبر است");
 
-        if (!await areaRepository.CheckExistAreaByIdANdParentId(createCompanyDomesticPathCommand.DestinationCityId, (int)AreaType.City, createCompanyDomesticPathCommand.DestinationProvinceId, cancellationToken) ||
-            !await areaRepository.CheckExistAreaByIdANdParentId(createCompanyDomesticPathCommand.DestinationProvinceId, (int)AreaType.Province, createCompanyDomesticPathCommand.DestinationCountryId, cancellationToken) ||
-            !await areaRepository.CheckExistAreaByIdANdParentId(createCompanyDomesticPathCommand.DestinationCountryId, (int)AreaType.Country, null, cancellationToken))
+        if (!await areaRepository.CheckExistAreaByIdAndParentId(createCompanyDomesticPathCommand.DestinationCityId, (int)AreaType.City, createCompanyDomesticPathCommand.DestinationProvinceId, cancellationToken) ||
+            !await areaRepository.CheckExistAreaByIdAndParentId(createCompanyDomesticPathCommand.DestinationProvinceId, (int)AreaType.Province, createCompanyDomesticPathCommand.DestinationCountryId, cancellationToken) ||
+            !await areaRepository.CheckExistAreaByIdAndParentId(createCompanyDomesticPathCommand.DestinationCountryId, (int)AreaType.Country, null, cancellationToken))
             return ApiResponse<int>.Error(400, "اطلاعات شهر مقصد نامعتبر است");
 
         var companyDomesticPath = mapper.Map<CompanyDomesticPaths>(createCompanyDomesticPathCommand);
@@ -89,7 +89,7 @@ public class CompanyDomesticPathsService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
-        await companyDomesticPathsRepository.DeleteCompanyDomesticPathAsync(companyDomesticPath);
+        await companyDomesticPathsRepository.DeleteCompanyDomesticPathAsync(companyDomesticPath.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyDomesticPath soft-deleted successfully with ID: {Id}", deleteCompanyDomesticPathCommand.Id);

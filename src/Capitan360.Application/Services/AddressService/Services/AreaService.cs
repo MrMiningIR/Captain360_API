@@ -12,7 +12,7 @@ using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.AddressRepo;
+using Capitan360.Domain.Repositories.Addresses;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.AddressService.Services;
@@ -45,7 +45,7 @@ public class AreaService(
         if (query.PageSize <= 0 || query.PageNumber <= 0)
             return ApiResponse<PagedResult<AreaDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (areas, totalCount) = await areaRepository.GetMatchingAllAreas(
+        var (areas, totalCount) = await areaRepository.GetAllAreas(
             query.SearchPhrase, query.PageSize, query.PageNumber, query.SortBy,
             query.SortDirection, cancellationToken);
 

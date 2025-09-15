@@ -1,0 +1,41 @@
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Infrastructure.Configurations.Base;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Capitan360.Infrastructure.Configurations.Companies;
+
+public class CompanyInsuranceConfigurations : BaseEntityConfiguration<CompanyInsurance>
+{
+    public override void Configure(EntityTypeBuilder<CompanyInsurance> builder)
+    {
+        base.Configure(builder);
+        builder.Property(x => x.Code).IsRequired().HasMaxLength(50);
+        builder.Property(x => x.Description).IsRequired().HasMaxLength(200);
+        builder.Property(x => x.CompanyId).IsRequired();
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
+        builder.Property(x => x.Tax).HasColumnType("decimal(18,2)").IsRequired();
+        builder.Property(x => x.Scale).HasColumnType("decimal(18,2)").IsRequired();
+        builder.Property(x => x.Active);
+
+
+
+        // 1 to n
+        builder.HasOne(x => x.Company)
+            .WithMany(x => x.CompanyInsurances)
+            .HasForeignKey(x => x.CompanyId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+
+        // One to n :  CompanyInsurance Vs CompanyInsuranceCharge
+        builder
+            .HasMany(p => p.CompanyInsuranceCharges)
+            .WithOne(p => p.CompanyInsurance)
+            .HasForeignKey(p => p.CompanyInsuranceId).IsRequired(false);
+
+
+
+
+    }
+}

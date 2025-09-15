@@ -1,5 +1,5 @@
-﻿using Capitan360.Domain.Entities.Authorizations;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.Identities;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 

@@ -1,4 +1,5 @@
-﻿using Capitan360.Domain.Repositories.PermissionRepository;
+﻿
+using Capitan360.Domain.Repositories.Permissions;
 
 namespace Capitan360.Api.Middlewares
 {

@@ -5,6 +5,10 @@ namespace Capitan360.Domain.Repositories.Addresses;
 
 public interface IAreaRepository
 {
+    Task<bool> CheckExistAreaByIdAndParentId(int areaId, int? areaLevelId, int? areaParentId, CancellationToken cancellationToken);
+
+
+
     Task<int> CreateAreaAsync(Area area, string userId, CancellationToken cancellationToken);
     void Delete(Area area, string userId);
     Task<IReadOnlyList<Area>> GetAllAreas(CancellationToken cancellationToken);
@@ -19,12 +23,6 @@ public interface IAreaRepository
     Task<(IReadOnlyList<Area>, int)> GetAllCity(string? searchPhrase, int pageSize, int pageNumber,
 string? sortBy, SortDirection sortDirection, int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
 
-    Task<List<Area>> GetAllCities(CancellationToken cancellationToken);
-
     Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken);
     Task<IReadOnlyList<Area>> GetDistrictAreasByCityIdAsync(int parentId, CancellationToken cancellationToken);
-
-
-    Task<bool> CheckExistAreaByIdANdParentId(int areaId, int? areaLevelId, int? areaParentId, CancellationToken cancellationToken);
-
 }

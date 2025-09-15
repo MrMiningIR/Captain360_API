@@ -4,13 +4,13 @@ namespace Capitan360.Domain.Repositories.DomesticWaybills;
 
 public interface IDomesticWaybillRepository
 {
-    Task<DomesticWaybill?> GetDomesticWaybillByIdAsync(int domesticWaybillId, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<DomesticWaybill?> GetDomesticWaybillByIdAsync(int domesticWaybillId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<DomesticWaybill?> GetDomesticWaybillByNoAsync(long domesticWaybillNo, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<DomesticWaybill?> GetDomesticWaybillByNoAsync(long domesticWaybillNo, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<DomesticWaybill?> GetDomesticWaybillByNoAndCompanySenderIdAsync(long domesticWaybillNo, int companySenderId, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<DomesticWaybill?> GetDomesticWaybillByNoAndCompanySenderIdAsync(long domesticWaybillNo, int companySenderId,  bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<DomesticWaybill?> GetDomesticWaybillByNoAndCompanyReceiverIdAsync(long domesticWaybillNo, int companyReceiverId, bool tracked, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, CancellationToken cancellationToken);
+    Task<DomesticWaybill?> GetDomesticWaybillByNoAndCompanyReceiverIdAsync(long domesticWaybillNo, int companyReceiverId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
     Task<bool> CheckExistDomesticWaybillByIdAsync(int domesticWaybillId, CancellationToken cancellationToken);
 

@@ -10,7 +10,7 @@ using Capitan360.Application.Services.Identity.Services;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.CompanyRepo;
+using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Services.CompanyServices.CompanyInsurance.CompanyInsuranceCharge.Services;
@@ -181,7 +181,7 @@ public class CompanyInsuranceChargeService(
         if (query.PageSize <= 0 || query.PageNumber <= 0)
             return ApiResponse<PagedResult<CompanyInsuranceChargeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (companyInsuranceCharges, totalCount) = await companyInsuranceChargeRepository.GetMatchingAllCompanyInsuranceCharges(
+        var (companyInsuranceCharges, totalCount) = await companyInsuranceChargeRepository.GetAllCompanyInsuranceCharges(
             query.SearchPhrase,
             query.CompanyInsuranceId,
             query.PageSize,
@@ -446,12 +446,12 @@ public class CompanyInsuranceChargeService(
         if (companyInsurance is null)
             return ApiResponse<List<CompanyInsuranceChargeTableDataDto>>.Error(400, "شرکت بیمه وجود ندارد یا شناسه ان اشتباه است");
 
-        var (items, totalCount) = await companyInsuranceChargeRepository.GetMatchingAllCompanyInsuranceCharges(
+        var (items, totalCount) = await companyInsuranceChargeRepository.GetAllCompanyInsuranceCharges(
     "", query.CompanyInsuranceId, 100, 1,
      null, SortDirection.Ascending, cancellationToken);
 
         var (contentTypesData, total) = await companyContentTypeRepository
-            .GetCompanyContentTypesAsync("", companyInsurance.CompanyId, 1, 100, 1, null, SortDirection.Ascending, cancellationToken);
+            .GetAllCompanyContentTypesAsync("", null, companyInsurance.CompanyId, false, 1, 100, SortDirection.Ascending, cancellationToken);
 
         var rates = identityService.GetRateList();
 
@@ -484,7 +484,7 @@ public class CompanyInsuranceChargeService(
             tableData.Add(new CompanyInsuranceChargeTableDataDto
             {
                 ContentTypeId = content.ContentTypeId,
-                ContentTypeName = content.CompanyContentTypeName ?? "-*-",
+                ContentTypeName = content.Name ?? "-*-",
 
                 Id = 0
             });

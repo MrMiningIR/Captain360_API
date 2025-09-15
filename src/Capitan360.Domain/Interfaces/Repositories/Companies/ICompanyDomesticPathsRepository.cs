@@ -5,15 +5,15 @@ namespace Capitan360.Domain.Repositories.Companies;
 
 public interface ICompanyDomesticPathsRepository
 {
-    Task<bool> CheckExistCompanyDomesticPathPathAsync(int sourceCityId, int destinationCityId, int? currentCompanyDomesticPathId, int companyId, CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyDomesticPathPathAsync(int companyId, int sourceCityId, int destinationCityId, int? currentCompanyDomesticPathId,  CancellationToken cancellationToken);
 
     Task<int> CreateCompanyDomesticPathAsync(CompanyDomesticPaths companyDomesticPath, CancellationToken cancellationToken);
 
-    Task<CompanyDomesticPaths?> GetCompanyDomesticPathByIdAsync(int companyDomesticPathId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<CompanyDomesticPaths?> GetCompanyDomesticPathByIdAsync(int companyDomesticPathId, bool loadData, bool tracked,CancellationToken cancellationToken);
 
-    Task DeleteCompanyDomesticPathAsync(CompanyDomesticPaths companyDomesticPath);
+    Task DeleteCompanyDomesticPathAsync(int companyDomesticPathId);
 
     Task<(IReadOnlyList<CompanyDomesticPaths>, int)> GetAllCompanyDomesticPathsAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int active, int sourceCityId, int destinationCityId, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyDomesticPaths>?> GetCompanyDomesticPathsByCompanyIdAsync(int companyId, bool tracked, bool loadData, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyDomesticPaths>?> GetCompanyDomesticPathsByCompanyIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
 }

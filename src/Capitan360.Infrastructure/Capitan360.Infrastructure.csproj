@@ -21,8 +21,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Repositories\ContentTypeImpl\" />
+    <Folder Include="Repositories\ContentTypes\" />
     <Folder Include="Repositories\Cache\" />
-    <Folder Include="Repositories\UserRepositories\" />
+    <Folder Include="Repositories\Users\" />
   </ItemGroup>
 </Project>
