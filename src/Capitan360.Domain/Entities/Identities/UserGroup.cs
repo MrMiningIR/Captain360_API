@@ -1,6 +1,4 @@
-﻿using Capitan360.Domain.Entities.Users;
-
-namespace Capitan360.Domain.Entities.Identities;
+﻿namespace Capitan360.Domain.Entities.Identities;
 
 public class UserGroup
 {

@@ -1,0 +1,38 @@
+﻿using Capitan360.Application.Common;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoStateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateIssueDomesticWaybillStateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateShowInSearchEngineStateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateWebServiceSearchEngineStateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAllCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesByCompanyId;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesById;
+
+namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
+
+public interface ICompanyPreferencesService
+{
+    Task<ApiResponse<int>> CreateCompanyPreferencesAsync(CreateCompanyPreferencesCommand createCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand deleteCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> SetCompanyInternationalAirlineCargoStatusAsync(UpdateInternationalAirlineCargoStateCompanyPreferencesCommand updateInternationalAirlineCargoStateCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> SetCompanyIssueDomesticWaybillStatusAsync(UpdateIssueDomesticWaybillStateCompanyPreferencesCommand updateIssueDomesticWaybillStateCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> SetCompanyShowInSearchEngineStatusAsync(UpdateShowInSearchEngineStateCompanyPreferencesCommand updateShowInSearchEngineStateCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> SetCompanyWebServiceSearchEngineStatusAsync(UpdateWebServiceSearchEngineStateCompanyPreferencesCommand updateWebServiceSearchEngineStateCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyPreferencesDto>> UpdateCompanyPreferencesAsync(UpdateCompanyPreferencesCommand updateCompanyPreferencesCommand, CancellationToken cancellationToken);
+
+    Task<ApiResponse<PagedResult<CompanyPreferencesDto>>> GetAllCompanyPreferencesAsync(GetAllCompanyPreferencesQuery getAllCompanyPreferencesQuery, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByCompanyIdAsync(GetCompanyPreferencesByCompanyIdQuery getCompanyPreferencesByCompanyIdQuery, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByIdAsync(GetCompanyPreferencesByIdQuery getCompanyPreferencesByIdQuery, CancellationToken cancellationToken);
+
+}

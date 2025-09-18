@@ -1,6 +1,6 @@
 ﻿using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Entities.Users;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Repositories.Identities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

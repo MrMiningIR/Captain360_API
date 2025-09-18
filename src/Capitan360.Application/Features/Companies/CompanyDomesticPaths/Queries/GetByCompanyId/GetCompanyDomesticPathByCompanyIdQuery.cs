@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.Companies.CompanyDomesticPaths.Queries.GetByCompanyId;
+
+public record GetCompanyDomesticPathByCompanyIdQuery(int CompanyId);

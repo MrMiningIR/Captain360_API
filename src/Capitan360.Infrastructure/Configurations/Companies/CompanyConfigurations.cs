@@ -1,9 +1,9 @@
 ﻿using Capitan360.Domain.Entities.Companies;
-using Capitan360.Infrastructure.Configurations.Base;
+using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.CompanyConfigs;
+namespace Capitan360.Infrastructure.Configurations.Companies;
 
 public class CompanyConfigurations : BaseEntityConfiguration<Company>
 {
@@ -11,55 +11,72 @@ public class CompanyConfigurations : BaseEntityConfiguration<Company>
     {
         base.Configure(builder);
 
-        builder.Property(c => c.MobileCounter).IsRequired().HasMaxLength(11);
-        builder.Property(c => c.Name).IsRequired().HasMaxLength(50);
-        builder.Property(c => c.Code).IsRequired().HasMaxLength(20);
-        builder.Property(x => x.CompanyTypeId).IsRequired();
-        builder.Property(c => c.Active).HasDefaultValue(true);
-        builder.Property(c => c.Description).HasMaxLength(500).IsUnicode();
-        builder.Property(x => x.IsParentCompany).HasDefaultValue(false);
+        builder.Property(x => x.Id)
+               .UseIdentityColumn(1, 1)
+               .ValueGeneratedOnAdd();
 
-        builder.HasMany(c => c.UserCompanies)
-            .WithOne(uc => uc.Company)
-            .HasForeignKey(uc => uc.CompanyId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Code)
+               .IsRequired()
+               .HasMaxLength(10)
+               .IsUnicode()
+               .HasColumnType("nvarchar(10)");
 
-        builder.HasMany(c => c.CompanyUris)
-            .WithOne(ur => ur.Company)
-            .HasForeignKey(ur => ur.CompanyId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.MobileCounter)
+               .IsRequired()
+               .HasMaxLength(11)
+               .IsUnicode()
+               .HasColumnType("nvarchar(11)");
 
-        builder
-            .HasOne(c => c.CompanyCommissions)
-            .WithOne(c => c.Company)
-            .HasForeignKey<CompanyCommissions>(c => c.CompanyId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Name)
+               .IsRequired()
+               .HasMaxLength(50)
+               .IsUnicode()
+               .HasColumnType("nvarchar(50)");
 
-        builder
-            .HasOne(c => c.CompanyPreferences)
-            .WithOne(c => c.Company)
-            .HasForeignKey<CompanyPreferences>(c => c.CompanyId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.IsParentCompany)
+               .IsRequired()
+               .HasColumnType("bit");
 
-        builder
-            .HasOne(c => c.CompanySmsPatterns)
-            .WithOne(c => c.Company)
-            .HasForeignKey<CompanySmsPatterns>(c => c.CompanyId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Active)
+               .IsRequired()
+               .HasColumnType("bit");
 
-        builder.HasOne(a => a.Country)
-            .WithMany()
-            .HasForeignKey(a => a.CountryId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(x => x.Description)
+               .IsRequired()
+               .HasMaxLength(500)
+               .IsUnicode()
+               .HasColumnType("nvarchar(500)");
 
-        builder.HasOne(a => a.Province)
-            .WithMany()
-            .HasForeignKey(a => a.ProvinceId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(x => x.CompanyTypeId)
+               .IsRequired();
 
-        builder.HasOne(a => a.City)
-            .WithMany()
-            .HasForeignKey(a => a.CityId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(x => x.CountryId)
+               .IsRequired();
+
+        builder.Property(x => x.ProvinceId)
+               .IsRequired();
+
+        builder.Property(x => x.CityId)
+               .IsRequired();
+
+        builder.HasOne(x => x.CompanyType)
+               .WithMany(ct => ct.Companies)
+               .HasForeignKey(x => x.CompanyTypeId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.Country)
+               .WithMany(a => a.CompanyCountries)
+               .HasForeignKey(x => x.CountryId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.Province)
+               .WithMany(a => a.CompanyProvinces)
+               .HasForeignKey(x => x.ProvinceId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.City)
+               .WithMany(a => a.CompanyCities)
+               .HasForeignKey(x => x.CityId)
+               .OnDelete(DeleteBehavior.NoAction);
     }
 }

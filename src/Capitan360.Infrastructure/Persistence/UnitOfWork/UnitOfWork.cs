@@ -1,12 +1,4 @@
-﻿using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Exceptions;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using Microsoft.Extensions.Logging;
-
-namespace Capitan360.Infrastructure.Persistence.UnitOfWork;
+﻿namespace Capitan360.Infrastructure.Persistence.UnitOfWork;
 
 //public class UnitOfWork 
 //{

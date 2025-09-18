@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -9,7 +9,7 @@ public class DomesticWaybillPackageType : BaseEntity
 {
     [ForeignKey(nameof(DomesticWaybill))]
     public int DomesticWaybillId { get; set; }
-    public Company? DomesticWaybill { get; set; }
+    public DomesticWaybill? DomesticWaybill { get; set; }
 
     [ForeignKey(nameof(CompanyPackageType))]
     public int CompanyPackageTypeId { get; set; }
@@ -29,4 +29,6 @@ public class DomesticWaybillPackageType : BaseEntity
     public string? Dimensions { get; set; }
 
     public int CountDimension { get; set; }
+
+    public ICollection<DomesticWaybillPackageType> DomesticWaybillPackageTypes { get; set; } = [];
 }

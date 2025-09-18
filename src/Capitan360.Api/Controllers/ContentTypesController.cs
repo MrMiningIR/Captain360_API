@@ -1,16 +1,16 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.ContentTypeService.Commands.CreateContentType;
-using Capitan360.Application.Services.ContentTypeService.Commands.DeleteContentType;
-using Capitan360.Application.Services.ContentTypeService.Commands.MoveDownContentType;
-using Capitan360.Application.Services.ContentTypeService.Commands.MoveUpContentType;
-using Capitan360.Application.Services.ContentTypeService.Commands.UpdateActiveStateContentType;
-using Capitan360.Application.Services.ContentTypeService.Commands.UpdateContentType;
-using Capitan360.Application.Services.ContentTypeService.Dtos;
-using Capitan360.Application.Services.ContentTypeService.Queries.GetAllContentTypes;
-using Capitan360.Application.Services.ContentTypeService.Queries.GetContentTypeById;
-using Capitan360.Application.Services.ContentTypeService.Services;
+using Capitan360.Application.Features.ContentTypeService.Commands.CreateContentType;
+using Capitan360.Application.Features.ContentTypeService.Commands.DeleteContentType;
+using Capitan360.Application.Features.ContentTypeService.Commands.MoveDownContentType;
+using Capitan360.Application.Features.ContentTypeService.Commands.MoveUpContentType;
+using Capitan360.Application.Features.ContentTypeService.Commands.UpdateActiveState;
+using Capitan360.Application.Features.ContentTypeService.Commands.Update;
+using Capitan360.Application.Features.ContentTypeService.Queries.GetAll;
+using Capitan360.Application.Features.ContentTypeService.Queries.GetById;
+using Capitan360.Application.Features.ContentTypeService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Capitan360.Application.Features.ContentTypes.Dtos;
 
 namespace Capitan360.Api.Controllers;
 

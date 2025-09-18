@@ -52,11 +52,10 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         var columnsSelector = new Dictionary<string, Expression<Func<Address, object>>>
             {
                 { nameof(Address.AddressLine), item => item.AddressLine },
-                { nameof(Address.OrderAddress), item => item.OrderAddress },
-                { nameof(Address.AddressType), item => item.AddressType }
+                { nameof(Address.Order), item => item.Order},
             };
 
-        var selectedColumn = columnsSelector[nameof(Address.OrderAddress)];
+        var selectedColumn = columnsSelector[nameof(Address.Order)];
 
         if (!string.IsNullOrEmpty(sortBy))
         {
@@ -79,7 +78,7 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     {
         var maxOrder = await dbContext.Addresses
             .Where(item => item.CompanyId == commandCompanyId)
-                        .MaxAsync(item => (int?)item.OrderAddress, cancellationToken) ?? 0;
+                        .MaxAsync(item => (int?)item.Order, cancellationToken) ?? 0;
         return maxOrder;
     }
 
@@ -87,7 +86,7 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     {
         var addresses = await dbContext.Addresses
             .Where(c => c.CompanyId == companyId)
-            .OrderBy(item => item.OrderAddress)
+            .OrderBy(item => item.Order)
             .ToListAsync(cancellationToken);
 
         var currentAddress = addresses.SingleOrDefault(item => item.Id == addressId);
@@ -98,9 +97,9 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
         var previousAddress = addresses[currentIndex - 1];
 
-        var currentOrder = currentAddress!.OrderAddress;
-        currentAddress.OrderAddress = previousAddress.OrderAddress;
-        previousAddress.OrderAddress = currentOrder;
+        var currentOrder = currentAddress!.Order;
+        currentAddress.Order = previousAddress.Order;
+        previousAddress.Order = currentOrder;
 
         // if we use AsNoTracking or Get Data From Body or anywhere else of Database!
         //dbContext.Update(currentAddress);
@@ -113,7 +112,7 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     {
         var addresses = await dbContext.Addresses
             .Where(c => c.CompanyId == companyId)
-            .OrderBy(item => item.OrderAddress)
+            .OrderBy(item => item.Order)
             .ToListAsync(cancellationToken);
 
         var currentAddress = addresses.FirstOrDefault(item => item.Id == addressId);
@@ -124,9 +123,9 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
         var nextAddress = addresses[currentIndex + 1];
 
-        var tempOrder = currentAddress!.OrderAddress;
-        currentAddress.OrderAddress = nextAddress.OrderAddress;
-        nextAddress.OrderAddress = tempOrder;
+        var tempOrder = currentAddress!.Order;
+        currentAddress.Order = nextAddress.Order;
+        nextAddress.Order = tempOrder;
 
         // if we use AsNoTracking or Get Data From Body or anywhere else of Database!
         //dbContext.Update(currentAddress);
@@ -160,11 +159,10 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         var columnsSelector = new Dictionary<string, Expression<Func<Address, object>>>
      {
          { nameof(Address.AddressLine), item => item.AddressLine },
-         { nameof(Address.OrderAddress), item => item.OrderAddress },
-         { nameof(Address.AddressType), item => item.AddressType }
+         { nameof(Address.Order), item => item.Order },
      };
 
-        var selectedColumn = columnsSelector[nameof(Address.OrderAddress)];
+        var selectedColumn = columnsSelector[nameof(Address.Order)];
 
         if (!string.IsNullOrEmpty(sortBy))
         {

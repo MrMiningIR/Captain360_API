@@ -1,6 +1,5 @@
 ﻿using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Entities.Users;
 using Capitan360.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

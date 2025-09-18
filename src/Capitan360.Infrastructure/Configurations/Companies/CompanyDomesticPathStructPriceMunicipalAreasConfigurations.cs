@@ -1,13 +1,13 @@
 ﻿using Capitan360.Domain.Entities.Companies;
-using Capitan360.Infrastructure.Configurations.Base;
+using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.Companies;
 
-public class CompanyDomesticPathStructPriceMunicipalAreasConfigurations : BaseEntityConfiguration<CompanyDomesticPathStructPriceMunicipalAreas>
+public class CompanyDomesticPathStructPriceMunicipalAreasConfigurations : BaseEntityConfiguration<CompanyDomesticPathStructPriceMunicipalArea>
 {
-    public override void Configure(EntityTypeBuilder<CompanyDomesticPathStructPriceMunicipalAreas> builder)
+    public override void Configure(EntityTypeBuilder<CompanyDomesticPathStructPriceMunicipalArea> builder)
     {
         base.Configure(builder);
         builder.Property(x => x.WeightType).IsRequired();

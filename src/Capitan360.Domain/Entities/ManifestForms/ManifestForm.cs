@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Entities.Users;
+using Capitan360.Domain.Entities.DomesticWaybills;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -69,7 +70,6 @@ public class ManifestForm : BaseEntity
     public string? MasterWaybillFlightDate { get; set; }
 
     public short? State { get; set; }
-    public WaybillState? CompanyManifestSate { get; set; }
 
     public string? DateIssued { get; set; }
 
@@ -88,4 +88,6 @@ public class ManifestForm : BaseEntity
     public User? Counter { get; set; }
 
     public bool? Dirty { get; set; }
+
+    public ICollection<DomesticWaybill> DomesticWaybills { get; set; } = [];
 }

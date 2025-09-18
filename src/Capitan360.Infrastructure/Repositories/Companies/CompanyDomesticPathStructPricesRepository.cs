@@ -11,14 +11,14 @@ namespace Capitan360.Infrastructure.Repositories.Companies;
 public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
     : ICompanyDomesticPathStructPricesRepository
 {
-    public async Task<int> CreateCompanyDomesticPathStructPriceAsync(CompanyDomesticPathStructPrices price, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanyDomesticPathStructPriceAsync(CompanyDomesticPathStructPrice price, CancellationToken cancellationToken)
     {
         dbContext.CompanyDomesticPathStructPrices.Add(price);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return price.Id;
     }
 
-    public async Task<List<int>> CreateCompanyDomesticPathStructPriceAsync(List<CompanyDomesticPathStructPrices> items, CancellationToken cancellationToken)
+    public async Task<List<int>> CreateCompanyDomesticPathStructPriceAsync(List<CompanyDomesticPathStructPrice> items, CancellationToken cancellationToken)
     {
         dbContext.CompanyDomesticPathStructPrices.AddRange(items);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -37,12 +37,12 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public void Delete(CompanyDomesticPathStructPrices price)
+    public void Delete(CompanyDomesticPathStructPrice price)
     {
         dbContext.Entry(price).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<CompanyDomesticPathStructPrices?> GetCompanyDomesticPathStructPriceById(int id, CancellationToken cancellationToken)
+    public async Task<CompanyDomesticPathStructPrice?> GetCompanyDomesticPathStructPriceById(int id, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticPathStructPrices.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
@@ -54,7 +54,7 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
              .CountAsync(cancellationToken);
     }
 
-    public async Task<List<CompanyDomesticPathStructPrices>> GetExistingStructPaths(List<int> ids,
+    public async Task<List<CompanyDomesticPathStructPrice>> GetExistingStructPaths(List<int> ids,
         CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticPathStructPrices
@@ -62,7 +62,7 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
              .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<int>> UpdateCompanyDomesticPathStructPriceAsync(List<CompanyDomesticPathStructPrices> prices,
+    public async Task<List<int>> UpdateCompanyDomesticPathStructPriceAsync(List<CompanyDomesticPathStructPrice> prices,
         CancellationToken cancellationToken)
     {
         foreach (var price in prices)
@@ -73,7 +73,7 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
         return prices.Select(p => p.Id).ToList();
     }
 
-    public async Task<(IReadOnlyList<CompanyDomesticPathStructPrices>, int)>
+    public async Task<(IReadOnlyList<CompanyDomesticPathStructPrice>, int)>
         GetAllCompanyDomesticPathStructPrice(string? searchPhrase, int companyDomesticPathId, int pathStruct,
             int pageSize, int pageNumber, string? sortBy,
             SortDirection sortDirection, CancellationToken cancellationToken)
@@ -100,11 +100,11 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
 
         if (sortBy != null)
         {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPathStructPrices, object>>>
+            var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPathStructPrice, object>>>
             {
-                { nameof(CompanyDomesticPathStructPrices.Weight), p => p.Weight },
-                { nameof(CompanyDomesticPathStructPrices.PathStructType), p => p.PathStructType },
-                { nameof(CompanyDomesticPathStructPrices.WeightType), p => p.WeightType }
+                { nameof(CompanyDomesticPathStructPrice.Weight), p => p.Weight },
+                { nameof(CompanyDomesticPathStructPrice.PathStructType), p => p.PathStructType },
+                { nameof(CompanyDomesticPathStructPrice.WeightType), p => p.WeightType }
             };
 
             var selectedColumn = columnsSelector[sortBy];

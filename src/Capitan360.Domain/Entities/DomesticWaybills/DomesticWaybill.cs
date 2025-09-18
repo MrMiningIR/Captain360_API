@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Entities.ManifestForms;
-using Capitan360.Domain.Entities.Users;
 using Capitan360.Domain.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -71,11 +71,11 @@ public class DomesticWaybill : BaseEntity
 
     [ForeignKey(nameof(ManifestForm))]
     public int? ManifestFormId { get; set; }
-    public ManifestFormPeriod? ManifestForm { get; set; }
+    public ManifestForm? ManifestForm { get; set; }
 
-    [ForeignKey(nameof(InsuranceCompany))]
-    public int? InsuranceCompanyId { get; set; }
-    public CompanyInsurance? InsuranceCompany { get; set; }
+    [ForeignKey(nameof(CompanyInsurance))]
+    public int? CompanyInsuranceId { get; set; }
+    public CompanyInsurance? CompanyInsurance { get; set; }
 
     public decimal? GrossWeight { get; set; }
 
@@ -180,7 +180,6 @@ public class DomesticWaybill : BaseEntity
     public string? CustomerSenderAddress { get; set; }
 
     public short? TypeOfFactorInSamanehMoadianId { get; set; }
-    public MoadianFactorType? TypeOfFactorInSamanehMoadian { get; set; }
 
     public string? CustomerSenderNationalCode { get; set; }
 
@@ -195,7 +194,6 @@ public class DomesticWaybill : BaseEntity
     public string? CustomerReceiverAddress { get; set; }
 
     public short? State { get; set; }
-    public WaybillState? WaybillSate { get; set; }
 
     public string? DateIssued { get; set; }
 
@@ -273,7 +271,7 @@ public class DomesticWaybill : BaseEntity
     public string? CounterId { get; set; }
     public User? Counter { get; set; }
 
-    public ICollection<DomesticWaybillPackageType> DomesticWaybillPackageTypes { get; set; } = [];
-
     public bool? Dirty { get; set; }
+
+    public ICollection<DomesticWaybillPackageType> DomesticWaybillPackageTypes { get; set; } = [];
 }

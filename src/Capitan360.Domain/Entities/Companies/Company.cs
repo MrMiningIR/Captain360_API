@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.BaseEntities;
+using Capitan360.Domain.Entities.DomesticWaybills;
+using Capitan360.Domain.Entities.ManifestForms;
 
 namespace Capitan360.Domain.Entities.Companies;
 
@@ -50,7 +52,21 @@ public class Company : BaseEntity
 
     public ICollection<Address> Addresses { get; set; } = [];
 
-    public ICollection<CompanyDomesticPaths> CompanyDomesticPaths { get; set; } = [];
+    public ICollection<CompanyDomesticPath> CompanyDomesticPaths { get; set; } = [];
 
     public ICollection<CompanyInsurance> CompanyInsurances { get; set; } = [];
+
+    public ICollection<CompanyBank> CompanyBanks { get; set; } = [];
+
+    public ICollection<ManifestFormPeriod> ManifestFormPeriods { get; set; } = [];
+
+    public ICollection<ManifestForm> ManifestFormCompanySenders { get; set; } = [];
+
+    public ICollection<ManifestForm> ManifestFormCompanyReceivers { get; set; } = [];
+
+    public ICollection<DomesticWaybillPeriod> DomesticWaybillPeriods { get; set; } = [];
+
+    public ICollection<DomesticWaybill> DomesticWaybillCompanySenders { get; set; } = [];
+
+    public ICollection<DomesticWaybill> DomesticWaybillCompanyReceivers { get; set; } = [];
 }

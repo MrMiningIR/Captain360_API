@@ -1,12 +1,13 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Commands.CreateCompanyPreferences;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Commands.DeleteCompanyPreferences;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Commands.UpdateCompanyPreferences;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Dtos;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Queries.GetAllCompanyPreferences;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Queries.GetCompanyPreferencesById;
-using Capitan360.Application.Services.CompanyServices.CompanyPreferences.Services;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.DeleteCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAllCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesById;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers

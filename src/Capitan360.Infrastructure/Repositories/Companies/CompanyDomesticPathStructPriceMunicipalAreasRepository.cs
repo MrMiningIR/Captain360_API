@@ -8,7 +8,7 @@ namespace Capitan360.Infrastructure.Repositories.Companies;
 
 public class CompanyDomesticPathStructPriceMunicipalAreasRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyDomesticPathStructPriceMunicipalAreasRepository
 {
-    public async Task<List<int>> Create(List<CompanyDomesticPathStructPriceMunicipalAreas> items, CancellationToken cancellationToken)
+    public async Task<List<int>> Create(List<CompanyDomesticPathStructPriceMunicipalArea> items, CancellationToken cancellationToken)
     {
         dbContext.CompanyDomesticPathStructPriceMunicipalAreas.AddRange(items);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -27,7 +27,7 @@ public class CompanyDomesticPathStructPriceMunicipalAreasRepository(ApplicationD
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<int>> Update(List<CompanyDomesticPathStructPriceMunicipalAreas> prices, CancellationToken cancellationToken)
+    public async Task<List<int>> Update(List<CompanyDomesticPathStructPriceMunicipalArea> prices, CancellationToken cancellationToken)
     {
         foreach (var price in prices)
         {

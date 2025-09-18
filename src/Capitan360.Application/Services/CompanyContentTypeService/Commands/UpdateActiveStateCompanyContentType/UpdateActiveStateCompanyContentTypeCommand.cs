@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.UpdateActiveStateCompanyContentType;
-
-public record UpdateActiveStateCompanyContentTypeCommand(int Id);

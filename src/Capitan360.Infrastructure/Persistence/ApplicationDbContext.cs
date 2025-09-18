@@ -5,7 +5,6 @@ using Capitan360.Domain.Entities.DomesticWaybills;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Entities.ManifestForms;
 using Capitan360.Domain.Entities.PackageTypes;
-using Capitan360.Domain.Entities.Users;
 using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -52,10 +51,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CompanyContentType> CompanyContentTypes { get; set; }
     public DbSet<CompanyPackageType> CompanyPackageTypes { get; set; }
 
-    public DbSet<CompanyDomesticPaths> CompanyDomesticPaths { get; set; }
+    public DbSet<CompanyDomesticPath> CompanyDomesticPaths { get; set; }
 
-    public DbSet<CompanyDomesticPathStructPrices> CompanyDomesticPathStructPrices { get; set; }
-    public DbSet<CompanyDomesticPathStructPriceMunicipalAreas> CompanyDomesticPathStructPriceMunicipalAreas { get; set; }
+    public DbSet<CompanyDomesticPathStructPrice> CompanyDomesticPathStructPrices { get; set; }
+    public DbSet<CompanyDomesticPathStructPriceMunicipalArea> CompanyDomesticPathStructPriceMunicipalAreas { get; set; }
 
     public DbSet<CompanyDomesticPathCharge> CompanyDomesticPathCharges { get; set; }
     public DbSet<CompanyDomesticPathChargeContentType> CompanyDomesticPathChargeContentTypes { get; set; }

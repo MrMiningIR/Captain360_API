@@ -1,14 +1,14 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Services.AddressService.Commands.CreateArea;
-using Capitan360.Application.Services.AddressService.Commands.DeleteArea;
-using Capitan360.Application.Services.AddressService.Commands.UpdateArea;
-using Capitan360.Application.Services.AddressService.Dtos;
-using Capitan360.Application.Services.AddressService.Queries.GetAllAreas;
-using Capitan360.Application.Services.AddressService.Queries.GetAreaById;
-using Capitan360.Application.Services.AddressService.Queries.GetCityArea;
-using Capitan360.Application.Services.AddressService.Queries.GetProvinceArea;
-using Capitan360.Application.Services.AddressService.Services;
-using Capitan360.Application.Services.Identity.Services;
+using Capitan360.Application.Features.Addresses.Areas.Commands.Create;
+using Capitan360.Application.Features.Addresses.Areas.Commands.Delete;
+using Capitan360.Application.Features.Addresses.Areas.Commands.Update;
+using Capitan360.Application.Features.Addresses.Areas.Dtos;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetAll;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetCity;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
+using Capitan360.Application.Features.Addresses.Areas.Services;
+using Capitan360.Application.Features.Identities.Identities.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers

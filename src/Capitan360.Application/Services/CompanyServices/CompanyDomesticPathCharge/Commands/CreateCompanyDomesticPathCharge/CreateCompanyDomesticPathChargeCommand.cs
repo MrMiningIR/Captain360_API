@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Services.CompanyServices.CompanyDomesticPathCharge.Commands.CreateCompanyDomesticPathCharge;
-
-public record CreateCompanyDomesticPathChargeCommand(List<CreateCompanyDomesticPathChargeItemCommand> ChargeItems);

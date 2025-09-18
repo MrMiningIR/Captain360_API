@@ -1,0 +1,4 @@
+[*.cs]
+dotnet_diagnostic.IDE0130.severity = warning
+# اختیاری: ترجیح نام‌فضای فایل‌-اسکوپ
+dotnet_style_namespace_declarations = file_scoped:suggestion

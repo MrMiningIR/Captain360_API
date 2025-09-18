@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Abstractions;
+﻿using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +8,7 @@ public class CompanyDomesticPathCharge : BaseEntity
 {
     [ForeignKey(nameof(CompanyDomesticPaths))]
     public int CompanyDomesticPathId { get; set; }
-    public CompanyDomesticPaths? CompanyDomesticPaths { get; set; }
+    public CompanyDomesticPath? CompanyDomesticPaths { get; set; }
     public int ContentTypeId { get; set; }
 
     public WeightType WeightType { get; set; }

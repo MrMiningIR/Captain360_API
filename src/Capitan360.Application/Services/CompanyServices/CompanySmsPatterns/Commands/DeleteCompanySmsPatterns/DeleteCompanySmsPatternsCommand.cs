@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Services.CompanyServices.CompanySmsPatterns.Commands.DeleteCompanySmsPatterns;
-
-public record DeleteCompanySmsPatternsCommand(int Id);

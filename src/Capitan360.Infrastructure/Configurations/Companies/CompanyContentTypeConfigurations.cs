@@ -1,36 +1,56 @@
 ﻿using Capitan360.Domain.Entities.Companies;
-using Capitan360.Infrastructure.Configurations.Base;
+using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Capitan360.Infrastructure.Configurations.Companies;
 
-public class CompanyContentTypeConfigurations : BaseEntityConfiguration<CompanyContentType>
+public class CompanyContentTypeConfiguration : BaseEntityConfiguration<CompanyContentType>
 {
     public override void Configure(EntityTypeBuilder<CompanyContentType> builder)
     {
         base.Configure(builder);
-        builder
-             .HasIndex(x => new { x.CompanyId, x.ContentTypeId })
-             .HasDatabaseName("IX_CompanyContentType_Active")
-             .IsUnique()
-             .HasFilter("[Deleted] = 0");
 
-        builder.Property(x => x.Name).HasMaxLength(50).IsUnicode().IsRequired();
+        builder.Property(x => x.Id)
+               .UseIdentityColumn(1, 1)
+               .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.Order);
-        builder.Property(x => x.Active);
+        builder.Property(x => x.Name)
+               .IsRequired()
+               .HasMaxLength(30)
+               .IsUnicode()
+               .HasColumnType("nvarchar(30)");
 
-        builder.HasOne(ca => ca.Company)
-                      .WithMany(ca => ca.CompanyContentTypes)
-                     .HasForeignKey(ca => ca.CompanyId)
-                      .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Active)
+               .IsRequired()
+               .HasColumnType("bit");
 
-        builder.HasOne(ca => ca.ContentType)
-                .WithMany(ca => ca.CompanyContentTypes)
-                .HasForeignKey(ca => ca.ContentTypeId)
-                .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Description)
+               .IsRequired()
+               .HasMaxLength(500)
+               .IsUnicode()
+               .HasColumnType("nvarchar(500)");
 
-        builder.Property(x => x.Description).HasMaxLength(500).IsUnicode();
+        builder.Property(x => x.Order)
+               .IsRequired();
+
+        builder.Property(x => x.Description)
+               .IsRequired()
+               .HasMaxLength(500)
+               .IsUnicode()
+               .HasColumnType("nvarchar(500)");
+
+        builder.Property(x => x.ContentTypeId)
+               .IsRequired();
+
+        builder.HasOne(x => x.Company)
+               .WithMany(c => c.CompanyContentTypes)
+               .HasForeignKey(x => x.CompanyId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.ContentType)
+               .WithMany(p => p.CompanyContentTypes)
+               .HasForeignKey(x => x.ContentTypeId)
+               .OnDelete(DeleteBehavior.NoAction);
     }
 }

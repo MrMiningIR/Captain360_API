@@ -1,16 +1,16 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.PackageTypeService.Commands.CreatePackageType;
-using Capitan360.Application.Services.PackageTypeService.Commands.DeletePackageType;
-using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeDown;
-using Capitan360.Application.Services.PackageTypeService.Commands.MovePackageTypeUp;
-using Capitan360.Application.Services.PackageTypeService.Commands.UpdateActiveStatePackageType;
-using Capitan360.Application.Services.PackageTypeService.Commands.UpdatePackageType;
-using Capitan360.Application.Services.PackageTypeService.Dtos;
-using Capitan360.Application.Services.PackageTypeService.Queries.GetAllPackageTypes;
-using Capitan360.Application.Services.PackageTypeService.Queries.GetPackageTypeById;
-using Capitan360.Application.Services.PackageTypeService.Services;
+using Capitan360.Application.Features.PackageTypeService.Commands.CreatePackageType;
+using Capitan360.Application.Features.PackageTypeService.Commands.DeletePackageType;
+using Capitan360.Application.Features.PackageTypeService.Commands.MoveTypeDown;
+using Capitan360.Application.Features.PackageTypeService.Commands.MoveUp;
+using Capitan360.Application.Features.PackageTypeService.Commands.UpdateActiveState;
+using Capitan360.Application.Features.PackageTypeService.Commands.Update;
+using Capitan360.Application.Features.PackageTypeService.Queries.GetAll;
+using Capitan360.Application.Features.PackageTypeService.Queries.GetById;
+using Capitan360.Application.Features.PackageTypeService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Capitan360.Application.Features.PackageTypes.Dtos;
 
 namespace Capitan360.Api.Controllers;
 

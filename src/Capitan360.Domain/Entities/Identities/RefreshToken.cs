@@ -1,5 +1,4 @@
-﻿using Capitan360.Domain.Abstractions;
-using Capitan360.Domain.Entities.Users;
+﻿using Capitan360.Domain.Entities.BaseEntities;
 
 namespace Capitan360.Domain.Entities.Identities;
 

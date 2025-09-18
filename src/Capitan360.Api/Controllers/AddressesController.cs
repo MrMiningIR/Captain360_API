@@ -1,14 +1,14 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.AddressService.Commands.AddNewAddressToCompany;
-using Capitan360.Application.Services.AddressService.Commands.DeleteAddress;
-using Capitan360.Application.Services.AddressService.Commands.MoveAddress;
-using Capitan360.Application.Services.AddressService.Commands.UpdateAddress;
-using Capitan360.Application.Services.AddressService.Dtos;
-using Capitan360.Application.Services.AddressService.Queries.GetAddressById;
-using Capitan360.Application.Services.AddressService.Queries.GetAllAddresses;
-using Capitan360.Application.Services.AddressService.Services;
-using Capitan360.Application.Services.CompanyServices.Company.Dtos;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.AddNewAddressToCompany;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.Delete;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.Move;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.Update;
+using Capitan360.Application.Features.Addresses.Addresses.Dtos;
+using Capitan360.Application.Features.Addresses.Addresses.Queries.GetAll;
+using Capitan360.Application.Features.Addresses.Addresses.Queries.GetById;
+using Capitan360.Application.Features.Addresses.Addresses.Services;
+using Capitan360.Application.Features.Companies.Companies.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;

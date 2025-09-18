@@ -1,12 +1,12 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Services.CompanyServices.Company.Dtos;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Commands.CreateCompanyType;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Commands.DeleteCompanyType;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Commands.UpdateCompanyType;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Dtos;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetAllCompanyTypes;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Queries.GetCompanyTypeById;
-using Capitan360.Application.Services.CompanyServices.CompanyType.Services;
+using Capitan360.Application.Features.Companies.Companies.Dtos;
+using Capitan360.Application.Features.Companies.CompanyType.Commands.CreateCompanyType;
+using Capitan360.Application.Features.Companies.CompanyType.Commands.DeleteCompanyType;
+using Capitan360.Application.Features.Companies.CompanyType.Commands.UpdateCompanyType;
+using Capitan360.Application.Features.Companies.CompanyType.Queries.GetAllCompanyTypes;
+using Capitan360.Application.Features.Companies.CompanyType.Queries.GetCompanyTypeById;
+using Capitan360.Application.Features.Companies.CompanyType.Services;
+using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers

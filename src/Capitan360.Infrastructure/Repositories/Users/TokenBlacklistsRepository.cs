@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Entities.Users;
+﻿using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Repositories.Permissions;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

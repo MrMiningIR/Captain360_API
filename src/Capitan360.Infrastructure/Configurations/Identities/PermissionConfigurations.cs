@@ -1,5 +1,5 @@
 ﻿using Capitan360.Domain.Entities.Identities;
-using Capitan360.Infrastructure.Configurations.Base;
+using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

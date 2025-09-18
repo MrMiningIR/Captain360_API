@@ -1,4 +1,5 @@
 ﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.Identities;
 using System.Security.Claims;
 
 namespace Capitan360.Domain.Repositories.Identities;
@@ -13,7 +14,7 @@ public interface ITokenRepository
     //List<Claim> ClaimsGenerator(Entities.Users.User user, IReadOnlyList<string> userGroups, IReadOnlyList<string> roles,
     //    string newSessionId);
 
-    List<Claim> ClaimsGenerator(Entities.Users.User user, UserCompany userCompany, string permissionVersionControl,
+    List<Claim> ClaimsGenerator(User user, UserCompany userCompany, string permissionVersionControl,
         IReadOnlyList<string> roles,
         string newSessionId, List<string> permissions);
 }

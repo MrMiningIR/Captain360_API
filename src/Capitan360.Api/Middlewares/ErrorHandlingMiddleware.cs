@@ -1,5 +1,4 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Domain.Abstractions;
 using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Interfaces;
 using FluentValidation;

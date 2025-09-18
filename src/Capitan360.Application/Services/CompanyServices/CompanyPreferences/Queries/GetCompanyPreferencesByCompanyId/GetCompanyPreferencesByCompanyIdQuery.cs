@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Services.CompanyServices.CompanyPreferences.Queries.GetCompanyPreferencesByCompanyId;
-
-public record GetCompanyPreferencesByCompanyIdQuery(int CompanyId);

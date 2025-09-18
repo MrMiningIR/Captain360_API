@@ -1,15 +1,15 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.CompanyServices.Company.Commands.CreateCompany;
-using Capitan360.Application.Services.CompanyServices.Company.Commands.DeleteCompany;
-using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateActiveStateCompany;
-using Capitan360.Application.Services.CompanyServices.Company.Commands.UpdateCompany;
-using Capitan360.Application.Services.CompanyServices.Company.Dtos;
-using Capitan360.Application.Services.CompanyServices.Company.Queries.GetAllCompanies;
-using Capitan360.Application.Services.CompanyServices.Company.Queries.GetCompanyById;
-using Capitan360.Application.Services.CompanyServices.Company.Services;
-using Capitan360.Application.Services.Identity.Services;
+using Capitan360.Application.Features.Companies.Companies.Commands.Create;
+using Capitan360.Application.Features.Companies.Companies.Commands.Delete;
+using Capitan360.Application.Features.Companies.Companies.Commands.UpdateActiveState;
+using Capitan360.Application.Features.Companies.Companies.Commands.Update;
+using Capitan360.Application.Features.Companies.Companies.Dtos;
+using Capitan360.Application.Features.Companies.Companies.Queries.GetAll;
+using Capitan360.Application.Features.Companies.Companies.Queries.GetById;
+using Capitan360.Application.Features.Companies.Companies.Services;
 using Microsoft.AspNetCore.Mvc;
+using Capitan360.Application.Features.Identities.Identities.Services;
 
 namespace Capitan360.Api.Controllers;
 

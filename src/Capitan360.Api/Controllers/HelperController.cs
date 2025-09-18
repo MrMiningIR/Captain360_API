@@ -1,7 +1,7 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Services.AddressService.Dtos;
-using Capitan360.Application.Services.Dtos;
-using Capitan360.Application.Services.Identity.Services;
+using Capitan360.Application.Features.Addresses.Areas.Dtos;
+using Capitan360.Application.Features.Dtos;
+using Capitan360.Application.Features.Identities.Identities.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers

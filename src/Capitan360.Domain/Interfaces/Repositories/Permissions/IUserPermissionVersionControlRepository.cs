@@ -1,4 +1,4 @@
-﻿using Capitan360.Domain.Entities.Users;
+﻿using Capitan360.Domain.Entities.Identities;
 
 namespace Capitan360.Domain.Repositories.Permissions;
 

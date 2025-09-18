@@ -1,6 +1,5 @@
 ﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Entities.Users;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.Identities;

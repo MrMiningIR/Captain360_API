@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Services.CompanyContentTypeService.Commands.MoveCompanyContentTypeUp;
-
-public record MoveCompanyContentTypeUpCommand(int Id);

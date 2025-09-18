@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -19,5 +19,7 @@ public class DomesticWaybillPeriod : BaseEntity
 
     public bool Active { get; set; }
 
-    public string Description { get; set; }
+    public string Description { get; set; } = default!;
+
+    public ICollection<DomesticWaybill> DomesticWaybills { get; set; } = [];
 }

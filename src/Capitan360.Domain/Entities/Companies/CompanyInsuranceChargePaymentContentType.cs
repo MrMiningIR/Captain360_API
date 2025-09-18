@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.ContentTypes;
 using Capitan360.Domain.Enums;
 

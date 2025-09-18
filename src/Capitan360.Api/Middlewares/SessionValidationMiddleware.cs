@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Capitan360.Domain.Entities.Users;
+using Capitan360.Domain.Entities.Identities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Capitan360.Api.Middlewares

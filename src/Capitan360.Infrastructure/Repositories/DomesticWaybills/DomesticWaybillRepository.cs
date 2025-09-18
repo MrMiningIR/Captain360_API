@@ -31,7 +31,7 @@ public class DomesticWaybillRepository(ApplicationDbContext dbContext, IUnitOfWo
             query = query.Include(item => item.CompanySenderBank);
             query = query.Include(item => item.Counter);
             query = query.Include(item => item.CustomerPanel);
-            query = query.Include(item => item.InsuranceCompany);
+            query = query.Include(item => item.CompanyInsurance);
         }
 
         if (loadDataReceiverCompany)
@@ -68,7 +68,7 @@ public class DomesticWaybillRepository(ApplicationDbContext dbContext, IUnitOfWo
             query = query.Include(item => item.CompanySenderBank);
             query = query.Include(item => item.Counter);
             query = query.Include(item => item.CustomerPanel);
-            query = query.Include(item => item.InsuranceCompany);
+            query = query.Include(item => item.CompanyInsurance);
         }
 
         if (loadDataReceiverCompany)
@@ -105,7 +105,7 @@ public class DomesticWaybillRepository(ApplicationDbContext dbContext, IUnitOfWo
             query = query.Include(item => item.CompanySenderBank);
             query = query.Include(item => item.Counter);
             query = query.Include(item => item.CustomerPanel);
-            query = query.Include(item => item.InsuranceCompany);
+            query = query.Include(item => item.CompanyInsurance);
         }
 
         if (loadDataReceiverCompany)
@@ -142,7 +142,7 @@ public class DomesticWaybillRepository(ApplicationDbContext dbContext, IUnitOfWo
             query = query.Include(item => item.CompanySenderBank);
             query = query.Include(item => item.Counter);
             query = query.Include(item => item.CustomerPanel);
-            query = query.Include(item => item.InsuranceCompany);
+            query = query.Include(item => item.CompanyInsurance);
         }
 
         if (loadDataReceiverCompany)

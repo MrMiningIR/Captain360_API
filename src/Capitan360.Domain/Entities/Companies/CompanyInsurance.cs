@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Abstractions;
+using Capitan360.Domain.Entities.BaseEntities;
+using Capitan360.Domain.Entities.DomesticWaybills;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Capitan360.Domain.Entities.Companies;
@@ -25,4 +26,6 @@ public class CompanyInsurance : BaseEntity
     public string Description { get; set; } = default!;
 
     public ICollection<CompanyInsuranceCharge> CompanyInsuranceCharges { get; set; } = [];
+
+    public ICollection<DomesticWaybill> DomesticWaybills { get; set; } = [];
 }

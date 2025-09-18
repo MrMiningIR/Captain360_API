@@ -1,6 +1,6 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Services.Permission.Dtos;
-using Capitan360.Application.Services.Permission.Services;
+using Capitan360.Application.Features.Permission.Dtos;
+using Capitan360.Application.Features.Permission.Services;
 using Capitan360.Domain.Dtos.TransferObject;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;

@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetCompanySmsPatternsById;
+
+public record GetCompanySmsPatternsByIdQuery(int Id);

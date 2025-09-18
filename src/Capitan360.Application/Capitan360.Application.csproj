@@ -5,8 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Services\Identity\Commands\CreateUserCommand.cs" />
-    <Compile Remove="Services\Identity\Commands\CreateUserCommandValidator.cs" />
+    <None Remove="Features\Companies\CompanyContentTypes\Services\mtryq13d.d1i~" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
@@ -20,10 +19,51 @@
     <ProjectReference Include="..\Capitan360.Domain\Capitan360.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\AddressService\Commands\DeleteArea\" />
-    <Folder Include="Services\CompanyServices\CompanyInsurance\Queries\" />
-    <Folder Include="Services\PackageTypeService\MapperProfiles\" />
-    <Folder Include="Services\Role\Queries\" />
-    <Folder Include="Services\UserCompany\Services\" />
+    <Folder Include="Features\Companies\CompanyBanks\Commands\" />
+    <Folder Include="Features\Companies\CompanyBanks\MapperProfiles\" />
+    <Folder Include="Features\Companies\CompanyBanks\Services\" />
+    <Folder Include="Features\Companies\CompanyBanks\Queries\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathChargeContentTypes\Commands\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathChargeContentTypes\Dtos\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathChargeContentTypes\MapperProfiles\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathChargeContentTypes\Services\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathChargeContentTypes\Queries\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathStructPriceMunicipalAreas\Commands\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathStructPriceMunicipalAreas\Dtos\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathStructPriceMunicipalAreas\MapperProfiles\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathStructPriceMunicipalAreas\Services\" />
+    <Folder Include="Features\Companies\CompanyDomesticPathStructPriceMunicipalAreas\Queries\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePaymentContentTypes\Commands\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePaymentContentTypes\Dtos\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePaymentContentTypes\MapperProfiles\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePaymentContentTypes\Services\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePaymentContentTypes\Queries\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePayments\Commands\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePayments\MapperProfiles\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePayments\Services\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePayments\Queries\" />
+    <Folder Include="Features\Companies\CompanyInsuranceChargePayments\NewFolder\" />
+    <Folder Include="Features\Companies\CompanyInsuranceCharges\MapperProfiles\" />
+    <Folder Include="Features\Companies\CompanyInsuranceCharges\Dtos\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPackageTypes\Commands\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPackageTypes\MapperProfiles\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPackageTypes\Services\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPackageTypes\Queries\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPeriods\Commands\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPeriods\MapperProfiles\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPeriods\Services\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybillPeriods\Queries\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybills\Commands\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybills\MapperProfiles\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybills\Services\" />
+    <Folder Include="Features\DomesticWaybills\DomesticWaybills\Queries\" />
+    <Folder Include="Features\ManifestForms\ManifestFormPeriods\Commands\" />
+    <Folder Include="Features\ManifestForms\ManifestFormPeriods\MapperProfiles\" />
+    <Folder Include="Features\ManifestForms\ManifestFormPeriods\Services\" />
+    <Folder Include="Features\ManifestForms\ManifestFormPeriods\Queries\" />
+    <Folder Include="Features\ManifestForms\ManifestForms\Commands\" />
+    <Folder Include="Features\ManifestForms\ManifestForms\MapperProfiles\" />
+    <Folder Include="Features\ManifestForms\ManifestForms\Services\" />
+    <Folder Include="Features\ManifestForms\ManifestForms\Queries\" />
   </ItemGroup>
 </Project>

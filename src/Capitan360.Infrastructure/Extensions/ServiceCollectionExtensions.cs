@@ -1,7 +1,6 @@
-﻿using Capitan360.Application.Services.Identity.CustomIdentityErrorDescriber;
-using Capitan360.Domain.Abstractions;
+﻿using Capitan360.Application.Features.Identities.Identities.CustomIdentityErrorDescriber;
 using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.Users;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Repositories.Addresses;
@@ -57,7 +56,7 @@ public static class ServiceCollectionExtensions
 
 
         // Identity Configuration
-        service.AddIdentity<User, Role>(options =>
+        service.AddIdentity<User, Capitan360.Domain.Entities.Identities.Role>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;

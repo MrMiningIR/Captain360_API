@@ -1,13 +1,13 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeDown;
-using Capitan360.Application.Services.CompanyPackageTypeService.Commands.MoveCompanyPackageTypeUp;
-using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateActiveStateCompanyPackageType;
-using Capitan360.Application.Services.CompanyPackageTypeService.Commands.UpdateCompanyPackageTypeNameAndDescription;
-using Capitan360.Application.Services.CompanyPackageTypeService.Dtos;
-using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetAllCompanyPackageTypes;
-using Capitan360.Application.Services.CompanyPackageTypeService.Queries.GetCompanyPackageTypeById;
-using Capitan360.Application.Services.CompanyPackageTypeService.Services;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveTypeDown;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveUp;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateActiveState;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateNameAndDescription;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Dtos;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetById;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;

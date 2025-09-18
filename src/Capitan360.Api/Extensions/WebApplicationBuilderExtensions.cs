@@ -1,5 +1,5 @@
 ﻿using Capitan360.Api.Middlewares;
-using Capitan360.Application.Services.Permission.Services;
+using Capitan360.Application.Features.Permission.Services;
 using Capitan360.Domain.Constants;
 using Finbuckle.MultiTenant;
 using Microsoft.OpenApi.Models;

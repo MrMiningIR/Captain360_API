@@ -17,16 +17,16 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
                                                                     cdp.SourceCityId == sourceCityId && cdp.DestinationCityId == destinationCityId, cancellationToken);
     }
 
-    public async Task<int> CreateCompanyDomesticPathAsync(CompanyDomesticPaths companyDomesticPath, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanyDomesticPathAsync(CompanyDomesticPath companyDomesticPath, CancellationToken cancellationToken)
     {
         dbContext.CompanyDomesticPaths.Add(companyDomesticPath);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyDomesticPath.Id;
     }
 
-    public async Task<CompanyDomesticPaths?> GetCompanyDomesticPathByIdAsync(int companyDomesticPathId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyDomesticPath?> GetCompanyDomesticPathByIdAsync(int companyDomesticPathId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyDomesticPaths> query = dbContext.CompanyDomesticPaths;
+        IQueryable<CompanyDomesticPath> query = dbContext.CompanyDomesticPaths;
 
         if (loadData)
         {
@@ -50,7 +50,7 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyDomesticPaths>, int)> GetAllCompanyDomesticPathsAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int active, int sourceCityId, int destinationCityId, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyDomesticPath>, int)> GetAllCompanyDomesticPathsAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int active, int sourceCityId, int destinationCityId, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var searchPhraseLower = searchPhrase?.ToLower().Trim();
         var baseQuery = dbContext.CompanyDomesticPaths.AsNoTracking()
@@ -89,13 +89,13 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPaths, object>>>
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPath, object>>>
         {
-            { nameof(CompanyDomesticPaths.SourceCity.PersianName), cdp => cdp.SourceCity!.PersianName},
-            { nameof(CompanyDomesticPaths.DestinationCity.PersianName), cdp => cdp.DestinationCity!.PersianName},
+            { nameof(CompanyDomesticPath.SourceCity.PersianName), cdp => cdp.SourceCity!.PersianName},
+            { nameof(CompanyDomesticPath.DestinationCity.PersianName), cdp => cdp.DestinationCity!.PersianName},
         };
 
-        sortBy ??= nameof(CompanyDomesticPaths.DestinationCity.PersianName);
+        sortBy ??= nameof(CompanyDomesticPath.DestinationCity.PersianName);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
@@ -110,7 +110,7 @@ public class CompanyDomesticPathsRepository(ApplicationDbContext dbContext, IUni
         return (companyDomesticPaths, totalCount);
     }
 
-    public async Task<IReadOnlyList<CompanyDomesticPaths>?> GetCompanyDomesticPathsByCompanyIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyDomesticPath>?> GetCompanyDomesticPathsByCompanyIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken)
     {
         var baseQuery = dbContext.CompanyDomesticPaths.AsNoTracking()
                                                       .Where(cdp => cdp.CompanyId == companyId);

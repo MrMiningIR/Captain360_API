@@ -1,7 +1,7 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
-using Capitan360.Application.Services.Identity.Services;
+using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.Users;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Repositories.Permissions;
 using Capitan360.Infrastructure.Authorization.Services;
