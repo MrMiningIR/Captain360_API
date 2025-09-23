@@ -7,6 +7,37 @@ namespace Capitan360.Application.Utils;
 
 public static class Tools
 {
+    public static string GenerateRandomSessionId() => Guid.NewGuid().ToString();
+
+
+    public static string GetEnumDisplayName(Enum enumType)
+    {
+        var displayAttribute = enumType.GetType()
+                                    .GetField(enumType.ToString())
+                                    .GetCustomAttributes(typeof(DisplayAttribute), false)
+                                    .FirstOrDefault() as DisplayAttribute;
+
+        return displayAttribute?.Name ?? enumType.ToString();
+    }
+
+    public static Guid GenerateDeterministicGuid(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            throw new ArgumentException("Input cannot be null or empty.", nameof(input));
+        }
+
+
+        using var md5 = MD5.Create();
+        byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+        byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+
+        return new Guid(hashBytes);
+    }
+
+
+
     /// <summary>
     /// تبدیل تاریخ میلادی به شمسی
     /// </summary>
@@ -60,46 +91,5 @@ public static class Tools
     public static string GetTime(DateTime dateTime)
     {
         return dateTime.Hour.ToString("0#") + ":" + (dateTime.Minute).ToString("0#");
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static string GenerateRandomSessionId() => Guid.NewGuid().ToString();
-
-
-    public static string GetEnumDisplayName(Enum enumType)
-    {
-        var displayAttribute = enumType.GetType()
-                                    .GetField(enumType.ToString())
-                                    .GetCustomAttributes(typeof(DisplayAttribute), false)
-                                    .FirstOrDefault() as DisplayAttribute;
-
-        return displayAttribute?.Name ?? enumType.ToString();
-    }
-
-    public static Guid GenerateDeterministicGuid(string input)
-    {
-        if (string.IsNullOrWhiteSpace(input))
-        {
-            throw new ArgumentException("Input cannot be null or empty.", nameof(input));
-        }
-
-
-        using var md5 = MD5.Create();
-        byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-        byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-
-        return new Guid(hashBytes);
     }
 }

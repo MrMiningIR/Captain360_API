@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.ChangeStateToReceivedAtReceiverCompany;
+
+public record ChangeStateToReceivedAtReceiverCompanyCommand(int Id);

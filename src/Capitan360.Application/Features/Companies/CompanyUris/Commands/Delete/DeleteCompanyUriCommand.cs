@@ -1,3 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyUri.Commands.DeleteCompanyUri;
+﻿namespace Capitan360.Application.Features.Companies.CompanyUris.Commands.Delete;
 
 public record DeleteCompanyUriCommand(int Id);

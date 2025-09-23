@@ -1,25 +1,27 @@
-﻿using Capitan360.Application.Features.Companies.CompanyUri.Dtos;
+﻿using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyUri.Queries.GetAllCompanyUris;
+namespace Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
 
 public class GetAllCompanyUrisQueryValidator : AbstractValidator<GetAllCompanyUrisQuery>
 {
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
-        nameof(CompanyUriDto.Active),
+        nameof(CompanyUriDto.Uri),
         nameof(CompanyUriDto.CompanyName),
         nameof(CompanyUriDto.Captain360Uri),
-        nameof(CompanyUriDto.Uri)
+        nameof(CompanyUriDto.Active)
     ];
 
     public GetAllCompanyUrisQueryValidator()
     {
-        //RuleFor(r => r.CompanyId)
-        //    .GreaterThan(0)
-        //    .WithMessage("شناسه شرکت معتبر نیست.");
+        RuleFor(r => r.CompanyId)
+            .GreaterThan(0)
+            .WithMessage("شناسه شرکت معتبر نیست.");
+
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

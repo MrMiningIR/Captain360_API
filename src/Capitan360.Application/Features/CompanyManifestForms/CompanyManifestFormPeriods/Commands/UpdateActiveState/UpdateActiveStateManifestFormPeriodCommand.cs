@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestFormPeriods.Commands.UpdateActiveState;
+
+public record UpdateActiveStateManifestFormPeriodCommand(int Id);

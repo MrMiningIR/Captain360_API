@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Commands.CreateCompanySmsPatterns;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Commands.UpdateCompanySmsPatterns;
 using Capitan360.Application.Features.Companies.CompanySmsPatterns.Dtos;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Update;
 
 namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.MapperProfiles;
 

@@ -29,10 +29,10 @@ public class AreaConfiguration : BaseEntityConfiguration<Area>
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.Code)
-               .IsRequired()
-               .HasMaxLength(20)
-               .IsUnicode(false)
-               .HasColumnType("varchar(20)");
+                   .IsRequired()
+                   .HasMaxLength(20)
+                   .IsUnicode(false)
+                   .HasColumnType("varchar(20)");
 
         builder.Property(x => x.Latitude)
                .IsRequired()
@@ -49,10 +49,6 @@ public class AreaConfiguration : BaseEntityConfiguration<Area>
                .WithMany(p => p.Children)
                .HasForeignKey(x => x.ParentId)
                .OnDelete(DeleteBehavior.NoAction);
-
-
-
-
 
         var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/SeedData/Areas.json");
         if (!File.Exists(jsonPath))

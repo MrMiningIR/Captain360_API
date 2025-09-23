@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyDomesticPathStructPrices.Commands.Update;
-
-public record UpdateCompanyDomesticPathListStructPriceCommand(List<UpdateCompanyDomesticPathStructPriceItem> UpdateCompanyDomesticPathStructPriceItems);

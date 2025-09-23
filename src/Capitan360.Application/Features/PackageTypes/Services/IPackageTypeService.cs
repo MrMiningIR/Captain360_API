@@ -1,13 +1,13 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Features.PackageTypeService.Commands.CreatePackageType;
-using Capitan360.Application.Features.PackageTypeService.Commands.DeletePackageType;
-using Capitan360.Application.Features.PackageTypeService.Commands.MoveTypeDown;
-using Capitan360.Application.Features.PackageTypeService.Commands.MoveUp;
-using Capitan360.Application.Features.PackageTypeService.Commands.UpdateActiveState;
-using Capitan360.Application.Features.PackageTypeService.Commands.Update;
-using Capitan360.Application.Features.PackageTypeService.Queries.GetAll;
-using Capitan360.Application.Features.PackageTypeService.Queries.GetById;
 using Capitan360.Application.Features.PackageTypes.Dtos;
+using Capitan360.Application.Features.PackageTypes.Commands.Create;
+using Capitan360.Application.Features.PackageTypes.Commands.Update;
+using Capitan360.Application.Features.PackageTypes.Commands.Delete;
+using Capitan360.Application.Features.PackageTypes.Commands.MoveDown;
+using Capitan360.Application.Features.PackageTypes.Commands.MoveUp;
+using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
+using Capitan360.Application.Features.PackageTypes.Queries.GetById;
+using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
 
 namespace Capitan360.Application.Features.PackageTypeService.Services;
 
@@ -28,11 +28,11 @@ public interface IPackageTypeService
     Task<ApiResponse<PackageTypeDto>> UpdatePackageTypeAsync(UpdatePackageTypeCommand command,
         CancellationToken cancellationToken);
 
-    Task<ApiResponse<int>> MovePackageTypeUpAsync(MovePackageTypeUpCommand command,
+    Task<ApiResponse<int>> MovePackageTypeUpAsync(MoveUpPackageTypeCommand command,
         CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> MovePackageTypeDownAsync(
-        MovePackageTypeDownCommand command, CancellationToken cancellationToken);
+        MoveDownPackageTypeCommand command, CancellationToken cancellationToken);
 
     Task<ApiResponse<int>> SetPackageTypeActivityStatusAsync(UpdateActiveStatePackageTypeCommand command, CancellationToken cancellationToken);
 }

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetCompanySmsPatternsByCompanyId;
+namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetByCompanyId;
 
-internal class GetCompanySmsPatternsByCompanyIdQueryValidator : AbstractValidator<GetCompanySmsPatternsByCompanyId.GetCompanySmsPatternsByCompanyIdQuery>
+public class GetCompanySmsPatternsByCompanyIdQueryValidator : AbstractValidator<GetCompanySmsPatternsByCompanyIdQuery>
 {
     public GetCompanySmsPatternsByCompanyIdQueryValidator()
     {

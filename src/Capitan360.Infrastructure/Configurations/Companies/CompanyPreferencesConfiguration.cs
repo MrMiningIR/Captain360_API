@@ -19,26 +19,31 @@ public class CompanyPreferencesConfiguration : BaseEntityConfiguration<CompanyPr
                .IsRequired();
 
         builder.Property(x => x.EconomicCode)
+               .IsRequired()
                .HasMaxLength(50)
                .IsUnicode()
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.NationalId)
+               .IsRequired()
                .HasMaxLength(50)
                .IsUnicode()
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.RegistrationId)
+               .IsRequired()
                .HasMaxLength(50)
                .IsUnicode()
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.CaptainCargoName)
+               .IsRequired()
                .HasMaxLength(30)
                .IsUnicode()
                .HasColumnType("nvarchar(30)");
 
         builder.Property(x => x.CaptainCargoCode)
+               .IsRequired()
                .HasMaxLength(10)
                .IsUnicode()
                .HasColumnType("nvarchar(10)");

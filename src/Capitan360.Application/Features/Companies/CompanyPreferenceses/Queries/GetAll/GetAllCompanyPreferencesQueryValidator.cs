@@ -1,7 +1,7 @@
 ﻿using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
 using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAllCompanyPreferences;
+namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAll;
 
 public class GetAllCompanyPreferencesQueryValidator : AbstractValidator<GetAllCompanyPreferencesQuery>
 {

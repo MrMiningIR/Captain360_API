@@ -1,11 +1,11 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateCompanyPreferences;
+﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Update;
 
 public record UpdateCompanyPreferencesCommand(
-    string? EconomicCode,
-    string? NationalId,
-    string? RegistrationId,
-    string? CaptainCargoName,
-    string? CaptainCargoCode,
+    string EconomicCode,
+    string NationalId,
+    string RegistrationId,
+    string CaptainCargoName,
+    string CaptainCargoCode,
     bool ExitStampBillMinWeightIsFixed,
     bool ExitPackagingMinWeightIsFixed,
     bool ExitAccumulationMinWeightIsFixed,

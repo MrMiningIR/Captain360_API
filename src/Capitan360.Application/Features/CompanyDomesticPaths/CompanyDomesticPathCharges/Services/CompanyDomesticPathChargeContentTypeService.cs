@@ -1,0 +1,5 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Services;
+
+public class CompanyDomesticPathChargeContentTypeService : ICompanyDomesticPathChargeContentTypeService
+{
+}

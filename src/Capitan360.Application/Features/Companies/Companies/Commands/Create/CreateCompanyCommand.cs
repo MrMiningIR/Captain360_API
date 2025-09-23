@@ -10,5 +10,4 @@ public record CreateCompanyCommand(
     int CountryId,
     int ProvinceId, 
     int CityId,
-    string? Description);
-
+    string Description);

@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetByCompanyId;
+
+public record GetCompanyInsuranceByCompanyIdQuery(int CompanyId);

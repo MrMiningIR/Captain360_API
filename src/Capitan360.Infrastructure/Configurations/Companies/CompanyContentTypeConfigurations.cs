@@ -25,12 +25,6 @@ public class CompanyContentTypeConfiguration : BaseEntityConfiguration<CompanyCo
                .IsRequired()
                .HasColumnType("bit");
 
-        builder.Property(x => x.Description)
-               .IsRequired()
-               .HasMaxLength(500)
-               .IsUnicode()
-               .HasColumnType("nvarchar(500)");
-
         builder.Property(x => x.Order)
                .IsRequired();
 
@@ -41,7 +35,10 @@ public class CompanyContentTypeConfiguration : BaseEntityConfiguration<CompanyCo
                .HasColumnType("nvarchar(500)");
 
         builder.Property(x => x.ContentTypeId)
-               .IsRequired();
+              .IsRequired();
+
+        builder.Property(x => x.CompanyId)
+              .IsRequired();
 
         builder.HasOne(x => x.Company)
                .WithMany(c => c.CompanyContentTypes)

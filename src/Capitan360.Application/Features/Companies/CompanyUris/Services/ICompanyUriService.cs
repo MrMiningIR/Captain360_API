@@ -1,11 +1,11 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.CreateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.DeleteCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateActiveStateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Dtos;
-using Capitan360.Application.Features.Companies.CompanyUri.Queries.GetAllCompanyUris;
-using Capitan360.Application.Features.Companies.CompanyUri.Queries.GetCompanyUriById;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Delete;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.UpdateActiveState;
+using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
+using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
 
 namespace Capitan360.Application.Features.Companies.CompanyUri.Services;
 

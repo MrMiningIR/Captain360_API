@@ -33,7 +33,7 @@ public class AddressConfigurations : BaseEntityConfiguration<Address>
                .IsUnicode()
                .HasColumnType("nvarchar(1000)");
 
-        builder.Property(x => x.Mobile)
+    builder.Property(x => x.Mobile)
                .IsRequired()
                .HasMaxLength(11)
                .IsUnicode(false)

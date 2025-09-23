@@ -12,8 +12,17 @@ public class GetAllCompanyCommissionsQueryValidator : AbstractValidator<GetAllCo
 
     public GetAllCompanyCommissionsQueryValidator()
     {
+        RuleFor(x => x.CompanyTypeId)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه نوع شرکت باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.CompanyId)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه شرکت باید بزرگتر یا مساوی صفر باشد");
+
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Capitan360.Application.Features.Companies.CompanyType.Commands.CreateCompanyType;
-using Capitan360.Application.Features.Companies.CompanyType.Commands.UpdateCompanyType;
+using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
 
 namespace Capitan360.Application.Features.Companies.CompanyType.MapperProfiles;

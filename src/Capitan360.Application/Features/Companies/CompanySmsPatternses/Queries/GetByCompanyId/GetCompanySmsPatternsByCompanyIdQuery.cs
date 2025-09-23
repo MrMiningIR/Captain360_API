@@ -1,6 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetCompanySmsPatternsByCompanyId;
+﻿namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetByCompanyId;
 
-public record GetCompanySmsPatternsByCompanyId
-{
-    public record GetCompanySmsPatternsByCompanyIdQuery(int CompanyId);
-}
+public record GetCompanySmsPatternsByCompanyIdQuery(int CompanyId);

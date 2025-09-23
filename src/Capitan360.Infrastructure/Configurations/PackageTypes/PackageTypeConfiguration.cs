@@ -10,7 +10,7 @@ public class PackageTypeConfiguration : BaseEntityConfiguration<PackageType>
     public override void Configure(EntityTypeBuilder<PackageType> builder)
     {
         base.Configure(builder);
-       
+
         builder.Property(x => x.Id)
                .UseIdentityColumn(1, 1)
                .ValueGeneratedOnAdd();
@@ -19,10 +19,10 @@ public class PackageTypeConfiguration : BaseEntityConfiguration<PackageType>
                .IsRequired();
 
         builder.Property(x => x.Name)
-               .IsRequired()
-               .HasMaxLength(30)
-               .IsUnicode()
-               .HasColumnType("nvarchar(30)");
+                   .IsRequired()
+                   .HasMaxLength(30)
+                   .IsUnicode()
+                   .HasColumnType("nvarchar(30)");
 
         builder.Property(x => x.Active)
                .IsRequired()
@@ -33,7 +33,7 @@ public class PackageTypeConfiguration : BaseEntityConfiguration<PackageType>
                .HasMaxLength(500)
                .IsUnicode()
                .HasColumnType("nvarchar(500)");
-        
+
         builder.Property(x => x.Order)
                .IsRequired();
 

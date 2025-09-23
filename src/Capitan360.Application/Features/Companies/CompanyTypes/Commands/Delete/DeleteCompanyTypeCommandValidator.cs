@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyType.Commands.DeleteCompanyType;
+namespace Capitan360.Application.Features.Companies.CompanyTypes.Commands.Delete;
 
 public class DeleteCompanyTypeCommandValidator : AbstractValidator<DeleteCompanyTypeCommand>
 {

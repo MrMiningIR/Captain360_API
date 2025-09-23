@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyDomesticPaths.Commands.UpdateActiveState;
-
-public record UpdateActiveStateCompanyDomesticPathCommand(int Id);

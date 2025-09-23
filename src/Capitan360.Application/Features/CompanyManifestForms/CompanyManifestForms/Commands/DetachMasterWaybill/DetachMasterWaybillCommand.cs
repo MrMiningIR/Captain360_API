@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.DetachMasterWaybill;
+
+public record DetachMasterWaybillCommand(int Id);

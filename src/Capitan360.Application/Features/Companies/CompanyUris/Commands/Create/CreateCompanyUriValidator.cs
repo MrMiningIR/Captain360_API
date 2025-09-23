@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyUri.Commands.CreateCompanyUri;
+namespace Capitan360.Application.Features.Companies.CompanyUris.Commands.Create;
 
 public class CreateCompanyUriValidator : AbstractValidator<CreateCompanyUriCommand>
 {
@@ -15,8 +16,7 @@ public class CreateCompanyUriValidator : AbstractValidator<CreateCompanyUriComma
             .MinimumLength(4).WithMessage("آدرس URI نمی‌تواند کمتر از 4 کاراکتر باشد");
 
         RuleFor(x => x.Description)
-            .MaximumLength(500)
-            .When(x => !string.IsNullOrEmpty(x.Description))
-            .WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد");
+            .NotEmpty().WithMessage("توضیحات الزامی است.")
+            .MaximumLength(500).WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد");
     }
 }

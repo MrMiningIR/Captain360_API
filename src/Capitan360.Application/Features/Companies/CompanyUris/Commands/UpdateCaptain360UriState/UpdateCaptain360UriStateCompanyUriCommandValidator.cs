@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateCaptain360UriStateCompany;
+namespace Capitan360.Application.Features.Companies.CompanyUris.Commands.UpdateCaptain360UriState;
 
 public class UpdateCaptain360UriStateCompanyUriCommandValidator : AbstractValidator<UpdateCaptain360UriStateCompanyUriCommand>
 {

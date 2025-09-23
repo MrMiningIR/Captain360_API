@@ -1,3 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyUri.Queries.GetCompanyUriById;
+﻿namespace Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
 
 public record GetCompanyUriByIdQuery(int Id);

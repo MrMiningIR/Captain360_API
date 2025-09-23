@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Entities.DomesticWaybills;
-
-namespace Capitan360.Application.Features.Companies.CompanyBanks.Dtos;
+﻿namespace Capitan360.Application.Features.Companies.CompanyBanks.Dtos;
 
 public class CompanyBankDto
 {

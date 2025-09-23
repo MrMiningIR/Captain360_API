@@ -1,0 +1,377 @@
+﻿using Capitan360.Application.Utils;
+using Capitan360.Domain.Entities.CompanyDomesticWaybills;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticWaybills;
+using Capitan360.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Capitan360.Infrastructure.Repositories.CompanyDomesticWaybills;
+
+public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyDomesticWaybillRepository
+{
+    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByIdAsync(int companyDomesticWaybillId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    {
+        IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
+
+        if (loadDataGeneralData)
+        {
+            query = query.Include(item => item.CompanyManifestForm);
+            query = query.Include(item => item.CompanyReceiver);
+            query = query.Include(item => item.CompanySender);
+            query = query.Include(item => item.DestinationCity);
+            query = query.Include(item => item.CompanyDomesticWaybillPackageTypes);
+            query = query.Include(item => item.SourceCity);
+        }
+
+        if (loadDataSenderCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInSenderCompany);
+            query = query.Include(item => item.CompanyDomesticWaybillPeriod);
+            query = query.Include(item => item.CompanySenderBank);
+            query = query.Include(item => item.Counter);
+            query = query.Include(item => item.CustomerPanel);
+            query = query.Include(item => item.CompanyInsurance);
+        }
+
+        if (loadDataReceiverCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInReceiverCompany);
+            query = query.Include(item => item.CompanyReceiverBank);
+            query = query.Include(item => item.CompanyReceiverResponsibleCustomer);
+        }
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.Id == companyDomesticWaybillId, cancellationToken);
+    }
+
+    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByNoAsync(long companyDomesticWaybillNo, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    {
+        IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
+
+        if (loadDataGeneralData)
+        {
+            query = query.Include(item => item.CompanyManifestForm);
+            query = query.Include(item => item.CompanyReceiver);
+            query = query.Include(item => item.CompanySender);
+            query = query.Include(item => item.DestinationCity);
+            query = query.Include(item => item.CompanyDomesticWaybillPackageTypes);
+            query = query.Include(item => item.SourceCity);
+        }
+
+        if (loadDataSenderCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInSenderCompany);
+            query = query.Include(item => item.CompanyDomesticWaybillPeriod);
+            query = query.Include(item => item.CompanySenderBank);
+            query = query.Include(item => item.Counter);
+            query = query.Include(item => item.CustomerPanel);
+            query = query.Include(item => item.CompanyInsurance);
+        }
+
+        if (loadDataReceiverCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInReceiverCompany);
+            query = query.Include(item => item.CompanyReceiverBank);
+            query = query.Include(item => item.CompanyReceiverResponsibleCustomer);
+        }
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.No == companyDomesticWaybillNo, cancellationToken);
+    }
+
+    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByNoAndCompanySenderIdAsync(long companyDomesticWaybillNo, int companySenderId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    {
+        IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
+
+        if (loadDataGeneralData)
+        {
+            query = query.Include(item => item.CompanyManifestForm);
+            query = query.Include(item => item.CompanyReceiver);
+            query = query.Include(item => item.CompanySender);
+            query = query.Include(item => item.DestinationCity);
+            query = query.Include(item => item.CompanyDomesticWaybillPackageTypes);
+            query = query.Include(item => item.SourceCity);
+        }
+
+        if (loadDataSenderCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInSenderCompany);
+            query = query.Include(item => item.CompanyDomesticWaybillPeriod);
+            query = query.Include(item => item.CompanySenderBank);
+            query = query.Include(item => item.Counter);
+            query = query.Include(item => item.CustomerPanel);
+            query = query.Include(item => item.CompanyInsurance);
+        }
+
+        if (loadDataReceiverCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInReceiverCompany);
+            query = query.Include(item => item.CompanyReceiverBank);
+            query = query.Include(item => item.CompanyReceiverResponsibleCustomer);
+        }
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.No == companyDomesticWaybillNo && item.CompanySenderId == companySenderId, cancellationToken);
+    }
+
+    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByNoAndCompanyReceiverIdAsync(long companyDomesticWaybillNo, int companyReceiverId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    {
+        IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
+
+        if (loadDataGeneralData)
+        {
+            query = query.Include(item => item.CompanyManifestForm);
+            query = query.Include(item => item.CompanyReceiver);
+            query = query.Include(item => item.CompanySender);
+            query = query.Include(item => item.DestinationCity);
+            query = query.Include(item => item.CompanyDomesticWaybillPackageTypes);
+            query = query.Include(item => item.SourceCity);
+        }
+
+        if (loadDataSenderCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInSenderCompany);
+            query = query.Include(item => item.CompanyDomesticWaybillPeriod);
+            query = query.Include(item => item.CompanySenderBank);
+            query = query.Include(item => item.Counter);
+            query = query.Include(item => item.CustomerPanel);
+            query = query.Include(item => item.CompanyInsurance);
+        }
+
+        if (loadDataReceiverCompany)
+        {
+            query = query.Include(item => item.BikeDeliveryInReceiverCompany);
+            query = query.Include(item => item.CompanyReceiverBank);
+            query = query.Include(item => item.CompanyReceiverResponsibleCustomer);
+        }
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.No == companyDomesticWaybillNo && item.CompanyReceiverId == companyReceiverId, cancellationToken);
+    }
+
+    public async Task<bool> CheckExistDomesticWaybillByIdAsync(int companyDomesticWaybillId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.Id == companyDomesticWaybillId, cancellationToken);
+    }
+
+    public async Task<bool> CheckExistDomesticWaybillByNoAsync(long companyDomesticWaybillNo, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.No == companyDomesticWaybillNo, cancellationToken);
+    }
+
+    public async Task<bool> CheckExistDomesticWaybillByNoAndCompanySenderIdAsync(long companyDomesticWaybillNo, int companySenderId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.No == companyDomesticWaybillNo && item.CompanySenderId == companySenderId, cancellationToken);
+    }
+
+    public async Task<bool> CheckExistDomesticWaybillByNoAndCompanyReceiverIdAsync(long companyDomesticWaybillNo, int companyReceiverId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.No == companyDomesticWaybillNo && item.CompanyReceiverId == companyReceiverId, cancellationToken);
+    }
+
+    public async Task<int> InsertDomesticWaybillAsync(CompanyDomesticWaybill companyDomesticWaybill, CancellationToken cancellationToken)
+    {
+        dbContext.CompanyDomesticWaybills.Add(companyDomesticWaybill);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return companyDomesticWaybill.Id;
+    }
+
+    public async Task DeleteDomesticWaybillAsync(int companyDomesticWaybillId, CancellationToken cancellationToken)
+    {
+        var companyDomesticWaybillPackageTypes = await dbContext.CompanyDomesticWaybillPackageTypes.Where(item => item.CompanyDomesticWaybillId == companyDomesticWaybillId).ToListAsync(cancellationToken);
+        if (companyDomesticWaybillPackageTypes == null)
+            return;
+
+        dbContext.CompanyDomesticWaybillPackageTypes.RemoveRange(companyDomesticWaybillPackageTypes);
+
+        var companyDomesticWaybill = await dbContext.CompanyDomesticWaybills.SingleOrDefaultAsync(item => item.Id == companyDomesticWaybillId, cancellationToken);
+        if (companyDomesticWaybill == null)
+            return;
+
+        dbContext.CompanyDomesticWaybills.Remove(companyDomesticWaybill);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<int>> GetWaybillIdByManifestFormIdAsync(int companyManifestFormId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyManifestFormId.HasValue && item.CompanyManifestFormId == companyManifestFormId)
+                                               .Select(item => item.Id)
+                                               .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<int>> GetWaybillIdByDomesticWaybillPeriodIdAndLessThanStartNumberAsync(int companyDomesticWaybillPeriodId, long startNumber, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriodId && item.No < startNumber)
+                                               .Select(item => item.Id)
+                                               .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<int>> GetWaybillIdByDomesticWaybillPeriodIdAndGreatherThanEndNumberAsync(int companyDomesticWaybillPeriodId, long endNumber, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriodId && item.No > endNumber)
+                                               .Select(item => item.Id)
+                                               .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<int>> GetWaybillIdByDomesticWaybillPeriodIdAsync(int companyDomesticWaybillPeriodId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriodId)
+                                               .Select(item => item.Id)
+                                               .ToListAsync(cancellationToken);
+    }
+
+    public async Task<bool> IsManifestStatusConsistentByManifestFormIdStateAsync(int companyManifestFormId, short state, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyManifestFormId.HasValue && item.CompanyManifestFormId == companyManifestFormId && item.State == state);
+    }
+
+    public async Task<bool> AnyIssunedDomesticWaybillByDomesticPeriodIdStartNumberEndNumberAsync(int domesticPeriod, long startNumber, long endNumber, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)WaybillState.Ready);
+    }
+
+    public async Task<bool> AnyIssunedDomesticWaybillByDomesticPeriodIdAsync(int domesticPeriod, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && item.State != (short)WaybillState.Ready);
+    }
+
+    public async Task ChangeStateAsync(List<int> waybillIds, short state, CancellationToken cancellationToken)
+    {
+        foreach (var waybillId in waybillIds)
+        {
+            var waybill = await dbContext.CompanyDomesticWaybills.SingleOrDefaultAsync(item => item.Id == waybillId);
+            if (waybill == null)
+                return;
+
+            switch (state)
+            {
+                case (short)WaybillState.Issued:
+                    waybill.DateIssued = Tools.GetTodayInPersianDate();
+                    waybill.TimeIssued = Tools.GetTime();
+                    break;
+                case (short)WaybillState.Collectiong:
+                    waybill.DateCollectiong = Tools.GetTodayInPersianDate();
+                    waybill.TimeCollectiong = Tools.GetTime();
+                    break;
+                case (short)WaybillState.ReceivedAtSenderCompany:
+                    waybill.DateReceivedAtSenderCompany = Tools.GetTodayInPersianDate();
+                    waybill.TimeReceivedAtSenderCompany = Tools.GetTime();
+                    break;
+                case (short)WaybillState.Manifested:
+                    waybill.DateManifested = Tools.GetTodayInPersianDate();
+                    waybill.TimeManifested = Tools.GetTime();
+                    break;
+                case (short)WaybillState.AirlineDelivery:
+                    waybill.DateAirlineDelivery = Tools.GetTodayInPersianDate();
+                    waybill.TimeAirlineDelivery = Tools.GetTime();
+                    break;
+                case (short)WaybillState.ReceivedAtReceiverCompany:
+                    waybill.DateReceivedAtReceiverCompany = Tools.GetTodayInPersianDate();
+                    waybill.TimeReceivedAtReceiverCompany = Tools.GetTime();
+                    break;
+                case (short)WaybillState.Distribution:
+                    waybill.DateDistribution = Tools.GetTodayInPersianDate();
+                    waybill.TimeDistribution = Tools.GetTime();
+                    break;
+                case (short)WaybillState.Delivery:
+                    waybill.DateDelivery = Tools.GetTodayInPersianDate();
+                    waybill.TimeDelivery = Tools.GetTime();
+                    break;
+            }
+
+            waybill.State = state;
+        }
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task BackFromStateAsync(List<int> waybillIds, short state, CancellationToken cancellationToken)
+    {
+        foreach (var waybillId in waybillIds)
+        {
+            var waybill = await dbContext.CompanyDomesticWaybills.SingleOrDefaultAsync(item => item.Id == waybillId);
+            if (waybill == null)
+                return;
+
+            switch (state)
+            {
+                case (short)WaybillState.Issued:
+                    waybill.DateCollectiong = null;
+                    waybill.TimeCollectiong = null;
+                    waybill.BikeDeliveryInSenderCompanyId = null;
+                    waybill.BikeDeliveryInSenderCompanyAgent = null;
+                    if (waybill.State == (short)WaybillState.ReceivedAtSenderCompany)
+                    {
+                        waybill.DateReceivedAtSenderCompany = null;
+                        waybill.TimeReceivedAtSenderCompany = null;
+                    }
+                    break;
+                case (short)WaybillState.Collectiong:
+                    waybill.DateReceivedAtSenderCompany = null;
+                    waybill.TimeReceivedAtSenderCompany = null;
+                    break;
+                case (short)WaybillState.ReceivedAtSenderCompany:
+                    waybill.CompanyManifestFormId = null;
+                    waybill.DateManifested = null;
+                    waybill.TimeManifested = null;
+                    break;
+                case (short)WaybillState.Manifested:
+                    waybill.DateAirlineDelivery = null;
+                    waybill.TimeAirlineDelivery = null;
+                    break;
+                case (short)WaybillState.AirlineDelivery:
+                    waybill.DateReceivedAtReceiverCompany = null;
+                    waybill.TimeReceivedAtReceiverCompany = null;
+                    break;
+                case (short)WaybillState.ReceivedAtReceiverCompany:
+                    waybill.DateDistribution = null;
+                    waybill.TimeDistribution = null;
+                    waybill.BikeDeliveryInReceiverCompanyId = null;
+                    waybill.BikeDeliveryInReceiverCompanyAgent = null;
+                    if (waybill.State == (short)WaybillState.Delivery)
+                    {
+                        waybill.DateDelivery = null;
+                        waybill.TimeDelivery = null;
+                        waybill.CompanyReceiverDateFinancial = null;
+                        waybill.CompanyReceiverCashPayment = null;
+                        waybill.CompanyReceiverBankPayment = null;
+                        waybill.CompanyReceiverCashOnDelivery = null;
+                        waybill.CompanyReceiverBankId = null;
+                        waybill.CompanyReceiverBankPaymentNo = null;
+                        waybill.CompanyReceiverCreditPayment = null;
+                        waybill.CompanyReceiverResponsibleCustomerId = null;
+                        waybill.EntranceDeliveryPerson = null;
+                        waybill.EntranceTransfereePersonName = null;
+                        waybill.EntranceTransfereePersonNationalCode = null;
+                    }
+                    break;
+                case (short)WaybillState.Distribution:
+                    waybill.DateDelivery = null;
+                    waybill.TimeDelivery = null;
+                    waybill.CompanyReceiverDateFinancial = null;
+                    waybill.CompanyReceiverCashPayment = null;
+                    waybill.CompanyReceiverBankPayment = null;
+                    waybill.CompanyReceiverCashOnDelivery = null;
+                    waybill.CompanyReceiverBankId = null;
+                    waybill.CompanyReceiverBankPaymentNo = null;
+                    waybill.CompanyReceiverCreditPayment = null;
+                    waybill.CompanyReceiverResponsibleCustomerId = null;
+                    waybill.EntranceDeliveryPerson = null;
+                    waybill.EntranceTransfereePersonName = null;
+                    waybill.EntranceTransfereePersonNationalCode = null;
+                    break;
+            }
+
+            waybill.State = state;
+        }
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+}

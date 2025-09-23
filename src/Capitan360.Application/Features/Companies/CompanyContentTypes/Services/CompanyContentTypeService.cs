@@ -4,7 +4,6 @@ using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.Mov
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.MoveUp;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.UpdateActiveState;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.UpdateNameAndDescription;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetById;
@@ -62,7 +61,7 @@ public class CompanyContentTypeService(
         return ApiResponse<PagedResult<CompanyContentTypeDto>>.Ok(data, "محتوی‌ها با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<int>> MoveCompanyContentTypeUpAsync(MoveCompanyContentTypeUpCommand command, CancellationToken cancellationToken)//ch**
+    public async Task<ApiResponse<int>> MoveCompanyContentTypeUpAsync(MoveUpCompanyContentTypeCommand command, CancellationToken cancellationToken)//ch**
     {
         var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (companyContentType == null)
@@ -94,7 +93,7 @@ public class CompanyContentTypeService(
         return ApiResponse<int>.Ok(command.Id, "محتوی با موفقیت جابجا شد");
     }
 
-    public async Task<ApiResponse<int>> MoveContentTypeDownAsync(MoveCompanyContentTypeDownCommand command, CancellationToken cancellationToken)//ch**
+    public async Task<ApiResponse<int>> MoveContentTypeDownAsync(MoveDownCompanyContentTypeCommand command, CancellationToken cancellationToken)//ch**
     {
         var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (companyContentType == null)
@@ -155,38 +154,38 @@ public class CompanyContentTypeService(
         return ApiResponse<CompanyContentTypeDto>.Ok(result, "محتوی با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<int>> UpdateCompanyContentTypeNameAsync(UpdateCompanyContentTypeNameCommand command,//ch**
-        CancellationToken cancellationToken)
-    {
-        logger.LogInformation("UpdateCompanyContentTypeNameAsync is Called with {@UpdateCompanyContentTypeNameCommand}", command);
-        var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, true, false, cancellationToken);
-        if (companyContentType == null)
-            return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
-        var company = await companyRepository.GetCompanyByIdAsync(companyContentType.CompanyId, false, false, cancellationToken);
-        if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
-        logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", companyContentType);
-
-
-        var user = userContext.GetCurrentUser();
-        if (user == null)
-            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
-
-
-        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
-
-
-        if (await companyContentTypeRepository.CheckExistCompanyContentTypeNameAsync(command.CompanyContentTypeName, command.Id, companyContentType.CompanyId, cancellationToken))
-            return ApiResponse<int>.Error(400, "نام محتوی بار تکراری است");
-
-        companyContentType.Name = companyContentType.Name;
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-
-        return ApiResponse<int>.Ok(command.Id, "اطلاعات با موفقیت به‌روزرسانی شد");
-    }
+    //public async Task<ApiResponse<int>> UpdateCompanyContentTypeNameAsync(UpdateCompanyContentTypeNameCommand command,//ch**
+    //    CancellationToken cancellationToken)
+    //{
+    //    logger.LogInformation("UpdateCompanyContentTypeNameAsync is Called with {@UpdateCompanyContentTypeNameCommand}", command);
+    //    var companyContentType = await companyContentTypeRepository.GetCompanyContentTypeByIdAsync(command.Id, true, false, cancellationToken);
+    //    if (companyContentType == null)
+    //        return ApiResponse<int>.Error(400, $"بسته بندی نامعتبر است");
+    //    var company = await companyRepository.GetCompanyByIdAsync(companyContentType.CompanyId, false, false, cancellationToken);
+    //    if (company == null)
+    //        return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+    //    logger.LogInformation("ExistedCompanyContentType {@CompanyContentType}", companyContentType);
+    //
+    //
+    //    var user = userContext.GetCurrentUser();
+    //    if (user == null)
+    //        return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+    //
+    //
+    //    if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+    //        return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+    //
+    //
+    //    if (await companyContentTypeRepository.CheckExistCompanyContentTypeNameAsync(command.CompanyContentTypeName, command.Id, companyContentType.CompanyId, cancellationToken))
+    //        return ApiResponse<int>.Error(400, "نام محتوی بار تکراری است");
+    //
+    //    companyContentType.Name = companyContentType.Name;
+    //
+    //    await unitOfWork.SaveChangesAsync(cancellationToken);
+    //
+    //
+    //    return ApiResponse<int>.Ok(command.Id, "اطلاعات با موفقیت به‌روزرسانی شد");
+    //}
 
     public async Task<ApiResponse<int>> SetCompanyContentContentActivityStatusAsync(//ch**
         UpdateActiveStateCompanyContentTypeCommand command,
@@ -243,17 +242,17 @@ public class CompanyContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<CompanyContentTypeDto>.Error(403, "مجوز این فعالیت را ندارید");
 
-        if (await companyContentTypeRepository.CheckExistCompanyContentTypeNameAsync(command.CompanyContentTypeName, command.Id, companyContentType.CompanyId, cancellationToken))
+        if (await companyContentTypeRepository.CheckExistCompanyContentTypeNameAsync(command.Name, command.Id, companyContentType.CompanyId, cancellationToken))
             return ApiResponse<CompanyContentTypeDto>.Error(400, "نام محتوی بار تکراری است");
 
-        var updatedComapnyContentType = mapper.Map(command, companyContentType);
-        if (updatedComapnyContentType is null)
+        var updatedCompanyContentType = mapper.Map(command, companyContentType);
+        if (updatedCompanyContentType is null)
             return ApiResponse<CompanyContentTypeDto>.Error(400, "خطا در عملیات تبدیل");
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("محتوی بار با موفقیت به‌روزرسانی شد: {Id}", command.Id);
 
-        var updatedComapnyContentTypeDto = mapper.Map<CompanyContentTypeDto>(updatedComapnyContentType);
-        return ApiResponse<CompanyContentTypeDto>.Ok(updatedComapnyContentTypeDto, "محتوی بار با موفقیت به‌روزرسانی شد");
+        var updatedCompanyContentTypeDto = mapper.Map<CompanyContentTypeDto>(updatedCompanyContentType);
+        return ApiResponse<CompanyContentTypeDto>.Ok(updatedCompanyContentTypeDto, "محتوی بار با موفقیت به‌روزرسانی شد");
     }
 }

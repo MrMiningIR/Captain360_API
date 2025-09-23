@@ -1,0 +1,6 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.BackFromReceivedAtReceiverCompanyStateFromDesktop;
+
+public record BackFromReceivedAtReceiverCompanyStateFromDesktopCommand(
+long No,
+string CompanyReceiverCaptain360Code
+);

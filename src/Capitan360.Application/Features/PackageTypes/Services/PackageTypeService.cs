@@ -1,13 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.PackageTypeService.Commands.CreatePackageType;
-using Capitan360.Application.Features.PackageTypeService.Commands.DeletePackageType;
-using Capitan360.Application.Features.PackageTypeService.Commands.MoveTypeDown;
-using Capitan360.Application.Features.PackageTypeService.Commands.MoveUp;
-using Capitan360.Application.Features.PackageTypeService.Commands.UpdateActiveState;
-using Capitan360.Application.Features.PackageTypeService.Commands.Update;
-using Capitan360.Application.Features.PackageTypeService.Queries.GetAll;
-using Capitan360.Application.Features.PackageTypeService.Queries.GetById;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.Companies;
@@ -15,6 +7,14 @@ using Capitan360.Domain.Repositories.PackageTypes;
 using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Application.Features.PackageTypes.Commands.Create;
+using Capitan360.Application.Features.PackageTypes.Commands.Update;
+using Capitan360.Application.Features.PackageTypes.Commands.Delete;
+using Capitan360.Application.Features.PackageTypes.Commands.MoveDown;
+using Capitan360.Application.Features.PackageTypes.Commands.MoveUp;
+using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
+using Capitan360.Application.Features.PackageTypes.Queries.GetById;
+using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
 
 namespace Capitan360.Application.Features.PackageTypeService.Services;
 
@@ -45,7 +45,7 @@ public class PackageTypeService(
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
 
-        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, command.CompanyTypeId, null, cancellationToken))
+        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.Name, command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
 
 
@@ -170,7 +170,7 @@ public class PackageTypeService(
 
 
 
-        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.PackageTypeName, command.Id, packageType.CompanyTypeId, cancellationToken))
+        if (await packageTypeRepository.CheckExistPackageTypeNameAsync(command.Name, command.Id, packageType.CompanyTypeId, cancellationToken))
             return ApiResponse<PackageTypeDto>.Error(400, "نام بسته بندی تکراری است");
 
         var updatedPackageType = mapper.Map(command, packageType);
@@ -184,7 +184,7 @@ public class PackageTypeService(
         return ApiResponse<PackageTypeDto>.Ok(updatedPackageTypeDto, "بسته‌بندی با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<int>> MovePackageTypeUpAsync(MovePackageTypeUpCommand command,//ch**
+    public async Task<ApiResponse<int>> MovePackageTypeUpAsync(MoveUpPackageTypeCommand command,//ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("MovePackageTypeUp is Called with {@MovePackageTypeUpCommand}", command);
@@ -216,7 +216,7 @@ public class PackageTypeService(
     }
 
     public async Task<ApiResponse<int>> MovePackageTypeDownAsync(//ch**
-        MovePackageTypeDownCommand command, CancellationToken cancellationToken)
+        MoveDownPackageTypeCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("MovePackageTypeUp is Called with {@MovePackageTypeUpCommand}", command);
 

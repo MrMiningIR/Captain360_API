@@ -3,11 +3,11 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.MoveDown;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.MoveUp;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.UpdateActiveState;
-using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.UpdateNameAndDescription;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetById;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Services;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateName;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;
@@ -45,7 +45,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
 
     [PermissionFilter("تغییر چیدمان -بالا", "F4")]
     public async Task<ActionResult<ApiResponse<int>>> MoveUpCompanyContentType(
-        [FromBody] MoveCompanyContentTypeUpCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
+        [FromBody] MoveUpCompanyContentTypeCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
     {
         var response = await companyContentTypeService.MoveCompanyContentTypeUpAsync(moveContentTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
@@ -55,25 +55,25 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [PermissionFilter("تغییر چیدمان -پایین", "F5")]
     public async Task<ActionResult<ApiResponse<int>>> MoveDownCompanyContentType(
-        [FromBody] MoveCompanyContentTypeDownCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
+        [FromBody] MoveDownCompanyContentTypeCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await companyContentTypeService.MoveContentTypeDownAsync(moveContentTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("UpdateCompanyContentTypeNameAndDescription/{id}")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
-
-    [PermissionFilter("آپدیت نام محتوی", "F6")]
-    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyContentTypeNameAndDescription(
-        [FromRoute] int id, [FromBody] UpdateCompanyContentTypeNameCommand command, CancellationToken cancellationToken)
-    {
-        command.Id = id;
-        var response = await companyContentTypeService.UpdateCompanyContentTypeNameAsync(command, cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
+    //[HttpPut("UpdateCompanyContentTypeNameAndDescription/{id}")]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    //
+    //[PermissionFilter("آپدیت نام محتوی", "F6")]
+    //public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyContentTypeNameAndDescription(
+    //    [FromRoute] int id, [FromBody] UpdateCompanyContentTypeNameCommand command, CancellationToken cancellationToken)
+    //{
+    //    command.Id = id;
+    //    var response = await companyContentTypeService.UpdateCompanyContentTypeNameAsync(command, cancellationToken);
+    //    return StatusCode(response.StatusCode, response);
+    //}
 
     [HttpPost("ChangeCompanyContentTypeActiveStatus")]
     [PermissionFilter("تغییر وضعیت محتوای مخصوص شرکت", "F7")]

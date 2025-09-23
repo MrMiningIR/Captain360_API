@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.CreateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Dtos;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 
 namespace Capitan360.Application.Features.Companies.CompanyUri.MapperProfiles;
 

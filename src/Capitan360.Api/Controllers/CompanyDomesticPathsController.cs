@@ -1,12 +1,12 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Commands.Create;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Commands.Delete;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Dtos;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Queries.GetAll;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Queries.GetById;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Services;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Create;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Delete;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Update;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Dtos;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetAll;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetById;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;

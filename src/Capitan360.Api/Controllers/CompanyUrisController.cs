@@ -1,12 +1,12 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.CreateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.DeleteCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateCompanyUri;
-using Capitan360.Application.Features.Companies.CompanyUri.Dtos;
-using Capitan360.Application.Features.Companies.CompanyUri.Queries.GetAllCompanyUris;
-using Capitan360.Application.Features.Companies.CompanyUri.Queries.GetCompanyUriById;
 using Capitan360.Application.Features.Companies.CompanyUri.Services;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Delete;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
+using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;

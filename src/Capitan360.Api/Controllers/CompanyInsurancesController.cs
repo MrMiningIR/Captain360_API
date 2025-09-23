@@ -1,13 +1,13 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Commands.Create;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Commands.Delete;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Queries.GetAll;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Services;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Queries.GetById;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Dtos;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Services;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Commands.Create;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Commands.Update;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetAll;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Commands.Delete;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetById;
 
 namespace Capitan360.Api.Controllers;
 

@@ -1,0 +1,6 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.BackFromAirlineDeliveryStateFromDesktop;
+
+public record BackFromAirlineDeliveryStateFromDesktopCommand(
+long No,
+string CompanySenderCaptain360Code
+);

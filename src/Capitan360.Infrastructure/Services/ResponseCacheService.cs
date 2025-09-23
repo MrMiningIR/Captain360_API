@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Capitan360.Domain.IService.CacheResponse;
+﻿using Capitan360.Domain.Interfaces.Services;
 using StackExchange.Redis;
 
 namespace Capitan360.Infrastructure.Services;

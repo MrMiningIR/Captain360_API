@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Capitan360.Domain.Entities.BaseEntities;
-using Capitan360.Domain.Entities.DomesticWaybills;
+using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 
 namespace Capitan360.Domain.Entities.Companies;
 
@@ -20,7 +20,7 @@ public class CompanyBank : BaseEntity
 
     public int Order { get; set; }
 
-    public ICollection<DomesticWaybill> DomesticWaybillCompanyBankSenders { get; set; } = [];
+    public ICollection<CompanyDomesticWaybill> CompanyDomesticWaybillCompanyBankSenders { get; set; } = [];
 
-    public ICollection<DomesticWaybill> DomesticWaybillCompanyBankReceivers { get; set; } = [];
+    public ICollection<CompanyDomesticWaybill> CompanyDomesticWaybillCompanyBankReceivers { get; set; } = [];
 }

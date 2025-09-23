@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToCollection;
+
+public record ChangeStateToCollectionCommand(int Id);

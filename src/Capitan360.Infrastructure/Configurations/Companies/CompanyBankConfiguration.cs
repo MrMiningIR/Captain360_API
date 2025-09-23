@@ -36,7 +36,7 @@ public class CompanyBankConfiguration : BaseEntityConfiguration<CompanyBank>
                .IsUnicode()
                .HasColumnType("nvarchar(500)");
 
-        builder.Property(x => x.Active)
+    builder.Property(x => x.Active)
                .IsRequired()
                .HasColumnType("bit");
 

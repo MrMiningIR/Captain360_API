@@ -25,23 +25,20 @@ public class CompanyPackageTypeConfiguration : BaseEntityConfiguration<CompanyPa
                .IsRequired()
                .HasColumnType("bit");
 
-        builder.Property(x => x.Description)
-               .IsRequired()
-               .HasMaxLength(500)
-               .IsUnicode()
-               .HasColumnType("nvarchar(500)");
-
         builder.Property(x => x.Order)
                .IsRequired();
 
         builder.Property(x => x.Description)
-               .IsRequired()
-               .HasMaxLength(500)
-               .IsUnicode()
-               .HasColumnType("nvarchar(500)");
+                .IsRequired()
+                .HasMaxLength(500)
+                .IsUnicode()
+                .HasColumnType("nvarchar(500)");
 
         builder.Property(x => x.PackageTypeId)
-               .IsRequired();
+                .IsRequired();
+
+        builder.Property(x => x.CompanyId)
+                .IsRequired();
 
         builder.HasOne(x => x.Company)
                .WithMany(c => c.CompanyPackageTypes)

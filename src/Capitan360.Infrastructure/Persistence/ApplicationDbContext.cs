@@ -1,9 +1,12 @@
 ﻿using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.CompanyDomesticPaths;
+using Capitan360.Domain.Entities.CompanyDomesticWaybills;
+using Capitan360.Domain.Entities.CompanyInsurances;
+using Capitan360.Domain.Entities.CompanyManifestForms;
 using Capitan360.Domain.Entities.ContentTypes;
-using Capitan360.Domain.Entities.DomesticWaybills;
+using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Entities.ManifestForms;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Exceptions;
 using Capitan360.Domain.Interfaces;
@@ -69,11 +72,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<UserPermissionVersionControl> UserPermissionVersionControls { get; set; }
 
 
-    public DbSet<DomesticWaybill> DomesticWaybills { get; set; }
-    public DbSet<DomesticWaybillPackageType> DomesticWaybillPackageTypes { get; set; }
-    public DbSet<DomesticWaybillPeriod> DomesticWaybillPeriods { get; set; }
-    public DbSet<ManifestForm> ManifestForms { get; set; }
-    public DbSet<ManifestFormPeriod> ManifestFormPeriods { get; set; }
+    public DbSet<CompanyDomesticWaybill> CompanyDomesticWaybills { get; set; }
+    public DbSet<CompanyDomesticWaybillPackageType> CompanyDomesticWaybillPackageTypes { get; set; }
+    public DbSet<CompanyDomesticWaybillPeriod> CompanyDomesticWaybillPeriods { get; set; }
+    public DbSet<CompanyManifestForm> CompanyManifestForms { get; set; }
+    public DbSet<CompanyManifestFormPeriod> CompanyManifestFormPeriods { get; set; }
 
 
 

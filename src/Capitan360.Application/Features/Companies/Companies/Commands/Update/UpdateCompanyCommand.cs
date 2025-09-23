@@ -3,9 +3,8 @@
 public record UpdateCompanyCommand(
     string MobileCounter,
     string Name,
-    string? Description,
+    string Description,
     bool Active)
 {
     public int Id { get; set; }
-
 }

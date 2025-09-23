@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateActiveStateCompanyUri
+namespace Capitan360.Application.Features.Companies.CompanyUris.Commands.UpdateActiveState;
+
+public class UpdateActiveStateCompanyUriCommandValidator : AbstractValidator<UpdateActiveStateCompanyUriCommand>
 {
-    public class UpdateActiveStateCompanyUriCommandValidator : AbstractValidator<UpdateActiveStateCompanyUriCommand>
+    public UpdateActiveStateCompanyUriCommandValidator()
     {
-        public UpdateActiveStateCompanyUriCommandValidator()
-        {
-            RuleFor(x => x.Id)
-                .GreaterThan(0).WithMessage("شناسه URI باید مشخص باشد");
-        }
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه URI باید مشخص باشد");
     }
 }

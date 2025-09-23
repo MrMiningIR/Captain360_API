@@ -1,9 +1,8 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveTypeDown;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveDown;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveUp;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateActiveState;
-using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateNameAndDescription;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetById;
@@ -45,7 +44,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
 
     [PermissionFilter("تغییر چیدمان - بالا", "L4")]
     public async Task<ActionResult<ApiResponse<int>>> MoveUpCompanyPackageType(
-        [FromBody] MoveCompanyPackageTypeUpCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
+        [FromBody] MoveUpCompanyPackageTypeCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
     {
         var response = await companyPackageTypeService.MoveCompanyPackageTypeUpAsync(movePackageTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
@@ -56,25 +55,25 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
 
     [PermissionFilter("تغییر چیدمان - پایین", "L5")]
     public async Task<ActionResult<ApiResponse<int>>> MoveDownCompanyPackageType(
-        [FromBody] MoveCompanyPackageTypeDownCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
+        [FromBody] MoveDownCompanyPackageTypeCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
         var response = await companyPackageTypeService.MoveCompanyPackageTypeDownAsync(movePackageTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("UpdateCompanyPackageTypeNameAndDescription/{id}")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
-
-    [PermissionFilter("آپدیت نام", "L6")]
-    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeNameAndDescription([FromRoute] int id,
-    [FromBody] UpdateCompanyPackageTypeNameAndDescriptionCommand command, CancellationToken cancellationToken)
-    {
-        command.Id = id;
-        var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAsync(command, cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
+    //[HttpPut("UpdateCompanyPackageTypeNameAndDescription/{id}")]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+    //
+    //[PermissionFilter("آپدیت نام", "L6")]
+    //public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeNameAndDescription([FromRoute] int id,
+    //[FromBody] UpdateCompanyPackageTypeNameAndDescriptionCommand command, CancellationToken cancellationToken)
+    //{
+    //    command.Id = id;
+    //    var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAsync(command, cancellationToken);
+    //    return StatusCode(response.StatusCode, response);
+    //}
 
     [HttpPost("ChangeCompanyPackageTypeActiveStatus")]
     [PermissionFilter("تغییر وضعیت بسته بندی مخصوص شرکت", "L7")]

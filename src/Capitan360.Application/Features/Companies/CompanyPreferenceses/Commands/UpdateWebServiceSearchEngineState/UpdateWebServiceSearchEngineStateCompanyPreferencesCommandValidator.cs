@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateWebServiceSearchEngineStateCompanyPreferences
+namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateWebServiceSearchEngineState;
+
+public class UpdateWebServiceSearchEngineStateCompanyPreferencesCommandValidator : AbstractValidator<UpdateWebServiceSearchEngineStateCompanyPreferencesCommand>
 {
-    public class UpdateWebServiceSearchEngineStateCompanyPreferencesCommandValidator : AbstractValidator<UpdateWebServiceSearchEngineStateCompanyPreferencesCommand>
+    public UpdateWebServiceSearchEngineStateCompanyPreferencesCommandValidator()
     {
-        public UpdateWebServiceSearchEngineStateCompanyPreferencesCommandValidator()
-        {
-            RuleFor(x => x.Id)
-                .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
-        }
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
     }
 }

@@ -14,9 +14,12 @@ public class GetAllCompanyContentTypesQueryValidator : AbstractValidator<GetAllC
     public GetAllCompanyContentTypesQueryValidator()
     {
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
+
         RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

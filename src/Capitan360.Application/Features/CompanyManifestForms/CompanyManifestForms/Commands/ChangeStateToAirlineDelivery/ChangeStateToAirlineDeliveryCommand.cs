@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.ChangeStateToAirlineDelivery;
+
+public record ChangeStateToAirlineDeliveryCommand(int Id);

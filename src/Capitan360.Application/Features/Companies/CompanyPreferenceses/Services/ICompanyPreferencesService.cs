@@ -1,15 +1,15 @@
 ﻿using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoStateCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateIssueDomesticWaybillStateCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateShowInSearchEngineStateCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateWebServiceSearchEngineStateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoState;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateIssueDomesticWaybillState;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateShowInSearchEngineState;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateWebServiceSearchEngineState;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAllCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesByCompanyId;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesById;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetByCompanyId;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetById;
 
 namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
 

@@ -1,10 +1,10 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Commands.Create;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Dtos;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Queries.GetAll;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Services;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Commands.Create;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Commands.Update;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Dtos;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Queries.GetAll;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers

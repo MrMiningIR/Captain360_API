@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Capitan360.Domain.Entities.Companies;
+using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 
@@ -10,31 +11,27 @@ public class CreateCompanyPreferencesCommandValidator : AbstractValidator<Create
             .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.EconomicCode)
-            .MaximumLength(50)
-            .When(x => !string.IsNullOrWhiteSpace(x.EconomicCode))
-            .WithMessage("کد اقتصادی نمی‌تواند بیشتر از 50 کاراکتر باشد");
+            .NotEmpty().WithMessage("کد اقتصادی الزامی است.")
+            .MaximumLength(50).WithMessage("کد اقتصادی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.NationalId)
-            .MaximumLength(50)
-            .When(x => !string.IsNullOrWhiteSpace(x.NationalId))
-            .WithMessage("شناسه ملی نمی‌تواند بیشتر از 50 کاراکتر باشد");
+            .NotEmpty().WithMessage("شناسه ملی الزامی است.")
+            .MaximumLength(50).WithMessage("شناسه ملی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.RegistrationId)
-            .MaximumLength(50)
-            .When(x => !string.IsNullOrWhiteSpace(x.RegistrationId))
-            .WithMessage("شناسه ثبت نمی‌تواند بیشتر از 50 کاراکتر باشد");
+            .NotEmpty().WithMessage("شناسه ثبت الزامی است.")
+            .MaximumLength(50).WithMessage("شناسه ثبت نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.CaptainCargoName)
-            .MaximumLength(30)
-            .When(x => !string.IsNullOrWhiteSpace(x.CaptainCargoName))
-            .WithMessage("نام کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
+            .NotEmpty().WithMessage("نام کاپیتان کارگو الزامی است.")
+            .MaximumLength(30).WithMessage("نام کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
 
         RuleFor(x => x.CaptainCargoCode)
-            .MaximumLength(30)
-            .When(x => !string.IsNullOrWhiteSpace(x.CaptainCargoCode))
-            .WithMessage("کد کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
+            .NotEmpty().WithMessage("کد کاپیتان کارگو الزامی است.")
+            .MaximumLength(30).WithMessage("کد کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
 
         RuleFor(x => x.Tax)
-            .InclusiveBetween(0m, 100.00m).WithMessage("مالیات باید بین 0 و 100.00 باشد");
+            .InclusiveBetween(0m, 100m).WithMessage("مالیات باید بین 0 تا 100 باشد.")
+            .PrecisionScale(5, 2, true).WithMessage("Tax باید حداکثر 2 رقم اعشار و مجموعاً حداکثر 5 رقم داشته باشد.");
     }
 }

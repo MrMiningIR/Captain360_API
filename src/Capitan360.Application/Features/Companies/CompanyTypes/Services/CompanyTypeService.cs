@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyType.Commands.CreateCompanyType;
-using Capitan360.Application.Features.Companies.CompanyType.Commands.DeleteCompanyType;
-using Capitan360.Application.Features.Companies.CompanyType.Commands.UpdateCompanyType;
 using Capitan360.Application.Features.Companies.CompanyType.Queries.GetAllCompanyTypes;
 using Capitan360.Application.Features.Companies.CompanyType.Queries.GetCompanyTypeById;
+using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Delete;
+using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;

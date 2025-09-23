@@ -1,13 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.ContentTypeService.Commands.CreateContentType;
-using Capitan360.Application.Features.ContentTypeService.Commands.DeleteContentType;
-using Capitan360.Application.Features.ContentTypeService.Commands.MoveDownContentType;
-using Capitan360.Application.Features.ContentTypeService.Commands.MoveUpContentType;
-using Capitan360.Application.Features.ContentTypeService.Commands.UpdateActiveState;
-using Capitan360.Application.Features.ContentTypeService.Commands.Update;
-using Capitan360.Application.Features.ContentTypeService.Queries.GetAll;
-using Capitan360.Application.Features.ContentTypeService.Queries.GetById;
 using Capitan360.Domain.Entities.ContentTypes;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.Companies;
@@ -15,6 +7,14 @@ using Capitan360.Domain.Repositories.ContentTypes;
 using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.ContentTypes.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Application.Features.ContentTypes.Commands.Create;
+using Capitan360.Application.Features.ContentTypes.Commands.Update;
+using Capitan360.Application.Features.ContentTypes.Commands.MoveDown;
+using Capitan360.Application.Features.ContentTypes.Commands.Delete;
+using Capitan360.Application.Features.ContentTypes.Commands.MoveUp;
+using Capitan360.Application.Features.ContentTypes.Commands.UpdateActiveState;
+using Capitan360.Application.Features.ContentTypes.Queries.GetAll;
+using Capitan360.Application.Features.ContentTypes.Queries.GetById;
 
 namespace Capitan360.Application.Features.ContentTypeService.Services;
 
@@ -34,7 +34,7 @@ public class ContentTypeService(
     {
         logger.LogInformation("CreateContentType is Called with {@CreateContentTypeCommand}", command);
 
-        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.CompanyTypeId, null, cancellationToken))
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.Name, command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام بسته بندی تکراری است");
 
 
@@ -47,7 +47,7 @@ public class ContentTypeService(
             return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
 
 
-        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.CompanyTypeId, null, cancellationToken))
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.Name, command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام محتوی بار تکراری است");
 
 
@@ -180,7 +180,7 @@ public class ContentTypeService(
 
 
 
-        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.ContentTypeName, command.Id, contentType.CompanyTypeId, cancellationToken))
+        if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.Name, command.Id, contentType.CompanyTypeId, cancellationToken))
             return ApiResponse<ContentTypeDto>.Error(400, "نام محتوی بار تکراری است");
 
         var updatedContentType = mapper.Map(command, contentType);
@@ -192,7 +192,7 @@ public class ContentTypeService(
         return ApiResponse<ContentTypeDto>.Ok(updatedContentTypeDto, "محتوی با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveContentTypeUpCommand command, //ch**
+    public async Task<ApiResponse<int>> MoveContentTypeUpAsync(MoveUpContentTypeCommand command, //ch**
         CancellationToken cancellationToken)
     {
         logger.LogInformation("MoveContentTypeUp is Called with {@MoveContentTypeUpCommand}", command);
@@ -225,7 +225,7 @@ public class ContentTypeService(
     }
 
     public async Task<ApiResponse<int>> MoveContentTypeDownAsync(//Ch**
-        MoveContentTypeDownCommand command, CancellationToken cancellationToken)
+        MoveDownContentTypeCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("MoveContentTypeDown is Called with {@MoveContentTypeDownCommand}", command);
 

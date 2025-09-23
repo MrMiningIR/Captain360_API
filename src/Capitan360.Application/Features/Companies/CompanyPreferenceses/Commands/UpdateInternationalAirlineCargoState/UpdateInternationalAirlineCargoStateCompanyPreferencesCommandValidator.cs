@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoStateCompanyPreferences
+namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoState;
+
+public class UpdateInternationalAirlineCargoStateCompanyPreferencesCommandValidator : AbstractValidator<UpdateInternationalAirlineCargoStateCompanyPreferencesCommand>
 {
-    public class UpdateInternationalAirlineCargoStateCompanyPreferencesCommandValidator : AbstractValidator<UpdateInternationalAirlineCargoStateCompanyPreferencesCommand>
+    public UpdateInternationalAirlineCargoStateCompanyPreferencesCommandValidator()
     {
-        public UpdateInternationalAirlineCargoStateCompanyPreferencesCommandValidator()
-        {
-            RuleFor(x => x.Id)
-                .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
-        }
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
     }
 }

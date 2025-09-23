@@ -2,11 +2,10 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.DeleteCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateCompanyPreferences;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAllCompanyPreferences;
-using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesById;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetById;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
 using Microsoft.AspNetCore.Mvc;
 

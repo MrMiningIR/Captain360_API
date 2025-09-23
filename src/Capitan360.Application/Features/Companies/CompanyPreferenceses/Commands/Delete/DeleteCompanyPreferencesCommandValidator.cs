@@ -1,7 +1,6 @@
-﻿using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.DeleteCompanyPreferences;
+namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
 
 public class DeleteCompanyPreferencesCommandValidator : AbstractValidator<DeleteCompanyPreferencesCommand>
 {

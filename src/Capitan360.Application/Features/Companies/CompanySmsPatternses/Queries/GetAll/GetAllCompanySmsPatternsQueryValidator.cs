@@ -1,7 +1,7 @@
 ﻿using Capitan360.Application.Features.Companies.CompanySmsPatterns.Dtos;
 using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetAllCompanySmsPatterns;
+namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetAll;
 
 public class GetAllCompanySmsPatternsQueryValidator : AbstractValidator<GetAllCompanySmsPatternsQuery>
 {
@@ -14,8 +14,17 @@ public class GetAllCompanySmsPatternsQueryValidator : AbstractValidator<GetAllCo
 
     public GetAllCompanySmsPatternsQueryValidator()
     {
+        RuleFor(x => x.CompanyTypeId)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه نوع شرکت باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.CompanyId)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه شرکت باید بزرگتر یا مساوی صفر باشد");
+
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

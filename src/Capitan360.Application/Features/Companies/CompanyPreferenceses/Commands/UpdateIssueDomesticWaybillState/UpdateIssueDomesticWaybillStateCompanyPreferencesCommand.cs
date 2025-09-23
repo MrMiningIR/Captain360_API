@@ -1,4 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateIssueDomesticWaybillStateCompanyPreferences
-{
-    public record UpdateIssueDomesticWaybillStateCompanyPreferencesCommand(int Id);
-}
+﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateIssueDomesticWaybillState;
+
+public record UpdateIssueDomesticWaybillStateCompanyPreferencesCommand(int Id);

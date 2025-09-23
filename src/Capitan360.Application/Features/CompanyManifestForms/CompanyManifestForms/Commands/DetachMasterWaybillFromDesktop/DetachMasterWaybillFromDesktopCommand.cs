@@ -1,0 +1,6 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.DetachMasterWaybillFromDesktop;
+
+public record DetachMasterWaybillFromDesktopCommand(
+long No,
+string CompanySenderCaptain360Code
+);

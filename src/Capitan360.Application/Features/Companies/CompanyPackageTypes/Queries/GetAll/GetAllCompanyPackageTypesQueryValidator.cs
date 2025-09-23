@@ -18,7 +18,8 @@ public class GetAllCompanyPackageTypesQueryValidator : AbstractValidator<GetAllC
             .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 
         RuleFor(x => x.CompanyId)
-            .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

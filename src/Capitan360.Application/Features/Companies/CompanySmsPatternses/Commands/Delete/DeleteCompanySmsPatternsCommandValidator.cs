@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Commands.DeleteCompanySmsPatterns;
+namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Delete;
 
 public class DeleteCompanySmsPatternsCommandValidator : AbstractValidator<DeleteCompanySmsPatternsCommand>
 {

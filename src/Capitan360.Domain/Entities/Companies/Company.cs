@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Entities.BaseEntities;
-using Capitan360.Domain.Entities.DomesticWaybills;
-using Capitan360.Domain.Entities.ManifestForms;
+using Capitan360.Domain.Entities.CompanyDomesticPaths;
+using Capitan360.Domain.Entities.CompanyDomesticWaybills;
+using Capitan360.Domain.Entities.CompanyInsurances;
+using Capitan360.Domain.Entities.CompanyManifestForms;
 
 namespace Capitan360.Domain.Entities.Companies;
 
@@ -58,15 +60,15 @@ public class Company : BaseEntity
 
     public ICollection<CompanyBank> CompanyBanks { get; set; } = [];
 
-    public ICollection<ManifestFormPeriod> ManifestFormPeriods { get; set; } = [];
+    public ICollection<CompanyManifestFormPeriod> CompanyManifestFormPeriods { get; set; } = [];
 
-    public ICollection<ManifestForm> ManifestFormCompanySenders { get; set; } = [];
+    public ICollection<CompanyManifestForm> CompanyManifestFormCompanySenders { get; set; } = [];
 
-    public ICollection<ManifestForm> ManifestFormCompanyReceivers { get; set; } = [];
+    public ICollection<CompanyManifestForm> CompanyManifestFormCompanyReceivers { get; set; } = [];
 
-    public ICollection<DomesticWaybillPeriod> DomesticWaybillPeriods { get; set; } = [];
+    public ICollection<CompanyDomesticWaybillPeriod> CompanyDomesticWaybillPeriods { get; set; } = [];
 
-    public ICollection<DomesticWaybill> DomesticWaybillCompanySenders { get; set; } = [];
+    public ICollection<CompanyDomesticWaybill> CompanyDomesticWaybillCompanySenders { get; set; } = [];
 
-    public ICollection<DomesticWaybill> DomesticWaybillCompanyReceivers { get; set; } = [];
+    public ICollection<CompanyDomesticWaybill> CompanyDomesticWaybillCompanyReceivers { get; set; } = [];
 }

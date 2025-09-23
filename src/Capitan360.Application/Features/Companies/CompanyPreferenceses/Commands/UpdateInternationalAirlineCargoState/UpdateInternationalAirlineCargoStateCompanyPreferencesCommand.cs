@@ -1,5 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoStateCompanyPreferences
-{
-    public record UpdateInternationalAirlineCargoStateCompanyPreferencesCommand(int Id);
+﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoState;
 
-}
+public record UpdateInternationalAirlineCargoStateCompanyPreferencesCommand(int Id);

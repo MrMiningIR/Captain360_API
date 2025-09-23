@@ -1,12 +1,12 @@
 ﻿namespace Capitan360.Application.Features.Companies.CompanyCommissionses.Commands.Update;
 
 public record UpdateCompanyCommissionsCommand(
-    decimal CommissionFromCaptainCargoWebSite,
-    decimal CommissionFromCompanyWebSite,
-    decimal CommissionFromCaptainCargoWebService,
-    decimal CommissionFromCompanyWebService,
-    decimal CommissionFromCaptainCargoPanel,
-    decimal CommissionFromCaptainCargoDesktop)
+    long CommissionFromCaptainCargoWebSite,
+    long CommissionFromCompanyWebSite,
+    long CommissionFromCaptainCargoWebService,
+    long CommissionFromCompanyWebService,
+    long CommissionFromCaptainCargoPanel,
+    long CommissionFromCaptainCargoDesktop)
 {
     public int Id { get; set; } 
 }

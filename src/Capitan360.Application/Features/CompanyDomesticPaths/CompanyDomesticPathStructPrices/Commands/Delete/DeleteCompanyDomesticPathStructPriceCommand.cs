@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathStructPrices.Commands.Delete;
+
+public record DeleteCompanyDomesticPathStructPriceCommand(int Id);

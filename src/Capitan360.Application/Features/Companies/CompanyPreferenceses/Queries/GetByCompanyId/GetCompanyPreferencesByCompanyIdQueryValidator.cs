@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetCompanyPreferencesByCompanyId;
+namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetByCompanyId;
 
-internal class GetCompanyPreferencesByCompanyIdQueryValidator : AbstractValidator<GetCompanyPreferencesByCompanyIdQuery>
+public class GetCompanyPreferencesByCompanyIdQueryValidator : AbstractValidator<GetCompanyPreferencesByCompanyIdQuery>
 {
     public GetCompanyPreferencesByCompanyIdQueryValidator()
     {

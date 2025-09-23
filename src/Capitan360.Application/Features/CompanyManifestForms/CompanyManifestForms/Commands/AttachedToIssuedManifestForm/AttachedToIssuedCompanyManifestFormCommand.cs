@@ -1,0 +1,7 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.AttachedToIssuedManifestForm;
+
+public record AttachedToIssuedCompanyManifestFormCommand(
+long CompanyDomesticWaybillId,
+string CompanyReceiverCaptain360Code,
+long CompanyManifestFormId
+);

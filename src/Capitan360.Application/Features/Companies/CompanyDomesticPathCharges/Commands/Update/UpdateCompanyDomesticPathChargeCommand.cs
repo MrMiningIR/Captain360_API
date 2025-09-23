@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Commands.Update;
-
-public record UpdateCompanyDomesticPathChargeCommand(List<UpdateCompanyDomesticPathChargeItemCommand> ChargeItems);

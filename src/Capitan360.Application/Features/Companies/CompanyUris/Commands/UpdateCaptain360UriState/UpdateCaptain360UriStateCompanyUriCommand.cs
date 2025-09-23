@@ -1,3 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateCaptain360UriStateCompany;
+﻿namespace Capitan360.Application.Features.Companies.CompanyUris.Commands.UpdateCaptain360UriState;
 
 public record UpdateCaptain360UriStateCompanyUriCommand(int Id);

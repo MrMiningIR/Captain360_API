@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Commands.CreateCompanySmsPatterns;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Commands.DeleteCompanySmsPatterns;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Commands.UpdateCompanySmsPatterns;
 using Capitan360.Application.Features.Companies.CompanySmsPatterns.Dtos;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetAllCompanySmsPatterns;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetCompanySmsPatternsByCompanyId;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Queries.GetCompanySmsPatternsById;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Create;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Delete;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetByCompanyId;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetById;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Services;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Repositories.Companies;
@@ -191,7 +192,7 @@ public class CompanySmsPatternsService(
     }
 
 
-    public async Task<ApiResponse<CompanySmsPatternsDto>> GetCompanySmsPatternsByCompanyIdAsync(GetCompanySmsPatternsByCompanyId.GetCompanySmsPatternsByCompanyIdQuery query, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanySmsPatternsDto>> GetCompanySmsPatternsByCompanyIdAsync(GetCompanySmsPatternsByCompanyIdQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCompanySmsPatternsByCompanyId is Called with ID: {Id}", query.CompanyId);
 

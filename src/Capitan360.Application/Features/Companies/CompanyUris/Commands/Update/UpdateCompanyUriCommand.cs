@@ -1,8 +1,8 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyUri.Commands.UpdateCompanyUri;
+﻿namespace Capitan360.Application.Features.Companies.CompanyUris.Commands.Update;
 
 public record UpdateCompanyUriCommand(
     string Uri,
-    string? Description,
+    string Description,
     bool Active,
     bool Captain360Uri)
 {

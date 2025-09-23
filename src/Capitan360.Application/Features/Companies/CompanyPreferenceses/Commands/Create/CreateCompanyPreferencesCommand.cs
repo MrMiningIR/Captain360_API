@@ -2,11 +2,11 @@
 
 public record CreateCompanyPreferencesCommand(
     int CompanyId,
-    string? EconomicCode,
-    string? NationalId,
-    string? RegistrationId,
-    string? CaptainCargoName,
-    string? CaptainCargoCode,
+    string EconomicCode,
+    string NationalId,
+    string RegistrationId,
+    string CaptainCargoName,
+    string CaptainCargoCode,
     bool ActiveIssueDomesticWaybill,
     bool ActiveShowInSearchEngine,
     bool ActiveInWebServiceSearchEngine,

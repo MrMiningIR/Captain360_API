@@ -1,6 +1,6 @@
 ﻿using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.ContentTypes;
-using Capitan360.Domain.Entities.DomesticWaybills;
+using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capitan360.Domain.Entities.Companies;
@@ -23,5 +23,5 @@ public class CompanyContentType : BaseEntity
 
     public string Description { get; set; } = default!;
 
-    public ICollection<DomesticWaybillPackageType> DomesticWaybillPackageTypes { get; set; } = [];
+    public ICollection<CompanyDomesticWaybillPackageType> CompanyDomesticWaybillPackageTypes { get; set; } = [];
 }

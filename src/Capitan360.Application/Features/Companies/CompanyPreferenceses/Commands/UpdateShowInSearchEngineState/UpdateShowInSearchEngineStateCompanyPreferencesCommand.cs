@@ -1,4 +1,3 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateShowInSearchEngineStateCompanyPreferences
-{
-    public record UpdateShowInSearchEngineStateCompanyPreferencesCommand(int Id);
-}
+﻿namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateShowInSearchEngineState;
+
+public record UpdateShowInSearchEngineStateCompanyPreferencesCommand(int Id);

@@ -1,0 +1,4 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFromDistributionState;
+
+public record BackFromDistributionStateCommand(int Id);
+

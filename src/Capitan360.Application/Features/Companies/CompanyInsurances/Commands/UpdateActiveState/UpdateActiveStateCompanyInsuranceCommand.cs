@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanyInsurances.Commands.UpdateActiveState;
-
-public record UpdateActiveStateCompanyInsuranceCommand(int Id);

@@ -1,15 +1,10 @@
 ﻿using Capitan360.Application.Common;
 using Capitan360.Application.Features.Addresses.Addresses.Services;
 using Capitan360.Application.Features.Addresses.Areas.Services;
-using Capitan360.Application.Features.Companies.CompanyInsuranceCharges.Services;
-using Capitan360.Application.Features.Companies.CompanyInsurances.Services;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Services;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
 using Capitan360.Application.Features.Companies.Companies.Services;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
-using Capitan360.Application.Features.Companies.CompanyDomesticPaths.Services;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathCharges.Services;
-using Capitan360.Application.Features.Companies.CompanyDomesticPathStructPrices.Services;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
 using Capitan360.Application.Features.Companies.CompanySmsPatterns.Services;
 using Capitan360.Application.Features.Companies.CompanyType.Services;
@@ -24,6 +19,12 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Services;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Services;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Services;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathStructPrices.Services;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Services;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Services;
 
 namespace Capitan360.Application.Extensions;
 
