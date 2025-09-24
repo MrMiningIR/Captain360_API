@@ -37,7 +37,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
     public async Task<ActionResult<ApiResponse<CompanyDto>>> GetCompanyById(
         [FromRoute] int id, [FromQuery] int userCompanyTypeId, CancellationToken cancellationToken)
     {
-        var response = await companyService.GetCompanyByIdAsync(new GetCompanyByIdQuery(id, userCompanyTypeId), cancellationToken);
+        var response = await companyService.GetCompanyByIdAsync(new GetCompanyByIdQuery(id), cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 

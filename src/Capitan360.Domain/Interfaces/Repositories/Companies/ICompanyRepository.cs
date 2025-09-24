@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyRepository
 {
@@ -15,13 +15,13 @@ public interface ICompanyRepository
 
     Task<int> CreateCompanyAsync(Company company, CancellationToken cancellationToken);
 
-    Task<Company?> GetCompanyByIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<Company?> GetCompanyByIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
     Task DeleteCompanyAsync(Company company);
 
     Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<Company?> GetCompanyByCodeAsync(string companyCode, bool loadData, bool tracked,CancellationToken cancellationToken);
+    Task<Company?> GetCompanyByCodeAsync(string companyCode, bool loadData, bool tracked, CancellationToken cancellationToken);
 
 
 

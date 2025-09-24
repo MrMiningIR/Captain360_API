@@ -2,8 +2,8 @@
 
 public record UpdateCompanyDomesticPathCommand(
     bool Active,
-    string? Description,
-    string? DescriptionForSearch)
+    string Description,
+    string DescriptionForSearch)
 {
     public int Id { get; set; }
 }

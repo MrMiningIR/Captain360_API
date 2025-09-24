@@ -20,7 +20,6 @@
     <ProjectReference Include="..\Capitan360.Domain\Capitan360.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Features\Companies\CompanyBanks\MapperProfiles\" />
     <Folder Include="Features\Companies\CompanyBanks\Services\" />
     <Folder Include="Features\CompanyDomesticPaths\CompanyDomesticPathChargeContentTypes\Commands\" />
     <Folder Include="Features\CompanyDomesticPaths\CompanyDomesticPathChargeContentTypes\Dtos\" />
@@ -49,13 +48,11 @@
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\MapperProfiles\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Services\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Queries\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPeriods\MapperProfiles\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPeriods\Services\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPeriods\Queries\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybills\MapperProfiles\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybills\Services\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybills\Queries\" />
-    <Folder Include="Features\CompanyManifestForms\CompanyManifestFormPeriods\MapperProfiles\" />
     <Folder Include="Features\CompanyManifestForms\CompanyManifestFormPeriods\Services\" />
     <Folder Include="Features\CompanyManifestForms\CompanyManifestFormPeriods\Queries\" />
     <Folder Include="Features\CompanyManifestForms\CompanyManifestForms\MapperProfiles\" />

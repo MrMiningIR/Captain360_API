@@ -3,17 +3,17 @@ using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyPackageTypeRepository
 {
     Task CreateCompanyPackageTypesAsync(List<int> companiesId, PackageType packageType, CancellationToken cancellationToken);
 
-    Task<bool> CheckExistCompanyPackageTypeNameAsync(string companyPackageTypeName, int companyId, int? currentCompanyPackageTypeId,  CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyPackageTypeNameAsync(string companyPackageTypeName, int companyId, int? currentCompanyPackageTypeId, CancellationToken cancellationToken);
 
     Task<int> GetCountCompanyPackageTypeAsync(int companyId, CancellationToken cancellationToken);
 
-    Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 

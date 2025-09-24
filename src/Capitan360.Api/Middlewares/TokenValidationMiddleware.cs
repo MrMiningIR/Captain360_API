@@ -1,5 +1,5 @@
 ﻿
-using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 
 namespace Capitan360.Api.Middlewares
 {

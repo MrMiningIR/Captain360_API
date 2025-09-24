@@ -15,11 +15,6 @@ using System.Security.Claims;
 using ValidationException = FluentValidation.ValidationException;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Identities;
-using Capitan360.Domain.Repositories.Companies;
-using Capitan360.Domain.Repositories.Permissions;
-using Capitan360.Domain.Repositories.Addresses;
-using Capitan360.Domain.Repositories.Users;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Application.Features.Addresses.Areas.Dtos;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
@@ -40,6 +35,9 @@ using Capitan360.Application.Features.Identities.Identities.Queries.LoginUser;
 using Capitan360.Application.Features.Identities.Identities.Queries.LogOut;
 using Capitan360.Application.Features.Identities.Identities.Queries.RefreshToken;
 using Capitan360.Application.Features.Identities.Identities.Responses;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Application.Features.Identities.Identities.Services;
 

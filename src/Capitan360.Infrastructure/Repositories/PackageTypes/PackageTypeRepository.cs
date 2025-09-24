@@ -2,7 +2,7 @@
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.PackageTypes;
+using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

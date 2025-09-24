@@ -1,4 +1,4 @@
-﻿namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Dtos;
+﻿namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Dtos;
 
 public class CompanySmsPatternsDto
 {

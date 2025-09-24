@@ -23,6 +23,5 @@
     <Folder Include="Data\" />
     <Folder Include="Repositories\ContentTypes\" />
     <Folder Include="Repositories\Cache\" />
-    <Folder Include="Repositories\Users\" />
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ public class GetAllAreaQueryValidator : AbstractValidator<GetAllAreaQuery>
     public GetAllAreaQueryValidator()
     {
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگ‌تر یا برابر با 1 باشد");
+            .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگتر یا برابر با 1 باشد");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))

@@ -11,10 +11,10 @@ using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetByCompany
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
-namespace Capitan360.Application.Features.Companies.CompanyUri.Services;
+namespace Capitan360.Application.Features.Companies.CompanyUris.Services;
 
 
 
@@ -45,7 +45,7 @@ public class CompanyUriService(
         if (await companyUriRepository.CheckExistCompanyUriUriAsync(createCompanyUriCommand.Uri, null, cancellationToken))
             return ApiResponse<int>.Error(400, "URI شرکت تکراری است");
 
-        var companyUri = mapper.Map<Capitan360.Domain.Entities.Companies.CompanyUri>(createCompanyUriCommand) ?? null;
+        var companyUri = mapper.Map<Domain.Entities.Companies.CompanyUri>(createCompanyUriCommand) ?? null;
         if (companyUri == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
 

@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Addresses;
+namespace Capitan360.Domain.Interfaces.Repositories.Addresses;
 
 public interface IAreaRepository
 {

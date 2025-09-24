@@ -13,21 +13,19 @@ public class GetAllCompanyPackageTypesQueryValidator : AbstractValidator<GetAllC
 
     public GetAllCompanyPackageTypesQueryValidator()
     {
-        RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1)
-            .WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
-
         RuleFor(x => x.CompanyId)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("شناسه شرکت الزامی است");
+            .GreaterThanOrEqualTo(0).WithMessage("شناسه شرکت الزامی است");
+
+        RuleFor(r => r.PageNumber)
+            .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 
         RuleFor(r => r.PageSize)
             .Must(value => _allowPageSizes.Contains(value))
-            .WithMessage($"Page size must be in [{string.Join(",", _allowPageSizes)}]");
+            .WithMessage($"تعداد ایتم در صفحه باید یکی از موارد زیر باشد [{string.Join(",", _allowPageSizes)}]");
 
         RuleFor(r => r.SortBy)
             .Must(value => _allowedSortByColumnNames.Contains(value))
             .When(q => q.SortBy != null)
-            .WithMessage($"Sort by is optional, or must be in [{string.Join(",", _allowedSortByColumnNames)}]");
+            .WithMessage($"مرتب سازی باید بر اساس یکی از آیتم های زیر باشد [{string.Join(",", _allowedSortByColumnNames)}]");
     }
 }

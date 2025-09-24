@@ -2,7 +2,7 @@
 
 namespace Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetByCompanyId;
 
-public class GetCompanyCommissionsByCompanyIdQueryValidator : AbstractValidator<GetCompanyCommissionsByCompanyId.GetCompanyCommissionsByCompanyIdQuery>
+public class GetCompanyCommissionsByCompanyIdQueryValidator : AbstractValidator<GetCompanyCommissionsByCompanyIdQuery>
 {
     public GetCompanyCommissionsByCompanyIdQueryValidator()
     {

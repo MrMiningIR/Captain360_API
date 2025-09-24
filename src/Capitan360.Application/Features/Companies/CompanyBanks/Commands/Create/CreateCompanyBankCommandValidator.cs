@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Commands.Create;
 
@@ -10,17 +11,15 @@ public class CreateCompanyBankCommandValidator : AbstractValidator<CreateCompany
             .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.Code)
-            .NotEmpty().WithMessage("کد بانک الزامی است")
-            .MaximumLength(50).WithMessage("کد بانک نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            .MinimumLength(2).WithMessage("کد بانک نمی‌تواند کمتر از 2 کاراکتر باشد");
+            .NotEmpty().WithMessage("کد الزامی است")
+            .MaximumLength(10).WithMessage("کد نمی‌تواند بیشتر از 10 کاراکتر باشد");
 
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("نام بانک الزامی است")
-            .MaximumLength(50).WithMessage("نام بانک نمی‌تواند بیشتر از 50 کاراکتر باشد")
-            .MinimumLength(2).WithMessage("نام بانک نمی‌تواند کمتر از 2 کاراکتر باشد");
+            .NotEmpty().WithMessage("نام الزامی است")
+            .MaximumLength(30).WithMessage("نام نمی‌تواند بیشتر از 30 کاراکتر باشد");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("توضیحات بانک الزامی است")
+            .NotNull().WithMessage("توضیحات نمی تواند خالی باشد است.")
             .MaximumLength(500).WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد");
     }
 }

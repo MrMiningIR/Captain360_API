@@ -6,9 +6,6 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
 using Capitan360.Application.Features.Companies.Companies.Services;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Services;
-using Capitan360.Application.Features.Companies.CompanyType.Services;
-using Capitan360.Application.Features.Companies.CompanyUri.Services;
 using Capitan360.Application.Features.ContentTypeService.Services;
 using Capitan360.Application.Features.PackageTypeService.Services;
 using Capitan360.Application.Features.Permission.Services;
@@ -25,6 +22,8 @@ using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Servic
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathStructPrices.Services;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Services;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Services;
+using Capitan360.Application.Features.Companies.CompanyTypes.Services;
+using Capitan360.Application.Features.Companies.CompanyUris.Services;
 
 namespace Capitan360.Application.Extensions;
 

@@ -3,7 +3,7 @@ using Capitan360.Application.Features.Role.Commands;
 using Capitan360.Application.Features.Role.Commands.CreateRole;
 using Capitan360.Application.Features.Role.Commands.UpdateQuery;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Identities;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

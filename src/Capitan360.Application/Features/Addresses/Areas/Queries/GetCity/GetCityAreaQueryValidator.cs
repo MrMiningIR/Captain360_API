@@ -15,7 +15,7 @@ public class GetCityAreaQueryValidator : AbstractValidator<GetCityAreaQuery>
     public GetCityAreaQueryValidator()
     {
         RuleFor(r => r.PageNumber)
-            .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگ‌تر یا برابر با 1 باشد");
+            .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگتر یا برابر با 1 باشد");
         RuleFor(r => r.ProvinceId)
             .GreaterThan(0).WithMessage("شماسه استان باید بیشتر از 0 باشد");
 

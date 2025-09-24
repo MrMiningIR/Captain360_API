@@ -2,8 +2,6 @@
 using Capitan360.Application.Common;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Addresses;
-using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.CompanyDomesticPaths;
@@ -16,6 +14,8 @@ using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetByCompanyId;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetById;
 using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticPaths;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Services;
 

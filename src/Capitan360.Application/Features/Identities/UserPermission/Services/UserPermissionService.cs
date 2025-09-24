@@ -6,8 +6,7 @@ using Capitan360.Application.Features.UserPermission.Commands.UpDeInlUserPermiss
 using Capitan360.Application.Features.UserPermission.Dtos;
 using Capitan360.Application.Features.UserPermission.Queries.GetUserPermissions;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Identities;
-using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.UserPermission.Services;

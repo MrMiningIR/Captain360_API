@@ -4,15 +4,37 @@ using Capitan360.Application.Features.ContentTypes.Commands.Update;
 using Capitan360.Application.Features.ContentTypes.Dtos;
 using Capitan360.Domain.Entities.ContentTypes;
 
-namespace Capitan360.Application.Features.ContentTypeService.MapperProfiles;
+namespace Capitan360.Application.Features.ContentTypes.MapperProfiles;
 
 public class ContentTypeProfile : Profile
 {
     public ContentTypeProfile()
     {
-        CreateMap<CreateContentTypeCommand, ContentType>();
-        CreateMap<UpdateContentTypeCommand, ContentType>();
         CreateMap<ContentType, ContentTypeDto>()
-            .ForMember(des => des.CompanyTypeName, opt => opt.MapFrom(des => des.CompanyType.DisplayName));
+            .ForMember(
+                dest => dest.CompanyTypeName,
+                opt => opt.MapFrom(src =>
+                    src.CompanyType != null ? src.CompanyType.DisplayName : null
+                )
+            );
+
+        CreateMap<ContentTypeDto, ContentType>()
+            .ForMember(dest => dest.CompanyType, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyContentTypes, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
+
+        CreateMap<CreateContentTypeCommand, ContentType>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyType, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyContentTypes, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
+
+        CreateMap<UpdateContentTypeCommand, ContentType>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CompanyTypeId, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyType, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyContentTypes, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
     }
+
 }

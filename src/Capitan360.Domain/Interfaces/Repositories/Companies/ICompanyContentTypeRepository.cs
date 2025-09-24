@@ -3,20 +3,20 @@ using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.ContentTypes;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyContentTypeRepository
 {
     Task CreateCompanyContentTypesAsync(List<int> companiesId, ContentType ContentType, CancellationToken cancellationToken);
 
-    Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int companyId, int? currentCompanyContentTypeId,  CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int companyId, int? currentCompanyContentTypeId, CancellationToken cancellationToken);
 
     Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken);
 
     Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
-  
+    Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+
     Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId);
 
     Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken);

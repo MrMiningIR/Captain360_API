@@ -6,7 +6,6 @@ public class MoveUpCompanyPackageTypeCommandValidator : AbstractValidator<MoveUp
 {
     public MoveUpCompanyPackageTypeCommandValidator()
     {
-
         RuleFor(x => x.Id)
            .GreaterThan(0).WithMessage("شناسه بسته بندی بار باید بزرگتر از صفر باشد");
     }

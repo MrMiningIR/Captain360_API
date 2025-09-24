@@ -1,11 +1,11 @@
 ﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyBankRepository
 {
-    Task<bool> CheckExistCompanyBankNameAsync(string companyBankName, int companyId, int? currentCompanyBankId,  CancellationToken cancellationToken);
+    Task<bool> CheckExistCompanyBankNameAsync(string companyBankName, int companyId, int? currentCompanyBankId, CancellationToken cancellationToken);
 
     Task<bool> CheckExistCompanyBankCodeAsync(string companyBankCode, int companyId, int? currentCompanyBankId, CancellationToken cancellationToken);
 
@@ -13,9 +13,9 @@ public interface ICompanyBankRepository
 
     Task<int> GetCountCompanyBankAsync(int companyId, CancellationToken cancellationToken);
 
-    Task<CompanyBank?> GetCompanyBankByIdAsync(int companyBankId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<CompanyBank?> GetCompanyBankByIdAsync(int companyBankId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyBank>?> GetCompanyBankByCompanyIdAsync(int companyBankCompanyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyBank>?> GetCompanyBankByCompanyIdAsync(int companyBankCompanyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
     Task DeleteCompanyBankAsync(int companyBankId);
 
@@ -25,5 +25,5 @@ public interface ICompanyBankRepository
 
     Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<CompanyBank?> GetCompanyBankByCodeAsync(string companyBankCode, int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<CompanyBank?> GetCompanyBankByCodeAsync(string companyBankCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 }

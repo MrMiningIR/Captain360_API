@@ -2,7 +2,7 @@
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.PackageTypes;
+namespace Capitan360.Domain.Interfaces.Repositories.PackageTypes;
 
 public interface IPackageTypeRepository
 {

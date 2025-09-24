@@ -13,7 +13,7 @@ using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.Get
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;

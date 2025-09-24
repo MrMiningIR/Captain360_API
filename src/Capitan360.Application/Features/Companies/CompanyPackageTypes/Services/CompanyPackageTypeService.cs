@@ -8,10 +8,10 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetA
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetById;
 using Microsoft.Extensions.Logging;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
-using Capitan360.Domain.Repositories.PackageTypes;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveDown;
+using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
 

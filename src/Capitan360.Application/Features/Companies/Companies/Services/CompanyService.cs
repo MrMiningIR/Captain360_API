@@ -9,12 +9,12 @@ using Capitan360.Application.Features.Companies.Companies.Queries.GetAll;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetById;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Addresses;
-using Capitan360.Domain.Repositories.Companies;
-using Capitan360.Domain.Repositories.ContentTypes;
-using Capitan360.Domain.Repositories.PackageTypes;
 using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
+using Capitan360.Domain.Interfaces.Repositories.ContentTypes;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Application.Features.Companies.Companies.Services;
 
@@ -88,9 +88,9 @@ public class CompanyService(
                 ActiveInWebServiceSearchEngine = false,
                 ActiveIssueDomesticWaybill = false,
                 ActiveShowInSearchEngine = false,
-                CaptainCargoCode = null,
-                CaptainCargoName = null,
-                EconomicCode = null,
+                CaptainCargoCode = "",
+                CaptainCargoName = "",
+                EconomicCode = "",
                 ExitAccumulationInTax = false,
                 ExitAccumulationMinWeightIsFixed = false,
                 ExitDistributionInTax = false,
@@ -110,8 +110,8 @@ public class CompanyService(
                 ExitRevenue3InTax = false,
                 ExitStampBillInTax = false,
                 ExitStampBillMinWeightIsFixed = false,
-                NationalId = null,
-                RegistrationId = null,
+                NationalId = "",
+                RegistrationId = "",
                 Tax = 0,
             }, cancellationToken);
 
@@ -119,30 +119,30 @@ public class CompanyService(
         new Domain.Entities.Companies.CompanySmsPatterns
         {
             CompanyId = companyId,
-            PatternSmsCancelByCustomerCompany = null,
-            PatternSmsCancelByCustomerReceiver = null,
-            PatternSmsCancelByCustomerSender = null,
-            PatternSmsCancelReceiver = null,
-            PatternSmsCancelSender = null,
-            PatternSmsDeliverReceiver = null,
-            PatternSmsDeliverSender = null,
-            PatternSmsIssueCompany = null,
-            PatternSmsIssueReceiver = null,
-            PatternSmsIssueSender = null,
-            PatternSmsManifestReceiver = null,
-            PatternSmsManifestSender = null,
-            PatternSmsPackageInCompanyReceiver = null,
-            PatternSmsPackageInCompanySender = null,
-            PatternSmsReceivedInReceiverCompanyReceiver = null,
-            PatternSmsReceivedInReceiverCompanySender = null,
-            PatternSmsSendManifestReceiverCompany = null,
-            PatternSmsSendReceiverPeakReceiver = null,
-            PatternSmsSendReceiverPeakSender = null,
-            PatternSmsSendSenderPeakReceiver = null,
-            PatternSmsSendSenderPeakSender = null,
-            SmsPanelNumber = null,
-            SmsPanelPassword = null,
-            SmsPanelUserName = null,
+            PatternSmsCancelByCustomerCompany = "",
+            PatternSmsCancelByCustomerReceiver = "",
+            PatternSmsCancelByCustomerSender = "",
+            PatternSmsCancelReceiver = "",
+            PatternSmsCancelSender = "",
+            PatternSmsDeliverReceiver = "",
+            PatternSmsDeliverSender = "",
+            PatternSmsIssueCompany = "",
+            PatternSmsIssueReceiver = "",
+            PatternSmsIssueSender = "",
+            PatternSmsManifestReceiver = "",
+            PatternSmsManifestSender = "",
+            PatternSmsPackageInCompanyReceiver = "",
+            PatternSmsPackageInCompanySender = "",
+            PatternSmsReceivedInReceiverCompanyReceiver = "",
+            PatternSmsReceivedInReceiverCompanySender = "",
+            PatternSmsSendManifestReceiverCompany = "",
+            PatternSmsSendReceiverPeakReceiver = "",
+            PatternSmsSendReceiverPeakSender = "",
+            PatternSmsSendSenderPeakReceiver = "",
+            PatternSmsSendSenderPeakSender = "",
+            SmsPanelNumber = "",
+            SmsPanelPassword = "",
+            SmsPanelUserName = "",
         }, cancellationToken);
 
         await commissionsRepository.CreateCompanyCommissionsAsync(

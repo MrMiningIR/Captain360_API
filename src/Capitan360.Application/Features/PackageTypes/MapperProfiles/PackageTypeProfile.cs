@@ -4,17 +4,36 @@ using Capitan360.Application.Features.PackageTypes.Commands.Update;
 using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Domain.Entities.PackageTypes;
 
-namespace Capitan360.Application.Features.PackageTypeService.MapperProfiles;
-
-
+namespace Capitan360.Application.Features.PackageTypes.MapperProfiles;
 
 public class PackageTypeProfile : Profile
 {
     public PackageTypeProfile()
     {
-        CreateMap<CreatePackageTypeCommand, PackageType>();
-        CreateMap<UpdatePackageTypeCommand, PackageType>();
         CreateMap<PackageType, PackageTypeDto>()
-            .ForMember(des => des.CompanyTypeName, opt => opt.MapFrom(des => des.CompanyType.DisplayName));
+            .ForMember(
+                dest => dest.CompanyTypeName,
+                opt => opt.MapFrom(src =>
+                    src.CompanyType != null ? src.CompanyType.DisplayName : null
+                )
+            );
+
+        CreateMap<PackageTypeDto, PackageType>()
+            .ForMember(dest => dest.CompanyType, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyPackageTypes, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
+
+        CreateMap<CreatePackageTypeCommand, PackageType>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyType, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyPackageTypes, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
+
+        CreateMap<UpdatePackageTypeCommand, PackageType>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CompanyTypeId, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyType, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyPackageTypes, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
     }
 }

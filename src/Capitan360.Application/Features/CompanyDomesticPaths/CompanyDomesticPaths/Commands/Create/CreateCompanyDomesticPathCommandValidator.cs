@@ -10,24 +10,12 @@ public class CreateCompanyDomesticPathCommandValidator : AbstractValidator<Creat
             .GreaterThan(0).WithMessage("شناسه شرکت الزامی است");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("توضیحات الزامی است")
-            .MaximumLength(500).WithMessage("توضیحات نمی‌تواند بیشتر از 500 کاراکتر باشد");
+            .NotNull().WithMessage("توضیحات نمی تواند خالی باشد است.")
+            .MaximumLength(500).WithMessage("حداکثر طول توضیحات 500 کاراکتر است.");
 
         RuleFor(x => x.DescriptionForSearch)
-            .NotEmpty().WithMessage("توضیحات جستجو الزامی است")
-            .MaximumLength(500).WithMessage("توضیحات جستجو نمی‌تواند بیشتر از 500 کاراکتر باشد");
-
-        RuleFor(x => x.EntranceFee)
-            .NotNull().NotEmpty().WithMessage("نمیتواند بدون مقدار باشد")
-            .GreaterThanOrEqualTo(0).WithMessage("هزینه ورودی نمی‌تواند منفی باشد").LessThanOrEqualTo(1_000_000_000).WithMessage("هزینه ورودی نمی‌تواند بیشتر از یک میلیارد باشد"); ;
-
-        RuleFor(x => x.EntranceFeeWeight)
-             .NotNull().NotEmpty().WithMessage("نمیتواند بدون مقدار باشد")
-            .GreaterThanOrEqualTo(0).WithMessage("وزن ورودی نمی‌تواند منفی باشد").InclusiveBetween(0m, 99_999_999.99m).WithMessage("وزن ورودی باید بین 0 و 99,999,999.99 باشد")
-            .PrecisionScale(2, 10, true).WithMessage("وزن ورودی باید حداکثر 10 رقم با 2 رقم اعشار داشته باشد");
-
-        RuleFor(x => x.EntranceFeeType)
-           .GreaterThan(0).WithMessage("نوع ورودی معتبر نیست");
+            .NotNull().WithMessage("توضیحات مسیر نمی تواند خالی باشد است.")
+            .MaximumLength(500).WithMessage("حداکثر طول توضیحات مسیر 500 کاراکتر است.");
 
         RuleFor(x => x.SourceCountryId)
             .GreaterThan(0).WithMessage("شناسه کشور مبدا الزامی است");

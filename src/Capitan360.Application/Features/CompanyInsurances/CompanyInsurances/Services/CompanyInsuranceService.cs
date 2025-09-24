@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.CompanyInsurances;
@@ -14,6 +13,7 @@ using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Querie
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetByCompanyId;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetById;
 using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Services;
 

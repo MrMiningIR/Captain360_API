@@ -9,7 +9,7 @@ using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.Get
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
@@ -212,7 +212,7 @@ public class CompanyCommissionsService(
         return ApiResponse<CompanyCommissionsDto>.Ok(updatedCompanyCommissionsDto, "کمیسیون با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByCompanyIdAsync(GetCompanyCommissionsByCompanyId.GetCompanyCommissionsByCompanyIdQuery query, CancellationToken cancellationToken)//ch**
+    public async Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByCompanyIdAsync(GetCompanyCommissionsByCompanyIdQuery query, CancellationToken cancellationToken)//ch**
     {
         logger.LogInformation("GetCompanyCommissionsByCompanyId is Called with ID: {Id}", query.CompanyId);
 

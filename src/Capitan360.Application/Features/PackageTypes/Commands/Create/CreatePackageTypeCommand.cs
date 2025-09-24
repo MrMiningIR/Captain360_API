@@ -4,5 +4,4 @@ public record CreatePackageTypeCommand(
     int CompanyTypeId,
     string Name,
     string Description,
-    bool Active
-);
+    bool Active);

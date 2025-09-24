@@ -3,7 +3,7 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Features.Permission.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 

@@ -7,6 +7,6 @@ public class GetCompanyDomesticPathByIdQueryValidator : AbstractValidator<GetCom
     public GetCompanyDomesticPathByIdQueryValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه مسیر داخلی شرکت باید بزرگ‌تر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه مسیر داخلی شرکت باید بزرگتر از صفر باشد");
     }
 }

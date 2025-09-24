@@ -100,7 +100,7 @@ public class CompanyDomesticWaybillDto
     public string? CustomerReceiverMobile { get; set; }
     public string? CustomerReceiverAddress { get; set; }
     public short State { get; set; }
-    public WaybillState WaybillSate { get; set; }
+    public CompanyDomesticWaybillState WaybillSate { get; set; }
     public string? DateIssued { get; set; }
     public string? TimeIssued { get; set; }
     public string? DateCollectiong { get; set; }

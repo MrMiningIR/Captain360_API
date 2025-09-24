@@ -1,9 +1,9 @@
 ﻿using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Interfaces.Repositories.CompanyManifestForms;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Capitan360.Domain.Entities.CompanyManifestForms;
+using Capitan360.Domain.Interfaces.Repositories.ComapnyManifestForms;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyManifestForms;
 
@@ -174,11 +174,11 @@ public class CompanyManifestFormRepository(ApplicationDbContext dbContext, IUnit
 
     public async Task<bool> AnyIssunedManifestFormByDomesticPeriodIdStartNumberEndNumberAsync(int domesticPeriod, long startNumber, long endNumber, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyManifestForms.AnyAsync(item => item.CompanyManifestFormPeriodId == domesticPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)WaybillState.Ready);
+        return await dbContext.CompanyManifestForms.AnyAsync(item => item.CompanyManifestFormPeriodId == domesticPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)CompanyDomesticWaybillState.Ready);
     }
 
     public async Task<bool> AnyIssunedManifestFormByDomesticPeriodIdAsync(int domesticPeriod, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyManifestForms.AnyAsync(item => item.CompanyManifestFormPeriodId == domesticPeriod && item.State != (short)WaybillState.Ready);
+        return await dbContext.CompanyManifestForms.AnyAsync(item => item.CompanyManifestFormPeriodId == domesticPeriod && item.State != (short)CompanyDomesticWaybillState.Ready);
     }
 }

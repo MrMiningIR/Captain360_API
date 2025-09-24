@@ -7,6 +7,6 @@ public class UpdateShowInSearchEngineStateCompanyPreferencesCommandValidator : A
     public UpdateShowInSearchEngineStateCompanyPreferencesCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
+            .GreaterThan(0).WithMessage("شناسه تنظیمات باید بزرگتر از صفر باشد");
     }
 }

@@ -3,8 +3,7 @@
 public record UpdateCompanyPackageTypeCommand(
     string Name,
     bool Active,
-    string Description
-    )
+    string Description)
 {
     public int Id { get; set; }
 }

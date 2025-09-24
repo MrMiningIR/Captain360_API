@@ -7,6 +7,6 @@ public class UpdateActiveStateCompanyUriCommandValidator : AbstractValidator<Upd
     public UpdateActiveStateCompanyUriCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه URI باید مشخص باشد");
+            .GreaterThan(0).WithMessage("شناسه URI باید بزرگتر از صفر باشد");
     }
 }

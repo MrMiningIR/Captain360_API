@@ -2,7 +2,7 @@
 using Capitan360.Domain.Entities.Identities;
 using System.Security.Claims;
 
-namespace Capitan360.Domain.Repositories.Identities;
+namespace Capitan360.Domain.Interfaces.Repositories.Identities;
 
 public interface ITokenRepository
 {

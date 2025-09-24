@@ -2,8 +2,6 @@
 using Capitan360.Application.Common;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
-using Capitan360.Domain.Repositories.PackageTypes;
 using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
@@ -15,6 +13,8 @@ using Capitan360.Application.Features.PackageTypes.Commands.MoveUp;
 using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
 using Capitan360.Application.Features.PackageTypes.Queries.GetById;
 using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
+using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Application.Features.PackageTypeService.Services;
 

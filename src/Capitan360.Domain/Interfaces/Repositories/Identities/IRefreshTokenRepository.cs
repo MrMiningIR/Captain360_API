@@ -1,7 +1,6 @@
-﻿
-using Capitan360.Domain.Entities.Identities;
+﻿using Capitan360.Domain.Entities.Identities;
 
-namespace Capitan360.Domain.Repositories.Identities;
+namespace Capitan360.Domain.Interfaces.Repositories.Identities;
 
 public interface IRefreshTokenRepository
 {

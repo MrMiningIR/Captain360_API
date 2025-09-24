@@ -7,7 +7,7 @@ using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
 
-namespace Capitan360.Application.Features.Companies.CompanyUri.Services;
+namespace Capitan360.Application.Features.Companies.CompanyUris.Services;
 
 public interface ICompanyUriService
 {

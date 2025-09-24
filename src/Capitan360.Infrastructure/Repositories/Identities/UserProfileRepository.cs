@@ -1,19 +1,19 @@
 ﻿using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Users;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Capitan360.Infrastructure.Repositories.Users;
+namespace Capitan360.Infrastructure.Repositories.Identities;
 
 public class UserProfileRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IUserProfileRepository
 {
     public async Task<int> CreateUserProfile(UserProfile profile,
         CancellationToken cancellationToken)
     {
-       
 
-       
+
+
         dbContext.UserProfiles.Add(profile);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return profile.Id;

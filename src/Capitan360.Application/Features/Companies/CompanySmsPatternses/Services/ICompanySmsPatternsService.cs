@@ -1,8 +1,8 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Dtos;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Dtos;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetById;

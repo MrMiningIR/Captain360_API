@@ -236,12 +236,12 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
 
     public async Task<bool> AnyIssunedDomesticWaybillByDomesticPeriodIdStartNumberEndNumberAsync(int domesticPeriod, long startNumber, long endNumber, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)WaybillState.Ready);
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)CompanyDomesticWaybillState.Ready);
     }
 
     public async Task<bool> AnyIssunedDomesticWaybillByDomesticPeriodIdAsync(int domesticPeriod, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && item.State != (short)WaybillState.Ready);
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && item.State != (short)CompanyDomesticWaybillState.Ready);
     }
 
     public async Task ChangeStateAsync(List<int> waybillIds, short state, CancellationToken cancellationToken)
@@ -254,35 +254,35 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
 
             switch (state)
             {
-                case (short)WaybillState.Issued:
+                case (short)CompanyDomesticWaybillState.Issued:
                     waybill.DateIssued = Tools.GetTodayInPersianDate();
                     waybill.TimeIssued = Tools.GetTime();
                     break;
-                case (short)WaybillState.Collectiong:
+                case (short)CompanyDomesticWaybillState.Collectiong:
                     waybill.DateCollectiong = Tools.GetTodayInPersianDate();
                     waybill.TimeCollectiong = Tools.GetTime();
                     break;
-                case (short)WaybillState.ReceivedAtSenderCompany:
+                case (short)CompanyDomesticWaybillState.ReceivedAtSenderCompany:
                     waybill.DateReceivedAtSenderCompany = Tools.GetTodayInPersianDate();
                     waybill.TimeReceivedAtSenderCompany = Tools.GetTime();
                     break;
-                case (short)WaybillState.Manifested:
+                case (short)CompanyDomesticWaybillState.Manifested:
                     waybill.DateManifested = Tools.GetTodayInPersianDate();
                     waybill.TimeManifested = Tools.GetTime();
                     break;
-                case (short)WaybillState.AirlineDelivery:
+                case (short)CompanyDomesticWaybillState.AirlineDelivery:
                     waybill.DateAirlineDelivery = Tools.GetTodayInPersianDate();
                     waybill.TimeAirlineDelivery = Tools.GetTime();
                     break;
-                case (short)WaybillState.ReceivedAtReceiverCompany:
+                case (short)CompanyDomesticWaybillState.ReceivedAtReceiverCompany:
                     waybill.DateReceivedAtReceiverCompany = Tools.GetTodayInPersianDate();
                     waybill.TimeReceivedAtReceiverCompany = Tools.GetTime();
                     break;
-                case (short)WaybillState.Distribution:
+                case (short)CompanyDomesticWaybillState.Distribution:
                     waybill.DateDistribution = Tools.GetTodayInPersianDate();
                     waybill.TimeDistribution = Tools.GetTime();
                     break;
-                case (short)WaybillState.Delivery:
+                case (short)CompanyDomesticWaybillState.Delivery:
                     waybill.DateDelivery = Tools.GetTodayInPersianDate();
                     waybill.TimeDelivery = Tools.GetTime();
                     break;
@@ -303,40 +303,40 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
 
             switch (state)
             {
-                case (short)WaybillState.Issued:
+                case (short)CompanyDomesticWaybillState.Issued:
                     waybill.DateCollectiong = null;
                     waybill.TimeCollectiong = null;
                     waybill.BikeDeliveryInSenderCompanyId = null;
                     waybill.BikeDeliveryInSenderCompanyAgent = null;
-                    if (waybill.State == (short)WaybillState.ReceivedAtSenderCompany)
+                    if (waybill.State == (short)CompanyDomesticWaybillState.ReceivedAtSenderCompany)
                     {
                         waybill.DateReceivedAtSenderCompany = null;
                         waybill.TimeReceivedAtSenderCompany = null;
                     }
                     break;
-                case (short)WaybillState.Collectiong:
+                case (short)CompanyDomesticWaybillState.Collectiong:
                     waybill.DateReceivedAtSenderCompany = null;
                     waybill.TimeReceivedAtSenderCompany = null;
                     break;
-                case (short)WaybillState.ReceivedAtSenderCompany:
+                case (short)CompanyDomesticWaybillState.ReceivedAtSenderCompany:
                     waybill.CompanyManifestFormId = null;
                     waybill.DateManifested = null;
                     waybill.TimeManifested = null;
                     break;
-                case (short)WaybillState.Manifested:
+                case (short)CompanyDomesticWaybillState.Manifested:
                     waybill.DateAirlineDelivery = null;
                     waybill.TimeAirlineDelivery = null;
                     break;
-                case (short)WaybillState.AirlineDelivery:
+                case (short)CompanyDomesticWaybillState.AirlineDelivery:
                     waybill.DateReceivedAtReceiverCompany = null;
                     waybill.TimeReceivedAtReceiverCompany = null;
                     break;
-                case (short)WaybillState.ReceivedAtReceiverCompany:
+                case (short)CompanyDomesticWaybillState.ReceivedAtReceiverCompany:
                     waybill.DateDistribution = null;
                     waybill.TimeDistribution = null;
                     waybill.BikeDeliveryInReceiverCompanyId = null;
                     waybill.BikeDeliveryInReceiverCompanyAgent = null;
-                    if (waybill.State == (short)WaybillState.Delivery)
+                    if (waybill.State == (short)CompanyDomesticWaybillState.Delivery)
                     {
                         waybill.DateDelivery = null;
                         waybill.TimeDelivery = null;
@@ -353,7 +353,7 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
                         waybill.EntranceTransfereePersonNationalCode = null;
                     }
                     break;
-                case (short)WaybillState.Distribution:
+                case (short)CompanyDomesticWaybillState.Distribution:
                     waybill.DateDelivery = null;
                     waybill.TimeDelivery = null;
                     waybill.CompanyReceiverDateFinancial = null;

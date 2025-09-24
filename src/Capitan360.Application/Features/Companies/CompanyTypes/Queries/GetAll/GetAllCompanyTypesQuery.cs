@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Application.Features.Companies.CompanyType.Queries.GetAllCompanyTypes;
+namespace Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetAll;
 
 public record GetAllCompanyTypesQuery(
     [property: DefaultValue(null)] string? SearchPhrase = null,

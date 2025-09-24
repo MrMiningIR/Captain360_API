@@ -19,6 +19,6 @@ public interface ICompanyCommissionsService
         CancellationToken cancellationToken);
 
     Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByCompanyIdAsync(
-       GetCompanyCommissionsByCompanyId.GetCompanyCommissionsByCompanyIdQuery query,
+       GetCompanyCommissionsByCompanyIdQuery query,
        CancellationToken cancellationToken);
 }

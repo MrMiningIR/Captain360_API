@@ -2,7 +2,7 @@
 using Capitan360.Domain.Entities.CompanyManifestForms;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Interfaces.Repositories.CompanyManifestForms;
+using Capitan360.Domain.Interfaces.Repositories.ComapnyManifestForms;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

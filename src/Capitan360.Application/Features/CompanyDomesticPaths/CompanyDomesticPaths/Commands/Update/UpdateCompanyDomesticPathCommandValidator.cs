@@ -10,13 +10,11 @@ public class UpdateCompanyDomesticPathCommandValidator : AbstractValidator<Updat
             .GreaterThan(0).WithMessage("شناسه مسیر داخلی شرکت باید بزرگتر از صفر باشد");
 
         RuleFor(x => x.Description)
-            .MaximumLength(500)
-            .When(x => !string.IsNullOrWhiteSpace(x.Description))
-            .WithMessage("توضیحات مسیر نمی‌تواند بیشتر از 500 کاراکتر باشد");
+            .NotNull().WithMessage("توضیحات نمی تواند خالی باشد است.")
+            .MaximumLength(500).WithMessage("حداکثر طول توضیحات 500 کاراکتر است.");
 
         RuleFor(x => x.DescriptionForSearch)
-            .MaximumLength(500)
-            .When(x => !string.IsNullOrWhiteSpace(x.DescriptionForSearch))
-            .WithMessage("توضیحات مسیر در هنگام جستجو نمی‌تواند بیشتر از 500 کاراکتر باشد");
+            .NotNull().WithMessage("توضیحات مسیر نمی تواند خالی باشد است.")
+            .MaximumLength(500).WithMessage("حداکثر طول توضیحات مسیر 500 کاراکتر است.");
     }
 }

@@ -6,6 +6,7 @@ public class GetCompanyByIdQueryValidator : AbstractValidator<GetCompanyByIdQuer
 {
     public GetCompanyByIdQueryValidator()
     {
-        RuleFor(x => x.Id).GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد");
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگ‌تر از صفر باشد");
     }
 }

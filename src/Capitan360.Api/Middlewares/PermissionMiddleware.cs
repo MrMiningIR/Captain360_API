@@ -3,7 +3,7 @@ using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Exceptions;
-using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Infrastructure.Authorization.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

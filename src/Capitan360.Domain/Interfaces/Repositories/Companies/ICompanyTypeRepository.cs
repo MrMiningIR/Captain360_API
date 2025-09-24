@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyTypeRepository
 {
@@ -9,7 +9,7 @@ public interface ICompanyTypeRepository
 
     Task<int> CreateCompanyTypeAsync(CompanyType companyType, CancellationToken cancellationToken);
 
-    Task<CompanyType?> GetCompanyTypeByIdAsync(int companyTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<CompanyType?> GetCompanyTypeByIdAsync(int companyTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
     Task DeleteCompanyTypeAsync(int companyTypeId);
 

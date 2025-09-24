@@ -10,5 +10,4 @@ public record GetAllAreaQuery(
     [property: DefaultValue(10)] int PageSize = 10,
     [property: DefaultValue(SortDirection.Descending)] SortDirection SortDirection = SortDirection.Descending,
     [property: DefaultValue(false)] bool IgnorePageSize = false,
-     [property: DefaultValue(-1)] int ProvinceId = -1
-    );
+    [property: DefaultValue(-1)] int ProvinceId = -1);

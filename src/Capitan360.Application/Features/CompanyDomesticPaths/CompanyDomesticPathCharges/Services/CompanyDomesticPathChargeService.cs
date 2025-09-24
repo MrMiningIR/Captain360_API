@@ -13,8 +13,8 @@ using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.CompanyDomesticPaths;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticPaths;
-using Capitan360.Domain.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Services;

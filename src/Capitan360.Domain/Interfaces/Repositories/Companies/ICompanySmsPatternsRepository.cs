@@ -1,13 +1,13 @@
 ﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanySmsPatternsRepository
 {
     Task<int> CreateCompanySmsPatternsAsync(CompanySmsPatterns companySmsPatterns, CancellationToken cancellationToken);
 
-    Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<CompanySmsPatterns?> GetCompanySmsPatternsByIdAsync(int companySmsPatternsId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
     Task DeleteCompanySmsPatternsAsync(int companySmsPatternsId);
 

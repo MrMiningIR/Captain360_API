@@ -1,12 +1,12 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyType.Queries.GetAllCompanyTypes;
-using Capitan360.Application.Features.Companies.CompanyType.Queries.GetCompanyTypeById;
 using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
+using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetById;
 
-namespace Capitan360.Application.Features.Companies.CompanyType.Services;
+namespace Capitan360.Application.Features.Companies.CompanyTypes.Services;
 
 public interface ICompanyTypeService
 {

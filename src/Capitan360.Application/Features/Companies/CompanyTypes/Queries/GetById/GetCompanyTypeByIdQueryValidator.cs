@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Capitan360.Application.Features.Companies.CompanyType.Queries.GetCompanyTypeById;
+namespace Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetById;
 
 public class GetCompanyTypeByIdQueryValidator : AbstractValidator<GetCompanyTypeByIdQuery>
 {

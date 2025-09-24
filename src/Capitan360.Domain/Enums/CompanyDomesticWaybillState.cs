@@ -3,7 +3,7 @@ using Capitan360.Domain.Constants;
 
 namespace Capitan360.Domain.Enums;
 
-public enum WaybillState
+public enum CompanyDomesticWaybillState
 {
     [Display(Name = ConstantNames.Ready)]
     Ready = 1,

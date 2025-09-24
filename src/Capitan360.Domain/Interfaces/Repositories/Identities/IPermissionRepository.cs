@@ -2,7 +2,7 @@
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.Identities;
 
-namespace Capitan360.Domain.Repositories.Permissions;
+namespace Capitan360.Domain.Interfaces.Repositories.Identities;
 
 public interface IPermissionRepository
 {

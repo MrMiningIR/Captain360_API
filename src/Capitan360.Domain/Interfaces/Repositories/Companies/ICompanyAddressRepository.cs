@@ -1,6 +1,4 @@
-﻿using Capitan360.Domain.Entities.Companies;
-
-namespace Capitan360.Domain.Interfaces.Repositories.Companies;
+﻿namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyAddressRepository
 {

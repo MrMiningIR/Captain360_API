@@ -7,6 +7,6 @@ public class DeleteManifestFormPeriodCommandValidator : AbstractValidator<Delete
     public DeleteManifestFormPeriodCommandValidator()
     {
         RuleFor(x => x.Id)
-           .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگتر از صفر باشد");
+           .GreaterThan(0).WithMessage("شناسه دوره باید بزرگتر از صفر باشد");
     }
 }

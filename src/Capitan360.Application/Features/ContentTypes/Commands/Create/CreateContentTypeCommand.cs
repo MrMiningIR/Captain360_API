@@ -4,5 +4,4 @@ public record CreateContentTypeCommand(
     int CompanyTypeId,
     string Name,
     string Description,
-    bool Active
-);
+    bool Active);

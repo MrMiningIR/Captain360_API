@@ -1,11 +1,10 @@
-﻿
-using Capitan360.Domain.Entities.Identities;
+﻿using Capitan360.Domain.Entities.Identities;
 
-namespace Capitan360.Domain.Repositories.Identities;
+namespace Capitan360.Domain.Interfaces.Repositories.Identities;
 
 public interface IUserGroupRepository
 {
-    Task<IReadOnlyList<string>>GetUserGroupNameListAsyncByUserId(string userId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<string>> GetUserGroupNameListAsyncByUserId(string userId, CancellationToken cancellationToken);
 
     Task AddUerToGroup(UserGroup userGroup, CancellationToken cancellationToken);
     void RemoveUserFromGroup(UserGroup userGroup, CancellationToken cancellationToken);

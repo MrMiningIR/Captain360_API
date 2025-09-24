@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Index.HPRtree;

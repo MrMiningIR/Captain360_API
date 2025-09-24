@@ -1,5 +1,5 @@
-﻿using Capitan360.Domain.Enums;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Capitan360.Domain.Enums;
 
 namespace Capitan360.Application.Features.Addresses.Addresses.Queries.GetAll;
 

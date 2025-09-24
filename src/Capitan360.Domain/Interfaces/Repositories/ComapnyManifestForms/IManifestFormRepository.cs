@@ -1,12 +1,12 @@
 ﻿using Capitan360.Domain.Entities.CompanyManifestForms;
 
-namespace Capitan360.Domain.Interfaces.Repositories.CompanyManifestForms;
+namespace Capitan360.Domain.Interfaces.Repositories.ComapnyManifestForms;
 
 public interface IManifestFormRepository
 {
     Task<CompanyManifestForm?> GetManifestFormByIdAsync(int companyManifestFormId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
-    Task<CompanyManifestForm?> GetManifestFormByNoAsync(long companyManifestFormNo,  bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyManifestForm?> GetManifestFormByNoAsync(long companyManifestFormNo, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 
     Task<CompanyManifestForm?> GetManifestFormByNoAndCompanySenderIdAsync(long companyManifestFormNo, int companySenderId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken);
 

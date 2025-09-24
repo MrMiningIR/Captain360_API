@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanySmsPatterns.Dtos;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanySmsPatternses.Dtos;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetById;
-using Capitan360.Application.Features.Companies.CompanySmsPatternses.Services;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
-namespace Capitan360.Application.Features.Companies.CompanySmsPatterns.Services;
+namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Services;
 
 public class CompanySmsPatternsService(
     ILogger<CompanySmsPatternsService> logger,

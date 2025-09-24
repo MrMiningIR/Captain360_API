@@ -18,7 +18,7 @@ public class UpdateCompanyTypeCommandValidator : AbstractValidator<UpdateCompany
             .MaximumLength(30).WithMessage("حداکثر طول نام نمایشی برابر 30 است.");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("توضیحات الزامی است.")
+            .NotNull().WithMessage("توضیحات نمی تواند خالی باشد است.")
             .MaximumLength(500).WithMessage("حداکثر طول توضیحات برابر 500 است.");
     }
 }

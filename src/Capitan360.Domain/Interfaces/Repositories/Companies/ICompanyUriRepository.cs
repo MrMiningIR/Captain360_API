@@ -1,7 +1,7 @@
 ﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.Companies;
+namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 
 public interface ICompanyUriRepository
 {
@@ -9,7 +9,7 @@ public interface ICompanyUriRepository
 
     Task<int> CreateCompanyUriAsync(CompanyUri companyUri, CancellationToken cancellationToken);
 
-    Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool loadData, bool tracked,  CancellationToken cancellationToken);
+    Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<CompanyUri>?> GetCompanyUriByCompanyIdAsync(int companyUriCompanyId, CancellationToken cancellationToken);
 

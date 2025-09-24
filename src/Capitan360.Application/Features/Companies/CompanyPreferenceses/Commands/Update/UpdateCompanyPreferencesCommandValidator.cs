@@ -10,15 +10,15 @@ public class UpdateCompanyPreferencesCommandValidator : AbstractValidator<Update
             .GreaterThan(0).WithMessage("شناسه تنظیمات باید مشخص باشد");
 
         RuleFor(x => x.EconomicCode)
-            .NotEmpty().WithMessage("کد اقتصادی الزامی است.")
+            .NotNull().WithMessage("کد اقتصادی نمی تواند خالی باشد.")
             .MaximumLength(50).WithMessage("کد اقتصادی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.NationalId)
-            .NotEmpty().WithMessage("شناسه ملی الزامی است.")
+            .NotNull().WithMessage("شناسه ملی نمی تواند خالی باشد.")
             .MaximumLength(50).WithMessage("شناسه ملی نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.RegistrationId)
-            .NotEmpty().WithMessage("شناسه ثبت الزامی است.")
+            .NotNull().WithMessage("شناسه ثبت نمی تواند خالی باشد.")
             .MaximumLength(50).WithMessage("شناسه ثبت نمی‌تواند بیشتر از 50 کاراکتر باشد");
 
         RuleFor(x => x.CaptainCargoName)
@@ -30,7 +30,7 @@ public class UpdateCompanyPreferencesCommandValidator : AbstractValidator<Update
             .MaximumLength(30).WithMessage("کد کاپیتان کارگو نمی‌تواند بیشتر از 30 کاراکتر باشد");
 
         RuleFor(x => x.Tax)
-            .InclusiveBetween(0m, 100m).WithMessage("مالیات باید بین 0 تا 100 باشد.")
-            .PrecisionScale(5, 2, true).WithMessage("Tax باید حداکثر 2 رقم اعشار و مجموعاً حداکثر 5 رقم داشته باشد.");
+            .InclusiveBetween(0m, 100m).WithMessage("درصد مالیات باید بین 0 تا 100 باشد.")
+            .PrecisionScale(5, 2, true).WithMessage("درصد مالیات باید حداکثر 2 رقم اعشار و مجموعاً حداکثر 5 رقم داشته باشد.");
     }
 }

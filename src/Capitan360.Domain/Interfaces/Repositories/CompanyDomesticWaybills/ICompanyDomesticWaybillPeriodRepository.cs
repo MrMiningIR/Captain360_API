@@ -1,9 +1,9 @@
 ﻿using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Enums;
 
-namespace Capitan360.Domain.Repositories.CompanyDomesticWaybills;
+namespace Capitan360.Domain.Interfaces.Repositories.CompanyDomesticWaybills;
 
-public interface ICompanyDomesticWaybillPeriodRepository 
+public interface ICompanyDomesticWaybillPeriodRepository
 {
     Task<bool> CheckExistDomesticWaybillPeriodCodeAsync(string companyDomesticWaybillPeriodCode, int companyId, int? currentDomesticWaybillPeriodId, CancellationToken cancellationToken);
 

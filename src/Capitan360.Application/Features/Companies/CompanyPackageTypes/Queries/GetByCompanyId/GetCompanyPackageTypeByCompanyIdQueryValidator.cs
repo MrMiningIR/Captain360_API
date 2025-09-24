@@ -10,4 +10,3 @@ public class GetCompanyPackageTypeByCompanyIdQueryValidator : AbstractValidator<
             .GreaterThan(0).WithMessage("شناسه شرکت باید بزرگتر از صفر باشد");
     }
 }
-

@@ -2,7 +2,7 @@
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,9 +1,9 @@
 ﻿using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Repositories.Permissions;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Capitan360.Infrastructure.Repositories.Users;
+namespace Capitan360.Infrastructure.Repositories.Identities;
 
 internal class TokenBlacklistsRepository(ApplicationDbContext dbContext) : ITokenBlacklistsRepository
 {

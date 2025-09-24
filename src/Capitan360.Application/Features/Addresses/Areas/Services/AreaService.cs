@@ -11,7 +11,7 @@ using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Addresses.Areas.Services;

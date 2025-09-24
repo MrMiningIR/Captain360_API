@@ -8,5 +8,4 @@ public record CreateCompanyInsuranceCommand(
     decimal Tax,
     decimal Scale,
     string Description,
-    bool Active
-);
+    bool Active);

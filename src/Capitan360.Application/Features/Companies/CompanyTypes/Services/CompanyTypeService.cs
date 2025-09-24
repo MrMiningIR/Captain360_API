@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyType.Queries.GetAllCompanyTypes;
-using Capitan360.Application.Features.Companies.CompanyType.Queries.GetCompanyTypeById;
 using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
+using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetAll;
+using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.Extensions.Logging;
 
-namespace Capitan360.Application.Features.Companies.CompanyType.Services;
+namespace Capitan360.Application.Features.Companies.CompanyTypes.Services;
 
 public class CompanyTypeService(
     ILogger<CompanyTypeService> logger,
@@ -30,7 +30,7 @@ public class CompanyTypeService(
         if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(createCompanyTypeCommand.TypeName, null, cancellationToken))
             return ApiResponse<int>.Error(400, "نام نوع شرکت تکراری است");
 
-        var companyType = mapper.Map<Capitan360.Domain.Entities.Companies.CompanyType>(createCompanyTypeCommand) ?? null;
+        var companyType = mapper.Map<Domain.Entities.Companies.CompanyType>(createCompanyTypeCommand) ?? null;
         if (companyType == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
 

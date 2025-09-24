@@ -7,6 +7,6 @@ public class GetPackageTypeByIdQueryValidator : AbstractValidator<GetPackageType
     public GetPackageTypeByIdQueryValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه نوع بسته بندی باید بزرگتر از صفر باشد");
+            .GreaterThan(0).WithMessage("شناسه بسته بندی باید بزرگتر از صفر باشد");
     }
 }
