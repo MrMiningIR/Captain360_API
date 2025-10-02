@@ -1,6 +1,0 @@
-﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.ChangeStateToReceivedAtReceiverCompanyFromDesktop;
-
-public record ChangeStateToReceivedAtReceiverCompanyFromDesktopCommand(
-long No,
-string CompanyReceiverCaptain360Code
-);

@@ -13,7 +13,7 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 {
     public async Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int companyTypeId, int? currentPackageTypeId,  CancellationToken cancellationToken)
     {
-        return await dbContext.PackageTypes.AnyAsync(item => item.Name.ToLower() == packageTypeName.ToLower().Trim() && item.CompanyTypeId == companyTypeId && (currentPackageTypeId == null || item.Id != currentPackageTypeId), cancellationToken);
+        return await dbContext.PackageTypes.AnyAsync(item => item.Name.ToLower() == packageTypeName.Trim().ToLower() && item.CompanyTypeId == companyTypeId && (currentPackageTypeId == null || item.Id != currentPackageTypeId), cancellationToken);
     }
 
     public async Task<int> GetCountPackageTypeAsync(int companyTypeId, CancellationToken cancellationToken)
@@ -78,11 +78,11 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<PackageType>, int)> GetAllPackageTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<PackageType>, int)> GetAllPackageTypesAsync(string searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.PackageTypes.AsNoTracking()
-                                              .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => searchPhrase == null || item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.CompanyType);

@@ -25,7 +25,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
     IUserContext userContext,
     ICompanyDomesticPathChargeRepository pathChargeRepository
     , ICompanyDomesticPathChargeContentTypeRepository contentTypeRepository,
-    ICompanyDomesticPathsRepository domesticPathsRepository,
+    ICompanyDomesticPathRepository domesticPathsRepository,
     ICompanyContentTypeRepository companyContentTypeRepository,
     IIdentityService identityService
 
@@ -346,7 +346,7 @@ public class CompanyDomesticPathChargeService(ILogger<CompanyDomesticPathStructP
         if (query.CompanyDomesticPathId <= 0)
             return ApiResponse<List<PathChargeTableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه, و اطلاعات ارسالی ان اشتباه است");
 
-        var domesticPth = await domesticPathsRepository.GetCompanyDomesticPathByIdAsync(query.CompanyDomesticPathId, false, false, cancellationToken);
+        var domesticPth = await domesticPathsRepository.GetCompanyDomesticPathByIdAsync(query.CompanyDomesticPathId,false, false, false, false, cancellationToken);
         if (domesticPth is null)
             return ApiResponse<List<PathChargeTableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه ان اشتباه است");
 

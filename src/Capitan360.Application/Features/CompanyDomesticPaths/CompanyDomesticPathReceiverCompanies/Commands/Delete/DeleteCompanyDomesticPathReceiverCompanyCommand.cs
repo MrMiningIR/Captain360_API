@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Commands.Delete;
+
+public record DeleteCompanyDomesticPathReceiverCompanyCommand(int Id);

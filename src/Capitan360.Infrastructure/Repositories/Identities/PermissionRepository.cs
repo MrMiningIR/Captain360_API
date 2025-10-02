@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Infrastructure.Repositories.Identities;
 
-internal class PermissionRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IPermissionRepository
+public class PermissionRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IPermissionRepository
 {
 
 
@@ -22,48 +22,48 @@ internal class PermissionRepository(ApplicationDbContext dbContext, IUnitOfWork 
         return await dbContext.Permissions.AsNoTracking().Select(x => x.Id).ToListAsync(cancellationToken);
     }
 
-    public async Task<List<ParentPermissionTransfer>> GetParentPermissions(CancellationToken ct)
+    public async Task<List<ParentPermissionTransfer>> GetParentPermissions(CancellationToken cancellationToken)
     {
         return await dbContext.Permissions.AsNoTracking().Select(x =>
                 new ParentPermissionTransfer { Parent = x.Parent, ParentDisplayName = x.ParentDisplayName, ParentCode = x.ParentCode }).Distinct()
-            .ToListAsync(ct);
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Permission>> GetPermissionsByParentName(string parent, CancellationToken ct)
+    public async Task<List<Permission>> GetPermissionsByParentName(string parent, CancellationToken cancellationToken)
     {
-        return await dbContext.Permissions.AsNoTracking().Where(x => x.Parent.ToLower() == parent.ToLower().Trim()).Distinct().ToListAsync(ct);
+        return await dbContext.Permissions.AsNoTracking().Where(x => x.Parent.ToLower() == parent.Trim().ToLower()).Distinct().ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Permission>> GetPermissionsByParentCode(Guid parentCode, CancellationToken ct)
+    public async Task<List<Permission>> GetPermissionsByParentCode(Guid parentCode, CancellationToken cancellationToken)
     {
-        return await dbContext.Permissions.AsNoTracking().Where(x => x.ParentCode == parentCode).Distinct().ToListAsync(ct);
+        return await dbContext.Permissions.AsNoTracking().Where(x => x.ParentCode == parentCode).Distinct().ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Permission>> GetFullListPermission(CancellationToken ct)
+    public async Task<List<Permission>> GetFullListPermission(CancellationToken cancellationToken)
     {
-        return await dbContext.Permissions.AsNoTracking().Distinct().ToListAsync(ct);
+        return await dbContext.Permissions.AsNoTracking().Distinct().ToListAsync(cancellationToken);
     }
 
 
-    public Task<List<Permission>> GetPermissionsByParentId(int parentQueryParentId, CancellationToken ct)
+    public Task<List<Permission>> GetPermissionsByParentId(int parentQueryParentId, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<(IReadOnlyList<Permission>, int)> GetAllMatchingPermissions(string? searchPhrase,
+    public async Task<(IReadOnlyList<Permission>, int)> GetAllMatchingPermissions(string searchPhrase,
         int pageSize, int pageNumber,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext
             .Permissions.AsNoTracking()
 
-            .Where(r => searchPhraseLower == null || r.Name.ToLower().Contains(searchPhraseLower) ||
-                        r.Parent.ToLower().Contains(searchPhraseLower));
+            .Where(r => r.Name.ToLower().Contains(searchPhrase) ||
+                        r.Parent.ToLower().Contains(searchPhrase));
 
 
-        var totalCount = await baseQuery.CountAsync(ct);
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         baseQuery = baseQuery.OrderBy(x => x.Id);
 
@@ -71,23 +71,23 @@ internal class PermissionRepository(ApplicationDbContext dbContext, IUnitOfWork 
         var permissions = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
-            .ToListAsync(cancellationToken: ct);
+            .ToListAsync(cancellationToken: cancellationToken);
 
         return (permissions, totalCount);
     }
 
 
-    public async Task<bool> ExistPermissionInPermissionSource(Guid permissionCode, Guid parentCode, CancellationToken ct)
+    public async Task<bool> ExistPermissionInPermissionSource(Guid permissionCode, Guid parentCode, CancellationToken cancellationToken)
     {
         return await dbContext.Permissions.AnyAsync(
      x => x.PermissionCode == permissionCode && x.ParentCode == parentCode,
-     ct);
+     cancellationToken);
     }
 
-    public async Task<int> AddPermissionToPermissionSource(Permission permission, CancellationToken ct)
+    public async Task<int> AddPermissionToPermissionSource(Permission permission, CancellationToken cancellationToken)
     {
         dbContext.Permissions.Add(permission);
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return permission.Id;
     }
 

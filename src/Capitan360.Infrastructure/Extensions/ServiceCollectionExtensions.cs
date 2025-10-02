@@ -161,7 +161,8 @@ public static class ServiceCollectionExtensions
         service.AddScoped<ICompanyCommissionsRepository, CompanyCommissionsRepository>();
         service.AddScoped<IContentTypeRepository, ContentTypeRepository>();
         service.AddScoped<IPackageTypeRepository, PackageTypeRepository>();
-        service.AddScoped<ICompanyDomesticPathsRepository, CompanyDomesticPathsRepository>();
+        service.AddScoped<ICompanyDomesticPathRepository, CompanyDomesticPathRepository>();
+        service.AddScoped<ICompanyDomesticPathReceiverCompanyRepository, CompanyDomesticPathReceiverCompanyRepository>();
         service.AddScoped<ICompanyDomesticPathStructPricesRepository, CompanyDomesticPathStructPricesRepository>();
         service.AddScoped<ICompanyDomesticPathStructPriceMunicipalAreasRepository, CompanyDomesticPathStructPriceMunicipalAreasRepository>();
         service.AddScoped<ICompanyDomesticPathChargeRepository, CompanyDomesticPathChargeRepository>();

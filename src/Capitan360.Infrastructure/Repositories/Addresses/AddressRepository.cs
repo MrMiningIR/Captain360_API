@@ -39,11 +39,11 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
 
 
-    public async Task<(IReadOnlyList<Address>, int)> GetAllAddresses(string? searchPhrase, int pageSize, int pageNumber, int companyId, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<Address>, int)> GetAllAddresses(string searchPhrase, int pageSize, int pageNumber, int companyId, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.Addresses
-            .Where(item => searchPhraseLower == null || item.AddressLine.ToLower().Contains(searchPhraseLower));
+            .Where(item => searchPhrase == null || item.AddressLine.ToLower().Contains(searchPhrase));
 
         baseQuery = baseQuery.Where(x => x.CompanyId == companyId);
 
@@ -134,15 +134,15 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<Address>, int)> GetAllAddressesByCompany(string? searchPhrase, int companyId, int active, int pageSize, int pageNumber, string? sortBy,
+    public async Task<(IReadOnlyList<Address>, int)> GetAllAddressesByCompany(string searchPhrase, int companyId, int active, int pageSize, int pageNumber, string? sortBy,
         SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext.Addresses.AsNoTracking()
             .Where(item => item.CompanyId == companyId);
 
-        baseQuery = baseQuery.Where(item => searchPhraseLower == null || item.AddressLine.ToLower().Contains(searchPhraseLower));
+        baseQuery = baseQuery.Where(item => searchPhrase == null || item.AddressLine.ToLower().Contains(searchPhrase));
 
         if (active == 0)
         {

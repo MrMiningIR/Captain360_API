@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToReceivedAtSenderCompany;
-
-public record ChangeStateToReceivedAtSenderCompanyCommand(int Id);

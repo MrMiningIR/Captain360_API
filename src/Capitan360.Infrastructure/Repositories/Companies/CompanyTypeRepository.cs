@@ -12,7 +12,12 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 {
     public async Task<bool> CheckExistCompanyTypeNameAsync(string companyTypeName, int? currentCompanyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyTypes.AnyAsync(item => item.TypeName.ToLower() == companyTypeName.ToLower().Trim() && (currentCompanyTypeId == null || item.Id != currentCompanyTypeId), cancellationToken);
+        return await dbContext.CompanyTypes.AnyAsync(item => item.TypeName.ToLower() == companyTypeName.Trim().ToLower() && (currentCompanyTypeId == null || item.Id != currentCompanyTypeId), cancellationToken);
+    }
+
+    public async Task<bool> CheckExistCompanyTypeDisplayNameAsync(string companyTypeDisplayName, int? currentCompanyTypeId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyTypes.AnyAsync(item => item.DisplayName.ToLower() == companyTypeDisplayName.Trim().ToLower() && (currentCompanyTypeId == null || item.Id != currentCompanyTypeId), cancellationToken);
     }
 
     public async Task<int> CreateCompanyTypeAsync(CompanyType companyType, CancellationToken cancellationToken)
@@ -37,13 +42,13 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyType>, int)> GetAllCompanyTypesAsync(string? searchPhrase, string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyType>, int)> GetAllCompanyTypesAsync(string searchPhrase, string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyTypes.AsNoTracking()
-                                              .Where(item => searchPhraseLower == null || item.DisplayName.ToLower().Contains(searchPhraseLower) ||
-                                                                                        item.TypeName.ToLower().Contains(searchPhraseLower) ||
-                                                                                        item.Description.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => searchPhrase == null || item.DisplayName.Contains(searchPhrase) ||
+                                                                                          item.TypeName.ToLower().Contains(searchPhrase) ||
+                                                                                          item.Description.ToLower().Contains(searchPhrase));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -60,11 +65,11 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var packageTypes = await baseQuery
+        var companyTypes = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (packageTypes, totalCount);
+        return (companyTypes, totalCount);
     }
 }

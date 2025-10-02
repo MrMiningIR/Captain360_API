@@ -32,12 +32,6 @@ public class CompanyManifestFormConfiguration : BaseEntityConfiguration<CompanyM
                .IsUnicode()
                .HasColumnType("nvarchar(10)");
 
-        builder.Property(x => x.CompanyReceiverUserInsertedName)
-               .IsRequired(false)
-               .HasMaxLength(30)
-               .IsUnicode()
-               .HasColumnType("nvarchar(30)");
-
         builder.Property(x => x.SourceCountryId)
                .IsRequired();
 

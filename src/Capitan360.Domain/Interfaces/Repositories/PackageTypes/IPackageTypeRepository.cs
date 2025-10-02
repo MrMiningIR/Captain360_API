@@ -20,7 +20,7 @@ public interface IPackageTypeRepository
 
     Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<PackageType>, int)> GetAllPackageTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<PackageType>, int)> GetAllPackageTypesAsync(string searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<List<CompanyPackageTypeTransfer>> GetPackageTypesByCompanyTypeIdAsync(int CompanyTypeId, CancellationToken cancellationToken);
 }

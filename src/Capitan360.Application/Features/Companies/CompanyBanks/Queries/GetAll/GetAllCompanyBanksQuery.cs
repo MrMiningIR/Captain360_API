@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Queries.GetAll;
 
 public record GetAllCompanyBanksQuery(
-    [property: DefaultValue(null)] string? SearchPhrase = null,
+    [property: DefaultValue("")] string SearchPhrase = "",
     [property: DefaultValue(null)] string? SortBy = null,
     [property: DefaultValue(0)] int CompanyId = 0,
     [property: DefaultValue(1)] int PageNumber = 1,

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Infrastructure.Repositories.Identities;
 
-internal class TokenBlacklistsRepository(ApplicationDbContext dbContext) : ITokenBlacklistsRepository
+public class TokenBlacklistsRepository(ApplicationDbContext dbContext) : ITokenBlacklistsRepository
 {
 
     public async Task<IReadOnlyList<TokenBlacklist>> GetAllAsync(CancellationToken cancellationToken)

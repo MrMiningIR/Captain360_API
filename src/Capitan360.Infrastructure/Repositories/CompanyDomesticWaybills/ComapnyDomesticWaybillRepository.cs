@@ -10,7 +10,7 @@ namespace Capitan360.Infrastructure.Repositories.CompanyDomesticWaybills;
 
 public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyDomesticWaybillRepository
 {
-    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByIdAsync(int companyDomesticWaybillId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyDomesticWaybill?> GetCompanyDomesticWaybillByIdAsync(int companyDomesticWaybillId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
 
@@ -47,7 +47,7 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
         return await query.SingleOrDefaultAsync(item => item.Id == companyDomesticWaybillId, cancellationToken);
     }
 
-    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByNoAsync(long companyDomesticWaybillNo, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyDomesticWaybill?> GetCompanyDomesticWaybillByNoAsync(long companyDomesticWaybillNo, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
 
@@ -84,7 +84,7 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
         return await query.SingleOrDefaultAsync(item => item.No == companyDomesticWaybillNo, cancellationToken);
     }
 
-    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByNoAndCompanySenderIdAsync(long companyDomesticWaybillNo, int companySenderId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyDomesticWaybill?> GetCompanyDomesticWaybillByNoAndCompanySenderIdAsync(long companyDomesticWaybillNo, int companySenderId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
 
@@ -121,7 +121,7 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
         return await query.SingleOrDefaultAsync(item => item.No == companyDomesticWaybillNo && item.CompanySenderId == companySenderId, cancellationToken);
     }
 
-    public async Task<CompanyDomesticWaybill?> GetDomesticWaybillByNoAndCompanyReceiverIdAsync(long companyDomesticWaybillNo, int companyReceiverId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyDomesticWaybill?> GetCompanyDomesticWaybillByNoAndCompanyReceiverIdAsync(long companyDomesticWaybillNo, int companyReceiverId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyDomesticWaybill> query = dbContext.CompanyDomesticWaybills;
 
@@ -158,34 +158,34 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
         return await query.SingleOrDefaultAsync(item => item.No == companyDomesticWaybillNo && item.CompanyReceiverId == companyReceiverId, cancellationToken);
     }
 
-    public async Task<bool> CheckExistDomesticWaybillByIdAsync(int companyDomesticWaybillId, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyDomesticWaybillByIdAsync(int companyDomesticWaybillId, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.Id == companyDomesticWaybillId, cancellationToken);
     }
 
-    public async Task<bool> CheckExistDomesticWaybillByNoAsync(long companyDomesticWaybillNo, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyDomesticWaybillByNoAsync(long companyDomesticWaybillNo, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.No == companyDomesticWaybillNo, cancellationToken);
     }
 
-    public async Task<bool> CheckExistDomesticWaybillByNoAndCompanySenderIdAsync(long companyDomesticWaybillNo, int companySenderId, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyDomesticWaybillByNoAndCompanySenderIdAsync(long companyDomesticWaybillNo, int companySenderId, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.No == companyDomesticWaybillNo && item.CompanySenderId == companySenderId, cancellationToken);
     }
 
-    public async Task<bool> CheckExistDomesticWaybillByNoAndCompanyReceiverIdAsync(long companyDomesticWaybillNo, int companyReceiverId, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyDomesticWaybillByNoAndCompanyReceiverIdAsync(long companyDomesticWaybillNo, int companyReceiverId, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.No == companyDomesticWaybillNo && item.CompanyReceiverId == companyReceiverId, cancellationToken);
     }
 
-    public async Task<int> InsertDomesticWaybillAsync(CompanyDomesticWaybill companyDomesticWaybill, CancellationToken cancellationToken)
+    public async Task<int> InsertCompanyDomesticWaybillAsync(CompanyDomesticWaybill companyDomesticWaybill, CancellationToken cancellationToken)
     {
         dbContext.CompanyDomesticWaybills.Add(companyDomesticWaybill);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyDomesticWaybill.Id;
     }
 
-    public async Task DeleteDomesticWaybillAsync(int companyDomesticWaybillId, CancellationToken cancellationToken)
+    public async Task DeleteCompanyDomesticWaybillAsync(int companyDomesticWaybillId, CancellationToken cancellationToken)
     {
         var companyDomesticWaybillPackageTypes = await dbContext.CompanyDomesticWaybillPackageTypes.Where(item => item.CompanyDomesticWaybillId == companyDomesticWaybillId).ToListAsync(cancellationToken);
         if (companyDomesticWaybillPackageTypes == null)
@@ -201,52 +201,52 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<int>> GetWaybillIdByManifestFormIdAsync(int companyManifestFormId, CancellationToken cancellationToken)
+    public async Task<List<int>> GetCompanyDomesticWaybillIdByCompanyManifestFormIdAsync(int companyManifestFormId, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyManifestFormId.HasValue && item.CompanyManifestFormId == companyManifestFormId)
                                                .Select(item => item.Id)
                                                .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<int>> GetWaybillIdByDomesticWaybillPeriodIdAndLessThanStartNumberAsync(int companyDomesticWaybillPeriodId, long startNumber, CancellationToken cancellationToken)
+    public async Task<List<int>> GetCompanyDomesticWaybillIdByCompanyDomesticWaybillPeriodIdAndLessThanStartNumberAsync(int companyDomesticWaybillPeriodId, long startNumber, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriodId && item.No < startNumber)
                                                .Select(item => item.Id)
                                                .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<int>> GetWaybillIdByDomesticWaybillPeriodIdAndGreatherThanEndNumberAsync(int companyDomesticWaybillPeriodId, long endNumber, CancellationToken cancellationToken)
+    public async Task<List<int>> GetCompanyDomesticWaybillIdByCompanyDomesticWaybillPeriodIdAndGreatherThanEndNumberAsync(int companyDomesticWaybillPeriodId, long endNumber, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriodId && item.No > endNumber)
                                                .Select(item => item.Id)
                                                .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<int>> GetWaybillIdByDomesticWaybillPeriodIdAsync(int companyDomesticWaybillPeriodId, CancellationToken cancellationToken)
+    public async Task<List<int>> GetCompanyDomesticWaybillIdByCompanyDomesticWaybillPeriodIdAsync(int companyDomesticWaybillPeriodId, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.Where(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriodId)
                                                .Select(item => item.Id)
                                                .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> IsManifestStatusConsistentByManifestFormIdStateAsync(int companyManifestFormId, short state, CancellationToken cancellationToken)
+    public async Task<bool> IsCompanyManifestStatusConsistentByCompanyManifestFormIdStateAsync(int companyManifestFormId, short state, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyManifestFormId.HasValue && item.CompanyManifestFormId == companyManifestFormId && item.State == state);
     }
 
-    public async Task<bool> AnyIssunedDomesticWaybillByDomesticPeriodIdStartNumberEndNumberAsync(int domesticPeriod, long startNumber, long endNumber, CancellationToken cancellationToken)
+    public async Task<bool> AnyIssunedCompanyDomesticWaybillByCompanyDomesticPeriodIdStartNumberEndNumberAsync(int companyDomesticWaybillPeriod, long startNumber, long endNumber, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)CompanyDomesticWaybillState.Ready);
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriod && (item.No < startNumber || item.No > endNumber) && item.State != (short)CompanyDomesticWaybillState.Ready);
     }
 
-    public async Task<bool> AnyIssunedDomesticWaybillByDomesticPeriodIdAsync(int domesticPeriod, CancellationToken cancellationToken)
+    public async Task<bool> AnyIssunedCompanyDomesticWaybillByCompanyDomesticPeriodIdAsync(int companyDomesticWaybillPeriod, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == domesticPeriod && item.State != (short)CompanyDomesticWaybillState.Ready);
+        return await dbContext.CompanyDomesticWaybills.AnyAsync(item => item.CompanyDomesticWaybillPeriodId == companyDomesticWaybillPeriod && item.State != (short)CompanyDomesticWaybillState.Ready);
     }
 
-    public async Task ChangeStateAsync(List<int> waybillIds, short state, CancellationToken cancellationToken)
+    public async Task ChangeStateCompanyDomesticWaybillAsync(List<int> companyDomesticWaybills, short state, CancellationToken cancellationToken)
     {
-        foreach (var waybillId in waybillIds)
+        foreach (var waybillId in companyDomesticWaybills)
         {
             var waybill = await dbContext.CompanyDomesticWaybills.SingleOrDefaultAsync(item => item.Id == waybillId);
             if (waybill == null)
@@ -293,9 +293,9 @@ public class CompanyDomesticWaybillRepository(ApplicationDbContext dbContext, IU
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task BackFromStateAsync(List<int> waybillIds, short state, CancellationToken cancellationToken)
+    public async Task BackCompanyDomesticWaybillFromStateAsync(List<int> companyDomesticWaybills, short state, CancellationToken cancellationToken)
     {
-        foreach (var waybillId in waybillIds)
+        foreach (var waybillId in companyDomesticWaybills)
         {
             var waybill = await dbContext.CompanyDomesticWaybills.SingleOrDefaultAsync(item => item.Id == waybillId);
             if (waybill == null)

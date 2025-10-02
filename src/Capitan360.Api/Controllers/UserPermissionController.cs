@@ -1,10 +1,10 @@
 ﻿using Capitan360.Application.Common;
+using Capitan360.Application.Features.Identities.UserPermission.Services;
 using Capitan360.Application.Features.UserPermission.Commands.AssignUserPermission;
 using Capitan360.Application.Features.UserPermission.Commands.RemoveUserPermission;
 using Capitan360.Application.Features.UserPermission.Commands.UpDeInlUserPermissionById;
 using Capitan360.Application.Features.UserPermission.Dtos;
 using Capitan360.Application.Features.UserPermission.Queries.GetUserPermissions;
-using Capitan360.Application.Features.UserPermission.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;

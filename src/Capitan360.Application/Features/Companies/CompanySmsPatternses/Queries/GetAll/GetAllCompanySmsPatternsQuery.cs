@@ -4,7 +4,7 @@ using Capitan360.Domain.Enums;
 namespace Capitan360.Application.Features.Companies.CompanySmsPatternses.Queries.GetAll;
 
 public record GetAllCompanySmsPatternsQuery(
-    [property: DefaultValue(null)] string? SearchPhrase = null,
+    [property: DefaultValue("")] string SearchPhrase = "",
     [property: DefaultValue(null)] string? SortBy = null,
     [property: DefaultValue(0)] int CompanyTypeId = 0,
     [property: DefaultValue(0)] int CompanyId = 0,

@@ -6,11 +6,7 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
 using Capitan360.Application.Features.Companies.Companies.Services;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
-using Capitan360.Application.Features.ContentTypeService.Services;
-using Capitan360.Application.Features.PackageTypeService.Services;
 using Capitan360.Application.Features.Permission.Services;
-using Capitan360.Application.Features.Role;
-using Capitan360.Application.Features.UserPermission.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +19,14 @@ using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathSt
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Services;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathCharges.Services;
 using Capitan360.Application.Features.Companies.CompanyTypes.Services;
+using Capitan360.Application.Features.ContentTypes.Services;
+using Capitan360.Application.Features.PackageTypes.Services;
 using Capitan360.Application.Features.Companies.CompanyUris.Services;
+using Capitan360.Application.Features.Identities.Roles;
+using Capitan360.Application.Features.Identities.UserPermission.Services;
+using Capitan360.Application.Features.Identities.Permissions.Services;
+using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticPaths;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Services;
 
 namespace Capitan360.Application.Extensions;
 
@@ -45,7 +48,8 @@ public static class ServiceCollectionExtensions
         service.AddScoped<IAreaService, AreaService>();
         service.AddScoped<IContentTypeService, ContentTypeService>();
         service.AddScoped<IPackageTypeService, PackageTypeService>();
-        service.AddScoped<ICompanyDomesticPathsService, CompanyDomesticPathsService>();
+        service.AddScoped<ICompanyDomesticPathService, CompanyDomesticPathService>();
+        service.AddScoped<ICompanyDomesticPathReceiverCompanyService, CompanyDomesticPathReceiverCompanyService>();
         service.AddScoped<ICompanyDomesticPathStructPricesService, CompanyDomesticPathStructPricesService>();
         service.AddScoped<ICompanyDomesticPathChargeService, CompanyDomesticPathChargeService>();
         service.AddScoped<ICompanyDomesticPathChargeContentTypeService, CompanyDomesticPathChargeContentTypeService>();

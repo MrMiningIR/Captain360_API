@@ -20,12 +20,12 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
     public async Task<bool> CheckExistCompanyNameAsync(string companyName, int? currentCompanyId, CancellationToken cancellationToken)
     {
-        return await dbContext.Companies.AnyAsync(item => item.Name.ToLower() == companyName.ToLower().Trim() && (currentCompanyId == null || item.Id != currentCompanyId), cancellationToken);
+        return await dbContext.Companies.AnyAsync(item => item.Name.ToLower() == companyName.Trim().ToLower() && (currentCompanyId == null || item.Id != currentCompanyId), cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyCodeAsync(string companyCode, int? currentCompanyId, CancellationToken cancellationToken)
     {
-        return await dbContext.Companies.AnyAsync(item => item.Code.ToLower() == companyCode.ToLower().Trim() && (currentCompanyId == null || item.Id != currentCompanyId), cancellationToken);
+        return await dbContext.Companies.AnyAsync(item => item.Code.ToLower() == companyCode.Trim().ToLower() && (currentCompanyId == null || item.Id != currentCompanyId), cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyIsParentAsync(int companyTypeId, int? currentCompanyId, CancellationToken cancellationToken)
@@ -53,19 +53,19 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         return await query.SingleOrDefaultAsync(item => item.Id == companyId, cancellationToken);
     }
 
-    public async Task DeleteCompanyAsync(Company company)
+    public async Task DeleteCompanyAsync(int companyId)
     {
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext.Companies.AsNoTracking()
-                                            .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower) ||
-                                                                                        item.Code.ToLower().Contains(searchPhraseLower));
-        if (loadData)
+                                            .Where(item => searchPhrase == null || item.Name.ToLower().Contains(searchPhrase) ||
+                                                                                        item.Code.ToLower().Contains(searchPhrase));
+        if (loadData || true)//چون CompanyTypeName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item => item.CompanyType);
 
         if (companyTypeId != 0)
@@ -95,9 +95,9 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 
         var columnsSelector = new Dictionary<string, Expression<Func<Company, object>>>
             {
-                { nameof(Company.Name), item =>  item.Name },
                 { nameof(Company.Code), item =>  item.Code },
-                { nameof(Company.Active), item =>  item.Active },
+                { nameof(Company.Name), item =>  item.Name },
+                { nameof(Company.CompanyType.TypeName), item =>  item.CompanyType!.TypeName},
             };
 
         sortBy ??= nameof(Company.Name);
@@ -125,7 +125,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyCode.ToLower().Trim(), cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyCode.Trim().ToLower(), cancellationToken);
     }
 
 

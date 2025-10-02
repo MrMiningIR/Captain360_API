@@ -1,0 +1,74 @@
+﻿using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Dtos;
+using FluentValidation;
+
+namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Queries.GetAllSenderCompany;
+
+public class GetAllCompanyDomesticWaybillSenderCompanyQueryValidator : AbstractValidator<GetAllCompanyDomesticWaybillSenderCompanyQuery>
+{
+    private int[] _allowPageSizes = [5, 10, 15, 30];
+    private string[] _allowedSortByColumnNames = [
+        nameof(CompanyDomesticWaybillDto.No),
+        nameof(CompanyDomesticWaybillDto.CompanyReceiverName),
+        nameof(CompanyDomesticWaybillDto.CompanyReceiverUserInsertedCode),
+        nameof(CompanyDomesticWaybillDto.DestinationCityName),
+        nameof(CompanyDomesticWaybillDto.CompanyManifestFormNo),
+        nameof(CompanyDomesticWaybillDto.GrossWeight),
+        nameof(CompanyDomesticWaybillDto.ChargeableWeight),
+        nameof(CompanyDomesticWaybillDto.ExitTotalCost),
+        nameof(CompanyDomesticWaybillDto.CompanySenderDateFinancial),
+        nameof(CompanyDomesticWaybillDto.Dirty)];
+
+    public GetAllCompanyDomesticWaybillSenderCompanyQueryValidator()
+    {
+        RuleFor(x => x.No)
+            .GreaterThanOrEqualTo(0).WithMessage("شماره بارنامه باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.CompanyReceiverId)
+            .GreaterThanOrEqualTo(0).WithMessage("شناسه شرکت باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.DestinationCityId)
+            .GreaterThanOrEqualTo(0).WithMessage("شناسه شهر باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.CompanyManifestFormNo)
+            .GreaterThanOrEqualTo(0).WithMessage("شماره فرم مانیفست باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.PaymentType)
+            .GreaterThanOrEqualTo(0).WithMessage("نوع پرداخت باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.BankId)
+            .GreaterThanOrEqualTo(0).WithMessage("شناسه بانک باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => (int)x.State)
+            .GreaterThanOrEqualTo(0).WithMessage("وضعیت بارنامه باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.BikeId)
+            .GreaterThanOrEqualTo(0).WithMessage("شناسه پیک باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.TypeCaptainCargoPrice)
+            .GreaterThanOrEqualTo(0).WithMessage("نوع بارنامه باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.PaymentType)
+            .GreaterThanOrEqualTo(0).WithMessage("شناسه وضعیت بارنامه باید بزرگتر یا مساوی صفر باشد");
+
+        RuleFor(x => x.Lock)
+            .InclusiveBetween(-1, 1).WithMessage("وضعیت قابل ویرایش بودن بارنامه می تواند یکی از حالت قابل ویرایش، غیر قابل ویرایش و یا همه باشد.");
+
+        RuleFor(x => x.Dirty)
+            .InclusiveBetween(-1, 1).WithMessage("وضعیت ویرایش بارنامه می تواند یکی از حالت ویرایش شده، ویرایش نشده و یا همه باشد.");
+
+        RuleFor(x => x.IsManifested)
+            .InclusiveBetween(-1, 1).WithMessage("وضعیت مانیفست بارنامه می تواند یکی از حالت مانیفست شده، مانیفست نشده و یا همه باشد.");
+
+        RuleFor(r => r.PageNumber)
+            .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
+
+        RuleFor(r => r.PageSize)
+            .Must(value => _allowPageSizes.Contains(value))
+            .WithMessage($"تعداد ایتم در صفحه باید یکی از موارد زیر باشد [{string.Join(",", _allowPageSizes)}]");
+
+        RuleFor(r => r.SortBy)
+            .Must(value => _allowedSortByColumnNames.Contains(value))
+            .When(q => q.SortBy != null)
+            .WithMessage($"مرتب سازی باید بر اساس یکی از آیتم های زیر باشد [{string.Join(",", _allowedSortByColumnNames)}]");
+    }
+}

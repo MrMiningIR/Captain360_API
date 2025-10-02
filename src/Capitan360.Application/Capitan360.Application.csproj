@@ -44,19 +44,7 @@
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\MapperProfiles\" />
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\Dtos\" />
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\Queries\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Commands\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\MapperProfiles\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Services\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Queries\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPeriods\Services\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPeriods\Queries\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybills\MapperProfiles\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybills\Services\" />
-    <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybills\Queries\" />
-    <Folder Include="Features\CompanyManifestForms\CompanyManifestFormPeriods\Services\" />
-    <Folder Include="Features\CompanyManifestForms\CompanyManifestFormPeriods\Queries\" />
-    <Folder Include="Features\CompanyManifestForms\CompanyManifestForms\MapperProfiles\" />
-    <Folder Include="Features\CompanyManifestForms\CompanyManifestForms\Services\" />
-    <Folder Include="Features\CompanyManifestForms\CompanyManifestForms\Queries\" />
   </ItemGroup>
 </Project>

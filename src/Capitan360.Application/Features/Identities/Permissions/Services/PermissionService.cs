@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Capitan360.Application.Features.Identities.Permissions.Services;
 using Capitan360.Application.Features.Permission.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Interfaces;
@@ -22,29 +23,29 @@ public class PermissionService(IPermissionRepository permissionRepository,
     //    return permissions ?? [];
     //}
 
-    public async Task<ApiResponse<List<ParentPermissionTransfer>>> GetParentPermissions(CancellationToken ct)
+    public async Task<ApiResponse<List<ParentPermissionTransfer>>> GetParentPermissions(CancellationToken cancellationToken)
     {
         logger.LogInformation("GetParentPermissions is Called");
 
-        var result = await permissionRepository.GetParentPermissions(ct);
+        var result = await permissionRepository.GetParentPermissions(cancellationToken);
 
         return ApiResponse<List<ParentPermissionTransfer>>.Ok(result);
     }
 
-    public async Task<ApiResponse<List<IPermissionService.PermissionDto>>> GetPermissionsByParentName(IPermissionService.GetPermissionsByParentNameQuery parentQuery, CancellationToken ct)
+    public async Task<ApiResponse<List<IPermissionService.PermissionDto>>> GetPermissionsByParentName(IPermissionService.GetPermissionsByParentNameQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetPermissionsByParent is Called with {@GetPermissionsByParent}", parentQuery);
-        var result = await permissionRepository.GetPermissionsByParentName(parentQuery.Parent, ct);
+        logger.LogInformation("GetPermissionsByParent is Called with {@GetPermissionsByParent}", query);
+        var result = await permissionRepository.GetPermissionsByParentName(query.Parent, cancellationToken);
 
         var mappedResult = mapper.Map<List<IPermissionService.PermissionDto>>(result);
 
         return ApiResponse<List<IPermissionService.PermissionDto>>.Ok(mappedResult);
     }
 
-    public async Task<ApiResponse<List<IPermissionService.PermissionDto>>> GetPermissionsByParentCode(IPermissionService.GetPermissionsByParentCodeQuery parentQuery, CancellationToken ct)
+    public async Task<ApiResponse<List<IPermissionService.PermissionDto>>> GetPermissionsByParentCode(IPermissionService.GetPermissionsByParentCodeQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetPermissionsByParentCode is Called with {@GetPermissionsByParent}", parentQuery);
-        var result = await permissionRepository.GetPermissionsByParentCode(parentQuery.ParentCode, ct);
+        logger.LogInformation("GetPermissionsByParentCode is Called with {@GetPermissionsByParent}", query);
+        var result = await permissionRepository.GetPermissionsByParentCode(query.ParentCode, cancellationToken);
 
         var mappedResult = mapper.Map<List<IPermissionService.PermissionDto>>(result);
 
@@ -52,20 +53,20 @@ public class PermissionService(IPermissionRepository permissionRepository,
     }
 
     public async Task<ApiResponse<PagedResult<IPermissionService.PermissionDto>>> GetAllMatchingPermissions(
-        IPermissionService.GetAllMatchingPermissionsQuery getAllMatchingPermissionsQuery, CancellationToken ct)
+        IPermissionService.GetAllMatchingPermissionsQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanies is Called");
-        if (getAllMatchingPermissionsQuery.PageSize <= 0 || getAllMatchingPermissionsQuery.PageNumber <= 0)
+        if (query.PageSize <= 0 || query.PageNumber <= 0)
             return ApiResponse<PagedResult<IPermissionService.PermissionDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
-        var (permissions, totalCount) = await permissionRepository.GetAllMatchingPermissions(getAllMatchingPermissionsQuery.SearchPhrase,
-            getAllMatchingPermissionsQuery.PageSize, getAllMatchingPermissionsQuery.PageNumber, ct);
+        var (permissions, totalCount) = await permissionRepository.GetAllMatchingPermissions(query.SearchPhrase,
+            query.PageSize, query.PageNumber, cancellationToken);
 
         var permissionDtos = mapper.Map<IReadOnlyList<IPermissionService.PermissionDto>>(permissions)
                           ?? Array.Empty<IPermissionService.PermissionDto>();
         logger.LogInformation("Retrieved {Count} Permissions", permissionDtos.Count);
 
-        var data = new PagedResult<IPermissionService.PermissionDto>(permissionDtos, totalCount, getAllMatchingPermissionsQuery.PageSize, getAllMatchingPermissionsQuery.PageNumber);
+        var data = new PagedResult<IPermissionService.PermissionDto>(permissionDtos, totalCount, query.PageSize, query.PageNumber);
         return ApiResponse<PagedResult<IPermissionService.PermissionDto>>.Ok(data, "Companies retrieved successfully");
     }
 
@@ -94,7 +95,7 @@ public class PermissionService(IPermissionRepository permissionRepository,
         return resultList.ToList();
     }
 
-    public async Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken ct)
+    public async Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken)
     {
         string permissionName = "";
         string parentName = "";
@@ -104,7 +105,7 @@ public class PermissionService(IPermissionRepository permissionRepository,
             foreach (var permission in permissionsData)
             {
                 var exist = await permissionRepository.ExistPermissionInPermissionSource(permission.PermissionCode,
-                    permission.ParentCode, ct);
+                    permission.ParentCode, cancellationToken);
 
                 if (!exist)
                 {
@@ -119,7 +120,7 @@ public class PermissionService(IPermissionRepository permissionRepository,
                         ParentDisplayName = permission.SourceDisplayName ?? "ثبت نشده",
                         ParentCode = permission.ParentCode,
                         PermissionCode = permission.PermissionCode
-                    }, ct);
+                    }, cancellationToken);
                 }
             }
         }
@@ -153,18 +154,18 @@ public class PermissionService(IPermissionRepository permissionRepository,
         }
     }
 
-    public async Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken ct)
+    public async Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken cancellationToken)
     {
-        var permissions = await permissionRepository.GetAllPolicy(ct);
+        var permissions = await permissionRepository.GetAllPolicy(cancellationToken);
         if (!permissions.Any())
             return ApiResponse<List<Domain.Entities.Identities.Permission>>.Error(400, "در دیتابیس مجوزی وجود ندارد");
 
         return ApiResponse<List<Domain.Entities.Identities.Permission>>.Ok(permissions.ToList());
     }
 
-    public async Task<ApiResponse<List<int>>> GetDbPermissionsId(CancellationToken ct)
+    public async Task<ApiResponse<List<int>>> GetDbPermissionsId(CancellationToken cancellationToken)
     {
-        var permissions = await permissionRepository.GetAllPermissionsId(ct);
+        var permissions = await permissionRepository.GetAllPermissionsId(cancellationToken);
         if (!permissions.Any())
             return ApiResponse<List<int>>.Error(400, "در دیتابیس مجوزی وجود ندارد");
 

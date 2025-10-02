@@ -1,6 +1,5 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.PackageTypeService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Application.Features.PackageTypes.Commands.Create;
@@ -11,6 +10,7 @@ using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
 using Capitan360.Application.Features.PackageTypes.Commands.Delete;
 using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
 using Capitan360.Application.Features.PackageTypes.Queries.GetById;
+using Capitan360.Application.Features.PackageTypes.Services;
 
 namespace Capitan360.Api.Controllers;
 
@@ -87,7 +87,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> MoveUpPackagePackageType(MoveUpPackageTypeCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
     {
-        var response = await packageTypeService.MovePackageTypeUpAsync(movePackageTypeUpCommand, cancellationToken);
+        var response = await packageTypeService.MoveUpPackageTypeAsync(movePackageTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -98,7 +98,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> MoveDownPackagePackageType(MoveDownPackageTypeCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
-        var response = await packageTypeService.MovePackageTypeDownAsync(movePackageTypeDownCommand, cancellationToken);
+        var response = await packageTypeService.MoveDownPackageTypeAsync(movePackageTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
     [HttpPost("ChangePackageTypeActiveStatus")]

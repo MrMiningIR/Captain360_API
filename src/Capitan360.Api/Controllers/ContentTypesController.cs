@@ -1,6 +1,5 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.ContentTypeService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Capitan360.Application.Features.ContentTypes.Dtos;
 using Capitan360.Application.Features.ContentTypes.Commands.Create;
@@ -11,6 +10,7 @@ using Capitan360.Application.Features.ContentTypes.Commands.UpdateActiveState;
 using Capitan360.Application.Features.ContentTypes.Commands.Delete;
 using Capitan360.Application.Features.ContentTypes.Queries.GetAll;
 using Capitan360.Application.Features.ContentTypes.Queries.GetById;
+using Capitan360.Application.Features.ContentTypes.Services;
 
 namespace Capitan360.Api.Controllers;
 
@@ -26,7 +26,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     public async Task<ActionResult<ApiResponse<PagedResult<ContentTypeDto>>>> GetAllContentTypes(
         [FromQuery] GetAllContentTypesQuery query, CancellationToken cancellationToken)
     {
-        var response = await contentTypeService.GetAllContentTypes(query, cancellationToken);
+        var response = await contentTypeService.GetAllContentTypesAsync(query, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -86,7 +86,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> MoveUpContentType(MoveUpContentTypeCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
     {
-        var response = await contentTypeService.MoveContentTypeUpAsync(moveContentTypeUpCommand, cancellationToken);
+        var response = await contentTypeService.MoveUpContentTypeAsync(moveContentTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -97,7 +97,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> MoveDownContentType(MoveDownContentTypeCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
     {
-        var response = await contentTypeService.MoveContentTypeDownAsync(moveContentTypeDownCommand, cancellationToken);
+        var response = await contentTypeService.MoveDownContentTypeAsync(moveContentTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -108,7 +108,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<int>>> ChangeContentTypeActiveStatus([FromBody] UpdateActiveStateContentTypeCommand command, CancellationToken cancellationToken)
     {
-        var response = await contentTypeService.SetContentTypeActivityStatus(command, cancellationToken);
+        var response = await contentTypeService.SetContentTypeActivityStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

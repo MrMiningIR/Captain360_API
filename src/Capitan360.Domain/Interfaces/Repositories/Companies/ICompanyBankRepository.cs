@@ -15,15 +15,15 @@ public interface ICompanyBankRepository
 
     Task<CompanyBank?> GetCompanyBankByIdAsync(int companyBankId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyBank>?> GetCompanyBankByCompanyIdAsync(int companyBankCompanyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyBank>?> GetCompanyBankByCompanyIdAsync(int companyBankCompanyId, CancellationToken cancellationToken);
 
     Task DeleteCompanyBankAsync(int companyBankId);
 
-    Task MoveCompanyBankUpAsync(int companyBankId, CancellationToken cancellationToken);
+    Task MoveUpCompanyBankAsync(int companyBankId, CancellationToken cancellationToken);
 
-    Task MoveCompanyBankDownAsync(int companyBankId, CancellationToken cancellationToken);
+    Task MoveDownCompanyBankAsync(int companyBankId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<CompanyBank?> GetCompanyBankByCodeAsync(string companyBankCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 }

@@ -5,7 +5,6 @@ using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Entities.CompanyInsurances;
 using Capitan360.Domain.Entities.CompanyManifestForms;
 using Capitan360.Domain.Entities.ContentTypes;
-using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Exceptions;
@@ -55,6 +54,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CompanyPackageType> CompanyPackageTypes { get; set; }
 
     public DbSet<CompanyDomesticPath> CompanyDomesticPaths { get; set; }
+    public DbSet<CompanyDomesticPathReceiverCompany> CompanyDomesticPathReceiverCompanies { get; set; }
 
     public DbSet<CompanyDomesticPathStructPrice> CompanyDomesticPathStructPrices { get; set; }
     public DbSet<CompanyDomesticPathStructPriceMunicipalArea> CompanyDomesticPathStructPriceMunicipalAreas { get; set; }

@@ -67,6 +67,8 @@ public class CompanyDomesticPath : BaseEntity
 
     public bool ExitExtraDestinationMinWeightIsFixed { get; set; }
 
+    public ICollection<CompanyDomesticPathReceiverCompany> CompanyDomesticPathReceiverCompanies { get; set; } = [];
+
     public ICollection<CompanyDomesticPathStructPrice> CompanyDomesticPathStructPrices { get; set; } = [];
 
     public ICollection<CompanyDomesticPathCharge> CompanyDomesticPathCharges { get; set; } = [];

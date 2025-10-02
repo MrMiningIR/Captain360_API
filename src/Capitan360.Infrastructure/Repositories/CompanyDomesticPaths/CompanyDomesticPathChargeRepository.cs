@@ -44,11 +44,11 @@ public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext,
         dbContext.Entry(price).Property("Deleted").CurrentValue = true;
     }
 
-    public async Task<(IReadOnlyList<CompanyDomesticPathCharge>, int)> GetAllCompanyDomesticPathCharge(string? searchPhrase, int companyDomesticPathId,
+    public async Task<(IReadOnlyList<CompanyDomesticPathCharge>, int)> GetAllCompanyDomesticPathCharge(string searchPhrase, int companyDomesticPathId,
         int pageSize,
         int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         //Point
         var baseQuery = dbContext.CompanyDomesticPathCharges.AsNoTracking()
             .Include(x => x.CompanyDomesticPathChargeContentTypes
@@ -59,10 +59,10 @@ public class CompanyDomesticPathChargeRepository(ApplicationDbContext dbContext,
 
             .Where(p => companyDomesticPathId == 0 || p.CompanyDomesticPathId == companyDomesticPathId);
 
-        //.Where(p => searchPhraseLower == null ||
-        //    p.Weight.ToString().Contains(searchPhraseLower) ||
+        //.Where(p => searchPhrase == null ||
+        //    p.Weight.ToString().Contains(searchPhrase) ||
 
-        //    p.WeightType.ToString().ToLower().Contains(searchPhraseLower));
+        //    p.WeightType.ToString().ToLower().Contains(searchPhrase));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 

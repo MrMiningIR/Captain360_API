@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToDistribution;
-
-public record ChangeStateToDistributionCommand(int Id);

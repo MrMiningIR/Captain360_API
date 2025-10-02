@@ -21,7 +21,6 @@ public class CompanyManifestForm : BaseEntity
     public int? CompanyReceiverId { get; set; }
     public Company? CompanyReceiver { get; set; }
     public string? CompanyReceiverUserInsertedCode { get; set; }
-    public string? CompanyReceiverUserInsertedName { get; set; }
 
     [ForeignKey(nameof(SourceCountry))]
     public int SourceCountryId { get; set; }

@@ -1,4 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Net;
+using Capitan360.Application.Features.CompanyManifestForms.CompanyManifestFormPeriods.Dtos;
 using Capitan360.Domain.Entities.CompanyManifestForms;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
@@ -8,21 +11,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyManifestForms;
 
-public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IManifestFormPeriodRepository
+public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyManifestFormPeriodRepository
 {
-    public async Task<bool> CheckExistManifestFormPeriodCodeAsync(string companyManifestFormPeriodCode, int companyId, int? currentManifestFormPeriodId, CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyManifestFormPeriodCodeAsync(string companyManifestFormPeriodCode, int companyId, int? currentManifestFormPeriodId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyManifestFormPeriods.AnyAsync(item => item.CompanyId == companyId && item.Code.ToLower() == companyManifestFormPeriodCode.ToLower().Trim() && (currentManifestFormPeriodId == null || item.Id != currentManifestFormPeriodId), cancellationToken);
+        return await dbContext.CompanyManifestFormPeriods.AnyAsync(item => item.CompanyId == companyId && item.Code.ToLower() == companyManifestFormPeriodCode.Trim().ToLower() && (currentManifestFormPeriodId == null || item.Id != currentManifestFormPeriodId), cancellationToken);
     }
 
-    public async Task<int> CreateManifestFormPeriodAsync(CompanyManifestFormPeriod companyManifestFormPeriod, CancellationToken cancellationToken)
+    public async Task<int> CreateCompanyManifestFormPeriodAsync(CompanyManifestFormPeriod companyManifestFormPeriod, CancellationToken cancellationToken)
     {
         dbContext.CompanyManifestFormPeriods.Add(companyManifestFormPeriod);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return companyManifestFormPeriod.Id;
     }
 
-    public async Task<CompanyManifestFormPeriod?> GetManifestFormPeriodByIdAsync(int companyManifestFormPeriodId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyManifestFormPeriod?> GetCompanyManifestFormPeriodByIdAsync(int companyManifestFormPeriodId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyManifestFormPeriod> query = dbContext.CompanyManifestFormPeriods;
 
@@ -35,7 +38,7 @@ public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext,
         return await query.SingleOrDefaultAsync(item => item.Id == companyManifestFormPeriodId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<CompanyManifestFormPeriod>?> GetManifestFormPeriodByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyManifestFormPeriod>?> GetCompanyManifestFormPeriodByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
         IQueryable<CompanyManifestFormPeriod> query = dbContext.CompanyManifestFormPeriods;
 
@@ -43,7 +46,7 @@ public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext,
                           .ToListAsync(cancellationToken);
     }
 
-    public async Task DeleteManifestFormPeriodAsync(int companyManifestFormPeriodId, CancellationToken cancellationToken)
+    public async Task DeleteCompanyManifestFormPeriodAsync(int companyManifestFormPeriodId, CancellationToken cancellationToken)
     {
         var companyManifestFormPeriod = await dbContext.CompanyManifestFormPeriods.SingleOrDefaultAsync(item => item.Id == companyManifestFormPeriodId, cancellationToken);
         if (companyManifestFormPeriod == null)
@@ -53,11 +56,45 @@ public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext,
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyManifestFormPeriod>, int)> GetAllManifestFormPeriodsAsync(string? searchPhrase, string? sortBy, int companyId, int active, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyManifestFormPeriodGetAllDto>, int)> GetAllCompanyManifestFormPeriodsAsync(string searchPhrase, string? sortBy, int companyId, int active, int hasReadyForm, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyManifestFormPeriods.AsNoTracking()
-                                                        .Where(item => searchPhraseLower == null || item.Code.ToLower().Contains(searchPhraseLower) || item.Description.ToLower().Contains(searchPhraseLower));
+                                                            .GroupJoin(
+                                                                        dbContext.CompanyManifestForms,
+                                                                        itemCompanyManifestFormPeriod => itemCompanyManifestFormPeriod.Id,
+                                                                        itemCompanyManifestForm => itemCompanyManifestForm.CompanyManifestFormPeriodId,
+                                                                        (itemCompanyManifestFormPeriod, itemCompanyManifestForm) => new { itemCompanyManifestFormPeriod, itemCompanyManifestForm }
+                                                                       ).SelectMany(itemCompanyManifestFormPeriod => itemCompanyManifestFormPeriod.itemCompanyManifestForm.DefaultIfEmpty(), (itemCompanyManifestFormPeriod, itemCompanyManifestForm) => new { itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod, itemCompanyManifestForm })
+                                                            .GroupJoin(
+                                                                        dbContext.Companies,
+                                                                        itemCompanyManifestFormPeriod => itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.CompanyId,
+                                                                        itemCompany => itemCompany.Id,
+                                                                        (itemCompanyManifestFormPeriod, itemCompany) => new { itemCompanyManifestFormPeriod, itemCompany }
+                                                                       ).SelectMany(itemCompanyManifestFormPeriod => itemCompanyManifestFormPeriod.itemCompany.DefaultIfEmpty(), (itemCompanyManifestFormPeriod, itemCompany) => new { itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod, itemCompany })
+                                                            .GroupBy(item => new
+                                                            {
+                                                                item.itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.Active,
+                                                                item.itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.Code,
+                                                                item.itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.Description,
+                                                                item.itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.EndNumber,
+                                                                item.itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.Id,
+                                                                item.itemCompanyManifestFormPeriod.itemCompanyManifestFormPeriod.StartNumber,
+                                                                CompanyName = item.itemCompany!.Name,
+                                                                CompanyId = item.itemCompany!.Id,
+                                                            }, (keys, group) => new CompanyManifestFormPeriodGetAllDto
+                                                            {
+                                                                Active = keys.Active,
+                                                                Code = keys.Code,
+                                                                Description = keys.Description,
+                                                                EndNumber = keys.EndNumber,
+                                                                Id = keys.Id,
+                                                                StartNumber = keys.StartNumber,
+                                                                CompanyName = keys.CompanyName,
+                                                                CompanyId = keys.CompanyId,
+                                                                CountReady = group.Count(itemCount => itemCount.itemCompanyManifestFormPeriod!.itemCompanyManifestForm!.State == (short)CompanyManifestFormState.Ready),
+                                                            })
+                                                            .Where(item => searchPhrase == null || item.Code.ToLower().Contains(searchPhrase) || item.Description.ToLower().Contains(searchPhrase));
 
         baseQuery = active switch
         {
@@ -66,34 +103,41 @@ public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext,
             _ => baseQuery
         };
 
+        baseQuery = hasReadyForm switch
+        {
+            1 => baseQuery.Where(item => item.CountReady > 0),
+            0 => baseQuery.Where(item => item.CountReady == 0),
+            _ => baseQuery
+        };
+
         if (companyId != 0)
             baseQuery = baseQuery.Where(item => item.CompanyId == companyId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        var columnsSelector = new Dictionary<string, Expression<Func<CompanyManifestFormPeriod, object>>>
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyManifestFormPeriodGetAllDto, object>>>
         {
-            { nameof(CompanyManifestFormPeriod.Code), item => item.Code},
-            { nameof(CompanyManifestFormPeriod.Active), item => item.Active},
-            { nameof(CompanyManifestFormPeriod.StartNumber), item => item.StartNumber}
+            { nameof(CompanyManifestFormPeriodGetAllDto.Code), item => item.Code},
+            { nameof(CompanyManifestFormPeriodGetAllDto.StartNumber), item => item.StartNumber},
+            { nameof(CompanyManifestFormPeriodGetAllDto.Active), item => item.Active}
         };
 
-        sortBy ??= nameof(CompanyManifestFormPeriod.Code);
+        sortBy ??= nameof(CompanyManifestFormPeriodGetAllDto.Code);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var packageTypes = await baseQuery
+        var companyManifestFormPeriods = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (packageTypes, totalCount);
+        return (companyManifestFormPeriods, totalCount);
     }
 
-    public async Task<CompanyManifestFormPeriod?> GetManifestFormPeriodByCodeAsync(string companyManifestFormPeriodCode, int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyManifestFormPeriod?> GetCompanyManifestFormPeriodByCodeAsync(string companyManifestFormPeriodCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyManifestFormPeriod> query = dbContext.CompanyManifestFormPeriods;
 
@@ -103,6 +147,6 @@ public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext,
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyManifestFormPeriodCode.ToLower().Trim() && item.CompanyId == companyId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyManifestFormPeriodCode.Trim().ToLower() && item.CompanyId == companyId, cancellationToken);
     }
 }

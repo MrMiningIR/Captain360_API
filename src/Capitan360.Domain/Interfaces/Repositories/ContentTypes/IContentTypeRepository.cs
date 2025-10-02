@@ -14,13 +14,13 @@ public interface IContentTypeRepository
 
     Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task DeletePackageTypeAsync(int contentTypeId);
+    Task DeleteContentTypeAsync(int contentTypeId);
 
     Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken);
 
     Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<ContentType>, int)> GetAllContentTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<ContentType>, int)> GetAllContentTypesAsync(string searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<List<CompanyContentTypeTransfer>> GetContentTypesByCompanyTypeIdAsync(int companyTypeId, CancellationToken cancellationToken);
 }

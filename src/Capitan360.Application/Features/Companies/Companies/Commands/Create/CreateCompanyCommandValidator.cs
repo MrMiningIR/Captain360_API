@@ -33,6 +33,7 @@ public class CreateCompanyCommandValidator : AbstractValidator<CreateCompanyComm
             .GreaterThan(0).WithMessage("شهر شرکت اجباری است");
 
         RuleFor(x => x.Description)
+            .NotNull().WithMessage("توضیحات نمی تواند خالی باشد.")
             .MaximumLength(500).WithMessage("توضحیحات نباید بیشتر از 500 کاراکتر باشد");
     }
 }

@@ -13,11 +13,11 @@ public interface ICompanyInsuranceRepository
 
     Task<CompanyInsurance?> GetCompanyInsuranceByIdAsync(int companyInsuranceId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyInsurance>?> GetCompanyInsuranceByCompanyIdAsync(int companyInsuranceCompanyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyInsurance>?> GetCompanyInsuranceByCompanyIdAsync(int companyInsuranceCompanyId, CancellationToken cancellationToken);
 
     Task DeleteCompanyInsuranceAsync(int companyInsuranceId);
 
-    Task<(IReadOnlyList<CompanyInsurance>, int)> GetAllCompanyInsurancesAsync(string? searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyInsurance>, int)> GetAllCompanyInsurancesAsync(string searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<CompanyInsurance?> GetCompanyInsuranceByCodeAsync(string companyInsuranceCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 }

@@ -4,7 +4,7 @@ using Capitan360.Domain.Enums;
 namespace Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetAll;
 
 public record GetAllCompanyCommissionsQuery(
-    [property: DefaultValue(null)] string? SearchPhrase = null,
+    [property: DefaultValue("")] string SearchPhrase = "",
     [property: DefaultValue(null)] string? SortBy = null,
     [property: DefaultValue(0)] int CompanyTypeId = 0,
     [property: DefaultValue(0)] int CompanyId = 0,

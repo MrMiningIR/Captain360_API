@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Update;
@@ -11,315 +12,318 @@ using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetById;
-using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces;
+using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
-using Microsoft.Extensions.Logging;
+using Capitan360.Domain.Entities.Companies;
+using Microsoft.AspNetCore.Http;
 
 namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
-
 
 public class CompanyPreferencesService(
     ILogger<CompanyPreferencesService> logger,
     IMapper mapper,
     IUnitOfWork unitOfWork,
     IUserContext userContext,
-    ICompanyPreferencesRepository companyPreferencesRepository, ICompanyRepository companyRepository
+    ICompanyPreferencesRepository companyPreferencesRepository,
+    ICompanyRepository companyRepository
 ) : ICompanyPreferencesService
 {
-    public async Task<ApiResponse<int>> CreateCompanyPreferencesAsync(CreateCompanyPreferencesCommand createCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> CreateCompanyPreferencesAsync(CreateCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("CreateCompanyPreferences is Called with {@CreateCompanyPreferencesCommand}", createCompanyPreferencesCommand);
+        logger.LogInformation("CreateCompanyPreferences is Called with {@CreateCompanyPreferencesCommand}", command);
 
-        var company = await companyRepository.GetCompanyByIdAsync(createCompanyPreferencesCommand.CompanyId, false, false, cancellationToken);
+        var company = await companyRepository.GetCompanyByIdAsync(command.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyPreferences = mapper.Map<Domain.Entities.Companies.CompanyPreferences>(createCompanyPreferencesCommand);
+        var companyPreferences = mapper.Map<CompanyPreferences>(command);
         if (companyPreferences is null)
-            return ApiResponse<int>.Error(400, "خطا در عملیات تبدیل");
+            return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "خطا در عملیات تبدیل");
 
         var companyPreferencesId = await companyPreferencesRepository.CreateCompanyPreferencesAsync(companyPreferences, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("CompanyPreferences created successfully with ID: {CompanyPreferencesId}", companyPreferencesId);
-        return ApiResponse<int>.Ok(companyPreferencesId, "تنظیمات با موفقیت ایجاد شد");
+        logger.LogInformation("CompanyPreferences created successfully with {@CompanyPreferences}", companyPreferences);
+        return ApiResponse<int>.Created(companyPreferencesId, "تنظیمات با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<int>> DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand deleteCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyPreferencesAsync(DeleteCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DeleteCompanyPreferences is Called with ID: {Id}", deleteCompanyPreferencesCommand.Id);
+        logger.LogInformation("DeleteCompanyPreferences is Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(deleteCompanyPreferencesCommand.Id, true, false, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, false, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<int>.Error(400, $"تنظیمات نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         await companyPreferencesRepository.DeleteCompanyPreferencesAsync(companyPreferences.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("CompanyPreferences soft-deleted successfully with ID: {Id}", deleteCompanyPreferencesCommand.Id);
-        return ApiResponse<int>.Ok(deleteCompanyPreferencesCommand.Id, "تنظیمات با موفقیت حذف شد");
+        logger.LogInformation("CompanyPreferences Deleted successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "تنظیمات با موفقیت حذف شد");
     }
 
-    public async Task<ApiResponse<int>> SetCompanyInternationalAirlineCargoStatusAsync(UpdateInternationalAirlineCargoStateCompanyPreferencesCommand updateInternationalAirlineCargoStateCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> SetCompanyInternationalAirlineCargoStatusAsync(UpdateInternationalAirlineCargoStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("SetCompanyInternationalAirlineCargoStatus Called with {@UpdateInternationalAirlineCargoStateCompanyPreferencesCommand}", updateInternationalAirlineCargoStateCompanyPreferencesCommand);
+        logger.LogInformation("SetCompanyInternationalAirlineCargoStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(updateInternationalAirlineCargoStateCompanyPreferencesCommand.Id, true, false, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<int>.Error(400, $"تنظیمات نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("وضعیت بار خارجی شرکت با موفقیت به‌روزرسانی شد: {Id}", updateInternationalAirlineCargoStateCompanyPreferencesCommand.Id);
-        return ApiResponse<int>.Ok(updateInternationalAirlineCargoStateCompanyPreferencesCommand.Id);
+        logger.LogInformation("CompanyPreferences international airline cargo status updated successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت نمایش بار خارجی با موفقیت به روز رسانی شد");
     }
 
-    public async Task<ApiResponse<int>> SetCompanyIssueDomesticWaybillStatusAsync(UpdateIssueDomesticWaybillStateCompanyPreferencesCommand updateIssueDomesticWaybillStateCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> SetCompanyIssueDomesticWaybillStatusAsync(UpdateIssueDomesticWaybillStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("SetCompanyIssueDomesticWaybillStatus Called with {@UpdateIssueDomesticWaybillStateCompanyPreferencesCommand}", updateIssueDomesticWaybillStateCompanyPreferencesCommand);
+        logger.LogInformation("SetCompanyIssueDomesticWaybillStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(updateIssueDomesticWaybillStateCompanyPreferencesCommand.Id, true, false, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<int>.Error(400, $"تنظیمات نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("وضعیت صدور بارنامه شرکت با موفقیت به‌روزرسانی شد: {Id}", updateIssueDomesticWaybillStateCompanyPreferencesCommand.Id);
-        return ApiResponse<int>.Ok(updateIssueDomesticWaybillStateCompanyPreferencesCommand.Id);
+        logger.LogInformation("CompanyPreferences issue domesticWaybill status updated successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت صدور بارنامه داخلی با موفقیت به روز رسانی شد");
     }
 
-    public async Task<ApiResponse<int>> SetCompanyShowInSearchEngineStatusAsync(UpdateShowInSearchEngineStateCompanyPreferencesCommand updateShowInSearchEngineStateCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> SetCompanyShowInSearchEngineStatusAsync(UpdateShowInSearchEngineStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("SetCompanyShowInSearchEngineStatus Called with {@UpdateShowInSearchEngineStateCompanyPreferencesCommand}", updateShowInSearchEngineStateCompanyPreferencesCommand);
+        logger.LogInformation("SetCompanyShowInSearchEngineStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(updateShowInSearchEngineStateCompanyPreferencesCommand.Id, true, false, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<int>.Error(400, $"تنظیمات نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("وضعیت نمایش شرکت در موتور جستجوی با موفقیت به‌روزرسانی شد: {Id}", updateShowInSearchEngineStateCompanyPreferencesCommand.Id);
-        return ApiResponse<int>.Ok(updateShowInSearchEngineStateCompanyPreferencesCommand.Id);
+        logger.LogInformation("CompanyPreferences show in search engine status updated successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت نمایش در موتور جستجو با موفقیت به روز رسانی شد");
     }
 
-    public async Task<ApiResponse<int>> SetCompanyWebServiceSearchEngineStatusAsync(UpdateWebServiceSearchEngineStateCompanyPreferencesCommand updateWebServiceSearchEngineStateCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> SetCompanyWebServiceSearchEngineStatusAsync(UpdateWebServiceSearchEngineStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("SetCompanyWebServiceSearchEngineStatus Called with {@UpdateWebServiceSearchEngineStateCompanyPreferencesCommand}", updateWebServiceSearchEngineStateCompanyPreferencesCommand);
+        logger.LogInformation("SetCompanyWebServiceSearchEngineStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(updateWebServiceSearchEngineStateCompanyPreferencesCommand.Id, true, false, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<int>.Error(400, $"کمیسیون نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "کمیسیون نامعتبر است");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<int>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("وضعیت نمایش شرکت در وب سرویس با موفقیت به‌روزرسانی شد: {Id}", updateWebServiceSearchEngineStateCompanyPreferencesCommand.Id);
-        return ApiResponse<int>.Ok(updateWebServiceSearchEngineStateCompanyPreferencesCommand.Id);
+        logger.LogInformation("CompanyPreferences web service search engine status updated successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت نمایش در موتور جستجوی وب سرویس با موفقیت به روز رسانی شد");
     }
 
-    public async Task<ApiResponse<CompanyPreferencesDto>> UpdateCompanyPreferencesAsync(UpdateCompanyPreferencesCommand updateCompanyPreferencesCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyPreferencesDto>> UpdateCompanyPreferencesAsync(UpdateCompanyPreferencesCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("UpdateCompanyPreferences is Called with {@UpdateCompanyPreferencesCommand}", updateCompanyPreferencesCommand);
+        logger.LogInformation("UpdateCompanyPreferences is Called with {@UpdateCompanyPreferencesCommand}", command);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(updateCompanyPreferencesCommand.Id, true, false, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, $"تنظیمات نا معتبر است");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "تنظیمات نا معتبر است");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company == null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var updatedCompanyCommission = mapper.Map(updateCompanyPreferencesCommand, companyPreferences);
-        if (updatedCompanyCommission is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "خطا در عملیات تبدیل");
+        var updatedCompanyPreferences = mapper.Map(command, companyPreferences);
+        if (updatedCompanyPreferences is null)
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status500InternalServerError, "خطا در عملیات تبدیل");
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("تنظیمات با موفقیت به‌روزرسانی شد: {Id}", updateCompanyPreferencesCommand.Id);
+        logger.LogInformation("CompanyPreferences updated successfully with {@UpdateCompanyPreferencesCommand}", command);
 
-        var updatedCompanyPreferencesDto = mapper.Map<CompanyPreferencesDto>(updatedCompanyCommission);
+        var updatedCompanyPreferencesDto = mapper.Map<CompanyPreferencesDto>(updatedCompanyPreferences);
+        if (updatedCompanyPreferencesDto == null)
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
         return ApiResponse<CompanyPreferencesDto>.Ok(updatedCompanyPreferencesDto, "تنظیمات با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<PagedResult<CompanyPreferencesDto>>> GetAllCompanyPreferencesAsync(GetAllCompanyPreferencesQuery getAllCompanyPreferencesQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanyPreferencesDto>>> GetAllCompanyPreferencesAsync(GetAllCompanyPreferencesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanyPreferences is Called");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
-        if (getAllCompanyPreferencesQuery.CompanyId != 0 && getAllCompanyPreferencesQuery.CompanyTypeId != 0)
+        if (query.CompanyId != 0 && query.CompanyTypeId != 0)
         {
-            if (!user.IsSuperAdmin() && !user.IsSuperManager(getAllCompanyPreferencesQuery.CompanyTypeId) && !user.IsManager(getAllCompanyPreferencesQuery.CompanyId))
-                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "مجوز این فعالیت را ندارید");
+            if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId) && !user.IsManager(query.CompanyId))
+                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
         }
-        else if (getAllCompanyPreferencesQuery.CompanyId != 0 && getAllCompanyPreferencesQuery.CompanyTypeId == 0)
+        else if (query.CompanyId != 0 && query.CompanyTypeId == 0)
         {
-            var company = await companyRepository.GetCompanyByIdAsync(getAllCompanyPreferencesQuery.CompanyId, true, false, cancellationToken);
+            var company = await companyRepository.GetCompanyByIdAsync(query.CompanyId, true, false, cancellationToken);
             if (company is null)
-                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, $"شرکت نامعتبر است");
+                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "شرکت نامعتبر است");
 
             if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
-                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "مجوز این فعالیت را ندارید");
+                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
         }
-        else if (getAllCompanyPreferencesQuery.CompanyId == 0 && getAllCompanyPreferencesQuery.CompanyTypeId != 0)
+        else if (query.CompanyId == 0 && query.CompanyTypeId != 0)
         {
-            if (!user.IsSuperAdmin() && !user.IsSuperManager(getAllCompanyPreferencesQuery.CompanyTypeId))
-                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "مجوز این فعالیت را ندارید");
+            if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId))
+                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
         }
-        else if (getAllCompanyPreferencesQuery.CompanyId == 0 && getAllCompanyPreferencesQuery.CompanyTypeId == 0)
+        else if (query.CompanyId == 0 && query.CompanyTypeId == 0)
         {
             if (!user.IsSuperAdmin())
-                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(400, "مجوز این فعالیت را ندارید");
+                return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
         }
 
         var (companyPreferences, totalCount) = await companyPreferencesRepository.GetAllCompanyPreferencesAsync(
-            getAllCompanyPreferencesQuery.SearchPhrase,
-            getAllCompanyPreferencesQuery.SortBy,
-            getAllCompanyPreferencesQuery.CompanyTypeId,
-            getAllCompanyPreferencesQuery.CompanyId,
+            query.SearchPhrase,
+            query.SortBy,
+            query.CompanyTypeId,
+            query.CompanyId,
             true,
-            getAllCompanyPreferencesQuery.PageNumber,
-            getAllCompanyPreferencesQuery.PageSize,
-            getAllCompanyPreferencesQuery.SortDirection,
+            query.PageNumber,
+            query.PageSize,
+            query.SortDirection,
             cancellationToken);
+        
+        var companyPreferencesDtos = mapper.Map<IReadOnlyList<CompanyPreferencesDto>>(companyPreferences) ?? Array.Empty<CompanyPreferencesDto>();
+        if (companyPreferencesDtos == null)
+            return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
-        var companyPreferencesDto = mapper.Map<IReadOnlyList<CompanyPreferencesDto>>(companyPreferences) ?? Array.Empty<CompanyPreferencesDto>();
-        logger.LogInformation("Retrieved {Count} company commissions", companyPreferencesDto.Count);
+        logger.LogInformation("Retrieved {Count} company preferences", companyPreferencesDtos.Count);
 
-        var data = new PagedResult<CompanyPreferencesDto>(companyPreferencesDto, totalCount, getAllCompanyPreferencesQuery.PageSize, getAllCompanyPreferencesQuery.PageNumber);
-        return ApiResponse<PagedResult<CompanyPreferencesDto>>.Ok(data);
+        var data = new PagedResult<CompanyPreferencesDto>(companyPreferencesDtos, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<CompanyPreferencesDto>>.Ok(data, "تنظیمات با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByCompanyIdAsync(GetCompanyPreferencesByCompanyIdQuery getCompanyPreferencesByCompanyIdQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByCompanyIdAsync(GetCompanyPreferencesByCompanyIdQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetCompanyPreferencesByCompanyId is Called with ID: {Id}", getCompanyPreferencesByCompanyIdQuery.CompanyId);
+        logger.LogInformation("GetCompanyPreferencesByCompanyId is Called with {@CompanyId}", query.CompanyId);
 
-        var company = await companyRepository.GetCompanyByIdAsync(getCompanyPreferencesByCompanyIdQuery.CompanyId, false, false, cancellationToken);
+        var company = await companyRepository.GetCompanyByIdAsync(query.CompanyId, false, false, cancellationToken);
         if (company is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<CompanyPreferencesDto>.Error(401, "کاربر اهراز هویت نشده است");
-
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
-            return ApiResponse<CompanyPreferencesDto>.Error(403, "مجوز این فعالیت را ندارید");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(getCompanyPreferencesByCompanyIdQuery.CompanyId, false, true, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(query.CompanyId, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, $"تنظیمات یافت نشد");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "تنظیمات یافت نشد");
 
-        var companyCommissionDto = mapper.Map<CompanyPreferencesDto>(companyPreferences);
-        if (companyCommissionDto is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "خطا در عملیات تبدیل");
+        var companyPreferenceDto = mapper.Map<CompanyPreferencesDto>(companyPreferences);
+        if (companyPreferenceDto is null)
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status500InternalServerError, "خطا در عملیات تبدیل");
 
-        logger.LogInformation("CompanyPreferences retrieved successfully with ID: {Id}", getCompanyPreferencesByCompanyIdQuery.CompanyId);
-        return ApiResponse<CompanyPreferencesDto>.Ok(companyCommissionDto);
+        logger.LogInformation("CompanyPreferences retrieved successfully with CompanyId {@Id}", query.CompanyId);
+        return ApiResponse<CompanyPreferencesDto>.Ok(companyPreferenceDto, "تنظیمات با موفقیت دریافت شد");
     }
 
-    public async Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByIdAsync(GetCompanyPreferencesByIdQuery getCompanyPreferencesByIdQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyPreferencesDto>> GetCompanyPreferencesByIdAsync(GetCompanyPreferencesByIdQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetCompanyPreferencesById is Called with ID: {Id}", getCompanyPreferencesByIdQuery.Id);
+        logger.LogInformation("GetCompanyPreferencesById is Called with {@Id}", query.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(getCompanyPreferencesByIdQuery.Id, false, true, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(query.Id, false, false, cancellationToken);
         if (companyPreferences is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, $"تنظیمات یافت نشد");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "تنظیمات یافت نشد");
 
         var company = await companyRepository.GetCompanyByIdAsync(companyPreferences.CompanyId, false, false, cancellationToken);
         if (company is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyCommissionDto = mapper.Map<CompanyPreferencesDto>(companyPreferences);
-        if (companyCommissionDto is null)
-            return ApiResponse<CompanyPreferencesDto>.Error(400, "خطا در عملیات تبدیل");
+        var companyPreferencesDto = mapper.Map<CompanyPreferencesDto>(companyPreferences);
+        if (companyPreferencesDto is null)
+            return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status500InternalServerError, "خطا در عملیات تبدیل");
 
-        logger.LogInformation("CompanyPreferences retrieved successfully with ID: {Id}", getCompanyPreferencesByIdQuery.Id);
-        return ApiResponse<CompanyPreferencesDto>.Ok(companyCommissionDto);
+        logger.LogInformation("CompanyPreferences retrieved successfully with {@Id}", query.Id);
+        return ApiResponse<CompanyPreferencesDto>.Ok(companyPreferencesDto, "تنظیمات با موفقیت دریافت شد");
     }
 }

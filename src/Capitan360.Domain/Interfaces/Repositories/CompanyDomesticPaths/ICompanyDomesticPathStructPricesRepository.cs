@@ -11,7 +11,7 @@ public interface ICompanyDomesticPathStructPricesRepository
         CancellationToken cancellationToken);
     void Delete(CompanyDomesticPathStructPrice price);
     Task<(IReadOnlyList<CompanyDomesticPathStructPrice>, int)> GetAllCompanyDomesticPathStructPrice(
-        string? searchPhrase, int companyDomesticPathId, int pathStruct, int pageSize, int pageNumber, string? sortBy,
+        string searchPhrase, int companyDomesticPathId, int pathStruct, int pageSize, int pageNumber, string? sortBy,
         SortDirection sortDirection, CancellationToken cancellationToken);
     Task<bool> CheckExistPrice(int companyDomesticPathId, int weight, PathStructType pathStructType, WeightType weightType, CancellationToken cancellationToken);
     Task<int> CreateCompanyDomesticPathStructPriceAsync(CompanyDomesticPathStructPrice price, CancellationToken cancellationToken);

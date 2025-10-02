@@ -1,9 +1,4 @@
-﻿using Capitan360.Domain.Entities.Addresses;
-using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Entities.CompanyManifestForms;
-using Capitan360.Domain.Entities.Identities;
-using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Enums;
+﻿using Capitan360.Domain.Enums;
 
 namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Dtos;
 
@@ -16,7 +11,6 @@ public class CompanyManifestFormDto
     public int? CompanyReceiverId { get; set; }
     public string? CompanyReceiverName { get; set; }
     public string? CompanyReceiverUserInsertedCode { get; set; }
-    public string? CompanyReceiverUserInsertedName { get; set; }
     public int SourceCountryId { get; set; }
     public string? SourceCountryName { get; set; }
     public int SourceProvinceId { get; set; }

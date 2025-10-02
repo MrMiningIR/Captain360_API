@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.Delete;
+
+public record DeleteCompanyDomesticWaybillPackageTypeCommand(int Id);

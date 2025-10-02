@@ -28,7 +28,7 @@ public class CompanyDomesticPathStructPricesService(
     ICompanyDomesticPathStructPriceMunicipalAreasRepository companyDomesticPathStructPriceMunicipalAreasRepository,
     IIdentityService identityService,
     IAreaRepository areaRepository,
-    ICompanyDomesticPathsRepository domesticPathsRepository
+    ICompanyDomesticPathRepository domesticPathsRepository
 
     )
     : ICompanyDomesticPathStructPricesService
@@ -580,7 +580,7 @@ public class CompanyDomesticPathStructPricesService(
             return ApiResponse<List<TableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه, و اطلاعات ارسالی ان اشتباه است");
 
 
-        var domesticPth = await domesticPathsRepository.GetCompanyDomesticPathByIdAsync(query.CompanyDomesticPathId, false, false, cancellationToken);
+        var domesticPth = await domesticPathsRepository.GetCompanyDomesticPathByIdAsync(query.CompanyDomesticPathId, false, false, false, false, cancellationToken);
         if (domesticPth is null)
             return ApiResponse<List<TableDataDto>>.Error(400, "مسیر وجود ندارد یا شناسه ان اشتباه است");
 

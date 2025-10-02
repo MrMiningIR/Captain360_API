@@ -7,7 +7,7 @@ using Capitan360.Domain.Interfaces.Repositories.ComapnyManifestForms;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyManifestForms;
 
-public class CompanyManifestFormRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IManifestFormRepository
+public class CompanyManifestFormRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyManifestFormRepository
 {
     public async Task<CompanyManifestForm?> GetManifestFormByIdAsync(int companyManifestFormId, bool loadDataGeneralData, bool loadDataSenderCompany, bool loadDataReceiverCompany, bool tracked, CancellationToken cancellationToken)
     {

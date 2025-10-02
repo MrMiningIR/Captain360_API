@@ -8,7 +8,9 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Addresses;
 
-public class AreaRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IAreaRepository
+public class AreaRepository(
+        ApplicationDbContext dbContext, 
+        IUnitOfWork unitOfWork) : IAreaRepository
 {
     public async Task<bool> CheckExistAreaByIdAndParentId(int areaId, int? areaLevelId, int? areaParentId, CancellationToken cancellationToken)
     {
@@ -63,16 +65,16 @@ public class AreaRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWo
         return area;
     }
 
-    public async Task<(IReadOnlyList<Area>, int)> GetAllAreas(string? searchPhrase, int pageSize, int pageNumber,
+    public async Task<(IReadOnlyList<Area>, int)> GetAllAreas(string searchPhrase, int pageSize, int pageNumber,
         string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext.Areas
             .Include(item => item.Parent)
-            .Where(item => searchPhraseLower == null ||
-                        (item.PersianName.ToLower().Contains(searchPhraseLower) ||
-                         item.Code.ToLower().Contains(searchPhraseLower)));
+            .Where(item => searchPhrase == null ||
+                        (item.PersianName.ToLower().Contains(searchPhrase) ||
+                         item.Code.ToLower().Contains(searchPhrase)));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -99,17 +101,17 @@ public class AreaRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWo
         return (areas, totalCount);
     }
 
-    public async Task<(IReadOnlyList<Area>, int)> GetAllProvince(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
+    public async Task<(IReadOnlyList<Area>, int)> GetAllProvince(string searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
         bool ignorePageSize, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext.Areas.AsNoTracking()
             .Where(x => x.ParentId != null && x.ParentId == 1)
             .Include(item => item.Parent)
-            .Where(item => searchPhraseLower == null ||
-                        (item.PersianName.ToLower().Contains(searchPhraseLower) ||
-                         item.Code.ToLower().Contains(searchPhraseLower)));
+            .Where(item => searchPhrase == null ||
+                        (item.PersianName.ToLower().Contains(searchPhrase) ||
+                         item.Code.ToLower().Contains(searchPhrase)));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -137,17 +139,57 @@ public class AreaRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWo
         return (areas, totalCount);
     }
 
-    public async Task<(IReadOnlyList<Area>, int)> GetAllCity(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
+    public async Task<(IReadOnlyList<Area>, int)> GetAllCity(string searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
         int provinceId, bool ignorePageSize, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext.Areas.AsNoTracking()
             .Where(x => x.ParentId != null && x.ParentId == provinceId)
             .Include(item => item.Parent)
-            .Where(item => searchPhraseLower == null ||
-                        (item.PersianName.ToLower().Contains(searchPhraseLower) ||
-                         item.Code.ToLower().Contains(searchPhraseLower)));
+            .Where(item => searchPhrase == null ||
+                        (item.PersianName.ToLower().Contains(searchPhrase) ||
+                         item.Code.ToLower().Contains(searchPhrase)));
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        if (sortBy != null)
+        {
+            var columnsSelector = new Dictionary<string, Expression<Func<Area, object>>>
+{
+    { nameof(Area.PersianName), item => item.PersianName },
+    { nameof(Area.Code), item => item.Code },
+    { nameof(Area.LevelId), item => item.LevelId }
+};
+
+            var selectedColumn = columnsSelector[sortBy];
+            baseQuery = sortDirection == SortDirection.Ascending
+                ? baseQuery.OrderBy(selectedColumn)
+                : baseQuery.OrderByDescending(selectedColumn);
+        }
+
+
+        var areas = !ignorePageSize ? await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync(cancellationToken) : await baseQuery.ToListAsync(cancellationToken);
+
+        return (areas, totalCount);
+    }
+
+
+
+    public async Task<(IReadOnlyList<Area>, int)> GetAllRegionMunicipality(string searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
+        int cityId, bool ignorePageSize, CancellationToken cancellationToken)
+    {
+        searchPhrase = searchPhrase.Trim().ToLower();
+
+        var baseQuery = dbContext.Areas.AsNoTracking()
+            .Where(x => x.ParentId != null && x.ParentId == cityId)
+            .Include(item => item.Parent)
+            .Where(item => searchPhrase == null ||
+                        (item.PersianName.ToLower().Contains(searchPhrase) ||
+                         item.Code.ToLower().Contains(searchPhrase)));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 

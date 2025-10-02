@@ -2,7 +2,7 @@
 
 namespace Capitan360.Application.Features.Companies.CompanyUris.Queries.GetByCompanyId;
 
-internal class GetCompanyUriByCompanyIdQueryValidator : AbstractValidator<GetCompanyUriByCompanyIdQuery>
+public class GetCompanyUriByCompanyIdQueryValidator : AbstractValidator<GetCompanyUriByCompanyIdQuery>
 {
     public GetCompanyUriByCompanyIdQueryValidator()
     {

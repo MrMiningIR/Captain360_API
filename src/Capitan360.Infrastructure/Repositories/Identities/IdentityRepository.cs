@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Identities;
 
-internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<User> userManager
+public class IdentityRepository(ApplicationDbContext dbContext, UserManager<User> userManager
     , IUnitOfWork unitOfWork, RoleManager<Role> roleManager) : IIdentityRepository
 {
     public async Task<bool> UserExistByPhone(string phoneNumber, CancellationToken cancellationToken)
@@ -31,7 +31,7 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
 
     }
 
-    public async Task<IdentityResult?> UpdateUserAsync(User user, CancellationToken ct)
+    public async Task<IdentityResult?> UpdateUserAsync(User user, CancellationToken cancellationToken)
     {
         var result = await userManager.UpdateAsync(user);
         return result;
@@ -75,10 +75,10 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
     }
 
     public async Task<(IReadOnlyList<User>, int)> GetAllUsersByCompany(int companyId, int userKind, int companyType,
-        string? searchPhrase, int pageSize, int pageNumber, string? sortBy,
+        string searchPhrase, int pageSize, int pageNumber, string? sortBy,
         SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
 
 
 
@@ -89,9 +89,9 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
             .Include(x => x.UserCompanies)
             .ThenInclude(x => x.Company)
             .Where(u => (userKind == 0 || u.UserKind == userKind) &&
-                        (searchPhraseLower == null ||
-                         u.FullName!.ToLower().Contains(searchPhraseLower) ||
-                         u.PhoneNumber!.Contains(searchPhraseLower)) &&
+                        (searchPhrase == null ||
+                         u.FullName!.ToLower().Contains(searchPhrase) ||
+                         u.PhoneNumber!.Contains(searchPhrase)) &&
                         (companyId == 0 || dbContext.UserCompanies.Any(uc => uc.CompanyId == companyId && uc.UserId == u.Id)))
             .Select(u => u);
 
@@ -152,9 +152,9 @@ internal class IdentityRepository(ApplicationDbContext dbContext, UserManager<Us
             ;
     }
 
-    public async Task<User?> GetUserByIdForUpdateAsync(string userId, CancellationToken ct)
+    public async Task<User?> GetUserByIdForUpdateAsync(string userId, CancellationToken cancellationToken)
     {
-        return await dbContext.Users.SingleOrDefaultAsync(x => x.Id == userId, ct);
+        return await dbContext.Users.SingleOrDefaultAsync(x => x.Id == userId, cancellationToken);
     }
 
     public async Task<IdentityResult?> CreateUserByCompanyAsync(User user, string password)

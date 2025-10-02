@@ -35,15 +35,15 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetAllCompanySmsPatternsAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanySmsPatterns>, int)> GetAllCompanySmsPatternsAsync(string searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanySmsPatterns.AsNoTracking()
-                                                    .Where(item => searchPhraseLower == null || item.Company!.Name.ToLower().Contains(searchPhraseLower) ||
-                                                                                                item.SmsPanelNumber.ToLower().Contains(searchPhraseLower) ||
-                                                                                                item.SmsPanelUserName.ToLower().Contains(searchPhraseLower));
+                                                    .Where(item => item.Company!.Name.ToLower().Contains(searchPhrase) ||
+                                                                   item.SmsPanelNumber.ToLower().Contains(searchPhrase) ||
+                                                                   item.SmsPanelUserName.ToLower().Contains(searchPhrase));
 
-        if (loadData)
+        if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item =>item.Company);
 
         if (CompanyTypeId != 0)
@@ -54,18 +54,17 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanySmsPatterns, object>>>
         {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanySmsPatterns, object>>>
-            {
-                { nameof(CompanySmsPatterns.Company.Name), item => item.Company!.Name }
-            };
+            { nameof(CompanySmsPatterns.Company.Name), item => item.Company!.Name }
+        };
 
-            var selectedColumn = columnsSelector[sortBy];
-            baseQuery = sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColumn)
-                : baseQuery.OrderByDescending(selectedColumn);
-        }
+        sortBy ??= nameof(CompanySmsPatterns.Company.Name);
+
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
 
         var companySmsPatterns = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
@@ -75,15 +74,10 @@ public class CompanySmsPatternsRepository(ApplicationDbContext dbContext, IUnitO
         return (companySmsPatterns, totalCount);
     }
 
-    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanySmsPatterns?> GetCompanySmsPatternsByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanySmsPatterns> query = dbContext.CompanySmsPatterns;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
+        IQueryable<CompanySmsPatterns> query = dbContext.CompanySmsPatterns.Include(item => item.Company)
+                                                                           .AsNoTracking();
 
         return await query.SingleOrDefaultAsync(item =>item.CompanyId == companyId, cancellationToken);
     }

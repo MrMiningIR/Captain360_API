@@ -1,0 +1,4 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Queries.GetByCompanyDomesticWaybillId;
+
+public record GetDomesticWaybillPackageTypeByDomesticWaybillIdQuery(int CompanyDomesticWaybillId);
+

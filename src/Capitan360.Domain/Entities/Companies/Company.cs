@@ -56,6 +56,8 @@ public class Company : BaseEntity
 
     public ICollection<CompanyDomesticPath> CompanyDomesticPaths { get; set; } = [];
 
+    public ICollection<CompanyDomesticPathReceiverCompany> CompanyDomesticPathReceiverCompanies { get; set; } = [];
+
     public ICollection<CompanyInsurance> CompanyInsurances { get; set; } = [];
 
     public ICollection<CompanyBank> CompanyBanks { get; set; } = [];

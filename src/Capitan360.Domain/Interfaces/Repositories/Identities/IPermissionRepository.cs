@@ -9,16 +9,16 @@ public interface IPermissionRepository
     Task<IReadOnlyList<Permission>> GetAllPolicy(CancellationToken cancellationToken);
     Task<List<int>> GetAllPermissionsId(CancellationToken cancellationToken);
 
-    Task<List<ParentPermissionTransfer>> GetParentPermissions(CancellationToken ct);
-    Task<List<Permission>> GetPermissionsByParentName(string parentName, CancellationToken ct);
+    Task<List<ParentPermissionTransfer>> GetParentPermissions(CancellationToken cancellationToken);
+    Task<List<Permission>> GetPermissionsByParentName(string parentName, CancellationToken cancellationToken);
 
-    Task<List<Permission>> GetPermissionsByParentCode(Guid parentCode, CancellationToken ct);
-    Task<List<Permission>> GetFullListPermission(CancellationToken ct);
+    Task<List<Permission>> GetPermissionsByParentCode(Guid parentCode, CancellationToken cancellationToken);
+    Task<List<Permission>> GetFullListPermission(CancellationToken cancellationToken);
 
 
 
-    Task<(IReadOnlyList<Permission>, int)> GetAllMatchingPermissions(string? searchPhrase,
-        int pageSize, int pageNumber, CancellationToken ct);
+    Task<(IReadOnlyList<Permission>, int)> GetAllMatchingPermissions(string searchPhrase,
+        int pageSize, int pageNumber, CancellationToken cancellationToken);
 
 
 
@@ -56,10 +56,10 @@ public interface IPermissionRepository
 
 
     // Permissions
-    Task<bool> ExistPermissionInPermissionSource(Guid permissionCode, Guid parentCode, CancellationToken ct);
+    Task<bool> ExistPermissionInPermissionSource(Guid permissionCode, Guid parentCode, CancellationToken cancellationToken);
 
 
-    Task<int> AddPermissionToPermissionSource(Permission permission, CancellationToken ct);
+    Task<int> AddPermissionToPermissionSource(Permission permission, CancellationToken cancellationToken);
     void DeletePermission(Permission permission, CancellationToken cancellationToken);
 
 

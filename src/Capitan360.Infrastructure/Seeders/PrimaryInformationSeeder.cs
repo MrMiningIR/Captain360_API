@@ -19,7 +19,7 @@ namespace Capitan360.Infrastructure.Seeders
         Task SeedDataAsync(CancellationToken cancellationToken, Assembly assembly);
     }
 
-    internal class PrimaryInformationSeeder(ApplicationDbContext dbContext,
+    public class PrimaryInformationSeeder(ApplicationDbContext dbContext,
         IUnitOfWork unitOfWork,
         RoleManager<Role> roleManager,
         UserManager<User> userManager, IPermissionService permissionService,

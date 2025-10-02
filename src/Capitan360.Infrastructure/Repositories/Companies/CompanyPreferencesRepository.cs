@@ -35,15 +35,15 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyPreferences.AsNoTracking()
-                                                    .Where(item => searchPhraseLower == null || item.Company!.Name.ToLower().Contains(searchPhraseLower) ||
-                                                                                                item.CaptainCargoCode.ToLower().Contains(searchPhraseLower) ||
-                                                                                                item.CaptainCargoName.ToLower().Contains(searchPhraseLower));
+                                                    .Where(item => item.Company!.Name.ToLower().Contains(searchPhrase) ||
+                                                                   item.CaptainCargoCode.ToLower().Contains(searchPhrase) ||
+                                                                   item.CaptainCargoName.ToLower().Contains(searchPhrase));
 
-        if (loadData)
+        if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item =>item.Company);
 
         if (CompanyTypeId != 0)
@@ -54,18 +54,17 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyPreferences, object>>>
         {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanyPreferences, object>>>
-            {
-                { nameof(CompanyPreferences.Company.Name), item => item.Company!.Name }
-            };
+            { nameof(CompanyPreferences.Company.Name), item => item.Company!.Name }
+        };
 
-            var selectedColumn = columnsSelector[sortBy];
-            baseQuery = sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColumn)
-                : baseQuery.OrderByDescending(selectedColumn);
-        }
+        sortBy ??= nameof(CompanyPreferences.Company.Name);
+
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
 
         var companyPreferences = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
@@ -75,15 +74,10 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
         return (companyPreferences, totalCount);
     }
 
-    public async Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyPreferences> query = dbContext.CompanyPreferences;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
+        IQueryable<CompanyPreferences> query = dbContext.CompanyPreferences.Include(item => item.Company)
+                                                                           .AsNoTracking();
 
         return await query.SingleOrDefaultAsync(item =>item.CompanyId == companyId, cancellationToken);
     }

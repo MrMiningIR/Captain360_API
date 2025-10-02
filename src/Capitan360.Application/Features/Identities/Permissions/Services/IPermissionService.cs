@@ -14,13 +14,13 @@ public interface IPermissionService
     //Task<List<string>?> GetUserPermissions(string userId, CancellationToken cancellationToken);
 
     //----------------------
-    Task<ApiResponse<List<ParentPermissionTransfer>>> GetParentPermissions(CancellationToken ct);
+    Task<ApiResponse<List<ParentPermissionTransfer>>> GetParentPermissions(CancellationToken cancellationToken);
 
-    Task<ApiResponse<List<PermissionDto>>> GetPermissionsByParentName(GetPermissionsByParentNameQuery parentQuery, CancellationToken ct);
-    Task<ApiResponse<List<PermissionDto>>> GetPermissionsByParentCode(GetPermissionsByParentCodeQuery parentQuery, CancellationToken ct);
+    Task<ApiResponse<List<PermissionDto>>> GetPermissionsByParentName(GetPermissionsByParentNameQuery parentQuery, CancellationToken cancellationToken);
+    Task<ApiResponse<List<PermissionDto>>> GetPermissionsByParentCode(GetPermissionsByParentCodeQuery parentQuery, CancellationToken cancellationToken);
 
     Task<ApiResponse<PagedResult<PermissionDto>>>
-        GetAllMatchingPermissions(GetAllMatchingPermissionsQuery getAllMatchingPermissionsQuery, CancellationToken ct);
+        GetAllMatchingPermissions(GetAllMatchingPermissionsQuery getAllMatchingPermissionsQuery, CancellationToken cancellationToken);
 
     public record GetAllMatchingPermissionsQuery(
 
@@ -111,11 +111,11 @@ public interface IPermissionService
 
     List<string> GetPermissionsForSystem(Assembly? assembly);
 
-    Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken ct);
+    Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
 
     Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
 
-    Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken ct);
+    Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken cancellationToken);
 
-    Task<ApiResponse<List<int>>> GetDbPermissionsId(CancellationToken ct);
+    Task<ApiResponse<List<int>>> GetDbPermissionsId(CancellationToken cancellationToken);
 }

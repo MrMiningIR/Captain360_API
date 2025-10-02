@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Queries.GetById;
+
+public record GetCompanyDomesticWaybillPeriodByIdQuery(int Id);

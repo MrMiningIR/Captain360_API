@@ -1,0 +1,26 @@
+﻿using Capitan360.Application.Common;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.Delete;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.DeleteByCompanyDomesticWaybillId;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.Issue;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.IssueFromDesktop;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Dtos;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Queries.GetByCompanyDomesticWaybillId;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Queries.GetById;
+
+namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Services;
+
+public interface ICompanyDomesticWaybillPackageTypeService
+{
+    Task<ApiResponse<int>> IssueCompanyDomesticWaybillPackageTypeAsync(IssueCompanyDomesticWaybillPackageTypeCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> IssueCompanyDomesticWaybillPackageTypeFromDesktopAsync(IssueCompanyDomesticWaybillPackageTypeFromDesktopCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> DeleteCompanyDomesticWaybillPackageTypeAsync(DeleteCompanyDomesticWaybillPackageTypeCommand command, CancellationToken cancellationToken);
+    
+    Task<ApiResponse<int>> DeleteCompanyDomesticWaybillPackageTypeByComapnyDomesticWaybillIdAsync(DeleteDomesticWaybillPackageTypeByDomesticWaybillIdCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<IReadOnlyList<CompanyDomesticWaybillPackageTypeDto>>> GetCompanyDomesticWaybillPackageTypeByCompanyDomesticWaybillIdAsync(GetDomesticWaybillPackageTypeByDomesticWaybillIdQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyDomesticWaybillPackageTypeDto>> GetCompanyDomesticWaybillPackageTypeByIdAsync(GetCompanyDomesticWaybillPackageTypeByIdQuery query, CancellationToken cancellationToken);
+}
+

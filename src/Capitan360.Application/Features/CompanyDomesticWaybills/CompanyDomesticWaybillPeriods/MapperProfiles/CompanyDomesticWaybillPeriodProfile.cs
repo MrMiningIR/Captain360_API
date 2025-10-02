@@ -18,12 +18,12 @@ public class CompanyDomesticWaybillPeriodProfile : Profile
             .ForMember(dest => dest.CompanyDomesticWaybills, opt => opt.Ignore())
             .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
 
-        CreateMap<CreateDomesticWaybillPeriodCommand, CompanyDomesticWaybillPeriod>()
+        CreateMap<CreateCompanyDomesticWaybillPeriodCommand, CompanyDomesticWaybillPeriod>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyDomesticWaybills, opt => opt.Ignore())
             .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
 
-        CreateMap<UpdateDomesticWaybillPeriodCommand, CompanyDomesticWaybillPeriod>()
+        CreateMap<UpdateCompanyDomesticWaybillPeriodCommand, CompanyDomesticWaybillPeriod>()
             .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
             .ForMember(dest => dest.Company, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyDomesticWaybills, opt => opt.Ignore())

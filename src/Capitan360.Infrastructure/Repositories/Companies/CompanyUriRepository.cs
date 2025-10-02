@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -12,7 +13,7 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
 {
     public async Task<bool> CheckExistCompanyUriUriAsync(string companyUriUri, int? currentCompanyUriId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyUris.AnyAsync(item => item.Uri.ToLower() == companyUriUri.ToLower().Trim() && (currentCompanyUriId == null || item.Id != currentCompanyUriId), cancellationToken);
+        return await dbContext.CompanyUris.AnyAsync(item => item.Uri.ToLower() == companyUriUri.Trim().ToLower() && (currentCompanyUriId == null || item.Id != currentCompanyUriId), cancellationToken);
     }
 
     public async Task<int> CreateCompanyUriAsync(CompanyUri companyUri, CancellationToken cancellationToken)
@@ -40,6 +41,7 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         IQueryable<CompanyUri> query = dbContext.CompanyUris;
 
         return await query.Where(item => item.CompanyId == companyUriCompanyId)
+                          .OrderBy(item => item.Uri)
                           .ToListAsync(cancellationToken);
     }
 
@@ -48,13 +50,13 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyUri>, int)> GetAllCompanyUrisAsync(string? searchPhrase, string? sortBy, int companyId, int active, int captain360Uri, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyUri>, int)> GetAllCompanyUrisAsync(string searchPhrase, string? sortBy, int companyId, int active, int captain360Uri, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyUris.AsNoTracking()
-                                              .Where(item => searchPhraseLower == null || item.Description.ToLower().Contains(searchPhraseLower) || item.Uri.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => searchPhrase == null || item.Description.ToLower().Contains(searchPhrase) || item.Uri.ToLower().Contains(searchPhrase));
 
-        if (loadData)
+        if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item => item.Company);
 
         baseQuery = active switch
@@ -78,7 +80,10 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
 
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyUri, object>>>
         {
-            { nameof(CompanyUri.Uri), item => item.Uri}
+            { nameof(CompanyUri.Uri), item => item.Uri},
+            { nameof(CompanyUri.Company.Name), item => item.Company!.Name},
+            { nameof(CompanyUri.Active), item => item.Active},
+            { nameof(CompanyUri.Captain360Uri), item => item.Captain360Uri}
         };
 
         sortBy ??= nameof(CompanyUri.Uri);
@@ -88,11 +93,11 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var packageTypes = await baseQuery
+        var companyUris = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (packageTypes, totalCount);
+        return (companyUris, totalCount);
     }
 }

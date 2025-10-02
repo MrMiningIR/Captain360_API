@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Commands.UpdateActiveState;
-
-public record UpdateActiveStateDomesticWaybillPeriodCommand(int Id);

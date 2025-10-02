@@ -2,7 +2,7 @@
 
 namespace Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.UpdateName;
 
-internal class UpdateCompanyContentTypeNameCommandValidator : AbstractValidator<UpdateCompanyContentTypeNameCommand>
+public class UpdateCompanyContentTypeNameCommandValidator : AbstractValidator<UpdateCompanyContentTypeNameCommand>
 {
     public UpdateCompanyContentTypeNameCommandValidator()
     {

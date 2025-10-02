@@ -8,28 +8,28 @@ namespace Capitan360.Infrastructure.Repositories.Identities;
 
 public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IUserPermissionRepository
 {
-    public async Task<int> AssignPermissionToUser(UserPermission userPermission, CancellationToken ct)
+    public async Task<int> AssignPermissionToUser(UserPermission userPermission, CancellationToken cancellationToken)
     {
         dbContext.UserPermissions.Add(userPermission);
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return userPermission.Id;
     }
 
-    public async Task<List<int>> AssignPermissionsToUser(List<UserPermission> userPermissions, CancellationToken ct)
+    public async Task<List<int>> AssignPermissionsToUser(List<UserPermission> userPermissions, CancellationToken cancellationToken)
     {
         foreach (var permission in userPermissions)
         {
-            var exist = await GetUserPermissionByPermissionIdAndUserId(permission.UserId, permission.PermissionId, ct);
+            var exist = await GetUserPermissionByPermissionIdAndUserId(permission.UserId, permission.PermissionId, cancellationToken);
             if (exist != null)
                 continue;
 
             dbContext.UserPermissions.Add(permission);
         }
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return userPermissions.Select(x => x.Id).ToList();
     }
 
-    public async Task<List<int>> AssignPermissionsToUser(List<string> permissionIds, string userId, CancellationToken ct)
+    public async Task<List<int>> AssignPermissionsToUser(List<string> permissionIds, string userId, CancellationToken cancellationToken)
     {
         List<int> convertedList = new List<int>();
         foreach (var permission in permissionIds)
@@ -37,7 +37,7 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
             var converted = int.TryParse(permission, out int convertedId);
             if (converted)
             {
-                var exist = await GetUserPermissionByPermissionIdAndUserId(userId, convertedId, ct);
+                var exist = await GetUserPermissionByPermissionIdAndUserId(userId, convertedId, cancellationToken);
 
                 if (exist is not null)
                     continue;
@@ -46,11 +46,11 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
                 convertedList.Add(convertedId);
             }
         }
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return convertedList;
     }
 
-    public async Task<List<int>> RemovePermissionsFromUser(List<string> permissionIds, string userId, CancellationToken ct)
+    public async Task<List<int>> RemovePermissionsFromUser(List<string> permissionIds, string userId, CancellationToken cancellationToken)
     {
         List<int> convertedList = new List<int>();
         foreach (var permission in permissionIds)
@@ -58,33 +58,33 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
             var converted = int.TryParse(permission, out int convertedId);
             if (converted)
             {
-                var exist = await GetUserPermissionByPermissionIdAndUserId(userId, convertedId, ct);
+                var exist = await GetUserPermissionByPermissionIdAndUserId(userId, convertedId, cancellationToken);
                 if (exist == null)
                     continue;
                 dbContext.Entry(exist).Property("Deleted").CurrentValue = true;
             }
         }
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return convertedList;
     }
 
-    public async Task<List<string>> GetUserPermissionsByUserId(string userId, CancellationToken ct)
+    public async Task<List<string>> GetUserPermissionsByUserId(string userId, CancellationToken cancellationToken)
     {
         return await dbContext.UserPermissions.AsNoTracking()
             .Include(x => x.Permission)
             .Where(x => x.UserId == userId && x.Permission.Active)
-            .Select(x => x.Permission.Name).ToListAsync(ct);
+            .Select(x => x.Permission.Name).ToListAsync(cancellationToken);
     }
 
 
-    public async Task<int> RemovePermissionFromUser(UserPermission userPermission, CancellationToken ct)
+    public async Task<int> RemovePermissionFromUser(UserPermission userPermission, CancellationToken cancellationToken)
     {
         dbContext.Entry(userPermission).Property("Deleted").CurrentValue = true;
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return userPermission.Id;
     }
 
-    public async Task<List<int>> RemovePermissionsFromUser(List<UserPermission> userPermissions, CancellationToken ct)
+    public async Task<List<int>> RemovePermissionsFromUser(List<UserPermission> userPermissions, CancellationToken cancellationToken)
     {
         foreach (var permission in userPermissions)
         {
@@ -93,7 +93,7 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
             //    continue;
             dbContext.Entry(permission).Property("Deleted").CurrentValue = true;
         }
-        await unitOfWork.SaveChangesAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return userPermissions.Select(x => x.PermissionId).ToList();
     }
 

@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.BackFromReceivedAtReceiverCompanyState;
-
-public record BackFromReceivedAtReceiverCompanyStateCommand(int Id);

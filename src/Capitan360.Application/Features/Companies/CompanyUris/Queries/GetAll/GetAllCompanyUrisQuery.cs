@@ -1,12 +1,10 @@
-﻿using Capitan360.Domain.Constants;
-using Capitan360.Domain.Enums;
+﻿using Capitan360.Domain.Enums;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
 
 public record GetAllCompanyUrisQuery(
-    [property: DefaultValue(null)] string? SearchPhrase = null,
+    [property: DefaultValue("")] string SearchPhrase = "",
     [property: DefaultValue(null)] string? SortBy = null,
     [property: DefaultValue(0)] int CompanyId = 0,
     [property: DefaultValue(1)] int Active = 1,

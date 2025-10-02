@@ -36,7 +36,7 @@ public class CompanyDomesticWaybillPackageTypeConfiguration : BaseEntityConfigur
                .HasColumnType("decimal(10,2)");
 
         builder.Property(x => x.DimensionalWeight)
-               .IsRequired(false)
+               .IsRequired()
                .HasColumnType("decimal(10,2)");
 
         builder.Property(x => x.DeclaredValue)

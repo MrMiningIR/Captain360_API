@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Capitan360.Domain.Entities.CompanyDomesticWaybills;
@@ -25,9 +24,9 @@ public class CompanyDomesticWaybillPackageType : BaseEntity
 
     public string DeclaredValue { get; set; } = default!;
 
-    public string? Dimensions { get; set; }
+    public string Dimensions { get; set; } = default!;
 
-    public decimal? DimensionalWeight { get; set; }
- 
+    public decimal DimensionalWeight { get; set; }
+
     public int CountDimension { get; set; }
 }

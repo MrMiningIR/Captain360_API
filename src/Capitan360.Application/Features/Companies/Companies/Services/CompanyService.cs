@@ -1,20 +1,22 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.Companies.Commands.Create;
 using Capitan360.Application.Features.Companies.Companies.Commands.Delete;
-using Capitan360.Application.Features.Companies.Companies.Commands.UpdateActiveState;
 using Capitan360.Application.Features.Companies.Companies.Commands.Update;
+using Capitan360.Application.Features.Companies.Companies.Commands.UpdateActiveState;
 using Capitan360.Application.Features.Companies.Companies.Dtos;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetAll;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetById;
-using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
-using Capitan360.Domain.Interfaces.Repositories.ContentTypes;
-using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.ContentTypes;
+using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Capitan360.Application.Features.Companies.Companies.Services;
 
@@ -30,45 +32,45 @@ public class CompanyService(
    IPackageTypeRepository packageTypeRepository,
    ICompanyPreferencesRepository preferencesRepository,
    ICompanySmsPatternsRepository companySmsPatternsRepository,
-   ICompanyCommissionsRepository commissionsRepository, IAreaRepository areaRepository
-
+   ICompanyCommissionsRepository commissionsRepository,
+    IAreaRepository areaRepository
     ) : ICompanyService
 {
-    public async Task<ApiResponse<int>> CreateCompanyAsync(CreateCompanyCommand createCompanyCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> CreateCompanyAsync(CreateCompanyCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("CreateCompany is Called with {@CreateCompanyCommand}", createCompanyCommand);
+        logger.LogInformation("CreateCompany is Called with {@CreateCompanyCommand}", command);
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
-        if (!user.IsSuperAdmin() && !user.IsSuperManager(createCompanyCommand.CompanyTypeId))
-            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(command.CompanyTypeId))
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (await companyRepository.CheckExistCompanyNameAsync(createCompanyCommand.Name, null, cancellationToken))
-            return ApiResponse<int>.Error(400, "نام شرکت تکراری است");
+        if (await companyRepository.CheckExistCompanyNameAsync(command.Name, null, cancellationToken))
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "نام شرکت تکراری است");
 
-        if (await companyRepository.CheckExistCompanyCodeAsync(createCompanyCommand.Code, null, cancellationToken))
-            return ApiResponse<int>.Error(400, "کد شرکت تکراری است");
+        if (await companyRepository.CheckExistCompanyCodeAsync(command.Code, null, cancellationToken))
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "کد شرکت تکراری است");
+        
+        if (command.IsParentCompany && await companyRepository.CheckExistCompanyIsParentAsync(command.CompanyTypeId, null, cancellationToken))
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "برای هر نوع بار تنها یک شرکت مادر داریم");
 
-        if (createCompanyCommand.IsParentCompany && await companyRepository.CheckExistCompanyIsParentAsync(createCompanyCommand.CompanyTypeId, null, cancellationToken))
-            return ApiResponse<int>.Error(400, "نوع شرکت تکراری است");
+        if (!await areaRepository.CheckExistAreaByIdAndParentId(command.CityId, (int)AreaType.City, command.ProvinceId, cancellationToken) ||
+            !await areaRepository.CheckExistAreaByIdAndParentId(command.ProvinceId, (int)AreaType.Province, command.CountryId, cancellationToken) ||
+            !await areaRepository.CheckExistAreaByIdAndParentId(command.CountryId, (int)AreaType.Country, null, cancellationToken))
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "اطلاعات شهر نامعتبر است");
 
-        if (!await areaRepository.CheckExistAreaByIdAndParentId(createCompanyCommand.CityId, (int)AreaType.City, createCompanyCommand.ProvinceId, cancellationToken) ||
-            !await areaRepository.CheckExistAreaByIdAndParentId(createCompanyCommand.ProvinceId, (int)AreaType.Province, createCompanyCommand.CountryId, cancellationToken) ||
-            !await areaRepository.CheckExistAreaByIdAndParentId(createCompanyCommand.CountryId, (int)AreaType.Country, null, cancellationToken))
-            return ApiResponse<int>.Error(400, "اطلاعات شهر نامعتبر است");
-
-        var companyEntity = mapper.Map<Domain.Entities.Companies.Company>(createCompanyCommand);
-        if (companyEntity is null)
-            return ApiResponse<int>.Error(500, "مشکل در عملیات تبدیل");
+        var company = mapper.Map<Company>(command);
+        if (company is null)
+            return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var companyId = await companyRepository.CreateCompanyAsync(companyEntity, cancellationToken);
+        var companyId = await companyRepository.CreateCompanyAsync(company, cancellationToken);
 
-        var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeIdAsync(createCompanyCommand.CompanyTypeId, cancellationToken);
-        var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeIdAsync(createCompanyCommand.CompanyTypeId, cancellationToken);
+        var relatedContentTypes = await contentTypeRepository.GetContentTypesByCompanyTypeIdAsync(command.CompanyTypeId, cancellationToken);
+        var relatedPackageTypes = await packageTypeRepository.GetPackageTypesByCompanyTypeIdAsync(command.CompanyTypeId, cancellationToken);
 
         if (relatedContentTypes.Any())
         {
@@ -81,7 +83,7 @@ public class CompanyService(
         }
 
         await preferencesRepository.CreateCompanyPreferencesAsync(
-            new Domain.Entities.Companies.CompanyPreferences()
+            new CompanyPreferences()
             {
                 CompanyId = companyId,
                 ActiveInternationalAirlineCargo = false,
@@ -116,37 +118,58 @@ public class CompanyService(
             }, cancellationToken);
 
         await companySmsPatternsRepository.CreateCompanySmsPatternsAsync(
-        new Domain.Entities.Companies.CompanySmsPatterns
+        new CompanySmsPatterns
         {
             CompanyId = companyId,
             PatternSmsCancelByCustomerCompany = "",
+            ActivePatternSmsCancelByCustomerCompany = false,
             PatternSmsCancelByCustomerReceiver = "",
+            ActivePatternSmsCancelByCustomerReceiver = false,
             PatternSmsCancelByCustomerSender = "",
+            ActivePatternSmsCancelByCustomerSender = false,
             PatternSmsCancelReceiver = "",
+            ActivePatternSmsCancelReceiver = false,
             PatternSmsCancelSender = "",
+            ActivePatternSmsCancelSender = false,
             PatternSmsDeliverReceiver = "",
+            ActivePatternSmsDeliverReceiver = false,
             PatternSmsDeliverSender = "",
+            ActivePatternSmsDeliverSender = false,
             PatternSmsIssueCompany = "",
+            ActivePatternSmsIssueCompany = false,
             PatternSmsIssueReceiver = "",
+            ActivePatternSmsIssueReceiver = false,
             PatternSmsIssueSender = "",
+            ActivePatternSmsIssueSender = false,
             PatternSmsManifestReceiver = "",
+            ActivePatternSmsManifestReceiver = false,
             PatternSmsManifestSender = "",
+            ActivePatternSmsManifestSender = false,
             PatternSmsPackageInCompanyReceiver = "",
+            ActivePatternSmsPackageInCompanyReceiver = false,
             PatternSmsPackageInCompanySender = "",
+            ActivePatternSmsPackageInCompanySender = false,
             PatternSmsReceivedInReceiverCompanyReceiver = "",
+            ActivePatternSmsReceivedInReceiverCompanyReceiver = false,
             PatternSmsReceivedInReceiverCompanySender = "",
+            ActivePatternSmsReceivedInReceiverCompanySender = false,
             PatternSmsSendManifestReceiverCompany = "",
+            ActivePatternSmsSendManifestReceiverCompany = false,
             PatternSmsSendReceiverPeakReceiver = "",
+            ActivePatternSmsSendReceiverPeakReceiver = false,
             PatternSmsSendReceiverPeakSender = "",
+            ActivePatternSmsSendReceiverPeakSender = false,
             PatternSmsSendSenderPeakReceiver = "",
+            ActivePatternSmsSendSenderPeakReceiver = false,
             PatternSmsSendSenderPeakSender = "",
+            ActivePatternSmsSendSenderPeakSender = false,
             SmsPanelNumber = "",
             SmsPanelPassword = "",
             SmsPanelUserName = "",
         }, cancellationToken);
 
         await commissionsRepository.CreateCompanyCommissionsAsync(
-            new Domain.Entities.Companies.CompanyCommissions()
+            new CompanyCommissions()
             {
                 CompanyId = companyId,
                 CommissionFromCaptainCargoDesktop = 0,
@@ -160,153 +183,164 @@ public class CompanyService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
-        logger.LogInformation("Company created successfully with ID: {CompanyId}", companyId);
+        logger.LogInformation("Company created successfully with {@Company}", company);
         return ApiResponse<int>.Created(companyId, "شرکت با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<int>> DeleteCompanyAsync(DeleteCompanyCommand deleteCompanyCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> DeleteCompanyAsync(DeleteCompanyCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DeleteCompany is Called with ID: {Id}", deleteCompanyCommand.Id);
+        logger.LogInformation("DeleteCompany is Called with {@Id}", command.Id);
 
-        var company = await companyRepository.GetCompanyByIdAsync(deleteCompanyCommand.Id, true, false, cancellationToken);
+        var company = await companyRepository.GetCompanyByIdAsync(command.Id, false, false, cancellationToken);
         if (company is null)
-            return ApiResponse<int>.Error(404, $"شرکت نامعتبر است");
-
-        await companyRepository.DeleteCompanyAsync(company);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        logger.LogInformation("Company soft-deleted successfully with ID: {Id}", deleteCompanyCommand.Id);
-        return ApiResponse<int>.Ok(deleteCompanyCommand.Id, "شرکت با موفقیت حذف شد");
-    }
-
-    public async Task<ApiResponse<int>> SetCompanyActivityStatus(UpdateActiveStateCompanyCommand updateActiveStateCompanyCommand, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("SetCompanyActivityStatus Called with {@UpdateActiveStateCompanyCommand}", updateActiveStateCompanyCommand);
-
-        var company = await companyRepository.GetCompanyByIdAsync(updateActiveStateCompanyCommand.Id, true, false, cancellationToken);
-        if (company is null)
-            return ApiResponse<int>.Error(404, $"شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(401, "کاربر اهراز هویت نشده است");
-
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<int>.Error(403, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
+
+        await companyRepository.DeleteCompanyAsync(company.Id);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Company Deleted successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "شرکت با موفقیت حذف شد");
+    }
+
+    public async Task<ApiResponse<int>> SetCompanyActivityStatus(UpdateActiveStateCompanyCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("SetCompanyActivityStatus Called with {@Id}", command.Id);
+
+        var company = await companyRepository.GetCompanyByIdAsync(command.Id, false, true, cancellationToken);
+        if (company is null)
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         company.Active = !company.Active;
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("وضعیت شرکت با موفقیت به‌روزرسانی شد: {Id}", updateActiveStateCompanyCommand.Id);
-        return ApiResponse<int>.Ok(updateActiveStateCompanyCommand.Id, "وضعیت شرکت با موفقیت به‌روزرسانی شد");
+        logger.LogInformation("Company activity status updated successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "وضعیت شرکت با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<CompanyDto>> UpdateCompanyAsync(UpdateCompanyCommand updateCompanyCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyDto>> UpdateCompanyAsync(UpdateCompanyCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", updateCompanyCommand);
+        logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", command);
 
-        var company = await companyRepository.GetCompanyByIdAsync(updateCompanyCommand.Id, true, false, cancellationToken);
+        var company = await companyRepository.GetCompanyByIdAsync(command.Id, false, true,  cancellationToken);
         if (company is null)
-            return ApiResponse<CompanyDto>.Error(400, $"شرکت نامعتبر است");
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<CompanyDto>.Error(401, "کاربر اهراز هویت نشده است");
-
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<CompanyDto>.Error(403, "مجوز این فعالیت را ندارید");
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (await companyRepository.CheckExistCompanyNameAsync(updateCompanyCommand.Name, updateCompanyCommand.Id, cancellationToken))
-            return ApiResponse<CompanyDto>.Error(400, "نام شرکت تکراری است");
+        if (await companyRepository.CheckExistCompanyNameAsync(command.Name, command.Id, cancellationToken))
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status409Conflict, "نام شرکت تکراری است");
 
-        var updatedCompany = mapper.Map(updateCompanyCommand, company);
+        var updatedCompany = mapper.Map(command, company);
         if (updatedCompany == null)
-            return ApiResponse<CompanyDto>.Error(400, "خطا در عملیات تبدیل");
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status500InternalServerError, "خطا در عملیات تبدیل");
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Company updated successfully with ID: {Id}", updateCompanyCommand.Id);
+
+        logger.LogInformation("Company updated successfully with {@UpdateCompanyCommand}", command);
 
         var updatedCompanyDto = mapper.Map<CompanyDto>(updatedCompany);
+        if (updatedCompanyDto == null)
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
         return ApiResponse<CompanyDto>.Updated(updatedCompanyDto, "شرکت با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<PagedResult<CompanyDto>>> GetAllCompanies(GetAllCompanyQuery getAllCompanyQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanyDto>>> GetAllCompanies(GetAllCompanyQuery query, CancellationToken cancellationToken)
     {
-        //logger.LogInformation("GetAllCompanies is Called");
-
-        //var user = userContext.GetCurrentUser();
-        //if (user == null)
-        //    return ApiResponse<PagedResult<CompanyDto>>.Error(400, "مشکل در دریافت اطلاعات");
-
-        //if (getAllCompanyQuery.companyId != 0 && getAllCompanyQuery.CompanyTypeId != 0)
-        //{
-        //    if (!user.IsSuperAdmin() && !user.IsSuperManager(getAllCompanyQuery.CompanyTypeId) && !user.IsManager(getAllCompanyQuery.CompanyId))
-        //        return ApiResponse<PagedResult<CompanyDto>>.Error(400, "مجوز این فعالیت را ندارید");
-        //}
-        //else if (getAllCompanyQuery.CompanyId != 0 && getAllCompanyQuery.CompanyTypeId == 0)
-        //{
-        //    var company = await companyRepository.GetCompanyByIdAsync(getAllCompanyQuery.CompanyId, true, false, cancellationToken);
-        //    if (company is null)
-        //        return ApiResponse<PagedResult<CompanyDto>>.Error(400, $"شرکت نامعتبر است");
-
-        //    if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
-        //        return ApiResponse<PagedResult<CompanyDto>>.Error(400, "مجوز این فعالیت را ندارید");
-        //}
-        //else if (getAllCompanyQuery.CompanyId == 0 && getAllCompanyQuery.CompanyTypeId != 0)
-        //{
-        //    if (!user.IsSuperAdmin() && !user.IsSuperManager(getAllCompanyQuery.CompanyTypeId))
-        //        return ApiResponse<PagedResult<CompanyDto>>.Error(400, "مجوز این فعالیت را ندارید");
-        //}
-        //else if (getAllCompanyQuery.CompanyId == 0 && getAllCompanyQuery.CompanyTypeId == 0)
-        //{
-        //    if (!user.IsSuperAdmin())
-        //        return ApiResponse<PagedResult<CompanyDto>>.Error(400, "مجوز این فعالیت را ندارید");
-        //}
-
-        //var (companies, totalCount) = await companyRepository.GetMatchingAllCompaniesAsync(
-        //    getAllCompanyQuery.SearchPhrase,
-        //    getAllCompanyQuery.SortBy,
-        //    getAllCompanyQuery.CompanyId,
-        //    getAllCompanyQuery.CompanyTypeId,
-        //    getAllCompanyQuery.CityId,
-        //    getAllCompanyQuery.IsParentCompany,
-        //    getAllCompanyQuery.Active,
-        //    true,
-        //    getAllCompanyQuery.PageNumber,
-        //    getAllCompanyQuery.PageSize,
-        //    getAllCompanyQuery.SortDirection,
-        //    cancellationToken);
-
-        //var companyDtos = mapper.Map<IReadOnlyList<CompanyDto>>(companies) ?? Array.Empty<CompanyDto>();
-        //logger.LogInformation("Retrieved {Count} companies", companyDtos.Count);
-
-        //var data = new PagedResult<CompanyDto>(companyDtos, totalCount, getAllCompanyQuery.PageSize, getAllCompanyQuery.PageNumber);
-        //return ApiResponse<PagedResult<CompanyDto>>.Ok(data, "شرکت‌ها با موفقیت دریافت شدند");
-
-        throw new NotImplementedException();
-    }
-
-    public async Task<ApiResponse<CompanyDto>> GetCompanyByIdAsync(GetCompanyByIdQuery getCompanyByIdQuery, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("GetCompanyById is Called with ID: {Id}", getCompanyByIdQuery.Id);
-
-        var company = await companyRepository.GetCompanyByIdAsync(getCompanyByIdQuery.Id, false, true, cancellationToken);
-        if (company is null)
-            return ApiResponse<CompanyDto>.Error(404, $"شرکت نامعتبر است");
+        logger.LogInformation("GetAllCompanies is Called");
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<CompanyDto>.Error(401, "کاربر اهراز هویت نشده است");
+            return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
+        if (query.CompanyId != 0 && query.CompanyTypeId != 0)
+        {
+            if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId) && !user.IsManager(query.CompanyId))
+                return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
+        }
+        else if (query.CompanyId != 0 && query.CompanyTypeId == 0)
+        {
+            var company = await companyRepository.GetCompanyByIdAsync(query.CompanyId, false, false, cancellationToken);
+            if (company is null)
+                return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 
-        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
-            return ApiResponse<CompanyDto>.Error(403, "مجوز این فعالیت را ندارید");
+            if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
+                return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
+        }
+        else if (query.CompanyId == 0 && query.CompanyTypeId != 0)
+        {
+            if (!user.IsSuperAdmin() && !user.IsSuperManager(query.CompanyTypeId))
+                return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
+        }
+        else if (query.CompanyId == 0 && query.CompanyTypeId == 0)
+        {
+            if (!user.IsSuperAdmin())
+                return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
+        }
+
+        var (companies, totalCount) = await companyRepository.GetAllCompaniesAsync(
+            query.SearchPhrase,
+            query.SortBy,
+            query.CompanyId,
+            query.CompanyTypeId,
+            query.CityId,
+            query.IsParentCompany,
+            query.Active,
+            true,
+            query.PageNumber,
+            query.PageSize,
+            query.SortDirection,
+            cancellationToken);
+
+        var companyDtos = mapper.Map<IReadOnlyList<CompanyDto>>(companies) ?? Array.Empty<CompanyDto>();
+        if (companyDtos == null)
+            return ApiResponse<PagedResult<CompanyDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
+        logger.LogInformation("Retrieved {Count} companies", companyDtos.Count);
+
+        var data = new PagedResult<CompanyDto>(companyDtos, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<CompanyDto>>.Ok(data, "شرکت‌ها با موفقیت دریافت شدند");
+    }
+
+    public async Task<ApiResponse<CompanyDto>> GetCompanyByIdAsync(GetCompanyByIdQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetCompanyById is Called with {@Id}", query.Id);
+
+        var company = await companyRepository.GetCompanyByIdAsync(query.Id, false, false, cancellationToken);
+        if (company is null)
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
+
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
+
+        if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         var result = mapper.Map<CompanyDto>(company);
-        logger.LogInformation("Company retrieved successfully with ID: {Id}", getCompanyByIdQuery.Id);
+        if (result == null)
+            return ApiResponse<CompanyDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
+        logger.LogInformation("Company retrieved successfully with {@Id}", query.Id);
         return ApiResponse<CompanyDto>.Ok(result, "شرکت با موفقیت دریافت شد");
     }
 }

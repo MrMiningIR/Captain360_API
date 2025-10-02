@@ -14,14 +14,18 @@ public interface IAreaRepository
     Task<IReadOnlyList<Area>> GetAllAreas(CancellationToken cancellationToken);
     Task<Area?> GetAreaById(int id, CancellationToken cancellationToken);
     Area UpdateShadows(Area area, string userId);
-    Task<(IReadOnlyList<Area>, int)> GetAllAreas(string? searchPhrase, int pageSize, int pageNumber,
+    Task<(IReadOnlyList<Area>, int)> GetAllAreas(string searchPhrase, int pageSize, int pageNumber,
         string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Area>, int)> GetAllProvince(string? searchPhrase, int pageSize, int pageNumber,
+    Task<(IReadOnlyList<Area>, int)> GetAllProvince(string searchPhrase, int pageSize, int pageNumber,
     string? sortBy, SortDirection sortDirection, bool ignorePageSize, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Area>, int)> GetAllCity(string? searchPhrase, int pageSize, int pageNumber,
+    Task<(IReadOnlyList<Area>, int)> GetAllCity(string searchPhrase, int pageSize, int pageNumber,
 string? sortBy, SortDirection sortDirection, int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
+
+
+    Task<(IReadOnlyList<Area>, int)> GetAllRegionMunicipality(string searchPhrase, int pageSize, int pageNumber,
+string? sortBy, SortDirection sortDirection, int cityId, bool ignorePageSize, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken);
     Task<IReadOnlyList<Area>> GetDistrictAreasByCityIdAsync(int parentId, CancellationToken cancellationToken);

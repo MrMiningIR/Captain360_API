@@ -24,7 +24,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyContentTypeDto>>>> GetAllCompanyContentTypes(
         [FromQuery] GetAllCompanyContentTypesQuery allCompanyContentTypesQuery, CancellationToken cancellationToken)
     {
-        var response = await companyContentTypeService.GetAllCompanyContentTypesByCompanyAsync(allCompanyContentTypesQuery, cancellationToken);
+        var response = await companyContentTypeService.GetAllCompanyContentTypesAsync(allCompanyContentTypesQuery, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -47,7 +47,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     public async Task<ActionResult<ApiResponse<int>>> MoveUpCompanyContentType(
         [FromBody] MoveUpCompanyContentTypeCommand moveContentTypeUpCommand, CancellationToken cancellationToken)
     {
-        var response = await companyContentTypeService.MoveCompanyContentTypeUpAsync(moveContentTypeUpCommand, cancellationToken);
+        var response = await companyContentTypeService.MoveUpCompanyContentTypeAsync(moveContentTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -57,7 +57,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
     public async Task<ActionResult<ApiResponse<int>>> MoveDownCompanyContentType(
         [FromBody] MoveDownCompanyContentTypeCommand moveContentTypeDownCommand, CancellationToken cancellationToken)
     {
-        var response = await companyContentTypeService.MoveContentTypeDownAsync(moveContentTypeDownCommand, cancellationToken);
+        var response = await companyContentTypeService.MoveDownCompanyContentTypeAsync(moveContentTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -82,7 +82,7 @@ public class CompanyContentTypeController(ICompanyContentTypeService companyCont
 
     public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyContentTypeActiveStatus([FromBody] UpdateActiveStateCompanyContentTypeCommand command, CancellationToken cancellationToken)
     {
-        var response = await companyContentTypeService.SetCompanyContentContentActivityStatusAsync(command, cancellationToken);
+        var response = await companyContentTypeService.SetCompanyContentTypeActivityStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

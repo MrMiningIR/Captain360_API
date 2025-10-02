@@ -13,23 +13,23 @@ public interface IAddressService
 {
     // Task<ApiResponse<int>> CreateAddressAsync(CreateAddressCommand address, CancellationToken cancellationToken);
 
-    Task<ApiResponse<PagedResult<AddressDto>>> GetAllAddressesByCompany(GetAllAddressQuery allAddressQuery,
+    Task<ApiResponse<PagedResult<AddressDto>>> GetAllAddressesByCompany(GetAllAddressQuery query,
         CancellationToken cancellationToken);
 
-    Task<ApiResponse<AddressDto>> GetAddressByIdAsync(GetAddressByIdQuery id, CancellationToken cancellationToken);
+    Task<ApiResponse<AddressDto>> GetAddressByIdAsync(GetAddressByIdQuery query, CancellationToken cancellationToken);
 
-    Task<ApiResponse<object>> DeleteAddressAsync(DeleteAddressCommand id, CancellationToken cancellationToken);
+    Task<ApiResponse<object>> DeleteAddressAsync(DeleteAddressCommand command, CancellationToken cancellationToken);
 
     Task<ApiResponse<AddressDto>> UpdateAddressAsync(UpdateAddressCommand command, CancellationToken cancellationToken);
 
     //Task<ApiResponse<AddressDto>> UpdateCompanyAddressAsync(UpdateCompanyAddressCommand command, CancellationToken cancellationToken);
 
-    Task<ApiResponse<int>> AddNewAddressToCompanyAsync(AddNewAddressToCompanyCommand addNewAddressToCompanyCommand,
+    Task<ApiResponse<int>> AddNewAddressToCompanyAsync(AddNewAddressToCompanyCommand command,
         CancellationToken cancellationToken);
 
-    Task<ApiResponse<object>> MoveAddressUpAsync(MoveAddressUpCommand moveAddressUpCommand,
+    Task<ApiResponse<object>> MoveAddressUpAsync(MoveAddressUpCommand command,
         CancellationToken cancellationToken);
 
-    Task<ApiResponse<object>> MoveAddressDownAsync(MoveAddressDownCommand moveAddressDownCommand,
+    Task<ApiResponse<object>> MoveAddressDownAsync(MoveAddressDownCommand command,
         CancellationToken cancellationToken);
 }

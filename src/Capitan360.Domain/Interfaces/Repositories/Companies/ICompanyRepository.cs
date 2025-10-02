@@ -17,9 +17,9 @@ public interface ICompanyRepository
 
     Task<Company?> GetCompanyByIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task DeleteCompanyAsync(Company company);
+    Task DeleteCompanyAsync(int companyId);
 
-    Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string? searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<Company>, int)> GetAllCompaniesAsync(string searchPhrase, string? sortBy, int CompanyId, int companyTypeId, int cityId, int isParentCompany, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<Company?> GetCompanyByCodeAsync(string companyCode, bool loadData, bool tracked, CancellationToken cancellationToken);
 

@@ -53,6 +53,8 @@ public class Area : BaseEntity
 
     public ICollection<CompanyDomesticPath> CompanyDomesticPathDestinationCities { get; set; } = [];
 
+    public ICollection<CompanyDomesticPathReceiverCompany> CompanyDomesticPathReceiverCompanies { get; set; } = [];
+
     public ICollection<CompanyManifestForm> CompanyManifestFormSourceCountries { get; set; } = [];
 
     public ICollection<CompanyManifestForm> CompanyManifestFormSourceProvinces { get; set; } = [];

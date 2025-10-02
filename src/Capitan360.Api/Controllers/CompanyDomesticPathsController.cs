@@ -14,7 +14,7 @@ namespace Capitan360.Api.Controllers;
 [Route("api/CompanyDomesticPaths")]
 [ApiController]
 [PermissionFilter("بخش مسیر", "H")]
-public class CompanyDomesticPathsController(ICompanyDomesticPathsService companyDomesticPathsService) : ControllerBase
+public class CompanyDomesticPathsController(ICompanyDomesticPathService companyDomesticPathsService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDomesticPathDto>>), StatusCodes.Status200OK)]

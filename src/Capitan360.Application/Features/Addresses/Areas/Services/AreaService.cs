@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Create;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Delete;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Update;
@@ -8,11 +9,10 @@ using Capitan360.Application.Features.Addresses.Areas.Queries.GetAll;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetCity;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
-using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Interfaces;
+using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces.Repositories.Addresses;
-using Microsoft.Extensions.Logging;
+using Capitan360.Domain.Entities.Addresses;
 
 namespace Capitan360.Application.Features.Addresses.Areas.Services;
 
@@ -23,6 +23,10 @@ public class AreaService(
     IUserContext userContext,
     IAreaRepository areaRepository) : IAreaService
 {
+
+
+
+
     public async Task<ApiResponse<int>> CreateAreaAsync(CreateAreaCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateArea is Called with {@CreateAreaCommand}", command);
@@ -59,11 +63,11 @@ public class AreaService(
     {
         logger.LogInformation("GetAreaById is Called with ID: {Id}", query.Id);
         if (query.Id <= 0)
-            return ApiResponse<AreaDto>.Error(400, "شناسه منطقه باید بزرگ‌تر از صفر باشد");
+            return ApiResponse<AreaDto>.Error(400, "شناسه منطقه باید بزرگتر از صفر باشد");
 
         var area = await areaRepository.GetAreaById(query.Id, cancellationToken);
         if (area is null)
-            return ApiResponse<AreaDto>.Error(400, $"منطقه با شناسه {query.Id} یافت نشد");
+            return ApiResponse<AreaDto>.Error(404, $"منطقه با شناسه {query.Id} یافت نشد");
 
         var result = mapper.Map<AreaDto>(area);
         logger.LogInformation("Area retrieved successfully with ID: {Id}", query.Id);
@@ -74,11 +78,11 @@ public class AreaService(
     {
         logger.LogInformation("DeleteArea is Called with ID: {Id}", command.Id);
         if (command.Id <= 0)
-            return ApiResponse<object>.Error(400, "شناسه منطقه باید بزرگ‌تر از صفر باشد");
+            return ApiResponse<object>.Error(400, "شناسه منطقه باید بزرگتر از صفر باشد");
 
         var area = await areaRepository.GetAreaById(command.Id, cancellationToken);
         if (area is null)
-            return ApiResponse<object>.Error(400, $"منطقه با شناسه {command.Id} یافت نشد");
+            return ApiResponse<object>.Error(404, $"منطقه با شناسه {command.Id} یافت نشد");
 
         areaRepository.Delete(area, Guid.NewGuid().ToString());
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -90,11 +94,11 @@ public class AreaService(
     {
         logger.LogInformation("UpdateArea is Called with {@UpdateAreaCommand}", command);
         if (command == null || command.Id <= 0)
-            return ApiResponse<AreaDto>.Error(400, "شناسه منطقه باید بزرگ‌تر از صفر باشد یا ورودی نامعتبر است");
+            return ApiResponse<AreaDto>.Error(400, "شناسه منطقه باید بزرگتر از صفر باشد یا ورودی نامعتبر است");
 
         var area = await areaRepository.GetAreaById(command.Id, cancellationToken);
         if (area is null)
-            return ApiResponse<AreaDto>.Error(400, $"منطقه با شناسه {command.Id} یافت نشد");
+            return ApiResponse<AreaDto>.Error(404, $"منطقه با شناسه {command.Id} یافت نشد");
 
         var updatedArea = mapper.Map(command, area);
         areaRepository.UpdateShadows(updatedArea, Guid.NewGuid().ToString());

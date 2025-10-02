@@ -32,7 +32,7 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int companyId, int? currentCompanyContentTypeId,  CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyContentTypes.AnyAsync(item => item.Name.ToLower() == companyContentTypeName.ToLower().Trim() && item.CompanyId == companyId && (currentCompanyContentTypeId == null || item.Id != currentCompanyContentTypeId) , cancellationToken);
+        return await dbContext.CompanyContentTypes.AnyAsync(item => item.Name.ToLower() == companyContentTypeName.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyContentTypeId == null || item.Id != currentCompanyContentTypeId) , cancellationToken);
     }
 
     public async Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken)
@@ -53,17 +53,13 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         return await query.SingleOrDefaultAsync(item => item.Id == companyContentTypeId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyContentType> query = dbContext.CompanyContentTypes;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
-
+        IQueryable<CompanyContentType> query = dbContext.CompanyContentTypes.Include(item => item.Company)
+                                                                            .AsNoTracking();
+        
         return await query.Where(item => item.CompanyId == companyId)
+                          .OrderBy(item=> item.Order)
                           .ToListAsync(cancellationToken);
     }
 
@@ -82,8 +78,8 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         if (nextCompanyContentType == null)
             return;
 
-        nextCompanyContentType!.Order++;
-        currentCompanyContentType!.Order--;
+        nextCompanyContentType.Order++;
+        currentCompanyContentType.Order--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -98,18 +94,17 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         if (nextCompanyContentType == null)
             return;
 
-        nextCompanyContentType!.Order--;
-        currentCompanyContentType!.Order++;
+        nextCompanyContentType.Order--;
+        currentCompanyContentType.Order++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyContentType>, int)> GetAllCompanyContentTypesAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyContentType>, int)> GetAllCompanyContentTypesAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
-
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyContentTypes.AsNoTracking()
-                                                     .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower));
+                                                     .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.Company);

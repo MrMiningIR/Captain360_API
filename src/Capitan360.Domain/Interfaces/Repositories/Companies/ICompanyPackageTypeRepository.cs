@@ -15,7 +15,7 @@ public interface ICompanyPackageTypeRepository
 
     Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 
     Task DeleteCompanyPackageTypeAsync(int cmpanyPackageTypeId);
 
@@ -23,7 +23,7 @@ public interface ICompanyPackageTypeRepository
 
     Task MoveCompanyPackageTypeDownAsync(int companyPackageTypeId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<CompanyPackageType>, int)> GetAllCompanyPackageTypesAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyPackageType>, int)> GetAllCompanyPackageTypesAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task AddPackageTypesToCompanyPackageTypeAsync(List<CompanyPackageTypeTransfer> relatedPackageTypes, int companyId, CancellationToken cancellationToken);
 }

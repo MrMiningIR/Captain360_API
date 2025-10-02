@@ -32,7 +32,7 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task<bool> CheckExistCompanyPackageTypeNameAsync(string companyPackageTypeName, int companyId, int? currentCompanyPackageTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyPackageTypes.AnyAsync(item => item.Name.ToLower() == companyPackageTypeName.ToLower().Trim() && item.CompanyId == companyId && (currentCompanyPackageTypeId == null || item.Id != currentCompanyPackageTypeId), cancellationToken);
+        return await dbContext.CompanyPackageTypes.AnyAsync(item => item.Name.ToLower() == companyPackageTypeName.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyPackageTypeId == null || item.Id != currentCompanyPackageTypeId), cancellationToken);
     }
 
     public async Task<int> GetCountCompanyPackageTypeAsync(int companyId, CancellationToken cancellationToken)
@@ -53,17 +53,13 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
         return await query.SingleOrDefaultAsync(item => item.Id == companyPackageTypeId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyPackageType> query = dbContext.CompanyPackageTypes;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
-
+        IQueryable<CompanyPackageType> query = dbContext.CompanyPackageTypes.Include(item => item.Company)
+                                                                            .AsNoTracking();
+        
         return await query.Where(item => item.CompanyId == companyId)
+                          .OrderBy(item=> item.Order)
                           .ToListAsync(cancellationToken);
     }
 
@@ -82,8 +78,8 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
         if (nextCompanyPackageType == null)
             return;
 
-        nextCompanyPackageType!.Order++;
-        currentCompanyPackageType!.Order--;
+        nextCompanyPackageType.Order++;
+        currentCompanyPackageType.Order--;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -98,18 +94,17 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
         if (nextCompanyPackageType == null)
             return;
 
-        nextCompanyPackageType!.Order--;
-        currentCompanyPackageType!.Order++;
+        nextCompanyPackageType.Order--;
+        currentCompanyPackageType.Order++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyPackageType>, int)> GetAllCompanyPackageTypesAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyPackageType>, int)> GetAllCompanyPackageTypesAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
-
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyPackageTypes.AsNoTracking()
-                                                     .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower));
+                                                     .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.Company);
@@ -133,12 +128,12 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var packageTypes = await baseQuery
+        var companyPackageTypes = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (packageTypes, totalCount);
+        return (companyPackageTypes, totalCount);
     }
 
     public async Task AddPackageTypesToCompanyPackageTypeAsync(List<CompanyPackageTypeTransfer> relatedPackageTypes, int companyId, CancellationToken cancellationToken)

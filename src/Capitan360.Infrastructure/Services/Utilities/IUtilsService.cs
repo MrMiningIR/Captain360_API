@@ -2,5 +2,5 @@
 
 public interface IUtilsService
 {
-    Task<bool> CheckTableExistsAsync(string tableName, CancellationToken ct);
+    Task<bool> CheckTableExistsAsync(string tableName, CancellationToken cancellationToken);
 }

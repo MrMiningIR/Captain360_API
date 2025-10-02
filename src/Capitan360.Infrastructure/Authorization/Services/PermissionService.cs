@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Capitan360.Infrastructure.Authorization.Services;
 
-internal class PermissionService(ApplicationDbContext dbContext) : IPermissionService
+public class PermissionService(ApplicationDbContext dbContext) : IPermissionService
 {
     //Todo: Needs to be optimized and refactored by using Repository Pattern
 

@@ -21,7 +21,7 @@ public interface ICompanyInsuranceChargeRepository
 
     void Delete(CompanyInsuranceCharge companyInsuranceCharge);
     Task<CompanyInsuranceCharge?> GetCompanyInsuranceChargeById(int id, CancellationToken cancellationToken);
-    Task<(IReadOnlyList<CompanyInsuranceCharge>, int)> GetAllCompanyInsuranceCharges(string? searchPhrase, int companyInsuranceId, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyInsuranceCharge>, int)> GetAllCompanyInsuranceCharges(string searchPhrase, int companyInsuranceId, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
     Task<bool> CheckExistCompanyInsuranceCharge(Rate rate, int companyInsuranceId, CancellationToken cancellationToken);
     Task<List<CompanyInsuranceCharge>> GetExistingCompanyInsuranceCharge(List<int> ids, CancellationToken cancellationToken);
 

@@ -15,7 +15,7 @@ public interface ICompanyContentTypeRepository
 
     Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 
     Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId);
 
@@ -23,7 +23,7 @@ public interface ICompanyContentTypeRepository
 
     Task MoveCompanyContentTypeDownAsync(int companyContentTypeId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<CompanyContentType>, int)> GetAllCompanyContentTypesAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyContentType>, int)> GetAllCompanyContentTypesAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task AddContentTypesToCompanyContentTypeAsync(List<CompanyContentTypeTransfer> relatedContentTypes, int companyId, CancellationToken cancellationToken);
 }

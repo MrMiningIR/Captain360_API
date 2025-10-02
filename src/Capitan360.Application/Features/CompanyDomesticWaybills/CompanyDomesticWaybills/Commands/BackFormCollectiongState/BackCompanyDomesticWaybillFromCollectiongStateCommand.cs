@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFormCollectiongState;
+
+public record BackCompanyDomesticWaybillFromCollectiongStateCommand(int Id);

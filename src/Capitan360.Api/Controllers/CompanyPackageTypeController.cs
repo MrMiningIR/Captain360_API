@@ -23,7 +23,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyPackageTypeDto>>>> GetAllCompanyPackageTypes(
         [FromQuery] GetAllCompanyPackageTypesQuery allCompanyPackageTypesQuery, CancellationToken cancellationToken)
     {
-        var response = await companyPackageTypeService.GetAllCompanyPackageTypesByCompanyAsync(allCompanyPackageTypesQuery, cancellationToken);
+        var response = await companyPackageTypeService.GetAllCompanyPackageTypesAsync(allCompanyPackageTypesQuery, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -46,7 +46,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     public async Task<ActionResult<ApiResponse<int>>> MoveUpCompanyPackageType(
         [FromBody] MoveUpCompanyPackageTypeCommand movePackageTypeUpCommand, CancellationToken cancellationToken)
     {
-        var response = await companyPackageTypeService.MoveCompanyPackageTypeUpAsync(movePackageTypeUpCommand, cancellationToken);
+        var response = await companyPackageTypeService.MoveUpCompanyPackageTypeAsync(movePackageTypeUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -57,7 +57,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
     public async Task<ActionResult<ApiResponse<int>>> MoveDownCompanyPackageType(
         [FromBody] MoveDownCompanyPackageTypeCommand movePackageTypeDownCommand, CancellationToken cancellationToken)
     {
-        var response = await companyPackageTypeService.MoveCompanyPackageTypeDownAsync(movePackageTypeDownCommand, cancellationToken);
+        var response = await companyPackageTypeService.MoveDownCompanyPackageTypeAsync(movePackageTypeDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -82,7 +82,7 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
 
     public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyPackageTypeActiveStatus([FromBody] UpdateActiveStateCompanyPackageTypeCommand command, CancellationToken cancellationToken)
     {
-        var response = await companyPackageTypeService.SetCompanyPackageContentActivityStatusAsync(command, cancellationToken);
+        var response = await companyPackageTypeService.SetCompanyPackageTypeActivityStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

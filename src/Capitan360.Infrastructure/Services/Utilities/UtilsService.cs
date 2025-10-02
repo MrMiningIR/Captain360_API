@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Infrastructure.Services.Utilities;
 
-internal class UtilsService(ApplicationDbContext dbContext) : IUtilsService
+public class UtilsService(ApplicationDbContext dbContext) : IUtilsService
 {
-    public async Task<bool> CheckTableExistsAsync(string tableName, CancellationToken ct)
+    public async Task<bool> CheckTableExistsAsync(string tableName, CancellationToken cancellationToken)
     {
         try
         {
             var connection = dbContext.Database.GetDbConnection();
-            await connection.OpenAsync(ct);
+            await connection.OpenAsync(cancellationToken);
             await using var command = connection.CreateCommand();
 
             command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @tableName";
@@ -19,7 +19,7 @@ internal class UtilsService(ApplicationDbContext dbContext) : IUtilsService
             parameter.Value = tableName;
             command.Parameters.Add(parameter);
 
-            var result = await command.ExecuteScalarAsync(ct);
+            var result = await command.ExecuteScalarAsync(cancellationToken);
             return Convert.ToInt32(result) > 0;
         }
         catch (Exception ex)

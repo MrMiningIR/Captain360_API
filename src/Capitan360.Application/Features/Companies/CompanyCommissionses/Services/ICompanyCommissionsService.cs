@@ -11,14 +11,15 @@ namespace Capitan360.Application.Features.Companies.CompanyCommissionses.Service
 
 public interface ICompanyCommissionsService
 {
-    Task<ApiResponse<int>> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand companyCommissions, CancellationToken cancellationToken);
-    Task<ApiResponse<PagedResult<CompanyCommissionsDto>>> GetAllCompanyCommissionsAsync(GetAllCompanyCommissionsQuery query, CancellationToken cancellationToken);
-    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery query, CancellationToken cancellationToken);
-    Task<ApiResponse<int>> DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand id, CancellationToken cancellationToken);
-    Task<ApiResponse<CompanyCommissionsDto>> UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command,
-        CancellationToken cancellationToken);
+    Task<ApiResponse<int>> CreateCompanyCommissionsAsync(CreateCompanyCommissionsCommand command, CancellationToken cancellationToken);
 
-    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByCompanyIdAsync(
-       GetCompanyCommissionsByCompanyIdQuery query,
-       CancellationToken cancellationToken);
+    Task<ApiResponse<int>> DeleteCompanyCommissionsAsync(DeleteCompanyCommissionsCommand command, CancellationToken cancellationToken);
+    
+    Task<ApiResponse<CompanyCommissionsDto>> UpdateCompanyCommissionsAsync(UpdateCompanyCommissionsCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<PagedResult<CompanyCommissionsDto>>> GetAllCompanyCommissionsAsync(GetAllCompanyCommissionsQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByCompanyIdAsync(GetCompanyCommissionsByCompanyIdQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyCommissionsDto>> GetCompanyCommissionsByIdAsync(GetCompanyCommissionsByIdQuery query, CancellationToken cancellationToken);
 }

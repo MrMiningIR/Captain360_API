@@ -11,7 +11,7 @@ public interface ICompanyCommissionsRepository
 
     Task DeleteCompanyCommissionsAsync(int companyCommissionsId);
 
-    Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 }

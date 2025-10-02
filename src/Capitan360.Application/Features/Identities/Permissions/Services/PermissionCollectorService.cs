@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
-namespace Capitan360.Application.Features.Permission.Services;
+namespace Capitan360.Application.Features.Identities.Permissions.Services;
 
 public class PermissionCollectorService(ILogger<PermissionCollectorService> logger)
 {

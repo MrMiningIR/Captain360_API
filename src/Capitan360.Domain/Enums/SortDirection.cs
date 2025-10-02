@@ -10,6 +10,6 @@ public enum SortDirection
     [Display(Name = ConstantNames.Ascending)]
     Ascending,
    
-    [Display(Name = ConstantNames.Descending)]
+    [Display(Name = ConstantNames.Ascending)]
     Descending
 }

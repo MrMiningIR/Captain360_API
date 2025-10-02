@@ -1,9 +1,12 @@
 ﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.CompanyInsurances;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
+using System;
 using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
@@ -35,13 +38,13 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyCommissions.AsNoTracking()
-                                                    .Where(item => searchPhraseLower == null || item.Company!.Name.ToLower().Contains(searchPhraseLower));
+                                                    .Where(item => item.Company!.Name.ToLower().Contains(searchPhrase));
 
-        if (loadData)
+        if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item =>item.Company);
 
         if (CompanyTypeId != 0)
@@ -52,18 +55,17 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        var columnsSelector = new Dictionary<string, Expression<Func<CompanyCommissions, object>>>
         {
-            var columnsSelector = new Dictionary<string, Expression<Func<CompanyCommissions, object>>>
-            {
-                { nameof(CompanyCommissions.Company.Name), item => item.Company!.Name }
-            };
+            { nameof(CompanyCommissions.Company.Name), item => item.Company!.Name }
+        };
 
-            var selectedColumn = columnsSelector[sortBy];
-            baseQuery = sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColumn)
-                : baseQuery.OrderByDescending(selectedColumn);
-        }
+        sortBy ??= nameof(CompanyCommissions.Company.Name);
+
+        var selectedColumn = columnsSelector[sortBy];
+        baseQuery = sortDirection == SortDirection.Ascending
+            ? baseQuery.OrderBy(selectedColumn)
+            : baseQuery.OrderByDescending(selectedColumn);
 
         var companyCommissions = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
@@ -73,15 +75,10 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
         return (companyCommissions, totalCount);
     }
 
-    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
+        IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions.Include(item => item.Company)
+                                                                           .AsNoTracking();
 
         return await query.SingleOrDefaultAsync(item =>item.CompanyId == companyId, cancellationToken);
     }

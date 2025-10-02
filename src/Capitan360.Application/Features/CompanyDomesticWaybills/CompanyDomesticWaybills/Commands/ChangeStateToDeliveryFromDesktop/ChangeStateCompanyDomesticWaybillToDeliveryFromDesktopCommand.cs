@@ -1,0 +1,19 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToDeliveryFromDesktop;
+
+public record ChangeStateCompanyDomesticWaybillToDeliveryFromDesktopCommand(
+    long No,
+    string CompanyReceiverCaptain360Code,
+    string CompanyReceiverDateFinancial,
+    bool CompanyReceiverCashPayment,
+    bool CompanyReceiverCashOnDelivery,
+    bool CompanyReceiverBankPayment,
+    string CompanyReceiverBankCode,
+    string CompanyReceiverBankPaymentNo,
+    bool CompanyReceiverCreditPayment,
+    string CompanyReceiverResponsibleCustomerMobile,
+    string EntranceDeliveryPerson,
+    string EntranceTransfereePersonName,
+    string EntranceTransfereePersonNationalCode,
+    string DescriptionReceiverCompany,
+    string DateDelivery,
+    string TimeDelivery);

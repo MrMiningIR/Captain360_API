@@ -1,0 +1,25 @@
+﻿using Capitan360.Application.Common;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Commands.Create;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Commands.Delete;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Commands.Update;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Commands.UpdateActiveState;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Dtos;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Queries.GetAll;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Queries.GetById;
+
+namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Services;
+
+public interface ICompanyDomesticWaybillPeriodService
+{
+    Task<ApiResponse<int>> CreateCompanyDomesticWaybillPeriodAsync(CreateCompanyDomesticWaybillPeriodCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> SetCompanyDomesticWaybillPeriodActivityStatusAsync(UpdateActiveStateCompanyDomesticWaybillPeriodCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyDomesticWaybillPeriodDto>> UpdateCompanyDomesticWaybillPeriodAsync(UpdateCompanyDomesticWaybillPeriodCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> DeleteCompanyDomesticWaybillPeriodAsync(DeleteCompanyDomesticWaybillPeriodCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<PagedResult<CompanyDomesticWaybillPeriodDto>>> GetAllCompanyDomesticWaybillPeriodsAsync(GetAllCompanyDomesticWaybillPeriodsQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyDomesticWaybillPeriodDto>> GetCompanyDomesticWaybillPeriodByIdAsync(GetCompanyDomesticWaybillPeriodByIdQuery query, CancellationToken cancellationToken);
+}

@@ -11,7 +11,6 @@ public class CompanyDomesticWaybillDto
     public int? CompanyReceiverId { get; set; }
     public string? CompanyReceiverName { get; set; }
     public string? CompanyReceiverUserInsertedCode { get; set; }
-    public string? CompanyReceiverUserInsertedName { get; set; }
     public int SourceCountryId { get; set; }
     public string? SourceCountryName { get; set; }
     public int SourceProvinceId { get; set; }
@@ -33,10 +32,10 @@ public class CompanyDomesticWaybillDto
     public string? DestinationMunicipalAreaName { get; set; }
     public decimal? DestinationLatitude { get; set; }
     public decimal? DestinationLongitude { get; set; }
-    public int? DomesticWaybillPeriodId { get; set; }
-    public string? DomesticWaybillPeriodCode { get; set; }
-    public int? ManifestFormId { get; set; }
-    public string? ManifestFormNo { get; set; }
+    public int? CompanyDomesticWaybillPeriodId { get; set; }
+    public string? CompanyDomesticWaybillPeriodCode { get; set; }
+    public int? CompanyManifestFormId { get; set; }
+    public string? CompanyManifestFormNo { get; set; }
     public int? CompanyInsuranceId { get; set; }
     public string? CompanyInsuranceName { get; set; }
     public decimal? GrossWeight { get; set; }
@@ -44,7 +43,7 @@ public class CompanyDomesticWaybillDto
     public decimal? ChargeableWeight { get; set; }
     public int? WeightCount { get; set; }
     public int? Rate { get; set; }
-    public decimal? DomesticWaybillTax { get; set; }
+    public decimal? CompanyDomesticWaybillTax { get; set; }
     public long? ExitFare { get; set; }
     public long? ExitStampBill { get; set; }
     public long? ExitPackaging { get; set; }

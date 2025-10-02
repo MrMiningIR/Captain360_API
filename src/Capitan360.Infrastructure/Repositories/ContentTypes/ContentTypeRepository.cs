@@ -13,7 +13,7 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 {
     public async Task<bool> CheckExistContentTypeNameAsync(string contentTypeName, int companyTypeId, int? currentContentTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.ContentTypes.AnyAsync(item => item.Name.ToLower() == contentTypeName.ToLower().Trim() && item.CompanyTypeId == companyTypeId && (currentContentTypeId == null || item.Id != currentContentTypeId), cancellationToken);
+        return await dbContext.ContentTypes.AnyAsync(item => item.Name.ToLower() == contentTypeName.Trim().ToLower()&& item.CompanyTypeId == companyTypeId && (currentContentTypeId == null || item.Id != currentContentTypeId), cancellationToken);
     }
 
     public async Task<int> GetCountContentTypeAsync(int companyTypeId, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return await query.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken);
     }
 
-    public async Task DeletePackageTypeAsync(int contentTypeId)
+    public async Task DeleteContentTypeAsync(int contentTypeId)
     {
         await Task.Yield();
     }
@@ -78,11 +78,11 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<ContentType>, int)> GetAllContentTypesAsync(string? searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<ContentType>, int)> GetAllContentTypesAsync(string searchPhrase, string? sortBy, int companyTypeId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.ContentTypes.AsNoTracking()
-                                              .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => searchPhrase == null || item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.CompanyType);

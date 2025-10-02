@@ -1,0 +1,4 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFromAirlineDeliveryState;
+
+public record BackCompanyDomesticWaybillFromAirlineDeliveryStateCommand(int Id);
+

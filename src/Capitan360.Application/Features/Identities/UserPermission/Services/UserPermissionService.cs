@@ -9,14 +9,14 @@ using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.Extensions.Logging;
 
-namespace Capitan360.Application.Features.UserPermission.Services;
+namespace Capitan360.Application.Features.Identities.UserPermission.Services;
 
 public class UserPermissionService(ILogger<UserPermissionService> logger,
   IMapper mapper, IUserPermissionRepository userPermissionRepository,
   IUserPermissionVersionControlRepository userPermissionVersionControlRepository,
   IUnitOfWork unitOfWork) : IUserPermissionService
 {
-    public async Task<ApiResponse<int>> AssignPermissionToUser(AssignUserPermissionCommand command, CancellationToken ct)
+    public async Task<ApiResponse<int>> AssignPermissionToUser(AssignUserPermissionCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("AssignPermissionToUser Called with {@AssignPermission}", command);
 
@@ -24,24 +24,24 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
 
         if (mappedUserPermission == null)
             return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
-        await unitOfWork.BeginTransactionAsync(ct);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var result = await userPermissionRepository.AssignPermissionToUser(mappedUserPermission, ct);
+        var result = await userPermissionRepository.AssignPermissionToUser(mappedUserPermission, cancellationToken);
 
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, ct);
+        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, cancellationToken);
         if (pvc is null)
             return ApiResponse<int>.Error(400, "کاربر معتبر نیست");
 
         userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-        await unitOfWork.SaveChangesAsync(ct);
-        await unitOfWork.CommitTransactionAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("Permission successfully Added: {Id}", result);
 
         return ApiResponse<int>.Ok(result);
     }
 
-    public async Task<ApiResponse<List<int>>> AssignPermissionsToUser(AssignUserPermissionCommands commands, CancellationToken ct)
+    public async Task<ApiResponse<List<int>>> AssignPermissionsToUser(AssignUserPermissionCommands commands, CancellationToken cancellationToken)
     {
         logger.LogInformation("AssignPermissionsToUser Called with {@AssignPermissions}", commands);
 
@@ -50,49 +50,49 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
         if (mappedUserPermissions == null)
             return ApiResponse<List<int>>.Error(400, "مشکل در عملیات تبدیل");
 
-        await unitOfWork.BeginTransactionAsync(ct);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var result = await userPermissionRepository.AssignPermissionsToUser(mappedUserPermissions, ct);
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(commands.PermissionList.First().UserId, ct);
+        var result = await userPermissionRepository.AssignPermissionsToUser(mappedUserPermissions, cancellationToken);
+        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(commands.PermissionList.First().UserId, cancellationToken);
         if (pvc is null)
             return ApiResponse<List<int>>.Error(400, "کاربر معتبر نیست");
         userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-        await unitOfWork.SaveChangesAsync(ct);
-        await unitOfWork.CommitTransactionAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("Permissions successfully Added: {Ids}", string.Join(",", result));
 
         return ApiResponse<List<int>>.Ok(result);
     }
 
-    public async Task<ApiResponse<int>> RemovePermissionFromUser(RemoveUserPermissionCommand command, CancellationToken ct)
+    public async Task<ApiResponse<int>> RemovePermissionFromUser(RemoveUserPermissionCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("RemovePermissionFromUser Called with {@RemovePermission}", command);
 
         var userPermission =
             await userPermissionRepository.GetUserPermissionByPermissionIdAndUserId(command.UserId,
-                command.PermissionId, ct);
+                command.PermissionId, cancellationToken);
 
         if (userPermission is null)
             return ApiResponse<int>.Error(400, "این دسترسی وجود ندارد");
 
-        await unitOfWork.BeginTransactionAsync(ct);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var result = await userPermissionRepository.RemovePermissionFromUser(userPermission, ct);
+        var result = await userPermissionRepository.RemovePermissionFromUser(userPermission, cancellationToken);
 
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, ct);
+        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, cancellationToken);
         if (pvc is null)
             return ApiResponse<int>.Error(400, "کاربر معتبر نیست");
         userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-        await unitOfWork.SaveChangesAsync(ct);
-        await unitOfWork.CommitTransactionAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("Permissions successfully Removed: {Id}", result);
 
         return ApiResponse<int>.Ok(result);
     }
 
-    public async Task<ApiResponse<List<int>>> RemovePermissionsFromUser(RemoveUserPermissionCommands commands, CancellationToken ct)
+    public async Task<ApiResponse<List<int>>> RemovePermissionsFromUser(RemoveUserPermissionCommands commands, CancellationToken cancellationToken)
     {
         logger.LogInformation("RemovePermissionsFromUser Called with {@RemovePermissions}", commands);
 
@@ -100,15 +100,15 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
 
         if (mappedUserPermissions == null)
             return ApiResponse<List<int>>.Error(400, "مشکل در عملیات تبدیل");
-        await unitOfWork.BeginTransactionAsync(ct);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var result = await userPermissionRepository.RemovePermissionsFromUser(mappedUserPermissions, ct);
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(commands.PermissionList.First().UserId, ct);
+        var result = await userPermissionRepository.RemovePermissionsFromUser(mappedUserPermissions, cancellationToken);
+        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(commands.PermissionList.First().UserId, cancellationToken);
         if (pvc is null)
             return ApiResponse<List<int>>.Error(400, "کاربر معتبر نیست");
         userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-        await unitOfWork.SaveChangesAsync(ct);
-        await unitOfWork.CommitTransactionAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.CommitTransactionAsync(cancellationToken);
         logger.LogInformation("Permissions successfully Removed: {Ids}", string.Join(",", result));
 
         return ApiResponse<List<int>>.Ok(result);
@@ -116,17 +116,17 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
 
 
 
-    public async Task<ApiResponse<List<string>>> UserPermissionOperation(UpDeInlUserPermissionByIdsCommand command, CancellationToken ct)
+    public async Task<ApiResponse<List<string>>> UserPermissionOperation(UpDeInlUserPermissionByIdsCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("UserPermissionOperation Called with {@UpDeInlUser}", command);
-        await unitOfWork.BeginTransactionAsync(ct);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var (currentPermissionsResult, _) = await userPermissionRepository.GetAllUserPermissions(command.UserId!, 100, 1, ct);
+        var (currentPermissionsResult, _) = await userPermissionRepository.GetAllUserPermissions(command.UserId!, 100, 1, cancellationToken);
         if (!command.PermissionIds.Any())
         {
             if (currentPermissionsResult.Any())
             {
-                await userPermissionRepository.RemovePermissionsFromUser(currentPermissionsResult.ToList(), ct);
+                await userPermissionRepository.RemovePermissionsFromUser(currentPermissionsResult.ToList(), cancellationToken);
             }
         }
         else
@@ -142,29 +142,29 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
                 if (mustBeAddedPermissionIds.Any())
                 {
 
-                    await userPermissionRepository.AssignPermissionsToUser(mustBeAddedPermissionIds, command.UserId!, ct);
+                    await userPermissionRepository.AssignPermissionsToUser(mustBeAddedPermissionIds, command.UserId!, cancellationToken);
                 }
 
                 if (mustBeRemovedPermissionIds.Any())
                 {
 
-                    await userPermissionRepository.RemovePermissionsFromUser(mustBeRemovedPermissionIds, command.UserId!, ct);
+                    await userPermissionRepository.RemovePermissionsFromUser(mustBeRemovedPermissionIds, command.UserId!, cancellationToken);
                 }
             }
             else
             {
-                await userPermissionRepository.AssignPermissionsToUser(command.PermissionIds, command.UserId!, ct);
+                await userPermissionRepository.AssignPermissionsToUser(command.PermissionIds, command.UserId!, cancellationToken);
             }
         }
 
 
 
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, ct);
+        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, cancellationToken);
         if (pvc is null)
             return ApiResponse<List<string>>.Error(400, "کاربر معتبر نیست");
         userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-        await unitOfWork.SaveChangesAsync(ct);
-        await unitOfWork.CommitTransactionAsync(ct);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("Permissions successfully Operated!: {Ids}", string.Join(",", command.PermissionIds));
 

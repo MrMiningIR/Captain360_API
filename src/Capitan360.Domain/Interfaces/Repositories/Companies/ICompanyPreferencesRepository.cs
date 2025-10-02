@@ -11,7 +11,7 @@ public interface ICompanyPreferencesRepository
 
     Task DeleteCompanyPreferencesAsync(int companyPreferencesId);
 
-    Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string? searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyPreferences>, int)> GetAllCompanyPreferencesAsync(string searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
+    Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 }

@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestFormPeriods.Queries.GetById;
+
+public record GetCompanyManifestFormPeriodByIdQuery(int Id);

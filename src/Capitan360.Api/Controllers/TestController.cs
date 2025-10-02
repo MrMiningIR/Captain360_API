@@ -1,7 +1,7 @@
 ﻿using Capitan360.Api.RequestHelpers.Cache;
 using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Application.Features.Permission.Services;
+using Capitan360.Application.Features.Identities.Permissions.Services;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
 using Microsoft.AspNetCore.Mvc;

@@ -5,20 +5,19 @@ using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Index.HPRtree;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
-internal class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyBankRepository
+public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyBankRepository
 {
     public async Task<bool> CheckExistCompanyBankNameAsync(string companyBankName, int companyId, int? currentCompanyBankId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyBanks.AnyAsync(item => item.Name.ToLower() == companyBankName.ToLower().Trim() && item.CompanyId == companyId && (currentCompanyBankId == null || item.Id != currentCompanyBankId), cancellationToken);
+        return await dbContext.CompanyBanks.AnyAsync(item => item.Name.ToLower() == companyBankName.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyBankId == null || item.Id != currentCompanyBankId), cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyBankCodeAsync(string companyBankCode, int companyId, int? currentCompanyBankId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyBanks.AnyAsync(item => item.Code.ToLower() == companyBankCode.ToLower().Trim() && item.CompanyId == companyId && (currentCompanyBankId == null || item.Id != currentCompanyBankId), cancellationToken);
+        return await dbContext.CompanyBanks.AnyAsync(item => item.Code.ToLower() == companyBankCode.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyBankId == null || item.Id != currentCompanyBankId), cancellationToken);
     }
 
     public async Task<int> GetCountCompanyBankAsync(int companyId, CancellationToken cancellationToken)
@@ -46,17 +45,13 @@ internal class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork
         return await query.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<CompanyBank>?> GetCompanyBankByCompanyIdAsync(int companyBankCompanyId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyBank>?> GetCompanyBankByCompanyIdAsync(int companyBankCompanyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyBank> query = dbContext.CompanyBanks;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
+        IQueryable<CompanyBank> query = dbContext.CompanyBanks.AsNoTracking()
+                                                              .Include(item => item.Company);
 
         return await query.Where(item => item.CompanyId == companyBankCompanyId)
+                          .OrderBy(item => item.Order)
                           .ToListAsync(cancellationToken);
     }
 
@@ -65,7 +60,7 @@ internal class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork
         await Task.Yield();
     }
 
-    public async Task MoveCompanyBankUpAsync(int companyBankId, CancellationToken cancellationToken)
+    public async Task MoveUpCompanyBankAsync(int companyBankId, CancellationToken cancellationToken)
     {
         var currentCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken: cancellationToken);
         if (currentCompanyBank == null)
@@ -75,12 +70,12 @@ internal class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork
         if (nextCompanyBank == null)
             return;
 
-        nextCompanyBank!.Order++;
-        currentCompanyBank!.Order--;
+        nextCompanyBank.Order++;
+        currentCompanyBank.Order--;
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task MoveCompanyBankDownAsync(int companyBankId, CancellationToken cancellationToken)
+    public async Task MoveDownCompanyBankAsync(int companyBankId, CancellationToken cancellationToken)
     {
         var currentCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken: cancellationToken);
         if (currentCompanyBank == null)
@@ -90,17 +85,17 @@ internal class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork
         if (nextCompanyBank == null)
             return;
 
-        nextCompanyBank!.Order--;
-        currentCompanyBank!.Order++;
+        nextCompanyBank.Order--;
+        currentCompanyBank.Order++;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string? searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyBanks.AsNoTracking()
-                                              .Where(item => searchPhraseLower == null || item.Name.ToLower().Contains(searchPhraseLower));
+                                              .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.Company);
@@ -142,6 +137,6 @@ internal class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyBankCode.ToLower().Trim() && item.CompanyId == companyId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyBankCode.Trim().ToLower() && item.CompanyId == companyId, cancellationToken);
     }
 }

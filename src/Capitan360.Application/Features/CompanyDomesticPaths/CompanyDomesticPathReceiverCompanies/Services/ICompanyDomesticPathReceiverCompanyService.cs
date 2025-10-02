@@ -1,0 +1,25 @@
+﻿using Capitan360.Application.Common;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Commands.Create;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Commands.Delete;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Commands.Update;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Dtos;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Queries.GetAll;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Queries.GetByDomesticPathId;
+using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Queries.GetById;
+
+namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Services;
+
+public interface ICompanyDomesticPathReceiverCompanyService
+{
+    Task<ApiResponse<int>> CreateCompanyDomesticPathReceiverCompanyAsync(CreateCompanyDomesticPathReceiverCompanyCommand command, CancellationToken cancellationToken);
+
+    Task DeleteCompanyDomesticPathReceiverCompanyAsync(DeleteCompanyDomesticPathReceiverCompanyCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyDomesticPathReceiverCompanyDto>> UpdateCompanyDomesticPathReceiverCompanyAsync(UpdateCompanyDomesticPathReceiverCompanyCommand command, CancellationToken cancellationToken);
+
+    Task<ApiResponse<PagedResult<CompanyDomesticPathReceiverCompanyDto>>> GetAllCompanyDomesticPathReceiverCompaniesAsync(GetAllCompanyDomesticPathReceiverCompanyQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<IReadOnlyList<CompanyDomesticPathReceiverCompanyDto>>> GetCompanyDomesticPathReceiverCompanyByDomesticPathIdAsync(GetCompanyDomesticPathReceiverCompanyByDomesticPathIdQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<CompanyDomesticPathReceiverCompanyDto>> GetCompanyDomesticPathReceiverCompanyByIdAsync(GetCompanyDomesticPathReceiverCompanyByIdQuery query, CancellationToken cancellationToken);
+}

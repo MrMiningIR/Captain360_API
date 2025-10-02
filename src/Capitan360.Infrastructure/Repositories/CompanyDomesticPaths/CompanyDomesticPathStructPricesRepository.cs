@@ -74,11 +74,11 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
     }
 
     public async Task<(IReadOnlyList<CompanyDomesticPathStructPrice>, int)>
-        GetAllCompanyDomesticPathStructPrice(string? searchPhrase, int companyDomesticPathId, int pathStruct,
+        GetAllCompanyDomesticPathStructPrice(string searchPhrase, int companyDomesticPathId, int pathStruct,
             int pageSize, int pageNumber, string? sortBy,
             SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         //Point
         var baseQuery = dbContext.CompanyDomesticPathStructPrices.AsNoTracking()
             .Include(x => x.CompanyDomesticPathStructPriceMunicipalAreas
@@ -91,10 +91,10 @@ public class CompanyDomesticPathStructPricesRepository(ApplicationDbContext dbCo
 
             .Where(p => companyDomesticPathId == 0 || p.CompanyDomesticPathId == companyDomesticPathId)
             .Where(x => pathStruct == 0 || x.PathStructType == (PathStructType)pathStruct)
-            .Where(p => searchPhraseLower == null ||
-                p.Weight.ToString().Contains(searchPhraseLower) ||
-                p.PathStructType.ToString().ToLower().Contains(searchPhraseLower) ||
-                p.WeightType.ToString().ToLower().Contains(searchPhraseLower));
+            .Where(p => searchPhrase == null ||
+                p.Weight.ToString().Contains(searchPhrase) ||
+                p.PathStructType.ToString().ToLower().Contains(searchPhrase) ||
+                p.WeightType.ToString().ToLower().Contains(searchPhrase));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 

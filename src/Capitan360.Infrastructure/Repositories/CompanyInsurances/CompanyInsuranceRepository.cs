@@ -3,7 +3,6 @@ using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Capitan360.Domain.Enums;
-using NetTopologySuite.Index.HPRtree;
 using Capitan360.Domain.Entities.CompanyInsurances;
 using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
 
@@ -13,12 +12,12 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
 {
     public async Task<bool> CheckExistCompanyInsuranceNameAsync(string companyInsuranceName, int companyId, int? currentCompanyInsuranceId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyInsurances.AnyAsync(item => item.Name.ToLower() == companyInsuranceName.ToLower().Trim() && item.CompanyId == companyId && (currentCompanyInsuranceId == null || item.Id != currentCompanyInsuranceId), cancellationToken);
+        return await dbContext.CompanyInsurances.AnyAsync(item => item.Name.ToLower() == companyInsuranceName.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyInsuranceId == null || item.Id != currentCompanyInsuranceId), cancellationToken);
     }
 
     public async Task<bool> CheckExistCompanyInsuranceCodeAsync(string companyInsuranceCode, int companyId, int? currentCompanyInsuranceId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyInsurances.AnyAsync(item => item.Code.ToLower() == companyInsuranceCode.ToLower().Trim() && item.CompanyId == companyId && (currentCompanyInsuranceId == null || item.Id != currentCompanyInsuranceId), cancellationToken);
+        return await dbContext.CompanyInsurances.AnyAsync(item => item.Code.ToLower() == companyInsuranceCode.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyInsuranceId == null || item.Id != currentCompanyInsuranceId), cancellationToken);
     }
 
     public async Task<int> CreateCompanyInsuranceAsync(CompanyInsurance companyInsurance, CancellationToken cancellationToken)
@@ -41,17 +40,13 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
         return await query.SingleOrDefaultAsync(item => item.Id == companyInsuranceId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<CompanyInsurance>?> GetCompanyInsuranceByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CompanyInsurance>?> GetCompanyInsuranceByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyInsurance> query = dbContext.CompanyInsurances;
-
-        if (loadData)
-            query = query.Include(item => item.Company);
-
-        if (!tracked)
-            query = query.AsNoTracking();
+        IQueryable<CompanyInsurance> query = dbContext.CompanyInsurances.Include(item => item.Company)
+                                                                        .AsNoTracking();
 
         return await query.Where(item => item.CompanyId == companyId)
+                          .OrderBy(item => item.Code)
                           .ToListAsync(cancellationToken);
     }
 
@@ -60,11 +55,11 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<CompanyInsurance>, int)> GetAllCompanyInsurancesAsync(string? searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyInsurance>, int)> GetAllCompanyInsurancesAsync(string searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
-        var searchPhraseLower = searchPhrase?.ToLower().Trim();
+        searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyInsurances.AsNoTracking()
-                                              .Where(item => searchPhraseLower == null || item.Code.ToLower().Contains(searchPhraseLower) || item.Name.ToLower().Contains(searchPhraseLower) || item.Description.ToLower().Contains(searchPhraseLower));
+                                                   .Where(item => item.Code.ToLower().Contains(searchPhrase) || item.Name.ToLower().Contains(searchPhrase) || item.Description.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.Company);
@@ -96,12 +91,12 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
             ? baseQuery.OrderBy(selectedColumn)
             : baseQuery.OrderByDescending(selectedColumn);
 
-        var packageTypes = await baseQuery
+        var companyInsurances = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return (packageTypes, totalCount);
+        return (companyInsurances, totalCount);
     }
 
     public async Task<CompanyInsurance?> GetCompanyInsuranceByCodeAsync(string companyInsuranceCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
@@ -114,6 +109,6 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyInsuranceCode.ToLower().Trim() && item.CompanyId == companyId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Code.ToLower() == companyInsuranceCode.Trim().ToLower() && item.CompanyId == companyId, cancellationToken);
     }
 }

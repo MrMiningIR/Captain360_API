@@ -7,8 +7,10 @@ using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyTypes.Services;
@@ -21,107 +23,141 @@ public class CompanyTypeService(
     ICompanyTypeRepository companyTypeRepository
 ) : ICompanyTypeService
 {
-    public async Task<ApiResponse<int>> CreateCompanyTypeAsync(CreateCompanyTypeCommand createCompanyTypeCommand, CancellationToken cancellationToken)//ch**
+    public async Task<ApiResponse<int>> CreateCompanyTypeAsync(CreateCompanyTypeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("CreateCompanyType is Called with {@CreateCompanyTypeCommand}", createCompanyTypeCommand);
+        logger.LogInformation("CreateCompanyType is Called with {@CreateCompanyTypeCommand}", command);
 
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
+        if (!user.IsSuperAdmin())
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(createCompanyTypeCommand.TypeName, null, cancellationToken))
-            return ApiResponse<int>.Error(400, "نام نوع شرکت تکراری است");
+        if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(command.TypeName, null, cancellationToken))
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "نام نوع شرکت تکراری است");
 
-        var companyType = mapper.Map<Domain.Entities.Companies.CompanyType>(createCompanyTypeCommand) ?? null;
+        if (await companyTypeRepository.CheckExistCompanyTypeDisplayNameAsync(command.DisplayName, null, cancellationToken))
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "نام نمایشی نوع شرکت تکراری است");
+
+        var companyType = mapper.Map<CompanyType>(command) ?? null;
         if (companyType == null)
-            return ApiResponse<int>.Error(400, "مشکل در عملیات تبدیل");
+            return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
         var companyTypeId = await companyTypeRepository.CreateCompanyTypeAsync(companyType, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("CompanyType created successfully with ID: {CompanyTypeId}", companyTypeId);
-        return ApiResponse<int>.Ok(companyTypeId, "نوع شرکت با موفقیت ایجاد شد");
+        logger.LogInformation("CompanyType created successfully with {@CompanyType}", companyType);
+        return ApiResponse<int>.Created(companyTypeId, "نوع شرکت با موفقیت ایجاد شد");
     }
 
-    public async Task<ApiResponse<int>> DeleteCompanyTypeAsync(DeleteCompanyTypeCommand deleteCompanyTypeCommand, CancellationToken cancellationToken)//ch**
+    public async Task<ApiResponse<int>> DeleteCompanyTypeAsync(DeleteCompanyTypeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DeleteCompanyType is Called with ID: {Id}", deleteCompanyTypeCommand.Id);
+        logger.LogInformation("DeleteCompanyType is Called with {@Id}", command.Id);
 
         var user = userContext.GetCurrentUser();
         if (user == null)
-            return ApiResponse<int>.Error(400, "مشکل در دریافت اطلاعات");
+            return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
         if (!user.IsSuperAdmin())
-            return ApiResponse<int>.Error(400, "مجوز این فعالیت را ندارید");
+            return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(deleteCompanyTypeCommand.Id, true, false, cancellationToken);
+        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(command.Id, true, false, cancellationToken);
         if (companyType is null)
-            return ApiResponse<int>.Error(400, $"نوع شرکت نامعتبر است");
+            return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "نوع شرکت نامعتبر است");
 
         await companyTypeRepository.DeleteCompanyTypeAsync(companyType.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("CompanyType soft-deleted successfully with ID: {Id}", deleteCompanyTypeCommand.Id);
-        return ApiResponse<int>.Ok(deleteCompanyTypeCommand.Id, "نوع شرکت با موفقیت حذف شد");
+        logger.LogInformation("CompanyType Deleted successfully with {@Id}", command.Id);
+        return ApiResponse<int>.Ok(command.Id, "نوع شرکت با موفقیت حذف شد");
     }
 
-    public async Task<ApiResponse<CompanyTypeDto>> UpdateCompanyTypeAsync(UpdateCompanyTypeCommand updateCompanyTypeCommand, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyTypeDto>> UpdateCompanyTypeAsync(UpdateCompanyTypeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("UpdateCompanyType is Called with {@UpdateCompanyTypeCommand}", updateCompanyTypeCommand);
+        logger.LogInformation("UpdateCompanyType is Called with {@UpdateCompanyTypeCommand}", command);
 
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
+        if (!user.IsSuperAdmin())
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(updateCompanyTypeCommand.Id, true, false, cancellationToken);
+        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(command.Id, false, true, cancellationToken);
         if (companyType is null)
-            return ApiResponse<CompanyTypeDto>.Error(400, $"نوع شرکت نامعتبر است");
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status404NotFound, "نوع شرکت نامعتبر است");
 
-        if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(updateCompanyTypeCommand.TypeName, updateCompanyTypeCommand.Id, cancellationToken))
-            return ApiResponse<CompanyTypeDto>.Error(400, "نام نوع شرکت تکراری است");
+        if (await companyTypeRepository.CheckExistCompanyTypeNameAsync(command.TypeName, command.Id, cancellationToken))
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status409Conflict, "نام نوع شرکت تکراری است");
 
-        var updatedCompanyType = mapper.Map(updateCompanyTypeCommand, companyType);
+        if (await companyTypeRepository.CheckExistCompanyTypeDisplayNameAsync(command.DisplayName, command.Id, cancellationToken))
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status409Conflict, "نام نمایشی نوع شرکت تکراری است");
 
+        var updatedCompanyType = mapper.Map(command, companyType);
         if (updatedCompanyType == null)
-            return ApiResponse<CompanyTypeDto>.Error(400, "مشکل در عملیات تبدیل");
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
-        logger.LogInformation("نوع شرکت با موفقیت به‌روزرسانی شد: {Id}", updateCompanyTypeCommand.Id);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("CompanyType updated successfully with {@UpdateCompanyTypeCommand}", command);
 
         var updatedCompanyTypeDto = mapper.Map<CompanyTypeDto>(updatedCompanyType);
+        if (updatedCompanyTypeDto == null)
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
         return ApiResponse<CompanyTypeDto>.Ok(updatedCompanyTypeDto, "نوع شرکت با موفقیت به‌روزرسانی شد");
     }
 
-    public async Task<ApiResponse<PagedResult<CompanyTypeDto>>> GetAllCompanyTypesAsync(GetAllCompanyTypesQuery getAllCompanyTypesQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<PagedResult<CompanyTypeDto>>> GetAllCompanyTypesAsync(GetAllCompanyTypesQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetAllCompanyTypesByCompanyType is Called");
+        logger.LogInformation("GetAllCompanyTypes is Called");
 
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<PagedResult<CompanyTypeDto>>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
+        if (!user.IsSuperAdmin())
+            return ApiResponse<PagedResult<CompanyTypeDto>>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
         var (companyTypes, totalCount) = await companyTypeRepository.GetAllCompanyTypesAsync(
-            getAllCompanyTypesQuery.SearchPhrase,
-            getAllCompanyTypesQuery.SortBy,
+            query.SearchPhrase,
+            query.SortBy,
             true,
-            getAllCompanyTypesQuery.PageNumber,
-            getAllCompanyTypesQuery.PageSize,
-            getAllCompanyTypesQuery.SortDirection,
+            query.PageNumber,
+            query.PageSize,
+            query.SortDirection,
             cancellationToken);
 
-        var companyTypeDto = mapper.Map<IReadOnlyList<CompanyTypeDto>>(companyTypes) ?? Array.Empty<CompanyTypeDto>();
-        logger.LogInformation("Retrieved {Count} package types", companyTypeDto.Count);
+        var companyTypeDtos = mapper.Map<IReadOnlyList<CompanyTypeDto>>(companyTypes) ?? Array.Empty<CompanyTypeDto>();
+        if (companyTypeDtos == null)
+            return ApiResponse<PagedResult<CompanyTypeDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
-        var data = new PagedResult<CompanyTypeDto>(companyTypeDto, totalCount, getAllCompanyTypesQuery.PageSize, getAllCompanyTypesQuery.PageNumber);
+        logger.LogInformation("Retrieved {@Count} companytypes", companyTypeDtos.Count);
+
+        var data = new PagedResult<CompanyTypeDto>(companyTypeDtos, totalCount, query.PageSize, query.PageNumber);
         return ApiResponse<PagedResult<CompanyTypeDto>>.Ok(data, "نوع شرکت‌ها با موفقیت دریافت شدند");
     }
 
-    public async Task<ApiResponse<CompanyTypeDto>> GetCompanyTypeByIdAsync(GetCompanyTypeByIdQuery getCompanyTypeByIdQuery, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CompanyTypeDto>> GetCompanyTypeByIdAsync(GetCompanyTypeByIdQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetCompanyTypeById is Called with ID: {Id}", getCompanyTypeByIdQuery.Id);
+        logger.LogInformation("GetCompanyTypeById is Called with {@Id}", query.Id);
 
+        var user = userContext.GetCurrentUser();
+        if (user == null)
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
 
+        if (!user.IsSuperAdmin())
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(getCompanyTypeByIdQuery.Id, false, true, cancellationToken);
+        var companyType = await companyTypeRepository.GetCompanyTypeByIdAsync(query.Id, false, false, cancellationToken);
         if (companyType is null)
-            return ApiResponse<CompanyTypeDto>.Error(400, $"نوع شرکت یافت نشد");
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status404NotFound, "نوع شرکت نامعتبر است");
 
         var result = mapper.Map<CompanyTypeDto>(companyType);
-        logger.LogInformation("CompanyType retrieved successfully with ID: {Id}", getCompanyTypeByIdQuery.Id);
+        if (result == null)
+            return ApiResponse<CompanyTypeDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
+        logger.LogInformation("CompanyType retrieved successfully with {@Id}", query.Id);
         return ApiResponse<CompanyTypeDto>.Ok(result, "نوع شرکت با موفقیت دریافت شد");
     }
 }

@@ -62,7 +62,7 @@ public class CompanyInsuranceChargeRepository(ApplicationDbContext dbContext, IU
             .SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyInsuranceCharge>, int)> GetAllCompanyInsuranceCharges(string? searchPhrase, int companyInsuranceId, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyInsuranceCharge>, int)> GetAllCompanyInsuranceCharges(string searchPhrase, int companyInsuranceId, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var baseQuery = dbContext.CompanyInsuranceCharges
             .Include(item => item.CompanyInsurance)
@@ -75,8 +75,8 @@ public class CompanyInsuranceChargeRepository(ApplicationDbContext dbContext, IU
 
         if (!string.IsNullOrEmpty(searchPhrase))
         {
-            var searchPhraseLower = searchPhrase.ToLower().Trim();
-            baseQuery = baseQuery.Where(cic => cic.Rate.ToString().ToLower().Contains(searchPhraseLower));
+            searchPhrase = searchPhrase.Trim().ToLower();
+            baseQuery = baseQuery.Where(cic => cic.Rate.ToString().ToLower().Contains(searchPhrase));
         }
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);

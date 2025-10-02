@@ -1,3 +1,0 @@
-﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPeriods.Commands.Delete;
-
-public record DeleteDomesticWaybillPeriodCommand(int Id);

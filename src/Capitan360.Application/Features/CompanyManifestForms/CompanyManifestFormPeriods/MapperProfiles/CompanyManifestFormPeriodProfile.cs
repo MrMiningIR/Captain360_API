@@ -18,12 +18,12 @@ public class CompanyManifestFormPeriodProfile : Profile
             .ForMember(dest => dest.CompanyManifestForms, opt => opt.Ignore())
             .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
 
-        CreateMap<CreateManifestFormPeriodCommand, CompanyManifestFormPeriod>()
+        CreateMap<CreateCompanyManifestFormPeriodCommand, CompanyManifestFormPeriod>()
             .ForMember(dest => dest.Id, opt => opt.Ignore()) 
             .ForMember(dest => dest.CompanyManifestForms, opt => opt.Ignore())
             .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
 
-        CreateMap<UpdateManifestFormPeriodCommand, CompanyManifestFormPeriod>()
+        CreateMap<UpdateCompanyManifestFormPeriodCommand, CompanyManifestFormPeriod>()
             .ForMember(dest => dest.CompanyId, opt => opt.Ignore()) 
             .ForMember(dest => dest.Company, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyManifestForms, opt => opt.Ignore())

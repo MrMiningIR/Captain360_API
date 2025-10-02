@@ -7,12 +7,12 @@ using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Capitan360.Application.Features.Role;
+namespace Capitan360.Application.Features.Identities.Roles;
 
 public class RoleService(RoleManager<Domain.Entities.Identities.Role> roleManager,
     ILogger<RoleService> logger, IIdentityRepository identityRepository, IUnitOfWork unitOfWork) : IRoleService
 {
-    public async Task<ApiResponse<string>> CreateRole(CreateRoleCommand command)
+    public async Task<ApiResponse<string>> CreateRole(CreateRoleCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateRole is Called with {@command}", command);
 
@@ -47,7 +47,7 @@ public class RoleService(RoleManager<Domain.Entities.Identities.Role> roleManage
         return ApiResponse<string>.Ok(command.RoleId);
     }
 
-    public async Task<ApiResponse<string>> UpdateRole(UpdateRoleCommand command)
+    public async Task<ApiResponse<string>> UpdateRole(UpdateRoleCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateRole is Called with {@command}", command);
         var role = await roleManager.FindByIdAsync(command.RoleId);

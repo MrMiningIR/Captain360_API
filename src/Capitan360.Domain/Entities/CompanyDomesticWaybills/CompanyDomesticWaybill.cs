@@ -4,9 +4,7 @@ using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.CompanyInsurances;
 using Capitan360.Domain.Entities.CompanyManifestForms;
-using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Capitan360.Domain.Entities.CompanyDomesticWaybills;
@@ -23,7 +21,6 @@ public class CompanyDomesticWaybill : BaseEntity
     public int? CompanyReceiverId { get; set; }
     public Company? CompanyReceiver { get; set; }
     public string? CompanyReceiverUserInsertedCode { get; set; }
-    public string? CompanyReceiverUserInsertedName { get; set; }
 
     [ForeignKey(nameof(SourceCountry))]
     public int SourceCountryId { get; set; }
