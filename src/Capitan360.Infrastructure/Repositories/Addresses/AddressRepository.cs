@@ -4,7 +4,6 @@ using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Index.HPRtree;
 using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Addresses;
@@ -13,39 +12,127 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
 {
     public async Task<int> CreateAddressAsync(Address address, CancellationToken cancellationToken)
     {
-
         dbContext.Addresses.Add(address);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return address.Id;
     }
 
-
-
-    public void Delete(Address address)
+    public async Task<int> GetCountAddressOfUserAsync(string userId, CancellationToken cancellationToken)
     {
-        dbContext.Entry(address).Property("Deleted").CurrentValue = true;
-
+        return await dbContext.Addresses.CountAsync(item => !item.CompanyId.HasValue && item.UserId != null && item.UserId.ToLower() == userId.Trim().ToLower(), cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Address>> GetAllAddresses(CancellationToken cancellationToken)
+    public async Task<int> GetCountAddressOfCompanyIdAsync(int companyId, CancellationToken cancellationToken)
     {
-        return await dbContext.Addresses.ToListAsync(cancellationToken);
+        return await dbContext.Addresses.CountAsync(item => item.CompanyId.HasValue && item.UserId == null && item.CompanyId == companyId, cancellationToken);
     }
 
-    public async Task<Address?> GetAddressById(int id, CancellationToken cancellationToken)
+    public async Task<Address?> GetAddressByIdAsync(int addressId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
-        return await dbContext.Addresses.SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
+        IQueryable<Address> query = dbContext.Addresses;
+
+        if (loadData)
+        {
+            query = query.Include(item => item.Company);
+            query = query.Include(item => item.User);
+        }
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.Id == addressId, cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Address>?> GetAddressByUserIdAsync(string userId, CancellationToken cancellationToken)
+    {
+        IQueryable<Address> query = dbContext.Addresses.Include(item => item.Company)
+                                                       .AsNoTracking();
 
+        return await query.Where(item => !item.CompanyId.HasValue && item.UserId != null && item.UserId.ToLower() == userId.Trim().ToLower())
+                          .OrderBy(item => item.Order)
+                          .ToListAsync(cancellationToken);
+    }
 
-    public async Task<(IReadOnlyList<Address>, int)> GetAllAddresses(string searchPhrase, int pageSize, int pageNumber, int companyId, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Address>?> GetAddressByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
+    {
+        IQueryable<Address> query = dbContext.Addresses.Include(item => item.User)
+                                                       .AsNoTracking();
+
+        return await query.Where(item => item.CompanyId.HasValue && item.UserId == null && item.CompanyId == companyId)
+                          .OrderBy(item => item.Order)
+                          .ToListAsync(cancellationToken);
+    }
+
+    public Task DeleteAddressAsync(int addressId, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    public async Task MoveAddressUpAsync(int addressId, CancellationToken cancellationToken)
+    {
+        var currentAddress = await dbContext.Addresses.SingleOrDefaultAsync(item => item.Id == addressId, cancellationToken);
+        if (currentAddress == null)
+            return;
+        if (currentAddress.UserId != null)
+        {
+            var nextAddress = await dbContext.Addresses.SingleOrDefaultAsync(item => !item.CompanyId.HasValue && item.UserId != null && item.UserId.ToLower() == currentAddress!.UserId.Trim().ToLower() && item.Order == currentAddress.Order - 1, cancellationToken);
+            if (nextAddress == null)
+                return;
+
+            nextAddress.Order++;
+            currentAddress.Order--;
+        }
+        else if (currentAddress.CompanyId != null)
+        {
+            var nextAddress = await dbContext.Addresses.SingleOrDefaultAsync(item => item.CompanyId.HasValue && item.UserId == null && item.CompanyId == currentAddress!.CompanyId && item.Order == currentAddress.Order - 1, cancellationToken);
+            if (nextAddress == null)
+                return;
+
+            nextAddress.Order++;
+            currentAddress.Order--;
+        }
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task MoveAddressDownAsync(int addressId, CancellationToken cancellationToken)
+    {
+        var currentAddress = await dbContext.Addresses.SingleOrDefaultAsync(item => item.Id == addressId, cancellationToken);
+        if (currentAddress == null)
+            return;
+
+        if (currentAddress.UserId != null)
+        {
+            var nextAddress = await dbContext.Addresses.SingleOrDefaultAsync(item => !item.CompanyId.HasValue && item.UserId != null && item.UserId.ToLower() == currentAddress!.UserId.Trim().ToLower() && item.Order == currentAddress.Order + 1, cancellationToken);
+            if (nextAddress == null)
+                return;
+
+            nextAddress.Order--;
+            currentAddress.Order++;
+        }
+        else if (currentAddress.CompanyId != null)
+        {
+            var nextAddress = await dbContext.Addresses.SingleOrDefaultAsync(item => item.CompanyId.HasValue && item.UserId == null && item.CompanyId == currentAddress!.CompanyId && item.Order == currentAddress.Order + 1, cancellationToken);
+            if (nextAddress == null)
+                return;
+
+            nextAddress.Order--;
+            currentAddress.Order++;
+        }
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<(IReadOnlyList<Address>, int)> GetAllAddresssesAsync(string searchPhrase, string? sortBy, int? companyId, string? userId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         searchPhrase = searchPhrase.Trim().ToLower();
-        var baseQuery = dbContext.Addresses
-            .Where(item => searchPhrase == null || item.AddressLine.ToLower().Contains(searchPhrase));
+        var baseQuery = dbContext.Addresses.Where(item => item.AddressLine.ToLower().Contains(searchPhrase) || item.Mobile.ToLower().Contains(searchPhrase) ||
+                                                          item.Tel1.ToLower().Contains(searchPhrase) || item.Tel2.ToLower().Contains(searchPhrase) || item.Zipcode.ToLower().Contains(searchPhrase) ||
+                                                          item.Description.ToLower().Contains(searchPhrase));
 
-        baseQuery = baseQuery.Where(x => x.CompanyId == companyId);
+        if (companyId != null)
+            baseQuery = baseQuery.Where(x => x.CompanyId == companyId);
+
+        if (userId != null)
+            baseQuery = baseQuery.Where(x => x.UserId!.ToLower() == userId.Trim().ToLower());
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -54,113 +141,6 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
                 { nameof(Address.AddressLine), item => item.AddressLine },
                 { nameof(Address.Order), item => item.Order},
             };
-
-        var selectedColumn = columnsSelector[nameof(Address.Order)];
-
-        if (!string.IsNullOrEmpty(sortBy))
-        {
-            selectedColumn = columnsSelector[sortBy];
-        }
-
-        baseQuery = sortDirection == SortDirection.Ascending
-            ? baseQuery.OrderBy(selectedColumn)
-            : baseQuery.OrderByDescending(selectedColumn);
-
-        var addresses = await baseQuery
-            .Skip(pageSize * (pageNumber - 1))
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
-
-        return (addresses, totalCount);
-    }
-
-    public async Task<int> OrderAddress(int commandCompanyId, CancellationToken cancellationToken)
-    {
-        var maxOrder = await dbContext.Addresses
-            .Where(item => item.CompanyId == commandCompanyId)
-                        .MaxAsync(item => (int?)item.Order, cancellationToken) ?? 0;
-        return maxOrder;
-    }
-
-    public async Task MoveAddressUpAsync(int companyId, int addressId, CancellationToken cancellationToken)
-    {
-        var addresses = await dbContext.Addresses
-            .Where(c => c.CompanyId == companyId)
-            .OrderBy(item => item.Order)
-            .ToListAsync(cancellationToken);
-
-        var currentAddress = addresses.SingleOrDefault(item => item.Id == addressId);
-
-        var currentIndex = addresses.IndexOf(currentAddress!);
-        if (currentIndex <= 0)
-            return;
-
-        var previousAddress = addresses[currentIndex - 1];
-
-        var currentOrder = currentAddress!.Order;
-        currentAddress.Order = previousAddress.Order;
-        previousAddress.Order = currentOrder;
-
-        // if we use AsNoTracking or Get Data From Body or anywhere else of Database!
-        //dbContext.Update(currentAddress);
-        //dbContext.Update(previousAddress);
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task MoveAddressDownAsync(int companyId, int addressId, CancellationToken cancellationToken)
-    {
-        var addresses = await dbContext.Addresses
-            .Where(c => c.CompanyId == companyId)
-            .OrderBy(item => item.Order)
-            .ToListAsync(cancellationToken);
-
-        var currentAddress = addresses.FirstOrDefault(item => item.Id == addressId);
-
-        var currentIndex = addresses.IndexOf(currentAddress!);
-        if (currentIndex >= addresses.Count - 1)
-            return;
-
-        var nextAddress = addresses[currentIndex + 1];
-
-        var tempOrder = currentAddress!.Order;
-        currentAddress.Order = nextAddress.Order;
-        nextAddress.Order = tempOrder;
-
-        // if we use AsNoTracking or Get Data From Body or anywhere else of Database!
-        //dbContext.Update(currentAddress);
-        //dbContext.Update(nextAddress);
-
-        await dbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task<(IReadOnlyList<Address>, int)> GetAllAddressesByCompany(string searchPhrase, int companyId, int active, int pageSize, int pageNumber, string? sortBy,
-        SortDirection sortDirection, CancellationToken cancellationToken)
-    {
-        searchPhrase = searchPhrase.Trim().ToLower();
-
-        var baseQuery = dbContext.Addresses.AsNoTracking()
-            .Where(item => item.CompanyId == companyId);
-
-        baseQuery = baseQuery.Where(item => searchPhrase == null || item.AddressLine.ToLower().Contains(searchPhrase));
-
-        if (active == 0)
-        {
-            baseQuery = baseQuery.Where(x => !x.Active);
-        }
-
-        if (active == 1)
-        {
-            baseQuery = baseQuery.Where(x => x.Active);
-        }
-
-        var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-        var columnsSelector = new Dictionary<string, Expression<Func<Address, object>>>
-     {
-         { nameof(Address.AddressLine), item => item.AddressLine },
-         { nameof(Address.Order), item => item.Order },
-     };
 
         var selectedColumn = columnsSelector[nameof(Address.Order)];
 

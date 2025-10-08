@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Identities.Permissions.Services;
-using Capitan360.Application.Features.Permission.Dtos;
+using Capitan360.Application.Features.Identities.Permissions.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
-namespace Capitan360.Application.Features.Permission.Services;
+namespace Capitan360.Application.Features.Identities.Permissions.Services;
 
 public class PermissionService(IPermissionRepository permissionRepository,
     PermissionCollectorService permissionCollector, IUnitOfWork unitOfWork, ILogger<PermissionService> logger, IMapper mapper) : IPermissionService
@@ -70,13 +69,13 @@ public class PermissionService(IPermissionRepository permissionRepository,
         return ApiResponse<PagedResult<IPermissionService.PermissionDto>>.Ok(data, "Companies retrieved successfully");
     }
 
-    public ApiResponse<List<PermissionCollectorDto>> GetSystemPermissions(Assembly? assembly)
+    public ApiResponse<List<PermissionDto>> GetSystemPermissions(Assembly? assembly)
     {
         if (assembly is null)
-            return ApiResponse<List<PermissionCollectorDto>>.Error(400, "ناتوانی در شناسایی پرمیشن ها");
+            return ApiResponse<List<PermissionDto>>.Error(400, "ناتوانی در شناسایی پرمیشن ها");
 
         var permissions = permissionCollector.GetActionsWithPermissionFilter(assembly);
-        return ApiResponse<List<PermissionCollectorDto>>.Ok(permissions, "دسترسی ها با موفقیت بازیابی شدند");
+        return ApiResponse<List<PermissionDto>>.Ok(permissions, "دسترسی ها با موفقیت بازیابی شدند");
     }
 
     public List<string> GetPermissionsForSystem(Assembly? assembly)
@@ -89,13 +88,13 @@ public class PermissionService(IPermissionRepository permissionRepository,
 
         foreach (var permission in permissions)
         {
-            resultList.Add(permission.PermissionName);
+            resultList.Add(permission.Name);
         }
 
         return resultList.ToList();
     }
 
-    public async Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken)
+    public async Task SavePermissionsInSystem(List<PermissionDto> permissionsData, CancellationToken cancellationToken)
     {
         string permissionName = "";
         string parentName = "";
@@ -109,15 +108,15 @@ public class PermissionService(IPermissionRepository permissionRepository,
 
                 if (!exist)
                 {
-                    permissionName = permission.PermissionName;
-                    parentName = permission.Parent;
+                    permissionName = permission.Name;
+                    parentName = permission.ParentName;
                     await permissionRepository.AddPermissionToPermissionSource(new Domain.Entities.Identities.Permission
                     {
-                        Name = permission.PermissionName,
-                        Parent = permission.Parent,
+                        Name = permission.Name,
+                        ParentName = permission.ParentName,
                         Active = true,
                         DisplayName = permission.DisplayName ?? "ثبت نشده",
-                        ParentDisplayName = permission.SourceDisplayName ?? "ثبت نشده",
+                        ParentDisplayName = permission.ParentDisplayName ?? "ثبت نشده",
                         ParentCode = permission.ParentCode,
                         PermissionCode = permission.PermissionCode
                     }, cancellationToken);
@@ -131,7 +130,7 @@ public class PermissionService(IPermissionRepository permissionRepository,
         }
     }
 
-    public async Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken)
+    public async Task DeleteUnAvailablePermissions(List<PermissionDto> permissionsData, CancellationToken cancellationToken)
     {
         try
         {

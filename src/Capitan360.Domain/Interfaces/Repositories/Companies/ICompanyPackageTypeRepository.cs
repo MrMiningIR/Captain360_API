@@ -17,7 +17,7 @@ public interface ICompanyPackageTypeRepository
 
     Task<IReadOnlyList<CompanyPackageType>?> GetCompanyPackageTypeByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 
-    Task DeleteCompanyPackageTypeAsync(int cmpanyPackageTypeId);
+    Task DeleteCompanyPackageTypeAsync(int cmpanyPackageTypeId, CancellationToken cancellationToken);
 
     Task MoveCompanyPackageTypeUpAsync(int companyPackageTypeId, CancellationToken cancellationToken);
 

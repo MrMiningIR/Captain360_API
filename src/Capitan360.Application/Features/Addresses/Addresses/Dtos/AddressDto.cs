@@ -3,8 +3,6 @@
 public class AddressDto
 {
     public int Id { get; set; }
-    public int AddressTypeId { get; set; }
-    public string? AddressTypeName { get; set; }
     public int? CompanyId { get; set; }
     public string? CompanyName { get; set; }
     public string? UserId { get; set; }
@@ -17,14 +15,14 @@ public class AddressDto
     public string? CityName { get; set; }
     public int MunicipalAreaId { get; set; }
     public string? MunicipalAreaName { get; set; }
+    public decimal Latitude { get; set; }
+    public decimal Longitude { get; set; }
     public string AddressLine { get; set; } = default!;
     public string Mobile { get; set; } = default!;
     public string Tel1 { get; set; } = default!;
     public string Tel2 { get; set; } = default!;
     public string Zipcode { get; set; } = default!;
     public string Description { get; set; } = default!;
-    public decimal Latitude { get; set; }
-    public decimal Longitude { get; set; }
     public bool Active { get; set; }
     public int Order { get; set; }
 }

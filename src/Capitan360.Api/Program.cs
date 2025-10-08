@@ -26,7 +26,7 @@ builder.Services.AddScoped<CompanyIdAuthorizationFilter>();
 #endregion ServiceExtensions
 
 // Load Permissions from Database
-// await builder.Services.AddPoliciesFromDatabaseAsync();
+ await builder.Services.AddPoliciesFromDatabaseAsync();
 
 builder.Services.AddCors(options =>
 {

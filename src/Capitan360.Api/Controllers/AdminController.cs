@@ -4,8 +4,8 @@ using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserC
 using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
-using Capitan360.Application.Features.Identities.Identities.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Application.Features.Identities.Users.Users.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers

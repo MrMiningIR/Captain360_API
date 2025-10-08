@@ -16,6 +16,7 @@ using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.Companies;
 using Microsoft.AspNetCore.Http;
+using Capitan360.Domain.Entities.Addresses;
 
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
 {
@@ -143,10 +144,10 @@ namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
             if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
                 return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-            if (companyBank.Order == 1)
-                return ApiResponse<int>.Ok(command.Id, "انجام شد");
-
             var count = await companyBankRepository.GetCountCompanyBankAsync(companyBank.CompanyId, cancellationToken);
+
+            if (companyBank.Order == count)
+                return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
             if (count <= 1)
                 return ApiResponse<int>.Ok(command.Id, "انجام شد");

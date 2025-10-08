@@ -17,7 +17,7 @@ public interface ICompanyContentTypeRepository
 
     Task<IReadOnlyList<CompanyContentType>?> GetCompanyContentTypeByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 
-    Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId);
+    Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId, CancellationToken cancellationToken);
 
     Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken);
 

@@ -44,6 +44,6 @@ public class RefreshTokenRepository(ApplicationDbContext dbContext, IUnitOfWork 
                      !t.IsRevoked &&
                      t.Expires > DateTime.UtcNow,
 
-                 cancellationToken: cancellationToken);
+                 cancellationToken);
     }
 }

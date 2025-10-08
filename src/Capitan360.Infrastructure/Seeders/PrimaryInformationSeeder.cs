@@ -1,4 +1,4 @@
-﻿using Capitan360.Application.Features.Permission.Services;
+﻿using Capitan360.Application.Features.Identities.Permissions.Services;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.Identities;
@@ -22,11 +22,10 @@ namespace Capitan360.Infrastructure.Seeders
     public class PrimaryInformationSeeder(ApplicationDbContext dbContext,
         IUnitOfWork unitOfWork,
         RoleManager<Role> roleManager,
-        UserManager<User> userManager, IPermissionService permissionService,
-        IUserPermissionVersionControlRepository userPermissionVersionControlRepository,
+        UserManager<User> userManager, 
+        IPermissionService permissionService,
         ICompanyPreferencesRepository companyPreferencesRepository,
-        IUserProfileRepository profileRepository, IUserCompanyRepository userCompanyRepository
-        , ICompanyRepository companyRepository) : IPrimaryInformationSeeder
+        ICompanyRepository companyRepository) : IPrimaryInformationSeeder
 
     {
         public async Task SeedDataAsync(CancellationToken cancellationToken, Assembly assembly)
@@ -69,18 +68,18 @@ namespace Capitan360.Infrastructure.Seeders
             if (!dbPermissions.Success || dbPermissions.Data == null || !dbPermissions.Data.Any())
                 throw new SystemException("there are not any Permissions in Db");
 
-            foreach (var permissionId in dbPermissions.Data)
-            {
-                var existRolePermission = await dbContext.RolePermissions
-                    .AnyAsync(x => x.PermissionId == permissionId && x.RoleId == superAdminRole.Id, cancellationToken: cancellationToken);
-                if (!existRolePermission)
-
-                    dbContext.RolePermissions.Add(new RolePermission()
-                    {
-                        RoleId = superAdminRole.Id,
-                        PermissionId = permissionId
-                    });
-            }
+            //foreach (var permissionId in dbPermissions.Data)
+            //{
+            //    var existRolePermission = await dbContext.RolePermissions
+            //        .AnyAsync(x => x.PermissionId == permissionId && x.RoleId == superAdminRole.Id, cancellationToken);
+            //    if (!existRolePermission)
+            //
+            //        dbContext.RolePermissions.Add(new RolePermission()
+            //        {
+            //            RoleId = superAdminRole.Id,
+            //            PermissionId = permissionId
+            //        });
+            //}
             await dbContext.SaveChangesAsync(cancellationToken);
 
             // Default Users with Roles
@@ -106,9 +105,8 @@ namespace Capitan360.Infrastructure.Seeders
                         UserName = phoneNumbers[i],
                         PhoneNumber = phoneNumbers[i],
                         Email = $"{username}@sample.com",
-                        FullName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(username),
-                        UserKind = (int)UserKind.Special,
-                        CompanyType = 1,
+                        NameFamily = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(username),
+                        CompanyTypeId = 1,
                         Active = true
                     };
 

@@ -32,9 +32,9 @@ public record CurrentUser(
     {
         return Roles.Contains(roleName);
     }
-    public bool IsUser()
+    public bool IsUser(int companyId)
     {
-        return HasRole(ConstantNames.UserRole);
+        return HasRole(ConstantNames.UserRole) && companyId == CompanyId;
     }
     public bool IsSuperAdmin()
     {

@@ -1,5 +1,6 @@
 ﻿using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Domain.Interfaces.Repositories.Addresses;
 
@@ -7,26 +8,21 @@ public interface IAreaRepository
 {
     Task<bool> CheckExistAreaByIdAndParentId(int areaId, int? areaLevelId, int? areaParentId, CancellationToken cancellationToken);
 
+    Task<bool> CheckExistCountryPersianNameAsync(string counteryPersianName, int? currentCountryId, CancellationToken cancellationToken);
 
+    Task<bool> CheckExistCountryEnglishNameAsync(string counteryEnglishName, int? currentCountryId, CancellationToken cancellationToken);
 
-    Task<int> CreateAreaAsync(Area area, string userId, CancellationToken cancellationToken);
-    void Delete(Area area, string userId);
-    Task<IReadOnlyList<Area>> GetAllAreas(CancellationToken cancellationToken);
-    Task<Area?> GetAreaById(int id, CancellationToken cancellationToken);
-    Area UpdateShadows(Area area, string userId);
-    Task<(IReadOnlyList<Area>, int)> GetAllAreas(string searchPhrase, int pageSize, int pageNumber,
-        string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<bool> CheckExistProvinceOrCityOrMunicipalityPersianNameAsync(string persianName, int parentId, int? currentProvinceId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Area>, int)> GetAllProvince(string searchPhrase, int pageSize, int pageNumber,
-    string? sortBy, SortDirection sortDirection, bool ignorePageSize, CancellationToken cancellationToken);
+    Task<bool> CheckExistProvinceOrCityOrMunicipalityEnglishNameAsync(string englishName, int parentId, int? currentProvinceId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Area>, int)> GetAllCity(string searchPhrase, int pageSize, int pageNumber,
-string? sortBy, SortDirection sortDirection, int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
+    Task<bool> CheckExistCodeAsync(string code, int? currentAreaId, CancellationToken cancellationToken);
 
+    Task<int> CreateAreaAsync(Area areaEntity, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Area>, int)> GetAllRegionMunicipality(string searchPhrase, int pageSize, int pageNumber,
-string? sortBy, SortDirection sortDirection, int cityId, bool ignorePageSize, CancellationToken cancellationToken);
+    Task<Area?> GetAreaByIdAsync(int areaId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken);
-    Task<IReadOnlyList<Area>> GetDistrictAreasByCityIdAsync(int parentId, CancellationToken cancellationToken);
+    Task DeleteAreaAsync(int areaId, CancellationToken cancellationToken);
+
+    Task<(IReadOnlyList<Area>, int)> GetAllAreasAsync(string searchPhrase, string? sortBy, int parentId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 }

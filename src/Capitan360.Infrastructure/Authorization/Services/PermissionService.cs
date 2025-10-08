@@ -148,10 +148,10 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
     {
 
         if (await dbContext.Database.CanConnectAsync(cancellationToken) &&
-            await dbContext.Permissions.AnyAsync(cancellationToken: cancellationToken))
+            await dbContext.Permissions.AnyAsync(cancellationToken))
         {
 
-            var permissions = await dbContext.Permissions.ToListAsync(cancellationToken: cancellationToken);
+            var permissions = await dbContext.Permissions.ToListAsync(cancellationToken);
 
             var authorizationBuilder = services.AddAuthorizationBuilder();
             foreach (var permission in permissions)

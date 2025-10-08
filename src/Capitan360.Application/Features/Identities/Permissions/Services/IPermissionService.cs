@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Permission.Dtos;
+using Capitan360.Application.Features.Identities.Permissions.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
 using FluentValidation;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Capitan360.Application.Features.Permission.Services;
+namespace Capitan360.Application.Features.Identities.Permissions.Services;
 
 public interface IPermissionService
 {
@@ -107,13 +107,13 @@ public interface IPermissionService
     }
 
     // System Permission Operation
-    ApiResponse<List<PermissionCollectorDto>> GetSystemPermissions(Assembly? assembly);
+    ApiResponse<List<PermissionDto>> GetSystemPermissions(Assembly? assembly);
 
     List<string> GetPermissionsForSystem(Assembly? assembly);
 
-    Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
+    Task SavePermissionsInSystem(List<PermissionDto> permissionsData, CancellationToken cancellationToken);
 
-    Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
+    Task DeleteUnAvailablePermissions(List<PermissionDto> permissionsData, CancellationToken cancellationToken);
 
     Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken cancellationToken);
 

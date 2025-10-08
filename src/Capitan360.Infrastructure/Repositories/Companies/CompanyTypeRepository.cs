@@ -46,9 +46,9 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyTypes.AsNoTracking()
-                                              .Where(item => searchPhrase == null || item.DisplayName.Contains(searchPhrase) ||
-                                                                                          item.TypeName.ToLower().Contains(searchPhrase) ||
-                                                                                          item.Description.ToLower().Contains(searchPhrase));
+                                              .Where(item => item.DisplayName.Contains(searchPhrase) ||
+                                                             item.TypeName.ToLower().Contains(searchPhrase) ||
+                                                             item.Description.ToLower().Contains(searchPhrase));
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 

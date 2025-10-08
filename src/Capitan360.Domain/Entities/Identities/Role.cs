@@ -4,8 +4,9 @@ namespace Capitan360.Domain.Entities.Identities;
 
 public class Role : IdentityRole
 {
-    public string? PersianName { get; set; }
+    public string PersianName { get; set; } =default!;
+
     public bool Visible { get; set; }
-    public ICollection<RolePermission> RolePermissions { get; set; } = [];
-    public ICollection<RoleGroup> RoleGroups { get; set; } = [];
+
+    public ICollection<User> RoleUsers { get; set; } = [];
 }

@@ -63,8 +63,8 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         searchPhrase = searchPhrase.Trim().ToLower();
 
         var baseQuery = dbContext.Companies.AsNoTracking()
-                                            .Where(item => searchPhrase == null || item.Name.ToLower().Contains(searchPhrase) ||
-                                                                                        item.Code.ToLower().Contains(searchPhrase));
+                                            .Where(item => item.Name.ToLower().Contains(searchPhrase) ||
+                                                           item.Code.ToLower().Contains(searchPhrase));
         if (loadData || true)//چون CompanyTypeName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item => item.CompanyType);
 
@@ -146,7 +146,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
     public async Task<bool> ValidateCompanyDataWithUserCompanyTypeAsync(int userCompanyType, int companyId, CancellationToken cancellationToken)
     {
         return await dbContext.Companies.AsNoTracking()
-            .AnyAsync(item => item.Id == companyId && item.CompanyTypeId == userCompanyType, cancellationToken: cancellationToken);
+            .AnyAsync(item => item.Id == companyId && item.CompanyTypeId == userCompanyType, cancellationToken);
     }
 
 }

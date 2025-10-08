@@ -10,6 +10,7 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetA
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.AspNetCore.Http;
@@ -60,7 +61,7 @@ public class CompanyPackageTypeService(
 
     public async Task<ApiResponse<int>> MoveDownCompanyPackageTypeAsync(MoveDownCompanyPackageTypeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("MoveCompanyPackageTypeDown is Called with {@MoveCompanyPackageTypeDownCommand}", command);
+        logger.LogInformation("MoveDownCompanyPackageType is Called with {@MoveCompanyPackageTypeDownCommand}", command);
 
         var companyPackageType = await companyPackageTypeRepository.GetCompanyPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (companyPackageType == null)
@@ -77,10 +78,10 @@ public class CompanyPackageTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (companyPackageType.Order == 1)
-            return ApiResponse<int>.Ok(command.Id, "انجام شد");
-
         var count = await companyPackageTypeRepository.GetCountCompanyPackageTypeAsync(companyPackageType.CompanyId, cancellationToken);
+
+        if (companyPackageType.Order == count)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         if (count <= 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");

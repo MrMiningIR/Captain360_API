@@ -22,7 +22,7 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
     public async Task<int> GetCountCompanyBankAsync(int companyId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyBanks.CountAsync(item => item.CompanyId == companyId, cancellationToken: cancellationToken);
+        return await dbContext.CompanyBanks.CountAsync(item => item.CompanyId == companyId, cancellationToken);
     }
 
     public async Task<int> CreateCompanyBankAsync(CompanyBank companyBank, CancellationToken cancellationToken)
@@ -62,11 +62,11 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
     public async Task MoveUpCompanyBankAsync(int companyBankId, CancellationToken cancellationToken)
     {
-        var currentCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken: cancellationToken);
+        var currentCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken);
         if (currentCompanyBank == null)
             return;
 
-        var nextCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyBank!.CompanyId && item.Order == currentCompanyBank.Order - 1, cancellationToken: cancellationToken);
+        var nextCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyBank!.CompanyId && item.Order == currentCompanyBank.Order - 1, cancellationToken);
         if (nextCompanyBank == null)
             return;
 
@@ -77,11 +77,11 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
     public async Task MoveDownCompanyBankAsync(int companyBankId, CancellationToken cancellationToken)
     {
-        var currentCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken: cancellationToken);
+        var currentCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.Id == companyBankId, cancellationToken);
         if (currentCompanyBank == null)
             return;
 
-        var nextCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyBank!.CompanyId && item.Order == currentCompanyBank.Order + 1, cancellationToken: cancellationToken);
+        var nextCompanyBank = await dbContext.CompanyBanks.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyBank!.CompanyId && item.Order == currentCompanyBank.Order + 1, cancellationToken);
         if (nextCompanyBank == null)
             return;
 

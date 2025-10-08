@@ -1,10 +1,10 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Features.Identities.UserPermission.Services;
-using Capitan360.Application.Features.UserPermission.Commands.AssignUserPermission;
-using Capitan360.Application.Features.UserPermission.Commands.RemoveUserPermission;
-using Capitan360.Application.Features.UserPermission.Commands.UpDeInlUserPermissionById;
-using Capitan360.Application.Features.UserPermission.Dtos;
-using Capitan360.Application.Features.UserPermission.Queries.GetUserPermissions;
+using Capitan360.Application.Features.Identities.Old.Commands.RemoveUserPermission;
+using Capitan360.Application.Features.Identities.Old.Commands.UpDeInlUserPermissionById;
+using Capitan360.Application.Features.Identities.Old.Queries.GetUserPermissions;
+using Capitan360.Application.Features.Identities.Old.Services;
+using Capitan360.Application.Features.Identities.Users.UserPermissions.Commands.AssignPermissions;
+using Capitan360.Application.Features.Identities.Users.UserPermissions.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;
@@ -25,7 +25,7 @@ public class UserPermissionController(IUserPermissionService permissionService) 
     [HttpPost("AssignPermissionToUser")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<UserPermissionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<UserPermissionDto>>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ApiResponse<int>>> AssignPermissionToUser([FromBody] AssignUserPermissionCommand command, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<int>>> AssignPermissionToUser([FromBody] AssignPermissionsToUserCommand command, CancellationToken cancellationToken)
     {
         var response = await permissionService.AssignPermissionToUser(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
@@ -44,7 +44,7 @@ public class UserPermissionController(IUserPermissionService permissionService) 
     [HttpPost("AssignPermissionsToUser")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<UserPermissionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<UserPermissionDto>>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ApiResponse<int>>> AssignPermissionsToUser([FromBody] AssignUserPermissionCommands commands, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<int>>> AssignPermissionsToUser([FromBody] AssignPermissionsToUserCommand commands, CancellationToken cancellationToken)
     {
         var response = await permissionService.AssignPermissionsToUser(commands, cancellationToken);
         return StatusCode(response.StatusCode, response);

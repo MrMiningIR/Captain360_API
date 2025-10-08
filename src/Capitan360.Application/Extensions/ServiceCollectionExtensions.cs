@@ -6,7 +6,6 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
 using Capitan360.Application.Features.Companies.Companies.Services;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
-using Capitan360.Application.Features.Permission.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +22,10 @@ using Capitan360.Application.Features.ContentTypes.Services;
 using Capitan360.Application.Features.PackageTypes.Services;
 using Capitan360.Application.Features.Companies.CompanyUris.Services;
 using Capitan360.Application.Features.Identities.Roles;
-using Capitan360.Application.Features.Identities.UserPermission.Services;
 using Capitan360.Application.Features.Identities.Permissions.Services;
 using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticPaths;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Services;
+using Capitan360.Application.Features.Identities.Old.Services;
 
 namespace Capitan360.Application.Extensions;
 

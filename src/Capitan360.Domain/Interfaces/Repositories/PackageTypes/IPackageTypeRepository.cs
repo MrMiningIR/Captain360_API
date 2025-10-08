@@ -14,7 +14,7 @@ public interface IPackageTypeRepository
 
     Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task DeletePackageTypeAsync(int packageTypeId);
+    Task DeletePackageTypeAsync(int packageTypeId, CancellationToken cancellationToken);
 
     Task MovePackageTypeUpAsync(int packageTypeId, CancellationToken cancellationToken);
 

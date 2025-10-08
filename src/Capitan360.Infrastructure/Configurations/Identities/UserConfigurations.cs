@@ -1,69 +1,120 @@
-﻿using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
+﻿using Capitan360.Domain.Entities.Identities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Capitan360.Infrastructure.Configurations.Users;
+namespace Capitan360.Infrastructure.Configurations.Identities;
 
 public class UserConfigurations : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.Property(x => x.NameFamily)
+              .IsRequired()
+              .HasMaxLength(100)
+              .IsUnicode()
+              .HasColumnType("nvarchar(100)");
 
-        builder.ToTable(ConstantNames.UserTableName);
-        builder.ToTable(t =>
-        {
-            t.HasCheckConstraint(
-                name: "CK_User_PhoneNumber_Length",
-                sql: "LEN(PhoneNumber) = 11");
-        });
-        builder.HasIndex(u => u.PhoneNumber).IsUnique();
+        builder.Property(x => x.AccountCodeInDesktopCaptainCargo)
+               .IsRequired()
+               .HasMaxLength(50)
+               .IsUnicode()
+               .HasColumnType("nvarchar(50)");
 
+        builder.Property(x => x.MobileTelegram)
+               .IsRequired()
+               .HasMaxLength(11)
+               .IsUnicode(false)
+               .HasColumnType("varchar(11)");
 
+        builder.Property(x => x.TypeOfFactorInSamanehMoadianId)
+               .IsRequired();
 
-        builder.Property(u => u.FullName).IsRequired(true).HasMaxLength(100);
-        builder.Property(u => u.CapitanCargoCode).IsUnicode(false).IsRequired().HasMaxLength(50);
-        // builder.Property(u => u.LastAccess).HasDefaultValueSql("GETDATE()").ValueGeneratedOnAddOrUpdate(); 
-        builder.Property(u => u.LastAccess);
+        builder.Property(x => x.Tell)
+              .IsRequired()
+              .HasMaxLength(30)
+              .IsUnicode()
+              .HasColumnType("nvarchar(30)");
 
-        // for testing purposes
-        builder.Property(u => u.Active).HasDefaultValue(true);
-        builder.Property(u => u.ActivationCode).IsRequired(false).HasMaxLength(6);
-        builder.Property(u => u.ActiveSessionId).IsRequired(false).HasMaxLength(36);
-        builder.Property(u => u.CapitanCargoCode).IsRequired(false);
-        builder.Property(u => u.PhoneNumber).IsRequired(true).HasMaxLength(11);
-        builder.Property(u => u.Email).IsRequired(false);
-        builder.Property(x => x.UserKind).HasDefaultValue(UserKind.Normal).HasConversion<int>();
+        builder.Property(x => x.NationalCode)
+              .IsRequired()
+              .HasMaxLength(50)
+              .IsUnicode()
+              .HasColumnType("nvarchar(50)");
 
+        builder.Property(x => x.EconomicCode)
+              .IsRequired()
+              .HasMaxLength(50)
+              .IsUnicode()
+              .HasColumnType("nvarchar(50)");
 
-        builder.HasMany(u => u.Roles)
-         .WithMany()
-         .UsingEntity<IdentityUserRole<string>>(
-             j => j.HasOne<Role>().WithMany().HasForeignKey(ur => ur.RoleId),
-             j => j.HasOne<User>().WithMany().HasForeignKey(ur => ur.UserId),
-             j =>
-             {
-                 j.ToTable("AspNetUserRoles");
-                 j.HasKey(ur => new { ur.UserId, ur.RoleId });
-             });
+        builder.Property(x => x.NationalId)
+              .IsRequired()
+              .HasMaxLength(50)
+              .IsUnicode()
+              .HasColumnType("nvarchar(50)");
 
+        builder.Property(x => x.RegistrationId)
+              .IsRequired()
+              .HasMaxLength(50)
+              .IsUnicode()
+              .HasColumnType("nvarchar(50)");
 
-        // Navigation Properties
-        //builder.HasOne(u => u.Profile).WithOne(p => p.User).HasForeignKey<UserProfile>(p => p.UserId)
-        //    .OnDelete(DeleteBehavior.NoAction);
-        //builder.HasOne(u => u.Company).WithOne(c => c.User).HasForeignKey<Company>(c => c.UserId);
+        builder.Property(x => x.Description)
+               .IsRequired()
+               .HasMaxLength(500)
+               .IsUnicode()
+               .HasColumnType("nvarchar(500)");
 
-        builder.HasMany(u => u.UserGroups).WithOne(ug => ug.User).HasForeignKey(ug => ug.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Credit)
+               .IsRequired();
 
+        builder.Property(x => x.HasCredit)
+               .IsRequired();
 
-        builder.HasMany(u => u.UserCompanies).WithOne(uc => uc.User).HasForeignKey(uc => uc.UserId);
+        builder.Property(x => x.Active)
+               .IsRequired();
 
-        builder.Property(x => x.ConcurrencyToken).IsRowVersion();
+        builder.Property(x => x.Baned)
+               .IsRequired();
 
+        builder.Property(x => x.ActivationCode)
+              .IsRequired()
+              .HasMaxLength(6)
+              .IsUnicode(false)
+              .HasColumnType("char(6)");
 
+        builder.Property(x => x.ActivationCodeExpireTime)
+               .IsRequired();
 
+        builder.Property(x => x.RecoveryPasswordCode)
+              .IsRequired()
+              .HasMaxLength(6)
+              .IsUnicode(false)
+              .HasColumnType("char(6)");
+
+        builder.Property(x => x.RecoveryPasswordCodeExpireTime)
+               .IsRequired();
+
+        builder.Property(x => x.IsBikeDelivery)
+            .IsRequired();
+
+        builder.Property(x => x.LastAccess)
+               .IsRequired();
+
+        builder.Property(x => x.ActiveSessionId)
+               .IsRequired()
+               .HasMaxLength(100)
+               .IsUnicode()
+               .HasColumnType("nvarchar(100)");
+
+        builder.Property(x => x.PermissionVersion)
+               .IsRequired()
+               .HasMaxLength(36)
+               .HasColumnType("nvarchar(36)");
+
+        builder.HasOne(x => x.Company)
+               .WithMany(c => c.CompanyUsers)
+               .HasForeignKey(x => x.CompanyId)
+               .OnDelete(DeleteBehavior.NoAction);
     }
 }

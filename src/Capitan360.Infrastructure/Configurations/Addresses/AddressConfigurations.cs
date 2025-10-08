@@ -1,4 +1,7 @@
-﻿using Capitan360.Domain.Entities.Addresses;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.Identities;
 using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,10 +13,19 @@ public class AddressConfigurations : BaseEntityConfiguration<Address>
     public override void Configure(EntityTypeBuilder<Address> builder)
     {
         base.Configure(builder);
-        
+
         builder.Property(x => x.Id)
                .UseIdentityColumn(1, 1)
                .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.CompanyId)
+               .IsRequired(false);
+
+        builder.Property(x => x.UserId)
+               .IsRequired(false)
+               .HasMaxLength(450)
+               .IsUnicode()
+               .HasColumnType("nvarchar(450)");
 
         builder.Property(x => x.CountryId)
                .IsRequired();
@@ -34,10 +46,10 @@ public class AddressConfigurations : BaseEntityConfiguration<Address>
                .HasColumnType("nvarchar(1000)");
 
     builder.Property(x => x.Mobile)
-               .IsRequired()
-               .HasMaxLength(11)
-               .IsUnicode(false)
-               .HasColumnType("varchar(11)");
+              .IsRequired()
+              .HasMaxLength(30)
+              .IsUnicode(false)
+              .HasColumnType("varchar(30)");
 
         builder.Property(x => x.Tel1)
                .IsRequired()
@@ -53,9 +65,9 @@ public class AddressConfigurations : BaseEntityConfiguration<Address>
 
         builder.Property(x => x.Zipcode)
                .IsRequired()
-               .HasMaxLength(10)
+               .HasMaxLength(30)
                .IsUnicode(false)
-               .HasColumnType("varchar(10)");
+               .HasColumnType("varchar(30)");
 
         builder.Property(x => x.Description)
                .IsRequired()
@@ -71,10 +83,6 @@ public class AddressConfigurations : BaseEntityConfiguration<Address>
                .IsRequired()
                .HasColumnType("decimal(9,6)");
 
-        builder.Property(x => x.AddressTypeId)
-               .IsRequired()
-               .HasColumnType("smallint");
-
         builder.Property(x => x.Active)
                .IsRequired()
                .HasColumnType("bit");
@@ -82,43 +90,34 @@ public class AddressConfigurations : BaseEntityConfiguration<Address>
         builder.Property(x => x.Order)
                .IsRequired();
 
-        builder.Property(x => x.CompanyId)
-               .IsRequired(false);
-
-        builder.Property(x => x.UserId)
-               .IsRequired(false)
-               .HasMaxLength(450)
-               .IsUnicode()
-               .HasColumnType("nvarchar(450)");
-
-        builder.HasOne(x => x.Country)
-               .WithMany(co => co.AddressCountries)                            
-               .HasForeignKey(x => x.CountryId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne(x => x.Province)
-               .WithMany(co => co.AddressProvinces)                            
-               .HasForeignKey(x => x.ProvinceId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne(x => x.City)
-               .WithMany(co => co.AddressCities)                            
-               .HasForeignKey(x => x.CityId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne(x => x.MunicipalArea)
-               .WithMany(co => co.AddressMunicipalAreas)
-               .HasForeignKey(x => x.MunicipalAreaId)
-               .OnDelete(DeleteBehavior.NoAction);
-
         builder.HasOne(x => x.Company)
                .WithMany(c => c.Addresses)
                .HasForeignKey(x => x.CompanyId)
                .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.User)
-               .WithMany()         
+               .WithMany(c => c.Addresses)
                .HasForeignKey(x => x.UserId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.Country)
+               .WithMany(co => co.AddressCountries)
+               .HasForeignKey(x => x.CountryId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.Province)
+               .WithMany(co => co.AddressProvinces)
+               .HasForeignKey(x => x.ProvinceId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.City)
+                   .WithMany(co => co.AddressCities)
+                   .HasForeignKey(x => x.CityId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.MunicipalArea)
+               .WithMany(co => co.AddressMunicipalAreas)
+               .HasForeignKey(x => x.MunicipalAreaId)
                .OnDelete(DeleteBehavior.NoAction);
     }
 }

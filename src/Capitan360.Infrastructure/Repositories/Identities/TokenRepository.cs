@@ -71,11 +71,11 @@ public class TokenRepository
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.MobilePhone, user.PhoneNumber!),
-            new(ClaimTypes.Name, user.FullName!) ,
+            new(ClaimTypes.Name, user.NameFamily!) ,
             new(ConstantNames.CompanyId,  userCompany.CompanyId.ToString()),
             new(ConstantNames.IsParentCompany,  userCompany.Company.IsParentCompany.ToString()),
             new(ConstantNames.CompanyName,  userCompany.Company.Name.ToString()),
-            new(ConstantNames.CompanyType,  user.CompanyType.ToString()),
+            new(ConstantNames.CompanyType,  user.CompanyTypeId.ToString()),
             new(ConstantNames.Permissions,  string.Join(',',permissions))
         };
 

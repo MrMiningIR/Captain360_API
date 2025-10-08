@@ -14,6 +14,7 @@ using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Microsoft.AspNetCore.Http;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetByCompanyId;
+using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Features.Companies.CompanyContentTypes.Services;
 
@@ -77,10 +78,10 @@ public class CompanyContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (companyContentType.Order == 1)
-            return ApiResponse<int>.Ok(command.Id, "انجام شد");
-
         var count = await companyContentTypeRepository.GetCountCompanyContentTypeAsync(companyContentType.CompanyId, cancellationToken);
+
+        if (companyContentType.Order == count)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         if (count <= 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");

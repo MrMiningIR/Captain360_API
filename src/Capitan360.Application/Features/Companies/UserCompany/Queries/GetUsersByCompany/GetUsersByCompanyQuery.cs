@@ -5,7 +5,6 @@ namespace Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsers
 
 public record GetUsersByCompanyQuery(
 
-    [property: DefaultValue((int)UserKind.Normal)] int UserKind = 2,
     [property: DefaultValue(0)] int CompanyType = 0,
     [property: DefaultValue("")] string? SearchPhrase = "",
     [property: DefaultValue(null)] string? SortBy = null,

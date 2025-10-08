@@ -1,0 +1,12 @@
+﻿using FluentValidation;
+
+namespace Capitan360.Application.Features.Addresses.Addresses.Commands.MoveUp;
+
+public class MoveUpAddressCommandValidator : AbstractValidator<MoveUpAddressCommand>
+{
+    public MoveUpAddressCommandValidator()
+    {
+        RuleFor(x => x.Id)
+            .GreaterThan(0).WithMessage("شناسه آدرس باید بزرگ‌تر از صفر باشد");
+    }
+}

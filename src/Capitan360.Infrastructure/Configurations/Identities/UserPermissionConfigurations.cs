@@ -9,24 +9,26 @@ public class UserPermissionConfigurations : BaseEntityConfiguration<UserPermissi
 {
     public override void Configure(EntityTypeBuilder<UserPermission> builder)
     {
-
         base.Configure(builder);
 
-        builder
-            .HasOne(up => up.User)
-            .WithMany(u => u.UserPermissions)
-            .HasForeignKey(up => up.UserId);
+        builder.Property(x => x.Id)
+               .UseIdentityColumn(1, 1)
+               .ValueGeneratedOnAdd();
 
-        builder
-            .HasOne(up => up.Permission)
-            .WithMany(p => p.UserPermissions)
-            .HasForeignKey(up => up.PermissionId);
+        builder.Property(x => x.UserId)
+               .IsRequired();
 
+        builder.Property(x => x.PermissionId)
+               .IsRequired();
 
-        builder
-.HasIndex(uc => new { uc.UserId, uc.PermissionId })
-.HasDatabaseName("IX_UserPermission_Active")
-.IsUnique()
-.HasFilter("[Deleted] = 0");
+        builder.HasOne(x => x.User)
+               .WithMany(c => c.UserPermissions)
+               .HasForeignKey(x => x.UserId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.Permission)
+               .WithMany(c => c.UserPermissions)
+               .HasForeignKey(x => x.PermissionId)
+               .OnDelete(DeleteBehavior.NoAction);
     }
 }

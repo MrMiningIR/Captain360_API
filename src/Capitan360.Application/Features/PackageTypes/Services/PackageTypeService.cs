@@ -83,7 +83,7 @@ public class PackageTypeService(
         var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, false, cancellationToken);
         if (packageType is null)
             return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "بسته بندی نامعتبر است");
-        
+
         var user = userContext.GetCurrentUser();
         if (user == null)
             return ApiResponse<int>.Error(StatusCodes.Status401Unauthorized, "مشکل در احراز هویت کاربر");
@@ -91,7 +91,7 @@ public class PackageTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        await packageTypeRepository.DeletePackageTypeAsync(packageType.Id);
+        await packageTypeRepository.DeletePackageTypeAsync(packageType.Id, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("PackageType Deleted successfully with {@Id}", command.Id);
@@ -143,10 +143,10 @@ public class PackageTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(packageType.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (packageType.Order == 1)
-            return ApiResponse<int>.Ok(command.Id, "انجام شد");
-
         var count = await packageTypeRepository.GetCountPackageTypeAsync(packageType.CompanyTypeId, cancellationToken);
+
+        if (packageType.Order == count)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         if (count <= 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -184,7 +184,7 @@ public class PackageTypeService(
     {
         logger.LogInformation("UpdatePackageType is Called with {@UpdatePackageTypeCommand}", command);
 
-        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, true,  cancellationToken);
+        var packageType = await packageTypeRepository.GetPackageTypeByIdAsync(command.Id, false, true, cancellationToken);
         if (packageType is null)
             return ApiResponse<PackageTypeDto>.Error(StatusCodes.Status404NotFound, "بسته بندی نامعتبر است");
 

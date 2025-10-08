@@ -1,7 +1,4 @@
-﻿
-using Capitan360.Domain.Interfaces.Repositories.Identities;
-
-namespace Capitan360.Api.Middlewares
+﻿namespace Capitan360.Api.Middlewares
 {
     public class TokenValidationMiddleware(ITokenBlacklistsRepository blacklistsRepository) : IMiddleware
     {

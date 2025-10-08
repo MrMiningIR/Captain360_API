@@ -14,7 +14,7 @@ public interface IContentTypeRepository
 
     Task<ContentType?> GetContentTypeByIdAsync(int contentTypeId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task DeleteContentTypeAsync(int contentTypeId);
+    Task DeleteContentTypeAsync(int contentTypeId, CancellationToken cancellationToken);
 
     Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken);
 

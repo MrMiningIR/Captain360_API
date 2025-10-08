@@ -53,14 +53,16 @@ public class ContentTypeService(
 
         if (!user.IsSuperAdmin() && !user.IsSuperManager(command.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
+
         if (await contentTypeRepository.CheckExistContentTypeNameAsync(command.Name, command.CompanyTypeId, null, cancellationToken))
-            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "نام بسته بندی تکراری است");
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "نام محتوی بار تکراری است");
 
         int existingCount = await contentTypeRepository.GetCountContentTypeAsync(command.CompanyTypeId, cancellationToken);
 
         var contentType = mapper.Map<ContentType>(command) ?? null;
         if (contentType == null)
             return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
         contentType.Order = existingCount + 1;
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -78,7 +80,7 @@ public class ContentTypeService(
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("ContentType created successfully with {@ContentType}", contentType);
-        return ApiResponse<int>.Created(contentTypeId, "بسته بندی با موفقیت ایجاد شد");
+        return ApiResponse<int>.Created(contentTypeId, "محتوی بار با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteContentTypeAsync(DeleteContentTypeCommand command, CancellationToken cancellationToken)
@@ -96,7 +98,7 @@ public class ContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(ContentType.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        await contentTypeRepository.DeleteContentTypeAsync(ContentType.Id);
+        await contentTypeRepository.DeleteContentTypeAsync(ContentType.Id, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("ContentType Deleted successfully with {@Id}", command.Id);
@@ -148,10 +150,10 @@ public class ContentTypeService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(contentType.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        if (contentType.Order == 1)
-            return ApiResponse<int>.Ok(command.Id, "انجام شد");
-
         var count = await contentTypeRepository.GetCountContentTypeAsync(contentType.CompanyTypeId, cancellationToken);
+
+        if (contentType.Order == count)
+            return ApiResponse<int>.Ok(command.Id, "انجام شد");
 
         if (count <= 1)
             return ApiResponse<int>.Ok(command.Id, "انجام شد");
@@ -182,7 +184,7 @@ public class ContentTypeService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("ContentType activity status updated successfully with {@Id}", command.Id);
-        return ApiResponse<int>.Ok(command.Id, "وضعیت بسته بندی با موفقیت به روز رسانی شد");
+        return ApiResponse<int>.Ok(command.Id, "وضعیت محتوی بار با موفقیت به روز رسانی شد");
     }
 
     public async Task<ApiResponse<ContentTypeDto>> UpdateContentTypeAsync(UpdateContentTypeCommand command, CancellationToken cancellationToken)

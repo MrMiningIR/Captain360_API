@@ -2,7 +2,7 @@
 using Capitan360.Application.Features.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Commands.CreateUser;
 using Capitan360.Application.Features.Identities.Identities.Commands.UpdateUser;
-using Capitan360.Application.Features.Identities.Identities.Dtos;
+using Capitan360.Application.Features.Identities.Users.Users.Dtos;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Enums;
 

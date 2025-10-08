@@ -17,6 +17,7 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
 
     public async Task<List<int>> AssignPermissionsToUser(List<UserPermission> userPermissions, CancellationToken cancellationToken)
     {
+        //delete from userpermissions where userid = ??
         foreach (var permission in userPermissions)
         {
             var exist = await GetUserPermissionByPermissionIdAndUserId(permission.UserId, permission.PermissionId, cancellationToken);
@@ -111,7 +112,7 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
         var userPermissions = await baseQuery
             .Skip(pageSize * (pageNumber - 1))
             .Take(pageSize)
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
 
         return (userPermissions, totalCount);
     }

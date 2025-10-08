@@ -94,7 +94,7 @@ public class CompanyManifestFormPeriodRepository(ApplicationDbContext dbContext,
                                                                 CompanyId = keys.CompanyId,
                                                                 CountReady = group.Count(itemCount => itemCount.itemCompanyManifestFormPeriod!.itemCompanyManifestForm!.State == (short)CompanyManifestFormState.Ready),
                                                             })
-                                                            .Where(item => searchPhrase == null || item.Code.ToLower().Contains(searchPhrase) || item.Description.ToLower().Contains(searchPhrase));
+                                                            .Where(item => item.Code.ToLower().Contains(searchPhrase) || item.Description.ToLower().Contains(searchPhrase));
 
         baseQuery = active switch
         {

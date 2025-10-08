@@ -1,8 +1,8 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Addresses.Addresses.Commands.AddNewAddressToCompany;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.Delete;
-using Capitan360.Application.Features.Addresses.Addresses.Commands.Move;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.MoveDown;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.MoveUp;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.Update;
 using Capitan360.Application.Features.Addresses.Addresses.Dtos;
 using Capitan360.Application.Features.Addresses.Addresses.Queries.GetAll;
@@ -24,7 +24,7 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [PermissionFilter("لیست آدرس ها", "A1")]
     public async Task<ActionResult<PagedResult<AddressDto>>> GetAllAddresses([FromQuery] GetAllAddressQuery getAllAddressQuery, CancellationToken cancellationToken)
     {
-        var response = await addressService.GetAllAddressesByCompany(getAllAddressQuery, cancellationToken);
+        var response = await addressService.GetAllAddresssAsync(getAllAddressQuery, cancellationToken);
 
         return StatusCode(response.StatusCode, response);
     }
@@ -64,25 +64,25 @@ public class AddressesController(IAddressService addressService) : ControllerBas
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost("AddAddress")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    [PermissionFilter("افزودن آدرس", "A5")]
-    public async Task<ActionResult<ApiResponse<int>>> AddAddress([FromBody] AddNewAddressToCompanyCommand addNewAddressToCompanyCommand, CancellationToken cancellationToken)
-    {
-
-        var response = await addressService.AddNewAddressToCompanyAsync(addNewAddressToCompanyCommand, cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
+    //[HttpPost("AddAddress")]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    //[PermissionFilter("افزودن آدرس", "A5")]
+    //public async Task<ActionResult<ApiResponse<int>>> AddAddress([FromBody] AddNewAddressToCompanyCommand addNewAddressToCompanyCommand, CancellationToken cancellationToken)
+    //{
+    //
+    //    var response = await addressService.AddNewAddressToCompanyAsync(addNewAddressToCompanyCommand, cancellationToken);
+    //    return StatusCode(response.StatusCode, response);
+    //}
 
     [HttpPost("MoveUpAddress")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 
     [PermissionFilter("تغیر چیدمان- بالا", "A6")]
-    public async Task<ActionResult<ApiResponse<object>>> MoveUpAddress(MoveAddressUpCommand moveAddressUpCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<object>>> MoveUpAddress(MoveUpAddressCommand moveAddressUpCommand, CancellationToken cancellationToken)
     {
-        var response = await addressService.MoveAddressUpAsync(moveAddressUpCommand, cancellationToken);
+        var response = await addressService.MoveUpAddressAsync(moveAddressUpCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -90,9 +90,9 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [PermissionFilter("تغیر چیدمان- پایین", "A7")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ApiResponse<object>>> MoveDownAddress(MoveAddressDownCommand moveAddressDownCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<object>>> MoveDownAddress(MoveDownAddressCommand moveAddressDownCommand, CancellationToken cancellationToken)
     {
-        var response = await addressService.MoveAddressDownAsync(moveAddressDownCommand, cancellationToken);
+        var response = await addressService.MoveDownAddressAsync(moveAddressDownCommand, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

@@ -54,7 +54,7 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyUris.AsNoTracking()
-                                              .Where(item => searchPhrase == null || item.Description.ToLower().Contains(searchPhrase) || item.Uri.ToLower().Contains(searchPhrase));
+                                              .Where(item => item.Description.ToLower().Contains(searchPhrase) || item.Uri.ToLower().Contains(searchPhrase));
 
         if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
             baseQuery = baseQuery.Include(item => item.Company);

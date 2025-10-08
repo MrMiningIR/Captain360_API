@@ -6,20 +6,22 @@ namespace Capitan360.Domain.Interfaces.Repositories.Addresses;
 public interface IAddressRepository
 {
     Task<int> CreateAddressAsync(Address address, CancellationToken cancellationToken);
-    void Delete(Address address);
-    Task<IReadOnlyList<Address>> GetAllAddresses(CancellationToken cancellationToken);
-    Task<Address?> GetAddressById(int id, CancellationToken cancellationToken);
+ 
+    Task<int> GetCountAddressOfUserAsync(string userId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Address>, int)> GetAllAddresses(string searchPhrase, int pageSize, int pageNumber, int companyId, string? sortBy, SortDirection sortDirection, CancellationToken cancellationToken);
-    Task<(IReadOnlyList<Address>, int)> GetAllAddressesByCompany(string searchPhrase, int companyId,
-        int active, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
-        CancellationToken cancellationToken);
-    Task<int> OrderAddress(int commandCompanyId, CancellationToken cancellationToken);
+    Task<int> GetCountAddressOfCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 
+    Task<Address?> GetAddressByIdAsync(int addressId, bool loadData, bool tracked, CancellationToken cancellationToken);
 
-    Task MoveAddressUpAsync(int companyId, int addressId, CancellationToken cancellationToken);
-    Task MoveAddressDownAsync(int companyId, int addressId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<Address>?> GetAddressByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<Address>?> GetAddressByUserIdAsync(string userId, CancellationToken cancellationToken);
 
+    Task DeleteAddressAsync(int addressId, CancellationToken cancellationToken);
+
+    Task MoveAddressUpAsync(int addressId, CancellationToken cancellationToken);
+
+    Task MoveAddressDownAsync(int addressId, CancellationToken cancellationToken);
+
+    Task<(IReadOnlyList<Address>, int)> GetAllAddresssesAsync(string searchPhrase, string? sortBy, int? companyId, string? userId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 }
-

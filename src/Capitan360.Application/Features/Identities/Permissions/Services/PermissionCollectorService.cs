@@ -1,5 +1,5 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
-using Capitan360.Application.Features.Permission.Dtos;
+using Capitan360.Application.Features.Identities.Permissions.Dtos;
 using Capitan360.Application.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +11,9 @@ namespace Capitan360.Application.Features.Identities.Permissions.Services;
 
 public class PermissionCollectorService(ILogger<PermissionCollectorService> logger)
 {
-    public List<PermissionCollectorDto> GetActionsWithPermissionFilter(Assembly apiAssembly)
+    public List<PermissionDto> GetActionsWithPermissionFilter(Assembly apiAssembly)
     {
-        var result = new List<PermissionCollectorDto>();
+        var result = new List<PermissionDto>();
 
         var controllers = apiAssembly.GetTypes()
             .Where(type => typeof(ControllerBase).IsAssignableFrom(type) && !type.IsAbstract);
@@ -46,7 +46,7 @@ public class PermissionCollectorService(ILogger<PermissionCollectorService> logg
                 var displayName = actionFilter.DisplayName;
                 var permissionName = actionFilter.PermissionCode;
 
-                var dto = new PermissionCollectorDto(
+                var dto = new PermissionDto(
                     DisplayName: displayName!,
                     PermissionName: permissionName!,
                     PermissionCode: Tools.GenerateDeterministicGuid(permissionName!),

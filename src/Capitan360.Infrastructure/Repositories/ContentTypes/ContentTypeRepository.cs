@@ -18,7 +18,7 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
     public async Task<int> GetCountContentTypeAsync(int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.ContentTypes.CountAsync(item => item.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
+        return await dbContext.ContentTypes.CountAsync(item => item.CompanyTypeId == companyTypeId, cancellationToken);
     }
 
     public async Task<int> CreateContentTypeAsync(ContentType contentType, CancellationToken cancellationToken)
@@ -41,18 +41,18 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return await query.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken);
     }
 
-    public async Task DeleteContentTypeAsync(int contentTypeId)
+    public async Task DeleteContentTypeAsync(int contentTypeId, CancellationToken cancellationToken)
     {
         await Task.Yield();
     }
 
     public async Task MoveContentTypeUpAsync(int contentTypeId, CancellationToken cancellationToken)
     {
-        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken: cancellationToken);
+        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken);
         if (currentContentType == null)
             return;
 
-        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentContentType.CompanyTypeId && item.Order == currentContentType.Order - 1, cancellationToken: cancellationToken);
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentContentType.CompanyTypeId && item.Order == currentContentType.Order - 1, cancellationToken);
         if (nextContentType == null)
             return;
 
@@ -64,11 +64,11 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
     public async Task MoveContentTypeDownAsync(int contentTypeId, CancellationToken cancellationToken)
     {
-        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken: cancellationToken);
+        var currentContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.Id == contentTypeId, cancellationToken);
         if (currentContentType == null)
             return;
 
-        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentContentType.CompanyTypeId && item.Order == currentContentType.Order + 1, cancellationToken: cancellationToken);
+        var nextContentType = await dbContext.ContentTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentContentType.CompanyTypeId && item.Order == currentContentType.Order + 1, cancellationToken);
         if (nextContentType == null)
             return;
 
@@ -82,7 +82,7 @@ public class ContentTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.ContentTypes.AsNoTracking()
-                                              .Where(item => searchPhrase == null || item.Name.ToLower().Contains(searchPhrase));
+                                              .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.CompanyType);

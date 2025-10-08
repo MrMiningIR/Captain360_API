@@ -1,12 +1,15 @@
-﻿using Capitan360.Domain.Entities.BaseEntities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Capitan360.Domain.Entities.BaseEntities;
 
 namespace Capitan360.Domain.Entities.Identities;
 
 public class UserPermission : BaseEntity
 {
-    public string UserId { get; set; }
-    public User User { get; set; }
+    [ForeignKey(nameof(User))]
+    public string UserId { get; set; } = default!;
+    public User? User { get; set; }
 
+    [ForeignKey(nameof(Permission))]
     public int PermissionId { get; set; }
-    public Permission Permission { get; set; }
+    public Permission? Permission { get; set; }
 }

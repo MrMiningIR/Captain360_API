@@ -3,7 +3,7 @@
 public class ParentPermissionTransfer
 {
 
-    public required string Parent { get; set; }
+    public required string ParentName { get; set; }
     public required string ParentDisplayName { get; set; }
     public Guid ParentCode { get; set; }
 

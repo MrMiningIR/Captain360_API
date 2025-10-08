@@ -1,10 +1,4 @@
-﻿using Capitan360.Domain.Entities.Addresses;
-using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Entities.CompanyDomesticWaybills;
-using Capitan360.Domain.Entities.CompanyManifestForms;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Capitan360.Application.Features.Addresses.Areas.Dtos;
+﻿namespace Capitan360.Application.Features.Addresses.Areas.Dtos;
 
 public class AreaDto
 {

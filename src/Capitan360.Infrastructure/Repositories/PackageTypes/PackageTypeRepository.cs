@@ -11,14 +11,14 @@ namespace Capitan360.Infrastructure.Repositories.PackageTypes;
 
 public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : IPackageTypeRepository
 {
-    public async Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int companyTypeId, int? currentPackageTypeId,  CancellationToken cancellationToken)
+    public async Task<bool> CheckExistPackageTypeNameAsync(string packageTypeName, int companyTypeId, int? currentPackageTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.PackageTypes.AnyAsync(item => item.Name.ToLower() == packageTypeName.Trim().ToLower() && item.CompanyTypeId == companyTypeId && (currentPackageTypeId == null || item.Id != currentPackageTypeId), cancellationToken);
     }
 
     public async Task<int> GetCountPackageTypeAsync(int companyTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.PackageTypes.CountAsync(item => item.CompanyTypeId == companyTypeId, cancellationToken: cancellationToken);
+        return await dbContext.PackageTypes.CountAsync(item => item.CompanyTypeId == companyTypeId, cancellationToken);
     }
 
     public async Task<int> CreatePackageTypeAsync(PackageType packageType, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return packageType.Id;
     }
 
-    public async Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<PackageType?> GetPackageTypeByIdAsync(int packageTypeId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<PackageType> query = dbContext.PackageTypes;
 
@@ -41,18 +41,18 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return await query.SingleOrDefaultAsync(item => item.Id == packageTypeId, cancellationToken);
     }
 
-    public async Task DeletePackageTypeAsync(int packageTypeId)
+    public async Task DeletePackageTypeAsync(int packageTypeId, CancellationToken cancellationToken)
     {
         await Task.Yield();
     }
 
     public async Task MovePackageTypeUpAsync(int packageTypeId, CancellationToken cancellationToken)
     {
-        var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.Id == packageTypeId, cancellationToken: cancellationToken);
+        var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.Id == packageTypeId, cancellationToken);
         if (currentPackageType == null)
             return;
 
-        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentPackageType.CompanyTypeId && item.Order == currentPackageType.Order - 1, cancellationToken: cancellationToken);
+        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentPackageType.CompanyTypeId && item.Order == currentPackageType.Order - 1, cancellationToken);
         if (nextPackageType == null)
             return;
 
@@ -64,11 +64,11 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
 
     public async Task MovePackageTypeDownAsync(int packageTypeId, CancellationToken cancellationToken)
     {
-        var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.Id == packageTypeId, cancellationToken: cancellationToken);
+        var currentPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.Id == packageTypeId, cancellationToken);
         if (currentPackageType == null)
             return;
 
-        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentPackageType.CompanyTypeId && item.Order == currentPackageType.Order + 1, cancellationToken: cancellationToken);
+        var nextPackageType = await dbContext.PackageTypes.SingleOrDefaultAsync(item => item.CompanyTypeId == currentPackageType.CompanyTypeId && item.Order == currentPackageType.Order + 1, cancellationToken);
         if (nextPackageType == null)
             return;
 
@@ -82,7 +82,7 @@ public class PackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.PackageTypes.AsNoTracking()
-                                              .Where(item => searchPhrase == null || item.Name.ToLower().Contains(searchPhrase));
+                                              .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.CompanyType);

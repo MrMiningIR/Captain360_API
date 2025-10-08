@@ -3,10 +3,8 @@ using Capitan360.Application.Features.Addresses.Areas.Commands.Create;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Delete;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Update;
 using Capitan360.Application.Features.Addresses.Areas.Dtos;
-using Capitan360.Application.Features.Addresses.Areas.Queries.GetAll;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetAllChildren;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
-using Capitan360.Application.Features.Addresses.Areas.Queries.GetCity;
-using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
 using Capitan360.Application.Features.Addresses.Areas.Services;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,42 +19,42 @@ namespace Capitan360.Api.Controllers
         [ProducesResponseType(typeof(ApiResponse<PagedResult<AreaDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<AreaDto>>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ApiResponse<PagedResult<AreaDto>>>> GetAllAreas(
-            [FromQuery] GetAllAreaQuery getAllAreaQuery, CancellationToken cancellationToken)
+            [FromQuery] GetAllChildrenAreaQuery getAllAreaQuery, CancellationToken cancellationToken)
         {
             var user = userContext.GetCurrentUser();
             var response = await areaService.GetAllAreas(getAllAreaQuery, cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("GetAllProvince")]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<ProvinceAreaDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<ProvinceAreaDto>>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ApiResponse<PagedResult<ProvinceAreaDto>>>> GetAllProvince(
-    [FromQuery] GetProvinceAreaQuery getProvinceAreaQuery, CancellationToken cancellationToken)
-        {
-            var response = await areaService.GetAllProvince(getProvinceAreaQuery, cancellationToken);
-            return StatusCode(response.StatusCode, response);
-        }
-
-        [HttpGet("GetDistrictsByCityId")]
-        [ProducesResponseType(typeof(ApiResponse<List<AreaItemDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<List<AreaItemDto>>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ApiResponse<List<AreaItemDto>>>> GetDistrictsByCityId(
-[FromQuery] int id, CancellationToken cancellationToken)
-        {
-            var response = await areaService.GetDistricts(id, cancellationToken);
-            return StatusCode(response.StatusCode, response);
-        }
-
-        [HttpGet("GetCitiesByProvinceId")]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<CityAreaDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<CityAreaDto>>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ApiResponse<PagedResult<CityAreaDto>>>> GetCitiesByProvinceId(
-[FromQuery] GetCityAreaQuery getCityAreaQuery, CancellationToken cancellationToken)
-        {
-            var response = await areaService.GetAllCityByProvinceId(getCityAreaQuery, cancellationToken);
-            return StatusCode(response.StatusCode, response);
-        }
+        //[HttpGet("GetAllProvince")]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<ProvinceAreaDto>>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<ProvinceAreaDto>>), StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<ApiResponse<PagedResult<ProvinceAreaDto>>>> GetAllProvince(
+        //[FromQuery] GetProvinceAreaQuery getProvinceAreaQuery, CancellationToken cancellationToken)
+        //{
+        //    var response = await areaService.GetAllProvince(getProvinceAreaQuery, cancellationToken);
+        //    return StatusCode(response.StatusCode, response);
+        //}
+        //
+        //[HttpGet("GetDistrictsByCityId")]
+        //[ProducesResponseType(typeof(ApiResponse<List<AreaItemDto>>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ApiResponse<List<AreaItemDto>>), StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<ApiResponse<List<AreaItemDto>>>> GetDistrictsByCityId(
+        //[FromQuery] int id, CancellationToken cancellationToken)
+        //{
+        //    var response = await areaService.GetDistricts(id, cancellationToken);
+        //    return StatusCode(response.StatusCode, response);
+        //}
+        //
+        //[HttpGet("GetCitiesByProvinceId")]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<CityAreaDto>>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<CityAreaDto>>), StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<ApiResponse<PagedResult<CityAreaDto>>>> GetCitiesByProvinceId(
+        //[FromQuery] GetAllChildrenAreaQuery getCityAreaQuery, CancellationToken cancellationToken)
+        //{
+        //    var response = await areaService.GetAllChildrenArea(getCityAreaQuery, cancellationToken);
+        //    return StatusCode(response.StatusCode, response);
+        //}
 
         [HttpGet("GetAreaById/{id}")]
         [ProducesResponseType(typeof(ApiResponse<AreaDto>), StatusCodes.Status200OK)]
@@ -103,13 +101,13 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("GetAreasByParentId/{id}")]
-        [ProducesResponseType(typeof(ApiResponse<IReadOnlyList<AreaDto>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse<IReadOnlyList<AreaDto>>>> GetAreasByParentId(
-            [FromRoute] int id, CancellationToken cancellationToken)
-        {
-            var response = await areaService.GetAreasByParentIdAsync(id, cancellationToken);
-            return StatusCode(response.StatusCode, response);
-        }
+        //[HttpGet("GetAreasByParentId/{id}")]
+        //[ProducesResponseType(typeof(ApiResponse<IReadOnlyList<AreaDto>>), StatusCodes.Status200OK)]
+        //public async Task<ActionResult<ApiResponse<IReadOnlyList<AreaDto>>>> GetAreasByParentId(
+        //    [FromRoute] int id, CancellationToken cancellationToken)
+        //{
+        //    var response = await areaService.GetAreasByParentIdAsync(id, cancellationToken);
+        //    return StatusCode(response.StatusCode, response);
+        //}
     }
 }

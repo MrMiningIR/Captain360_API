@@ -4,15 +4,19 @@ namespace Capitan360.Domain.Entities.Identities;
 
 public class Permission : BaseEntity
 {
+    public Guid PermissionCode { get; set; }
 
     public string Name { get; set; } = default!;
+
     public string DisplayName { get; set; } = default!;
-    public string Parent { get; set; }
-    public string ParentDisplayName { get; set; }
-    public Guid PermissionCode { get; set; }
-    public Guid ParentCode { get; set; }
+
     public bool Active { get; set; }
-    public ICollection<RolePermission> RolePermissions { get; set; } = [];
-    public ICollection<GroupPermission> GroupPermissions { get; set; } = [];
+
+    public Guid ParentCode { get; set; }
+
+    public string ParentName { get; set; } = default!;
+
+    public string ParentDisplayName { get; set; } = default!;
+
     public ICollection<UserPermission> UserPermissions { get; set; } = [];
 }

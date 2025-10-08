@@ -11,33 +11,43 @@ public class PermissionConfigurations : BaseEntityConfiguration<Permission>
     {
         base.Configure(builder);
 
-        builder.Property(p => p.Name)
-            .HasMaxLength(50)
-            .IsRequired();
-        builder.Property(x => x.DisplayName).IsUnicode().HasMaxLength(100).IsRequired(true);
-        builder.Property(x => x.Parent).HasMaxLength(100).IsRequired(false);
-        builder.Property(x => x.ParentDisplayName).HasMaxLength(100).IsUnicode().IsRequired(false);
+        builder.Property(x => x.Id)
+               .UseIdentityColumn(1, 1)
+               .ValueGeneratedOnAdd();
 
-        builder.HasMany(p => p.RolePermissions)
-            .WithOne(rp => rp.Permission)
-            .HasForeignKey(rp => rp.PermissionId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Name)
+               .IsRequired()
+               .HasMaxLength(50)
+               .IsUnicode()
+               .HasColumnType("nvarchar(50)");
 
-        builder.HasMany(p => p.GroupPermissions)
-            .WithOne(gp => gp.Permission)
-            .HasForeignKey(gp => gp.PermissionId)
-            .OnDelete(DeleteBehavior.NoAction);
-        builder.Property(e => e.PermissionCode).IsRequired();
-        builder.Property(e => e.ParentCode).IsRequired();
+        builder.Property(x => x.DisplayName)
+               .IsRequired()
+               .HasMaxLength(50)
+               .IsUnicode()
+               .HasColumnType("nvarchar(50)");
 
-        builder.HasIndex(e => e.PermissionCode)
-                      .HasDatabaseName("IX_Permissions_PermissionCode")
-                      .IsUnique().HasFilter("[Deleted] = 0");
-        builder.HasIndex(e => e.ParentCode)
-                      .HasDatabaseName("IX_Permissions_ParentCode");
+        builder.Property(x => x.PermissionCode)
+               .IsRequired()
+               .HasColumnType("uniqueidentifier");
 
+        builder.Property(x => x.Active)
+               .IsRequired();
 
+        builder.Property(x => x.ParentName)
+               .IsRequired()
+               .HasMaxLength(50)
+               .IsUnicode()
+               .HasColumnType("nvarchar(50)");
 
+        builder.Property(x => x.ParentDisplayName)
+               .IsRequired()
+               .HasMaxLength(50)
+               .IsUnicode()
+               .HasColumnType("nvarchar(50)");
 
+        builder.Property(x => x.ParentCode)
+               .IsRequired()
+               .HasColumnType("uniqueidentifier");
     }
 }

@@ -37,7 +37,7 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task<int> GetCountCompanyPackageTypeAsync(int companyId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyPackageTypes.CountAsync(item => item.CompanyId == companyId, cancellationToken: cancellationToken);
+        return await dbContext.CompanyPackageTypes.CountAsync(item => item.CompanyId == companyId, cancellationToken);
     }
 
     public async Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken)
@@ -63,18 +63,18 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
                           .ToListAsync(cancellationToken);
     }
 
-    public async Task DeleteCompanyPackageTypeAsync(int cmpanyPackageTypeId)
+    public async Task DeleteCompanyPackageTypeAsync(int cmpanyPackageTypeId, CancellationToken cancellationToken)
     {
         await Task.Yield();
     }
 
     public async Task MoveCompanyPackageTypeUpAsync(int companyPackageTypeId, CancellationToken cancellationToken)
     {
-        var currentCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.Id == companyPackageTypeId, cancellationToken: cancellationToken);
+        var currentCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.Id == companyPackageTypeId, cancellationToken);
         if (currentCompanyPackageType == null)
             return;
 
-        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyPackageType!.CompanyId && item.Order == currentCompanyPackageType.Order - 1, cancellationToken: cancellationToken);
+        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyPackageType!.CompanyId && item.Order == currentCompanyPackageType.Order - 1, cancellationToken);
         if (nextCompanyPackageType == null)
             return;
 
@@ -86,11 +86,11 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task MoveCompanyPackageTypeDownAsync(int companyPackageTypeId, CancellationToken cancellationToken)
     {
-        var currentCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.Id == companyPackageTypeId, cancellationToken: cancellationToken);
+        var currentCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.Id == companyPackageTypeId, cancellationToken);
         if (currentCompanyPackageType == null)
             return;
 
-        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyPackageType!.CompanyId && item.Order == currentCompanyPackageType.Order + 1, cancellationToken: cancellationToken);
+        var nextCompanyPackageType = await dbContext.CompanyPackageTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyPackageType!.CompanyId && item.Order == currentCompanyPackageType.Order + 1, cancellationToken);
         if (nextCompanyPackageType == null)
             return;
 

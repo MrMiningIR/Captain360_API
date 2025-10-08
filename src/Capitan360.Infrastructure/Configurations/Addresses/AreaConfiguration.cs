@@ -29,10 +29,10 @@ public class AreaConfiguration : BaseEntityConfiguration<Area>
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.Code)
-                   .IsRequired()
-                   .HasMaxLength(20)
-                   .IsUnicode(false)
-                   .HasColumnType("varchar(20)");
+               .IsRequired()
+               .HasMaxLength(20)
+               .IsUnicode(false)
+               .HasColumnType("varchar(20)");
 
         builder.Property(x => x.Latitude)
                .IsRequired()

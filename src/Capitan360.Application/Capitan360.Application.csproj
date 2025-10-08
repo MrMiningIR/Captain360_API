@@ -46,5 +46,7 @@
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\Queries\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\MapperProfiles\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Queries\" />
+    <Folder Include="Features\Identities\Old\MapperProfiles\" />
+    <Folder Include="Features\Identities\Old\Commands\AssignUserPermission\" />
   </ItemGroup>
 </Project>

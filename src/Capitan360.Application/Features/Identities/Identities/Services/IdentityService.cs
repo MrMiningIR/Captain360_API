@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
 using Capitan360.Application.Features.Dtos;
-using Capitan360.Application.Features.Permission.Services;
 using Capitan360.Application.Utils;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Exceptions;
@@ -22,15 +21,12 @@ using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserC
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserById;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
-using Capitan360.Application.Features.Identities.Identities.Dtos;
-using Capitan360.Application.Features.Identities.Identities.Commands.AddUserGroup;
 using Capitan360.Application.Features.Identities.Identities.Commands.AddUserToRole;
 using Capitan360.Application.Features.Identities.Identities.Commands.ChangePassword;
 using Capitan360.Application.Features.Identities.Identities.Commands.ChangeUserActivity;
 using Capitan360.Application.Features.Identities.Identities.Commands.CreateUser;
 using Capitan360.Application.Features.Identities.Identities.Commands.RemoveUserFromRole;
 using Capitan360.Application.Features.Identities.Identities.Commands.UpdateUser;
-using Capitan360.Application.Features.Identities.Identities.Queries.GetUserGroup;
 using Capitan360.Application.Features.Identities.Identities.Queries.LoginUser;
 using Capitan360.Application.Features.Identities.Identities.Queries.LogOut;
 using Capitan360.Application.Features.Identities.Identities.Queries.RefreshToken;
@@ -38,16 +34,17 @@ using Capitan360.Application.Features.Identities.Identities.Responses;
 using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Application.Features.Identities.Users.Users.Dtos;
+using Capitan360.Application.Features.Identities.Permissions.Services;
+using Capitan360.Application.Features.Identities.Roles.Roles.Dtos;
 
 namespace Capitan360.Application.Features.Identities.Identities.Services;
 
 public class IdentityService(
-    IIdentityRepository identityRepository,
     ILogger<IdentityService> logger,
     IMapper mapper,
     RoleManager<Domain.Entities.Identities.Role> roleManager,
     UserManager<User> userManager,
-    IUserGroupRepository userGroupRepository,
     IConfiguration configuration,
     SignInManager<User> signInManager,
     ITokenRepository tokenRepository,
@@ -55,12 +52,8 @@ public class IdentityService(
     IRefreshTokenRepository refreshTokenRepository,
     IUnitOfWork unitOfWork,
     IUserContext userContext,
-    ITokenBlacklistsRepository tokenBlacklistsRepository,
     IPermissionService permissionService,
-    IUserProfileRepository profileRepository,
-    IUserCompanyRepository userCompanyRepository,
     ICompanyRepository companyRepository,
-    IUserPermissionVersionControlRepository userPermissionVersionControlRepository,
     IUserPermissionRepository userPermissionRepository,
     IAreaRepository areaRepository
 
@@ -233,7 +226,7 @@ public class IdentityService(
         if (existUserById.UserName != command.PhoneNumber)
         {
             var existingUser = await userManager.Users
-                        .FirstOrDefaultAsync(u => u.PhoneNumber == command.PhoneNumber && u.Id != existUserById.Id, cancellationToken: cancellationToken);
+                        .FirstOrDefaultAsync(u => u.PhoneNumber == command.PhoneNumber && u.Id != existUserById.Id, cancellationToken);
 
             if (existingUser != null)
             {
@@ -683,54 +676,10 @@ public class IdentityService(
         if (!identityResult.Succeeded)
             throw new UnExpectedException("User update failed.");
 
-        // Add the token to the blacklist
-        var tokenBlacklist = new TokenBlacklist
-        {
-            Token = query.Token,
-            ExpiryDate = DateTime.UtcNow.AddHours(24), // Set expiration based on token lifetime
-            UserId = query.UserId
-        };
-        await tokenBlacklistsRepository.AddAsync(tokenBlacklist, cancellationToken);
         var result = await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
         if (result <= 0)
             throw new UnExpectedException("Token Blacklist Creation Failed");
-    }
-
-    public async Task AddUserToGroup(AddUserGroupCommand command, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(command.GroupId.ToString()) || string.IsNullOrEmpty(command.UserId))
-            throw new NotFoundException("GroupId or UserId is not present");
-
-        var existUserGroup = await userGroupRepository.GetUserGroupAsync(command.UserId, command.GroupId, cancellationToken);
-        if (existUserGroup != null)
-            throw new UserAlreadyExistsException("User is already in the group");
-
-        var userGroup = mapper.Map<UserGroup>(command);
-
-        await userGroupRepository.AddUerToGroup(userGroup, cancellationToken);
-
-        var result = await unitOfWork.SaveChangesAsync(cancellationToken);
-        if (result <= 0)
-            throw new UnExpectedException("User Group Creation Failed");
-    }
-
-    public async Task RemoveUserFromGroup(GetUserGroupQuery query, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(query.GroupId.ToString()) || string.IsNullOrEmpty(query.UserId))
-            throw new NotFoundException("GroupId or UserId is not present");
-
-        //var userGroup = mapper.Map<UserGroup>(getUserGroupQuery);
-        //userGroup.
-
-        var userGroup =
-           await userGroupRepository.GetUserGroupAsync(query.UserId, query.GroupId,
-                cancellationToken) ?? throw new NotFoundException("User Group Not Found");
-
-        userGroupRepository.RemoveUserFromGroup(userGroup, cancellationToken);
-        var result = await unitOfWork.SaveChangesAsync(cancellationToken);
-        if (result <= 0)
-            throw new UnExpectedException("User Group Deletion Failed");
     }
 
     public async Task<ApiResponse<PagedResult<UserDto>>> GetUsersByCompany(GetUsersByCompanyQuery query,
@@ -956,21 +905,6 @@ public class IdentityService(
         logger.LogInformation("RemoveUserFromRole was Done Successfully with {@role}", role.Name);
 
         return ApiResponse<string>.Ok("تخصیص نقش با موفقیت حذف شد.");
-    }
-
-    public ApiResponse<PagedResult<UserKindItemDto>> GetUserKindList()
-    {
-        var enumList = Enum.GetValues(typeof(UserKind))
-                           .Cast<UserKind>()
-                           .Select(e => new UserKindItemDto
-                           {
-                               Value = (int)e,
-                               Name = Tools.GetEnumDisplayName(e)
-                           })
-                           .ToList();
-
-        var data = new PagedResult<UserKindItemDto>(enumList, enumList.Count, 10, 1);
-        return ApiResponse<PagedResult<UserKindItemDto>>.Ok(data, "Areas retrieved successfully");
     }
 
     public ApiResponse<PagedResult<MoadianItemDto>> GeMoadianList()

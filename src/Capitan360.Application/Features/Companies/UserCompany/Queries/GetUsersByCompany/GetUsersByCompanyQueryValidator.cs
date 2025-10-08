@@ -1,4 +1,4 @@
-﻿using Capitan360.Application.Features.Identities.Identities.Dtos;
+﻿using Capitan360.Application.Features.Identities.Users.Users.Dtos;
 using Capitan360.Domain.Enums;
 using FluentValidation;
 
@@ -7,7 +7,7 @@ namespace Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsers
 public class GetUsersByCompanyQueryValidator : AbstractValidator<GetUsersByCompanyQuery>
 {
     private readonly int[] _allowPageSizes = [5, 10, 15, 30];
-    private readonly int[] _allowUserKind = [(int)UserKind.Normal, (int)UserKind.Special, (int)UserKind.All];
+    private readonly int[] _allowUserKind = [(int)TypeOfUserKind.Normal, (int)TypeOfUserKind.Special, (int)TypeOfUserKind.All];
     private readonly string[] _allowedSortByColumnNames = [
         nameof(UserDto.FullName),
         nameof(UserDto.LastAccess),

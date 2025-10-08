@@ -40,20 +40,6 @@ public interface IPermissionRepository
     Task<bool> ExistPermission(UserPermission permission, CancellationToken cancellationToken);
 
 
-    // GroupPermission   
-    Task<List<int>> AddPermissionToGroup(List<GroupPermission> groupPermissions, CancellationToken cancellationToken);
-    Task<List<int>> RemovePermissionFromGroup(List<GroupPermission> groupPermissions,
-        CancellationToken cancellationToken);
-    Task<bool> ExistPermissionToGroup(int permissionId, int groupId, CancellationToken cancellationToken);
-    Task<bool> ExistPermissionToGroup(GroupPermission groupPermission, CancellationToken cancellationToken);
-
-    //RolePermission
-    Task<List<int>> AddPermissionToRole(List<RolePermission> rolePermissions, CancellationToken cancellationToken);
-    Task<List<int>> RemovePermissionFromRole(List<RolePermission> rolePermissions, CancellationToken cancellationToken);
-    Task<bool> ExistPermissionToRole(int permissionId, string roleId, CancellationToken cancellationToken);
-    Task<bool> ExistPermissionToRole(RolePermission rolePermission, CancellationToken cancellationToken);
-
-
 
     // Permissions
     Task<bool> ExistPermissionInPermissionSource(Guid permissionCode, Guid parentCode, CancellationToken cancellationToken);

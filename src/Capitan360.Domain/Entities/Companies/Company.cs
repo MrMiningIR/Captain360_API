@@ -5,6 +5,7 @@ using Capitan360.Domain.Entities.CompanyDomesticPaths;
 using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Entities.CompanyInsurances;
 using Capitan360.Domain.Entities.CompanyManifestForms;
+using Capitan360.Domain.Entities.Identities;
 
 namespace Capitan360.Domain.Entities.Companies;
 
@@ -44,7 +45,7 @@ public class Company : BaseEntity
 
     public CompanySmsPatterns CompanySmsPatterns { get; set; } = default!;
 
-    public ICollection<UserCompany> UserCompanies { get; set; } = [];
+    public ICollection<User> CompanyUsers { get; set; } = [];
 
     public ICollection<CompanyUri> CompanyUris { get; set; } = [];
 

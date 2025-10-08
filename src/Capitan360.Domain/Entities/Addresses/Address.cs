@@ -2,15 +2,11 @@
 using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.Identities;
-using Capitan360.Domain.Enums;
 
 namespace Capitan360.Domain.Entities.Addresses;
 
 public class Address : BaseEntity
 {
-    [ForeignKey(nameof(AddressType))]
-    public int AddressTypeId { get; set; }
-
     [ForeignKey(nameof(Company))]
     public int? CompanyId { get; set; }
     public Company? Company { get; set; }
@@ -35,6 +31,10 @@ public class Address : BaseEntity
     public int MunicipalAreaId { get; set; }
     public Area? MunicipalArea { get; set; }
 
+    public decimal Latitude { get; set; }
+
+    public decimal Longitude { get; set; }
+
     public string AddressLine { get; set; } = default!;
 
     public string Mobile { get; set; } = default!;
@@ -46,10 +46,6 @@ public class Address : BaseEntity
     public string Zipcode { get; set; } = default!;
 
     public string Description { get; set; } = default!;
-
-    public decimal Latitude { get; set; }
-
-    public decimal Longitude { get; set; }
 
     public bool Active { get; set; }
 

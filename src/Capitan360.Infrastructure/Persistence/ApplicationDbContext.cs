@@ -25,15 +25,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<Company> Companies { get; set; }
     public DbSet<CompanyType> CompanyTypes { get; set; }
-    public DbSet<Group> Groups { get; set; }
-    public DbSet<GroupPermission> GroupPermissions { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
-    public DbSet<RoleGroup> RoleGroups { get; set; }
-    public DbSet<RolePermission> RolePermissions { get; set; }
-    public DbSet<UserGroup> UserGroups { get; set; }
-    public DbSet<UserProfile> UserProfiles { get; set; }
-    public DbSet<TokenBlacklist> TokenBlacklists { get; set; }
     public DbSet<UserCompany> UserCompanies { get; set; }
     public DbSet<CompanyUri> CompanyUris { get; set; }
 
@@ -68,9 +61,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CompanyInsuranceCharge> CompanyInsuranceCharges { get; set; }
     public DbSet<CompanyInsuranceChargePayment> CompanyInsurancesChargePayments { get; set; }
     public DbSet<CompanyInsuranceChargePaymentContentType> CompanyInsurancesChargePaymentContentTypes { get; set; }
-
-    public DbSet<UserPermissionVersionControl> UserPermissionVersionControls { get; set; }
-
 
     public DbSet<CompanyDomesticWaybill> CompanyDomesticWaybills { get; set; }
     public DbSet<CompanyDomesticWaybillPackageType> CompanyDomesticWaybillPackageTypes { get; set; }

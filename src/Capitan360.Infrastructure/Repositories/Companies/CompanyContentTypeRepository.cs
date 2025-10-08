@@ -37,7 +37,7 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyContentTypes.CountAsync(item => item.CompanyId == companyId, cancellationToken: cancellationToken);
+        return await dbContext.CompanyContentTypes.CountAsync(item => item.CompanyId == companyId, cancellationToken);
     }
 
     public async Task<CompanyContentType?> GetCompanyContentTypeByIdAsync(int companyContentTypeId, bool loadData, bool tracked, CancellationToken cancellationToken)
@@ -63,18 +63,18 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
                           .ToListAsync(cancellationToken);
     }
 
-    public async Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId)
+    public async Task DeleteCompanyContentTypeAsync(int cmpanyContentTypeId, CancellationToken cancellationToken)
     {
         await Task.Yield();
     }
 
     public async Task MoveCompanyContentTypeUpAsync(int companyContentTypeId, CancellationToken cancellationToken)
     {
-        var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.Id == companyContentTypeId, cancellationToken: cancellationToken);
+        var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.Id == companyContentTypeId, cancellationToken);
         if (currentCompanyContentType == null)
             return;
 
-        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyContentType!.CompanyId && item.Order == currentCompanyContentType.Order - 1, cancellationToken: cancellationToken);
+        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyContentType!.CompanyId && item.Order == currentCompanyContentType.Order - 1, cancellationToken);
         if (nextCompanyContentType == null)
             return;
 
@@ -86,11 +86,11 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
 
     public async Task MoveCompanyContentTypeDownAsync(int companyContentTypeId, CancellationToken cancellationToken)
     {
-        var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.Id == companyContentTypeId, cancellationToken: cancellationToken);
+        var currentCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.Id == companyContentTypeId, cancellationToken);
         if (currentCompanyContentType == null)
             return;
 
-        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyContentType!.CompanyId && item.Order == currentCompanyContentType.Order + 1, cancellationToken: cancellationToken);
+        var nextCompanyContentType = await dbContext.CompanyContentTypes.SingleOrDefaultAsync(item => item.CompanyId == currentCompanyContentType!.CompanyId && item.Order == currentCompanyContentType.Order + 1, cancellationToken);
         if (nextCompanyContentType == null)
             return;
 

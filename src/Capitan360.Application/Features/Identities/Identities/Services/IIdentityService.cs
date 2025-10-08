@@ -6,17 +6,16 @@ using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCom
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserById;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
 using Capitan360.Application.Features.Dtos;
-using Capitan360.Application.Features.Identities.Identities.Commands.AddUserGroup;
 using Capitan360.Application.Features.Identities.Identities.Commands.ChangePassword;
 using Capitan360.Application.Features.Identities.Identities.Commands.ChangeUserActivity;
 using Capitan360.Application.Features.Identities.Identities.Commands.CreateUser;
 using Capitan360.Application.Features.Identities.Identities.Commands.UpdateUser;
-using Capitan360.Application.Features.Identities.Identities.Dtos;
-using Capitan360.Application.Features.Identities.Identities.Queries.GetUserGroup;
 using Capitan360.Application.Features.Identities.Identities.Queries.LoginUser;
 using Capitan360.Application.Features.Identities.Identities.Queries.LogOut;
 using Capitan360.Application.Features.Identities.Identities.Queries.RefreshToken;
 using Capitan360.Application.Features.Identities.Identities.Responses;
+using Capitan360.Application.Features.Identities.Roles.Roles.Dtos;
+using Capitan360.Application.Features.Identities.Users.Users.Dtos;
 
 namespace Capitan360.Application.Features.Identities.Identities.Services;
 
@@ -34,11 +33,6 @@ public interface IIdentityService
 
     Task LogOutUser(LogOutQuery query, CancellationToken cancellationToken);
 
-    Task AddUserToGroup(AddUserGroupCommand command, CancellationToken cancellationToken);
-
-    Task RemoveUserFromGroup(GetUserGroupQuery query, CancellationToken cancellationToken);
-
-
 
     // User By Company Operations
     Task<ApiResponse<PagedResult<UserDto>>> GetUsersByCompany(GetUsersByCompanyQuery query, CancellationToken cancellationToken);
@@ -50,7 +44,6 @@ public interface IIdentityService
     Task UpdateUserCompany(UpdateUserCompanyCommand command, CancellationToken cancellationToken);
 
 
-    ApiResponse<PagedResult<UserKindItemDto>> GetUserKindList();
     ApiResponse<PagedResult<MoadianItemDto>> GeMoadianList();
     ApiResponse<PagedResult<EntranceFeeTypeDto>> GetEntranceTypeList();
     ApiResponse<PagedResult<PathStructTypeDto>> GetPathStructTypeList();

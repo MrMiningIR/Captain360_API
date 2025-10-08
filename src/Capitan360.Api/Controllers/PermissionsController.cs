@@ -1,6 +1,6 @@
 ﻿using Capitan360.Application.Common;
-using Capitan360.Application.Features.Permission.Dtos;
-using Capitan360.Application.Features.Permission.Services;
+using Capitan360.Application.Features.Identities.Permissions.Dtos;
+using Capitan360.Application.Features.Identities.Permissions.Services;
 using Capitan360.Domain.Dtos.TransferObject;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -12,9 +12,9 @@ namespace Capitan360.Api.Controllers
     public class PermissionsController(IPermissionService permissionService) : ControllerBase
     {
         [HttpGet("GetAppAllPermissions")]
-        [ProducesResponseType(typeof(ApiResponse<List<PermissionCollectorDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<List<PermissionCollectorDto>>), StatusCodes.Status400BadRequest)]
-        public ActionResult<ApiResponse<List<PermissionCollectorDto>>> GetAppAllPermissions()
+        [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status400BadRequest)]
+        public ActionResult<ApiResponse<List<PermissionDto>>> GetAppAllPermissions()
         {
             var response = permissionService.GetSystemPermissions(Assembly.GetExecutingAssembly());
 

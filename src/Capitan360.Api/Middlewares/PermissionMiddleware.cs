@@ -14,8 +14,7 @@ namespace Capitan360.Api.Middlewares;
 
 public class PermissionMiddleware(UserManager<User> userManager,
     IPermissionService permissionService,
-    IUserPermissionVersionControlRepository permissionVersionControlRepository
-    , IUserContext userContext)
+    IUserContext userContext)
     : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
