@@ -31,7 +31,7 @@ public class CompanyManifestFormProfile : Profile
             .ForMember(d => d.DestinationCityName, opt => opt.MapFrom(s => s.DestinationCity != null ? s.DestinationCity.PersianName : null))
             .ForMember(d => d.ManifestFormPeriodId, opt => opt.MapFrom(s => s.CompanyManifestFormPeriodId))
             .ForMember(d => d.ManifestFormPeriodCode, opt => opt.MapFrom(s => s.CompanyManifestFormPeriod != null ? s.CompanyManifestFormPeriod.Code : null))
-            .ForMember(d => d.CounterNameFamily, opt => opt.MapFrom(s => s.Counter != null ? s.Counter.FullName : null))
+            .ForMember(d => d.CounterNameFamily, opt => opt.MapFrom(s => s.Counter != null ? s.Counter.NameFamily : null))
             .ForMember(d => d.CompanyManifestSate, opt => opt.MapFrom(s => (CompanyManifestFormState)s.State));
 
         CreateMap<IssueCompanyManifestFormCommand, CompanyManifestForm>()

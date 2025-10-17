@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Create;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Delete;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Update;
@@ -9,15 +8,15 @@ using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetAll;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetByCompanyId;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Queries.GetById;
-using Capitan360.Domain.Interfaces;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticPaths;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
-using Capitan360.Domain.Interfaces.Repositories.Addresses;
-using Capitan360.Domain.Enums;
 using Capitan360.Domain.Entities.CompanyDomesticPaths;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticPaths;
 using Microsoft.AspNetCore.Http;
-using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPathReceiverCompanies.Commands.Create;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Services;
 
@@ -66,27 +65,29 @@ public class CompanyDomesticPathService(
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var (destinationCityRegionMunicipalities, totalCount) = await areaRepository.GetAllRegionMunicipality("", 100, 1, null, SortDirection.Ascending, command.DestinationCityId, false, cancellationToken);
-        if (totalCount == 0)
-            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "اطلاعات مناطق شهری مقصد نامعتبر است");
+        //var (destinationCityRegionMunicipalities, totalCount) = await areaRepository.GetAllRegionMunicipality("", 100, 1, null, SortDirection.Ascending, command.DestinationCityId, false, cancellationToken);
+        //if (totalCount == 0)
+        //    return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "اطلاعات مناطق شهری مقصد نامعتبر است");
 
-        var companyDomesticPathsId = await companyDomesticPathRepository.CreateCompanyDomesticPathAsync(companyDomesticPath, cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        //var companyDomesticPathsId = await companyDomesticPathRepository.CreateCompanyDomesticPathAsync(companyDomesticPath, cancellationToken);
+        //await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        foreach (var item in destinationCityRegionMunicipalities)
-        {
-            var companyDomesticPathReceiverCompany = mapper.Map<CompanyDomesticPathReceiverCompany>(item);
-            if (companyDomesticPathReceiverCompany == null)
-                return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+        //foreach (var item in destinationCityRegionMunicipalities)
+        //{
+        //    var companyDomesticPathReceiverCompany = mapper.Map<CompanyDomesticPathReceiverCompany>(item);
+        //    if (companyDomesticPathReceiverCompany == null)
+        //        return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
-            await companyDomesticPathReceiverCompanyRepository.CreateCompanyDomesticPathCompanyReceiverAsync(companyDomesticPathReceiverCompany, cancellationToken);
-        }
+        //    await companyDomesticPathReceiverCompanyRepository.CreateCompanyDomesticPathCompanyReceiverAsync(companyDomesticPathReceiverCompany, cancellationToken);
+        //}
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("CompanyDomesticPath created successfully with {@CompanyDomesticPath}", companyDomesticPath);
-        return ApiResponse<int>.Created(companyDomesticPathsId, "مسیر با موفقیت ایجاد شد");
+        //return ApiResponse<int>.Created(companyDomesticPathsId, "مسیر با موفقیت ایجاد شد");
+
+        throw new NotImplementedException();
     }
 
     public async Task<ApiResponse<int>> DeleteCompanyDomesticPathAsync(DeleteCompanyDomesticPathCommand command, CancellationToken cancellationToken)

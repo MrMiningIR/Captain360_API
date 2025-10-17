@@ -27,7 +27,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CompanyType> CompanyTypes { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
-    public DbSet<UserCompany> UserCompanies { get; set; }
+
     public DbSet<CompanyUri> CompanyUris { get; set; }
 
     public DbSet<Address> Addresses { get; set; }

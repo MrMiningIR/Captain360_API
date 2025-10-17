@@ -1,16 +1,19 @@
-﻿using Capitan360.Domain.Interfaces;
-using Capitan360.Infrastructure.Persistence;
-using Capitan360.Domain.Interfaces.Repositories.Identities;
+﻿using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
+using Capitan360.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Entities.Identities;
-using Microsoft.AspNetCore.Identity;
 
 namespace Capitan360.Infrastructure.Repositories.Identities;
 
 public class UserRepository(ApplicationDbContext dbContext, UserManager<User> userManager, IUnitOfWork unitOfWork) : IUserRepository
 {
+
+
+
     public async Task<bool> CheckExistUserMobileAsync(string mobile, int companyId, string? currentUserId, CancellationToken cancellationToken)
     {
         return await dbContext.Users.AnyAsync(item => item.PhoneNumber!.ToLower() == mobile.Trim().ToLower() && item.CompanyId == companyId && (currentUserId == null || item.Id.ToLower() != currentUserId.Trim().ToLower()), cancellationToken);
@@ -42,9 +45,10 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
         return await query.SingleOrDefaultAsync(item => item.PhoneNumber!.ToLower() == mobile.Trim().ToLower() && item.CompanyId == companyId, cancellationToken);
     }
 
-    public async Task<(IdentityResult Result, User? Created)> CreateUserAsync(User user, Role userRole, CancellationToken cancellationToken)
+    public async Task<(IdentityResult Result, User? Created)> CreateUserAsync(User user, string password, Role userRole,
+        CancellationToken cancellationToken)
     {
-        var createResult = await userManager.CreateAsync(user);
+        var createResult = await userManager.CreateAsync(user, password);
         if (!createResult.Succeeded)
             return (createResult, null);
 
@@ -62,16 +66,25 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
         await Task.Yield();
     }
 
-    public async Task<(IReadOnlyList<User>, int)> GetAllUsersAsync(string searchPhrase, string? sortBy, int companyId, int companyTypeId, int roleId, int typeOfFactorInSamanehMoadianId,
+    public async Task<(IReadOnlyList<User>, int)> GetAllUsersAsync(string? searchPhrase, string? sortBy, int companyId, int companyTypeId, string roleId, int typeOfFactorInSamanehMoadianId,
                                                                    int hasCredit, int baned, int active, int isBikeDelivery, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
+        var baseQuery = dbContext.Users.AsNoTracking();
+        if (!string.IsNullOrEmpty(roleId))
+        {
+            baseQuery = dbContext.Users.Join(dbContext.UserRoles, user => user.Id, userRole => userRole.RoleId,
+              (user, userRole) => new { User = user, UserRole = userRole }).Where(x => x.UserRole.RoleId == roleId) as IQueryable<User>;
+
+
+        }
         searchPhrase = searchPhrase.Trim().ToLower();
-        var baseQuery = dbContext.Users.AsNoTracking()
-                                       .Where(item => item.NameFamily.ToLower().Contains(searchPhrase) || item.PhoneNumber!.ToLower().Contains(searchPhrase) ||
-                                                      item.MobileTelegram.ToLower().Contains(searchPhrase) || item.Tell.ToLower().Contains(searchPhrase) ||
-                                                      item.NationalCode.ToLower().Contains(searchPhrase) || item.EconomicCode.ToLower().Contains(searchPhrase) ||
-                                                      item.NationalId.ToLower().Contains(searchPhrase) || item.RegistrationId.ToLower().Contains(searchPhrase) ||
-                                                      item.EconomicCode.ToLower().Contains(searchPhrase) || item.EconomicCode.ToLower().Contains(searchPhrase));
+
+
+        baseQuery = baseQuery!.Where(item => item.NameFamily.ToLower().Contains(searchPhrase) || item.PhoneNumber!.ToLower().Contains(searchPhrase) ||
+                           item.MobileTelegram.ToLower().Contains(searchPhrase) || item.Tell.ToLower().Contains(searchPhrase) ||
+                           item.NationalCode.ToLower().Contains(searchPhrase) || item.EconomicCode.ToLower().Contains(searchPhrase) ||
+                           item.NationalId.ToLower().Contains(searchPhrase) || item.RegistrationId.ToLower().Contains(searchPhrase) ||
+                           item.EconomicCode.ToLower().Contains(searchPhrase) || item.EconomicCode.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.Company);
@@ -86,10 +99,6 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
             baseQuery = baseQuery.Where(item => item.CompanyTypeId == companyTypeId);
         }
 
-        if (roleId != 0)
-        {
-            baseQuery = baseQuery.Where(item => item.RoleId == roleId);
-        }
 
         if (typeOfFactorInSamanehMoadianId != -1)
         {
@@ -149,5 +158,22 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
             .ToListAsync(cancellationToken);
 
         return (ContentTypes, totalCount);
+    }
+
+    public async Task<User?> GetUserByIdAndCompanyId(string userId, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
+    {
+
+        IQueryable<User> query = dbContext.Users;
+
+        if (loadData)
+            query = query.Include(item => item.Company);
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.Id == userId && item.CompanyId == companyId, cancellationToken);
+
+
+
     }
 }

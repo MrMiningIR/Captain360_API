@@ -1,5 +1,4 @@
 ﻿using Capitan360.Application.Features.Identities.Users.Users.Dtos;
-using Capitan360.Domain.Enums;
 using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
@@ -7,11 +6,11 @@ namespace Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsers
 public class GetUsersByCompanyQueryValidator : AbstractValidator<GetUsersByCompanyQuery>
 {
     private readonly int[] _allowPageSizes = [5, 10, 15, 30];
-    private readonly int[] _allowUserKind = [(int)TypeOfUserKind.Normal, (int)TypeOfUserKind.Special, (int)TypeOfUserKind.All];
+
     private readonly string[] _allowedSortByColumnNames = [
-        nameof(UserDto.FullName),
+        nameof(UserDto.NameFamily),
         nameof(UserDto.LastAccess),
-        nameof(UserDto.PhoneNumber)
+        nameof(UserDto.Tell)
     ];
     public GetUsersByCompanyQueryValidator()
     {
@@ -32,9 +31,9 @@ public class GetUsersByCompanyQueryValidator : AbstractValidator<GetUsersByCompa
         //.Must(value => Enum.IsDefined(typeof(UserKind), value)) // بررسی مقدار عددی
         //.WithMessage($"تایپ کاربر باید از این مقادیر باشد: {string.Join(", ", Enum.GetValues(typeof(UserKind)).Cast<int>())}");
 
-        RuleFor(r => r.UserKind)
-            .Must(value => _allowUserKind.Contains(value))
-            .WithMessage($"تایپ کاربر باید از این مقادیر باشد [{string.Join(",", _allowUserKind)}] باشد");
+        //RuleFor(r => r.UserKind)
+        //    .Must(value => _allowUserKind.Contains(value))
+        //    .WithMessage($"تایپ کاربر باید از این مقادیر باشد [{string.Join(",", _allowUserKind)}] باشد");
 
 
 

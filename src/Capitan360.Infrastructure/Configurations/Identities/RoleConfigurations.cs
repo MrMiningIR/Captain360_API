@@ -14,10 +14,10 @@ public class RoleConfigurations : IEntityTypeConfiguration<Role>
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
-        builder.Property(x => x.Visible)
-               .IsRequired();
+        builder.Property(x => x.Visible);
 
-    builder.HasData(new List<Role>()
+
+        builder.HasData(new List<Role>()
         {
             new ()
             {

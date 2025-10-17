@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Capitan360.Application.Features.Identities.Dtos;
 using Capitan360.Application.Features.Identities.Permissions.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Interfaces;
@@ -31,51 +32,51 @@ public class PermissionService(IPermissionRepository permissionRepository,
         return ApiResponse<List<ParentPermissionTransfer>>.Ok(result);
     }
 
-    public async Task<ApiResponse<List<IPermissionService.PermissionDto>>> GetPermissionsByParentName(IPermissionService.GetPermissionsByParentNameQuery query, CancellationToken cancellationToken)
+    public async Task<ApiResponse<List<PermissionDto>>> GetPermissionsByParentName(IPermissionService.GetPermissionsByParentNameQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetPermissionsByParent is Called with {@GetPermissionsByParent}", query);
         var result = await permissionRepository.GetPermissionsByParentName(query.Parent, cancellationToken);
 
-        var mappedResult = mapper.Map<List<IPermissionService.PermissionDto>>(result);
+        var mappedResult = mapper.Map<List<PermissionDto>>(result);
 
-        return ApiResponse<List<IPermissionService.PermissionDto>>.Ok(mappedResult);
+        return ApiResponse<List<PermissionDto>>.Ok(mappedResult);
     }
 
-    public async Task<ApiResponse<List<IPermissionService.PermissionDto>>> GetPermissionsByParentCode(IPermissionService.GetPermissionsByParentCodeQuery query, CancellationToken cancellationToken)
+    public async Task<ApiResponse<List<PermissionDto>>> GetPermissionsByParentCode(IPermissionService.GetPermissionsByParentCodeQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetPermissionsByParentCode is Called with {@GetPermissionsByParent}", query);
         var result = await permissionRepository.GetPermissionsByParentCode(query.ParentCode, cancellationToken);
 
-        var mappedResult = mapper.Map<List<IPermissionService.PermissionDto>>(result);
+        var mappedResult = mapper.Map<List<PermissionDto>>(result);
 
-        return ApiResponse<List<IPermissionService.PermissionDto>>.Ok(mappedResult);
+        return ApiResponse<List<PermissionDto>>.Ok(mappedResult);
     }
 
-    public async Task<ApiResponse<PagedResult<IPermissionService.PermissionDto>>> GetAllMatchingPermissions(
+    public async Task<ApiResponse<PagedResult<PermissionDto>>> GetAllMatchingPermissions(
         IPermissionService.GetAllMatchingPermissionsQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetAllCompanies is Called");
         if (query.PageSize <= 0 || query.PageNumber <= 0)
-            return ApiResponse<PagedResult<IPermissionService.PermissionDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+            return ApiResponse<PagedResult<PermissionDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
 
         var (permissions, totalCount) = await permissionRepository.GetAllMatchingPermissions(query.SearchPhrase,
             query.PageSize, query.PageNumber, cancellationToken);
 
-        var permissionDtos = mapper.Map<IReadOnlyList<IPermissionService.PermissionDto>>(permissions)
-                          ?? Array.Empty<IPermissionService.PermissionDto>();
+        var permissionDtos = mapper.Map<IReadOnlyList<PermissionDto>>(permissions)
+                          ?? Array.Empty<PermissionDto>();
         logger.LogInformation("Retrieved {Count} Permissions", permissionDtos.Count);
 
-        var data = new PagedResult<IPermissionService.PermissionDto>(permissionDtos, totalCount, query.PageSize, query.PageNumber);
-        return ApiResponse<PagedResult<IPermissionService.PermissionDto>>.Ok(data, "Companies retrieved successfully");
+        var data = new PagedResult<PermissionDto>(permissionDtos, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<PermissionDto>>.Ok(data, "Companies retrieved successfully");
     }
 
-    public ApiResponse<List<PermissionDto>> GetSystemPermissions(Assembly? assembly)
+    public ApiResponse<List<PermissionCollectorDto>> GetSystemPermissions(Assembly? assembly)
     {
         if (assembly is null)
-            return ApiResponse<List<PermissionDto>>.Error(400, "ناتوانی در شناسایی پرمیشن ها");
+            return ApiResponse<List<PermissionCollectorDto>>.Error(400, "ناتوانی در شناسایی پرمیشن ها");
 
         var permissions = permissionCollector.GetActionsWithPermissionFilter(assembly);
-        return ApiResponse<List<PermissionDto>>.Ok(permissions, "دسترسی ها با موفقیت بازیابی شدند");
+        return ApiResponse<List<PermissionCollectorDto>>.Ok(permissions, "دسترسی ها با موفقیت بازیابی شدند");
     }
 
     public List<string> GetPermissionsForSystem(Assembly? assembly)
@@ -88,13 +89,13 @@ public class PermissionService(IPermissionRepository permissionRepository,
 
         foreach (var permission in permissions)
         {
-            resultList.Add(permission.Name);
+            resultList.Add(permission.PermissionName);
         }
 
         return resultList.ToList();
     }
 
-    public async Task SavePermissionsInSystem(List<PermissionDto> permissionsData, CancellationToken cancellationToken)
+    public async Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken)
     {
         string permissionName = "";
         string parentName = "";
@@ -108,15 +109,15 @@ public class PermissionService(IPermissionRepository permissionRepository,
 
                 if (!exist)
                 {
-                    permissionName = permission.Name;
-                    parentName = permission.ParentName;
+                    permissionName = permission.PermissionName;
+                    parentName = permission.Parent;
                     await permissionRepository.AddPermissionToPermissionSource(new Domain.Entities.Identities.Permission
                     {
-                        Name = permission.Name,
-                        ParentName = permission.ParentName,
+                        Name = permission.PermissionName,
+                        ParentName = permission.Parent,
                         Active = true,
                         DisplayName = permission.DisplayName ?? "ثبت نشده",
-                        ParentDisplayName = permission.ParentDisplayName ?? "ثبت نشده",
+                        ParentDisplayName = permission.SourceDisplayName ?? "ثبت نشده",
                         ParentCode = permission.ParentCode,
                         PermissionCode = permission.PermissionCode
                     }, cancellationToken);
@@ -130,7 +131,7 @@ public class PermissionService(IPermissionRepository permissionRepository,
         }
     }
 
-    public async Task DeleteUnAvailablePermissions(List<PermissionDto> permissionsData, CancellationToken cancellationToken)
+    public async Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken)
     {
         try
         {

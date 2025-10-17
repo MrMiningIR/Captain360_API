@@ -3,7 +3,6 @@ using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Exceptions;
-using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Infrastructure.Authorization.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -49,7 +48,7 @@ public class PermissionMiddleware(UserManager<User> userManager,
             if (!dbUser!.Active)
                 throw new ForbiddenForceLogoutException(ConstantNames.DeactivatedAccountMessage);
 
-            var savedUserPvc = await permissionVersionControlRepository.GetUserPermissionVersionString(currentUser.Id, cancellationToken);
+            var savedUserPvc = dbUser.PermissionVersion;
 
             if (string.IsNullOrEmpty(savedUserPvc))
                 throw new ForbiddenForceLogoutException(ConstantNames.UserNotValidMessage);
@@ -65,13 +64,13 @@ public class PermissionMiddleware(UserManager<User> userManager,
 
             // Check CompanyId
 
-            if ((userContext.GetCurrentUser()!.IsUser() && (string.IsNullOrEmpty(currentUser.CompanyId.ToString()) || currentUser.CompanyId <= 0)))
+            if ((userContext.GetCurrentUser()!.IsUser(dbUser.CompanyId) && (string.IsNullOrEmpty(currentUser.CompanyId.ToString()) || currentUser.CompanyId <= 0)))
             {
                 throw new ForbiddenForceLogoutException(ConstantNames.UserNotValidMessage);
             }
 
             // Check Permission
-            if (!await permissionService.HasAnyPermissionAsync(currentUser.Id) && currentUser.IsUser())
+            if (!await permissionService.HasAnyPermissionAsync(currentUser.Id) && currentUser.IsUser(dbUser.CompanyId))
             {
                 throw new ForbiddenForceLogoutException(ConstantNames.UserHasNoAccessMessage);
             }

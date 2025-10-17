@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Capitan360.Domain.Constants;
+﻿namespace Capitan360.Domain.Constants;
 
 public static class ConstantNames
 {
@@ -134,9 +132,9 @@ public static class ConstantNames
 
 
 
-    public const string SamplePhone1 = "09155165067";
-    public const string SamplePhone2 = "09157369036";
-    public const string SamplePhone3 = "09353762674";
+    public const string SamplePhone1 = "09111111111";
+    public const string SamplePhone2 = "09222222222";
+    public const string SamplePhone3 = "09333333333";
 
 
     // Cache Prefix

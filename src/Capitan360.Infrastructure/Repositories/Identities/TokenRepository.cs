@@ -1,5 +1,4 @@
 ﻿using Capitan360.Domain.Constants;
-using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +10,7 @@ using System.Text;
 namespace Capitan360.Infrastructure.Repositories.Identities;
 
 public class TokenRepository
-    (IUserCompanyRepository UserCompanyRepository)
+    ()
     : ITokenRepository
 {
     public (string resultToken, DateTime validTo) GenerateAccessToken(List<Claim> claims, string jwtKey, string issuer,
@@ -63,7 +62,9 @@ public class TokenRepository
         return Encoding.UTF8.GetString(decrypted);
     }
 
-    public List<Claim> ClaimsGenerator(User user, UserCompany userCompany, string permissionVersionControl, IReadOnlyList<string> roles,
+
+
+    public List<Claim> ClaimsGenerator(User user, IReadOnlyList<string> roles,
         string newSessionId, List<string> permissions)
     {
 
@@ -72,9 +73,9 @@ public class TokenRepository
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.MobilePhone, user.PhoneNumber!),
             new(ClaimTypes.Name, user.NameFamily!) ,
-            new(ConstantNames.CompanyId,  userCompany.CompanyId.ToString()),
-            new(ConstantNames.IsParentCompany,  userCompany.Company.IsParentCompany.ToString()),
-            new(ConstantNames.CompanyName,  userCompany.Company.Name.ToString()),
+            new(ConstantNames.CompanyId,  user.CompanyId.ToString()),
+            new(ConstantNames.IsParentCompany,  user.Company!.IsParentCompany.ToString()),
+            new(ConstantNames.CompanyName,  user.Company.Name.ToString()),
             new(ConstantNames.CompanyType,  user.CompanyTypeId.ToString()),
             new(ConstantNames.Permissions,  string.Join(',',permissions))
         };
@@ -82,9 +83,7 @@ public class TokenRepository
         if (!string.IsNullOrEmpty(newSessionId))
             claims.Add(new Claim(ConstantNames.SessionId, newSessionId));
 
-        if (!string.IsNullOrEmpty(permissionVersionControl))
-
-            claims.Add(new Claim(ConstantNames.Pvc, permissionVersionControl));
+        claims.Add(new Claim(ConstantNames.Pvc, user.PermissionVersion));
 
         if (roles.Any())
             foreach (var role in roles)

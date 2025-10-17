@@ -21,7 +21,7 @@ namespace Capitan360.Application.Features.Identities.Identities.Services;
 
 public interface IIdentityService
 {
-    Task<bool> ExistPhone(string phone, CancellationToken cancellationToken);
+
     Task<ApiResponse<string>> RegisterUser(CreateUserCommand command, CancellationToken cancellationToken);
 
     Task<ApiResponse<string>> UpdateUser(UpdateUserCommand command, CancellationToken cancellationToken);
@@ -40,7 +40,7 @@ public interface IIdentityService
         CancellationToken cancellationToken);
     Task<ApiResponse<UserDto>> GetUserById(GetUserByIdQuery query,
         CancellationToken cancellationToken);
-    Task<ApiResponse<int>> CreateUserByCompany(CreateUserCompanyCommand command, CancellationToken cancellationToken);
+    Task<ApiResponse<string>> CreateUserByCompany(CreateUserCompanyCommand command, CancellationToken cancellationToken);
     Task UpdateUserCompany(UpdateUserCompanyCommand command, CancellationToken cancellationToken);
 
 

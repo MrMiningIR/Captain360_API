@@ -15,15 +15,9 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
         var hasUserPermission = await dbContext.UserPermissions
             .AnyAsync(up => up.UserId == userId && up.Permission.Name == permission);
 
-        var hasRolePermission = await dbContext.RolePermissions
-            .Where(rp => dbContext.UserRoles.Any(ur => ur.UserId == userId && ur.RoleId == rp.RoleId))
-            .AnyAsync(rp => rp.Permission.Name == permission);
 
-        var hasGroupPermission = await dbContext.GroupPermissions
-            .Where(gp => dbContext.UserGroups.Any(ug => ug.UserId == userId && ug.GroupId == gp.GroupId))
-            .AnyAsync(gp => gp.Permission.Name == permission);
 
-        return hasUserPermission || hasRolePermission || hasGroupPermission;
+        return hasUserPermission;
 
 
         //var allPermission = await GetUserPermissionsAsync(userId);
@@ -39,17 +33,14 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
 
         var hasRolePermission = await dbContext.UserRoles
             .Where(ur => ur.UserId == userId)
-            .Join(dbContext.RolePermissions, ur => ur.RoleId, rp => rp.RoleId, (ur, rp) => rp)
+
             .AnyAsync();
         Console.WriteLine($"RolePermissions for {userId}: {hasRolePermission}");
 
-        var hasGroupPermission = await dbContext.UserGroups
-            .Where(ug => ug.UserId == userId)
-            .Join(dbContext.GroupPermissions, ug => ug.GroupId, gp => gp.GroupId, (ug, gp) => gp)
-            .AnyAsync();
-        Console.WriteLine($"GroupPermissions for {userId}: {hasGroupPermission}");
 
-        return hasUserPermission || hasRolePermission || hasGroupPermission;
+
+
+        return hasUserPermission || hasRolePermission;
     }
 
 
@@ -181,32 +172,17 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
             .ToListAsync();
 
         // 3. Getting RolePermission
-        var rolePermissionNames = userRoles.Any()
-            ? await dbContext.RolePermissions
-                .Where(rp => userRoles.Contains(rp.RoleId))
-                .Select(rp => rp.Permission.Name)
-                .ToListAsync()
-            : new List<string>();
+
 
         // 4. Getting  UserGroups
-        var userGroupIds = await dbContext.UserGroups
-            .Where(ug => ug.UserId == userId)
-            .Select(ug => ug.GroupId)
-            .ToListAsync();
+
 
         // 5. Getting GroupPermission
-        var groupPermissionNames = userGroupIds.Any()
-            ? await dbContext.GroupPermissions
-                .Where(gp => userGroupIds.Contains(gp.GroupId))
-                .Select(gp => gp.Permission.Name)
-                .ToListAsync()
-            : new List<string>();
+
 
         // 6. Combine all permissions and remove duplicates
         var allPermissions = userPermissionNames
-            .Concat(rolePermissionNames)
-            .Concat(groupPermissionNames)
-            .Distinct()
+        .Distinct()
             .ToList();
 
         return allPermissions;

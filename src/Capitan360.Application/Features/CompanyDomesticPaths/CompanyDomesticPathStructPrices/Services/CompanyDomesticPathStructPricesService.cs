@@ -594,11 +594,11 @@ public class CompanyDomesticPathStructPricesService(
         if (query.BaseCost == 0)
         {
 
-            municipalAreas = await areaRepository.GetDistrictAreasByCityIdAsync(domesticPth.SourceCityId, cancellationToken);
+            // municipalAreas = await areaRepository.GetDistrictAreasByCityIdAsync(domesticPth.SourceCityId, cancellationToken);
         }
         if (query.BaseCost == 1)
         {
-            municipalAreas = await areaRepository.GetDistrictAreasByCityIdAsync(domesticPth.DestinationCityId, cancellationToken);
+            //municipalAreas = await areaRepository.GetDistrictAreasByCityIdAsync(domesticPth.DestinationCityId, cancellationToken);
 
         }
 

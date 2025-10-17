@@ -16,5 +16,7 @@ public interface ICompanyUriRepository
     Task DeleteCompanyUriAsync(int companyUriId);
 
     Task<(IReadOnlyList<CompanyUri>, int)> GetAllCompanyUrisAsync(string searchPhrase, string? sortBy, int companyId, int active, int captain360Uri, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+
+    Task<CompanyUri?> GetUriByTenant(string tennat, CancellationToken cancellationToken);
 }
 

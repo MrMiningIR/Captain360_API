@@ -1,9 +1,34 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Capitan360.Application.Features.Addresses.Areas.Dtos;
+using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
+using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
+using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
+using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserById;
+using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
 using Capitan360.Application.Features.Dtos;
+using Capitan360.Application.Features.Identities.Identities.Commands.ChangePassword;
+using Capitan360.Application.Features.Identities.Identities.Commands.ChangeUserActivity;
+using Capitan360.Application.Features.Identities.Identities.Commands.CreateUser;
+using Capitan360.Application.Features.Identities.Identities.Commands.UpdateUser;
+using Capitan360.Application.Features.Identities.Identities.Queries.LoginUser;
+using Capitan360.Application.Features.Identities.Identities.Queries.LogOut;
+using Capitan360.Application.Features.Identities.Identities.Queries.RefreshToken;
+using Capitan360.Application.Features.Identities.Identities.Responses;
+using Capitan360.Application.Features.Identities.Permissions.Services;
+using Capitan360.Application.Features.Identities.Roles.Roles.Dtos;
+using Capitan360.Application.Features.Identities.Users.Users.Dtos;
 using Capitan360.Application.Utils;
 using Capitan360.Domain.Constants;
+using Capitan360.Domain.Entities.Identities;
+using Capitan360.Domain.Enums;
 using Capitan360.Domain.Exceptions;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
+using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,31 +37,6 @@ using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using ValidationException = FluentValidation.ValidationException;
-using Capitan360.Domain.Enums;
-using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Entities.Identities;
-using Capitan360.Application.Features.Addresses.Areas.Dtos;
-using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
-using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
-using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
-using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserById;
-using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
-using Capitan360.Application.Features.Identities.Identities.Commands.AddUserToRole;
-using Capitan360.Application.Features.Identities.Identities.Commands.ChangePassword;
-using Capitan360.Application.Features.Identities.Identities.Commands.ChangeUserActivity;
-using Capitan360.Application.Features.Identities.Identities.Commands.CreateUser;
-using Capitan360.Application.Features.Identities.Identities.Commands.RemoveUserFromRole;
-using Capitan360.Application.Features.Identities.Identities.Commands.UpdateUser;
-using Capitan360.Application.Features.Identities.Identities.Queries.LoginUser;
-using Capitan360.Application.Features.Identities.Identities.Queries.LogOut;
-using Capitan360.Application.Features.Identities.Identities.Queries.RefreshToken;
-using Capitan360.Application.Features.Identities.Identities.Responses;
-using Capitan360.Domain.Interfaces.Repositories.Identities;
-using Capitan360.Domain.Interfaces.Repositories.Addresses;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
-using Capitan360.Application.Features.Identities.Users.Users.Dtos;
-using Capitan360.Application.Features.Identities.Permissions.Services;
-using Capitan360.Application.Features.Identities.Roles.Roles.Dtos;
 
 namespace Capitan360.Application.Features.Identities.Identities.Services;
 
@@ -55,19 +55,21 @@ public class IdentityService(
     IPermissionService permissionService,
     ICompanyRepository companyRepository,
     IUserPermissionRepository userPermissionRepository,
-    IAreaRepository areaRepository
+    IAreaRepository areaRepository,
+    IUserRepository userRepository,
+    IMultiTenantContextAccessor<TenantInfo> tenantContext,
+    ICompanyUriRepository companyUriRepository
+
 
     ) : IIdentityService
 {
-    public async Task<bool> ExistPhone(string phone, CancellationToken cancellationToken)
-    {
-        return await identityRepository.UserExistByPhone(phone, cancellationToken);
-    }
+
 
     public async Task<ApiResponse<string>> RegisterUser(CreateUserCommand command,
         CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
+        #region MyRegion
         //if (!currentUser!.IsSuperAdmin() && (createUserCommand.CompanyId <= 0 || createUserCommand.CompanyId is null))
         //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز");
 
@@ -75,33 +77,13 @@ public class IdentityService(
         //    return ApiResponse<string>.Error(400, "شما مجاز ب ساخت این کاربر نیستید");
 
         //if (!currentUser.IsSuperAdmin() && createUserCommand.CompanyType <= 0)
-        //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز");
+        //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز"); 
+        #endregion
 
         logger.LogInformation("RegisterUser Function Called with This Parameter: @{CreateUserCommand}", command);
-        //var existUserByPhone =
-        //    await identityRepository.UserExistByPhone(createUserCommand.PhoneNumber, cancellationToken);
 
-        //User? existUser = null;
 
-        //if (currentUser.IsSuperAdmin())
-        //{
-        //    if (createUserCommand.CompanyId <= 0)
-        //    {
-        //        // Manager || SuperAdmin
-        //        existUser = await identityRepository.GetUserByPhoneNumberAndCompanyType(createUserCommand.PhoneNumber, createUserCommand.CompanyType, cancellationToken);
-        //    }
-        //    else
-        //    {
-        //        // User
-        //        existUser = await identityRepository.GetUserByPhoneNumberAndCompanyId(createUserCommand.PhoneNumber, createUserCommand.CompanyId!.Value, cancellationToken);
-        //    }
-        //}
-        //else
-        //{
-        //    existUser = await identityRepository.GetUserByPhoneNumberAndCompanyId(createUserCommand.PhoneNumber, createUserCommand.CompanyId!.Value, cancellationToken);
-        //}
-
-        var existedUser = await userManager.FindByNameAsync(command.PhoneNumber);
+        var existedUser = await userRepository.GetUserByMobileAndCompanyIdAsync(command.PhoneNumber, command.CompanyId, false, true, cancellationToken);
 
         if (existedUser is not null)
             return ApiResponse<string>.Error(400, $"کاربر با این شماره قبلا ثبت شده است {command.PhoneNumber}");
@@ -125,43 +107,22 @@ public class IdentityService(
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
 
-        user.Profile = null;
-        var result = await identityRepository.CreateUserAsync(user, command.Password, cancellationToken);
-        if (result is { Succeeded: false })
-            return ApiResponse<string>.Error(400, string.Join(", ", result.Errors.Select(x => x.Description)));
+
+        var result = await userRepository.CreateUserAsync(user, command.Password, role, cancellationToken);
+        if (result.Result is { Succeeded: false })
+            return ApiResponse<string>.Error(400, string.Join(", ", result.Result.Errors.Select(x => x.Description)));
 
 
 
-        if (string.IsNullOrEmpty(user.Id))
-            return ApiResponse<string>.Error(400, "Seems User has not been Created");
 
         logger.LogInformation("User successfully Created: {Id}", user.Id);
 
-        var addRoleResult = await identityRepository.AddRoleToUser(user, role);
 
-        if (addRoleResult is { Succeeded: false })
-            return ApiResponse<string>.Error(400, string.Join(", ", addRoleResult.Errors.Select(x => x.Description)));
-
-        // addUserControl Version
-        await userPermissionVersionControlRepository.SetUserPermissionVersion(user.Id, cancellationToken);
+        user.PermissionVersion = Guid.NewGuid().ToString();
+        user.TypeOfFactorInSamanehMoadianId = (short)command.MoadianFactorType;
 
 
-        if (string.IsNullOrEmpty(user.Id))
-            return ApiResponse<string>.Error(400, $"خطای سیستمی . عملیات ناموفق");
-
-        var userProfile = await profileRepository.CreateUserProfile(new UserProfile
-        {
-            UserId = user.Id,
-
-            MoadianFactorType =
-                (MoadianFactorType)command.MoadianFactorType
-        }, cancellationToken);
-        logger.LogInformation("userProfile successfully Created: {Id}", userProfile);
-
-
-        await userCompanyRepository.Create(new Domain.Entities.Companies.UserCompany { CompanyId = command.CompanyId, UserId = user.Id }, cancellationToken);
-
-
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         await unitOfWork.CommitTransactionAsync(cancellationToken);
         logger.LogInformation("User created successfully with ID: {Id}", user.Id);
@@ -173,6 +134,7 @@ public class IdentityService(
     {
         var currentUser = userContext.GetCurrentUser();
 
+        #region MyRegion
         //if (currentUser is null)
 
         //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز");
@@ -182,43 +144,19 @@ public class IdentityService(
         //if (currentUser.IsManager() && updateUserCommand.CompanyId <= 0)
         //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز");
         //if (currentUser.IsManager() && updateUserCommand.CompanyType > 0)
-        //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز");
+        //    return ApiResponse<string>.Error(400, $"عملیات غیر مجاز"); 
+        #endregion
 
         logger.LogInformation("UpdateUser Function Called with This Parameter: @{UpdateUserCommand}", command);
 
-        var existUserById = await userManager.FindByIdAsync(command.UserId);
+        var existUserById = await userRepository.GetUserByMobileAndCompanyIdAsync(command.PhoneNumber, command.CompanyId, false, true, cancellationToken);
 
         if (existUserById is null)
             return ApiResponse<string>.Error(400, $"کاربر با این مشخصات وجود ندارد {command.UserId}");
 
 
 
-        #region MyRegion
-        //if (currentUser.IsSuperAdmin())
-        //{
-        //    if (updateUserCommand.CompanyId <= 0)
-        //    {
-        //        // Manager || SuperAdmin
 
-        //        var checkExistence = await identityRepository.GetUserByPhoneNumberAndCompanyTypeForUpdateOperation(updateUserCommand.PhoneNumber, updateUserCommand.CompanyType, existUserById.Id, cancellationToken);
-        //        if (checkExistence is not null)
-        //            return ApiResponse<string>.Error(400, $"کاربر با این مشخصات وجود دارد {updateUserCommand.UserId}");
-        //    }
-        //    else
-        //    {
-        //        // User
-        //        var checkExistence = await identityRepository.GetUserByPhoneNumberAndCompanyIdForUpdateOperation(updateUserCommand.PhoneNumber, updateUserCommand.CompanyId!.Value, existUserById.Id, cancellationToken);
-        //        if (checkExistence is not null)
-        //            return ApiResponse<string>.Error(400, $"کاربر با این مشخصات وجود دارد {updateUserCommand.UserId}");
-        //    }
-        //}
-        //else
-        //{
-        //    var checkExistence = await identityRepository.GetUserByPhoneNumberAndCompanyIdForUpdateOperation(updateUserCommand.PhoneNumber, updateUserCommand.CompanyId!.Value, existUserById.Id, cancellationToken);
-        //    if (checkExistence is not null)
-        //        return ApiResponse<string>.Error(400, $"کاربر با این مشخصات وجود دارد {updateUserCommand.UserId}");
-        //} 
-        #endregion
 
 
 
@@ -251,8 +189,7 @@ public class IdentityService(
         if (updatedUser == null)
             return ApiResponse<string>.Error(400, "مشکل در عملیات تبدیل");
 
-        updatedUser.Profile = null;
-        //updatedUser.UserCompanies = [];
+
 
         var result = await userManager.UpdateAsync(updatedUser);
 
@@ -261,84 +198,25 @@ public class IdentityService(
 
         logger.LogInformation("User successfully Updated: {Id}", existUserById.Id);
 
-        var existedUserCompany =
-            await userCompanyRepository.GetUserCompanyByUserId(existUserById.Id, cancellationToken);
-        var existedProfile = await profileRepository.GetUserProfile(existUserById.Id, cancellationToken);
-
-        if (existedUserCompany is null)
-            return ApiResponse<string>.Error(400, "کاربر به هیچ شرکتی تعلق ندارد");
-        if (existedProfile is null)
-            return ApiResponse<string>.Error(400, "پروفایل کاربر ساخته نشده است");
 
 
 
 
-        if (existedUserCompany.CompanyId != command.CompanyId)
-        {
-            existedUserCompany.CompanyId = command.CompanyId;
 
-        }
-
-        if (existedProfile.MoadianFactorType != (MoadianFactorType)command.MoadianFactorType)
-        {
-            existedProfile.MoadianFactorType = (MoadianFactorType)command.MoadianFactorType;
-        }
-
-
-
-        #region MyRegion
-
-        //if (updateUserCommand.CompanyId is > 0)
+        //if (existedUserCompany.CompanyId != command.CompanyId)
         //{
-        //    if (existedProfile is not null)
-        //    {
-        //        await profileRepository.UpdateUserProfile(new UserProfile
+        //    existedUserCompany.CompanyId = command.CompanyId;
 
-        //        {
-        //            Id = existedProfile.Id,
-        //            UserId = updateUserCommand.UserId,
-
-        //            MoadianFactorType =
-        //                                (MoadianFactorType)updateUserCommand.MoadianFactorType
-        //        }, cancellationToken);
-        //    }
-        //    else
-        //    {
-        //        await profileRepository.CreateUserProfile(new UserProfile
-        //        {
-        //            UserId = existUserById.Id,
-
-        //            MoadianFactorType =
-        //(MoadianFactorType)updateUserCommand.MoadianFactorType
-        //        }, cancellationToken);
-        //    }
-
-        //    if (existedUserCompany is null)
-        //    {
-        //        await userCompanyRepository.Create(
-        //            new Domain.Entities.Companies.UserCompany()
-        //            { CompanyId = updateUserCommand.CompanyId.Value, UserId = existUserById.Id },
-        //            cancellationToken);
-        //    }
-        //    else
-        //    {
-        //        await userCompanyRepository.UpdateUserCompany(
-        //            new Domain.Entities.Companies.UserCompany { CompanyId = updateUserCommand.CompanyId.Value, UserId = existUserById.Id }, cancellationToken);
-        //    }
         //}
-        //else
-        //{
-        //    if (existedProfile is not null)
-        //    {
-        //        profileRepository.DeleteUserProfile(existedProfile, cancellationToken);
-        //    }
 
-        //    if (existedUserCompany is not null)
-        //    {
-        //        userCompanyRepository.DeleteUserCompany(existedUserCompany, cancellationToken);
-        //    }
-        //} 
-        #endregion
+        //if (existedProfile.MoadianFactorType != (MoadianFactorType)command.MoadianFactorType)
+        //{
+        //    existedProfile.MoadianFactorType = (MoadianFactorType)command.MoadianFactorType;
+        //}
+
+
+
+
 
         if (!string.IsNullOrEmpty(command.RoleId) && !string.IsNullOrEmpty(command.RoleName))
         {
@@ -363,13 +241,11 @@ public class IdentityService(
 
             logger.LogInformation("RoleName successfully Found: {Id}", requestedRole.NormalizedName);
         }
-        var oldUserPermissionControlVersion = await userPermissionVersionControlRepository.GetUserPermissionVersionString(existUserById.Id,
-                cancellationToken);
 
-        if (string.IsNullOrEmpty(oldUserPermissionControlVersion))
-            return ApiResponse<string>.Error(400, "ورژن کنترل مجوز های کاربر وجود ندارد یا لود نشد.");
-        // addUserControl Version
-        await userPermissionVersionControlRepository.UpdateUserPermissionVersion(existUserById.Id, oldUserPermissionControlVersion, cancellationToken);
+
+        existUserById.PermissionVersion = Guid.NewGuid().ToString();
+        existUserById.TypeOfFactorInSamanehMoadianId = (short)command.MoadianFactorType;
+
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -382,9 +258,25 @@ public class IdentityService(
     {
         logger.LogInformation("LoginUser Function Called with PhoneNumber: {PhoneNumber}", query.PhoneNumber);
 
-        // Check if user exists and validate password in one step
-        // var user = await identityRepository.FindUserByPhone(loginUserQuery.PhoneNumber, cancellationToken);
-        var user = await userManager.FindByNameAsync(query.PhoneNumber);
+
+
+        var tenantInfo = tenantContext.MultiTenantContext?.TenantInfo;
+
+        if (tenantInfo is null || string.IsNullOrEmpty(tenantInfo.Identifier))
+        {
+            return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
+        }
+
+        var companyUri = await companyUriRepository.GetUriByTenant(tenantInfo.Identifier, cancellationToken);
+
+        if (companyUri is null || !companyUri.Active)
+            return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
+
+        logger.LogInformation("LoginUser Function Called with PhoneNumber: {PhoneNumber}", query.PhoneNumber);
+
+        var user = await userRepository.GetUserByMobileAndCompanyIdAsync(query.PhoneNumber, companyUri.CompanyId, true, true, cancellationToken);
+
+
 
         if (user == null)
         {
@@ -428,22 +320,9 @@ public class IdentityService(
 
             return ApiResponse<LoginResponse>.Error(401, ConstantNames.DeactivatedAccountMessage);
 
-        var userCompany = await userCompanyRepository.GetUserCompanyByUserId(user.Id, cancellationToken, false);
-
-
-        if (userCompany == null)
-        {
-            return ApiResponse<LoginResponse>.Error(401, ConstantNames.UserNotValidMessage);
-        }
 
 
 
-
-        var permissionVersionControl = await userPermissionVersionControlRepository.GetUserPermissionVersionString(user!.Id, cancellationToken);
-
-        if (string.IsNullOrEmpty(permissionVersionControl))
-
-            return ApiResponse<LoginResponse>.Error(401, "حساب کاربری شما معتبر نیست");
 
 
         // Check for active session
@@ -497,7 +376,7 @@ public class IdentityService(
             }
         }
 
-        var claims = tokenRepository.ClaimsGenerator(user, userCompany, permissionVersionControl, roles!, newSessionId, permissions);
+        var claims = tokenRepository.ClaimsGenerator(user, roles!, newSessionId, permissions);
         var (resultToken, validTo) = tokenRepository.GenerateAccessToken(claims, RequiredKeys().key,
             RequiredKeys().issuer, RequiredKeys().audience);
 
@@ -535,7 +414,7 @@ public class IdentityService(
             SessionId = newSessionId,
             RefreshToken = refreshToken,
             SystemPermissions = [],
-            PermissionVersionControl = permissionVersionControl
+            PermissionVersionControl = user.PermissionVersion
 
 
         };
@@ -580,12 +459,7 @@ public class IdentityService(
             return ApiResponse<TokenResponse>.Error(401, "User not found.");
 
 
-        var userCompany = await userCompanyRepository.GetUserCompanyByUserId(user.Id, cancellationToken, false);
 
-        if (userCompany == null)
-        {
-            return ApiResponse<TokenResponse>.Error(401, ConstantNames.UserNotValidMessage);
-        }
 
         var clientIp = httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
 
@@ -595,14 +469,6 @@ public class IdentityService(
         // var userGroups = await userGroupRepository.GetUserGroupNameListAsyncByUserId(user.Id, cancellationToken);
         var roles = await userManager.GetRolesAsync(user) as IReadOnlyList<string>;
 
-        var permissionVersionControl = await userPermissionVersionControlRepository.GetUserPermissionVersionString(user!.Id, cancellationToken);
-
-
-        //TODO : ?? SHould i Change the PermisisonversionControl?
-
-        if (string.IsNullOrEmpty(permissionVersionControl))
-
-            return ApiResponse<TokenResponse>.Error(401, "حساب کاربری شما معتبر نیست");
 
         if (string.IsNullOrEmpty(user.ActiveSessionId))
             return ApiResponse<TokenResponse>.Error(401, "Active SessionId is null.");
@@ -624,7 +490,7 @@ public class IdentityService(
 
 
         //var claims = tokenService.ClaimsGenerator(user, userGroups, roles!, user.ActiveSessionId);
-        var claims = tokenRepository.ClaimsGenerator(user, userCompany, permissionVersionControl, roles!, user.ActiveSessionId, permissions);
+        var claims = tokenRepository.ClaimsGenerator(user, roles!, user.ActiveSessionId, permissions);
 
         var newAccessToken = tokenRepository.GenerateAccessToken(claims, RequiredKeys().key,
             RequiredKeys().issuer, RequiredKeys().audience);
@@ -650,7 +516,7 @@ public class IdentityService(
         if (refreshTokenResult <= 0)
             return ApiResponse<TokenResponse>.Error(500, "Refresh Token Creation Failed.");
 
-        return ApiResponse<TokenResponse>.Ok(new TokenResponse(newAccessToken.resultToken, newRefreshToken, permissionVersionControl, 15 * 60), "Refresh Token Successfully Created");
+        return ApiResponse<TokenResponse>.Ok(new TokenResponse(newAccessToken.resultToken, newRefreshToken, user.PermissionVersion, 15 * 60), "Refresh Token Successfully Created");
     }
 
     public async Task LogOutUser(LogOutQuery query, CancellationToken cancellationToken)
@@ -706,10 +572,12 @@ public class IdentityService(
             throw new ValidationException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
-        var (users, totalCount) = await identityRepository.GetAllUsersByCompany(query.CompanyId,
-            query.UserKind, query.CompanyType, query.SearchPhrase,
-              query.PageSize, query.PageNumber, query.SortBy, query.SortDirection,
-              cancellationToken);
+
+        var (users, totalCount) = await userRepository.GetAllUsersAsync(query.SearchPhrase, query.SortBy, query.CompanyId,
+            query.CompanyType, query.RoleId, query.ModaianFactorTypeId, query.HasCredit
+            , query.Banned, query.Active, query.IsBike, false, query.PageNumber, query.PageSize, query.SortDirection,
+            cancellationToken);
+
 
         var usersDto = mapper.Map<IReadOnlyList<UserDto>>(users) ?? Array.Empty<UserDto>();
         logger.LogInformation("Retrieved {Count} areas", usersDto.Count);
@@ -734,7 +602,9 @@ public class IdentityService(
             throw new ValidationException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
-        var user = await identityRepository.GetUserByCompanyAsync(query.UserId, query.CompanyId, cancellationToken);
+        var user = await userRepository.GetUserByIdAndCompanyId(query.UserId, query.CompanyId, false, true, cancellationToken);
+
+
         if (user is null)
             return ApiResponse<UserDto>.Error(400, $";کاربر با شناسه {query.UserId} یافت نشد");
 
@@ -752,7 +622,7 @@ public class IdentityService(
         if (string.IsNullOrEmpty(query.UserId))
             return ApiResponse<UserDto>.Error(400, $" شناسه {query.UserId} یافت نشد");
 
-        var user = await identityRepository.GetUserByIdAsync(query.UserId, cancellationToken);
+        var user = await userRepository.GetUserByIdAsync(query.UserId, false, false, cancellationToken);
         if (user is null)
             return ApiResponse<UserDto>.Error(400, $"کاربر با شناسه {query.UserId} یافت نشد");
 
@@ -762,11 +632,11 @@ public class IdentityService(
         return ApiResponse<UserDto>.Ok(userDto, "User retrieved successfully");
     }
 
-    public async Task<ApiResponse<int>> CreateUserByCompany(CreateUserCompanyCommand? command, CancellationToken cancellationToken)
+    public async Task<ApiResponse<string>> CreateUserByCompany(CreateUserCompanyCommand? command, CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateUserByCompany Called with {@CreateUserCompanyCommand}", command);
         if (command == null)
-            return ApiResponse<int>.Error(400, "ورودی ایجاد منطقه نمی‌تواند null باشد");
+            return ApiResponse<string>.Error(400, "ورودی ایجاد منطقه نمی‌تواند null باشد");
 
         var user = mapper.Map<User>(command);
 
@@ -774,26 +644,22 @@ public class IdentityService(
 
         var result = await userManager.CreateAsync(user, command.Password);
         if (!result.Succeeded)
-            return ApiResponse<int>.Error(400, $"خطا در ساخت کاربرجدید{string.Join(", ", result.Errors)}");
+            return ApiResponse<string>.Error(400, $"خطا در ساخت کاربرجدید{string.Join(", ", result.Errors)}");
 
-        var userProfile = new UserProfile
-        {
-            UserId = user.Id
-        };
 
-        var profileId = await profileRepository.CreateUserProfile(userProfile, cancellationToken);
 
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
-        logger.LogInformation("User created successfully with ID: {UserId} And {ProfileId}", user.Id, profileId);
+        logger.LogInformation("User created successfully with ID: {UserId}", user.Id);
 
-        return ApiResponse<int>.Created(profileId, $"User created successfully : {user.Id}");
+        return ApiResponse<string>.Created(user.Id, $"User created successfully : {user.Id}");
     }
 
     public async Task UpdateUserCompany(UpdateUserCompanyCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("UpdateUserCompany Called with {@UpdateUserCompanyCommand}", command);
-        var existingUser = await identityRepository.GetUserByCompanyAsync(command.UserId, command.CompanyId, cancellationToken)
+        var existingUser = await userRepository.GetUserByIdAndCompanyId(command.UserId, command.CompanyId, false
+            , true, cancellationToken)
                              ?? throw new NotFoundException("User not found");
         mapper.Map(command, existingUser);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -836,76 +702,8 @@ public class IdentityService(
         }
     }
 
-    public async Task<ApiResponse<string>> AddUserToRole(AddUserToRoleCommand command, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("AddUserToRole Called with {@AddUserToRole}", command);
 
-        var role = await roleManager.FindByIdAsync(command.RoleId);
-        if (role is null)
-            return ApiResponse<string>.Error(400, "این نقش وجودندارد");
 
-        var user = await userManager.FindByIdAsync(command.UserId);
-        if (user is null)
-            return ApiResponse<string>.Error(400, "کاربر وجود ندراد");
-
-        var userRoles = await userManager.IsInRoleAsync(user, role.NormalizedName!);
-        if (userRoles)
-            return ApiResponse<string>.Ok("این نقش برای این کاربر از قبل وجود دارد");
-
-        var currentRoles = await userManager.GetRolesAsync(user);
-
-        await unitOfWork.BeginTransactionAsync(cancellationToken);
-
-        if (currentRoles.Any())
-            await userManager.RemoveFromRolesAsync(user, currentRoles);
-
-        await userManager.AddToRoleAsync(user, role.NormalizedName!);
-
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, cancellationToken);
-        if (pvc is null)
-            return ApiResponse<string>.Error(400, "کاربر معتبر نمیباشد");
-
-        userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        await unitOfWork.CommitTransactionAsync(cancellationToken);
-
-        logger.LogInformation("AddUserToRole was Done Successfully with {@role}", role.Name);
-
-        return ApiResponse<string>.Ok("تخصیص نقش با موفقیت انجام شد.");
-    }
-
-    public async Task<ApiResponse<string>> RemoveUserFromRole(RemoveUserFromRoleCommand command, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("RemoveUserFromRoleCommand Called with {@RemoveUserFromRole}", command);
-
-        var role = await roleManager.FindByIdAsync(command.RoleId);
-        if (role is null)
-            return ApiResponse<string>.Error(400, "این نقش وجودندارد");
-
-        var user = await userManager.FindByIdAsync(command.UserId);
-        if (user is null)
-            return ApiResponse<string>.Error(400, "کاربر وجود ندراد");
-
-        var userRoles = await userManager.IsInRoleAsync(user, role.NormalizedName!);
-        if (!userRoles)
-            return ApiResponse<string>.Ok("کاربر این نقش را ندارد");
-
-        await unitOfWork.BeginTransactionAsync(cancellationToken);
-
-        await userManager.RemoveFromRoleAsync(user, role.NormalizedName!);
-
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(command.UserId, cancellationToken);
-        if (pvc is null)
-            return ApiResponse<string>.Error(400, "کاربر معتبر نمیباشد");
-
-        userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        await unitOfWork.CommitTransactionAsync(cancellationToken);
-        logger.LogInformation("RemoveUserFromRole was Done Successfully with {@role}", role.Name);
-
-        return ApiResponse<string>.Ok("تخصیص نقش با موفقیت حذف شد.");
-    }
 
     public ApiResponse<PagedResult<MoadianItemDto>> GeMoadianList()
     {
@@ -1090,16 +888,15 @@ public class IdentityService(
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
         user.Active = !user.Active;
+        user.PermissionVersion = Guid.NewGuid().ToString();
+
 
         var result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             return ApiResponse<string>.Error(500, $"SetUserActivityStatus  was not succeeded : {command.UserId}");
 
-        var pvc = await userPermissionVersionControlRepository.GetUserPermissionVersionObj(user.Id, cancellationToken);
-        if (pvc is null)
-            return ApiResponse<string>.Error(400, "کاربر معتبر نیست");
-        userPermissionVersionControlRepository.UpdateUserPermissionVersion(pvc);
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 

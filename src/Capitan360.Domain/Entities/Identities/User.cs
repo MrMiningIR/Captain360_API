@@ -18,21 +18,21 @@ public class User : IdentityUser
 
     public string AccountCodeInDesktopCaptainCargo { get; set; } = default!;
 
-    public string MobileTelegram { get; set; } = default!;
+    public string? MobileTelegram { get; set; }
 
     public short TypeOfFactorInSamanehMoadianId { get; set; }
 
-    public string Tell { get; set; } = default!;
+    public string? Tell { get; set; }
 
-    public string NationalCode { get; set; } = default!;
-    
-    public string EconomicCode { get; set; } = default!;
+    public string? NationalCode { get; set; }
 
-    public string NationalId { get; set; } = default!;
+    public string? EconomicCode { get; set; }
 
-    public string RegistrationId { get; set; } = default!;
+    public string? NationalId { get; set; }
 
-    public string Description { get; set; } = default!;
+    public string? RegistrationId { get; set; }
+
+    public string? Description { get; set; }
 
     public long Credit { get; set; }
 
@@ -41,24 +41,25 @@ public class User : IdentityUser
     public bool Active { get; set; }
 
     public bool Baned { get; set; }
- 
-    public string ActivationCode { get; set; } = default!;
+
+    public string? ActivationCode { get; set; }
 
     public DateTime ActivationCodeExpireTime { get; set; }
 
-    public string RecoveryPasswordCode { get; set; } = default!;
-
+    public string? RecoveryPasswordCode { get; set; }
     public DateTime RecoveryPasswordCodeExpireTime { get; set; }
 
     public bool IsBikeDelivery { get; set; }
 
     public DateTime LastAccess { get; set; }
 
-    public string ActiveSessionId { get; set; } = default!;
+    public string? ActiveSessionId { get; set; }
 
     public string PermissionVersion { get; set; } = default!;
 
     public ICollection<Address> Addresses { get; set; } = [];
+
+    public ICollection<Role> Roles { get; set; } = [];
 
     public ICollection<UserPermission> UserPermissions { get; set; } = [];
 

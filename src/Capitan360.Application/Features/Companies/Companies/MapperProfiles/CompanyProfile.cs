@@ -27,7 +27,7 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.CompanyCommissions, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyPreferences, opt => opt.Ignore())
             .ForMember(dest => dest.CompanySmsPatterns, opt => opt.Ignore())
-            .ForMember(dest => dest.UserCompanies, opt => opt.Ignore())
+
             .ForMember(dest => dest.CompanyUris, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyContentTypes, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyPackageTypes, opt => opt.Ignore())
@@ -52,7 +52,7 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.CompanyCommissions, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyPreferences, opt => opt.Ignore())
             .ForMember(dest => dest.CompanySmsPatterns, opt => opt.Ignore())
-            .ForMember(dest => dest.UserCompanies, opt => opt.Ignore())
+
             .ForMember(dest => dest.CompanyUris, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyContentTypes, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyPackageTypes, opt => opt.Ignore())
@@ -80,7 +80,7 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.CompanyCommissions, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyPreferences, opt => opt.Ignore())
             .ForMember(dest => dest.CompanySmsPatterns, opt => opt.Ignore())
-            .ForMember(dest => dest.UserCompanies, opt => opt.Ignore())
+
             .ForMember(dest => dest.CompanyUris, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyContentTypes, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyPackageTypes, opt => opt.Ignore())

@@ -20,7 +20,7 @@ public static class AuthorizationExtensions
         }
         else
         {
-            throw new SystemException("Permissions Table is not ready!");
+            // throw new SystemException("Permissions Table is not ready!");
         }
     }
 }

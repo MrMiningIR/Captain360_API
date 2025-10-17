@@ -38,12 +38,12 @@ public class CompanyDomesticWaybillProfile : Profile
             .ForMember(d => d.CompanyManifestFormNo, opt => opt.MapFrom(s => s.CompanyManifestForm != null ? s.CompanyManifestForm.No.ToString() : null))
             .ForMember(d => d.CompanyInsuranceName, opt => opt.MapFrom(s => s.CompanyInsurance != null ? s.CompanyInsurance.Name : null))
             .ForMember(d => d.CompanySenderBankName, opt => opt.MapFrom(s => s.CompanySenderBank != null ? s.CompanySenderBank.Name : null))
-            .ForMember(d => d.CustomerPanelNameFamily, opt => opt.MapFrom(s => s.CustomerPanel != null ? s.CustomerPanel.FullName : null))
+            .ForMember(d => d.CustomerPanelNameFamily, opt => opt.MapFrom(s => s.CustomerPanel != null ? s.CustomerPanel.NameFamily : null))
             .ForMember(d => d.CompanyReceiverBankName, opt => opt.MapFrom(s => s.CompanyReceiverBank != null ? s.CompanyReceiverBank.Name : null))
-            .ForMember(d => d.CompanyReceiverResponsibleCustomerNameFamily, opt => opt.MapFrom(s => s.CompanyReceiverResponsibleCustomer != null ? s.CompanyReceiverResponsibleCustomer.FullName : null))
-            .ForMember(d => d.BikeDeliveryInSenderCompanyNameFamily, opt => opt.MapFrom(s => s.BikeDeliveryInSenderCompany != null ? s.BikeDeliveryInSenderCompany.FullName : null))
-            .ForMember(d => d.BikeDeliveryInReceiverCompanyNameFamily, opt => opt.MapFrom(s => s.BikeDeliveryInReceiverCompany != null ? s.BikeDeliveryInReceiverCompany.FullName : null))
-            .ForMember(d => d.CounterNameFamily, opt => opt.MapFrom(s => s.Counter != null ? s.Counter.FullName : null))
+            .ForMember(d => d.CompanyReceiverResponsibleCustomerNameFamily, opt => opt.MapFrom(s => s.CompanyReceiverResponsibleCustomer != null ? s.CompanyReceiverResponsibleCustomer.NameFamily : null))
+            .ForMember(d => d.BikeDeliveryInSenderCompanyNameFamily, opt => opt.MapFrom(s => s.BikeDeliveryInSenderCompany != null ? s.BikeDeliveryInSenderCompany.NameFamily : null))
+            .ForMember(d => d.BikeDeliveryInReceiverCompanyNameFamily, opt => opt.MapFrom(s => s.BikeDeliveryInReceiverCompany != null ? s.BikeDeliveryInReceiverCompany.NameFamily : null))
+            .ForMember(d => d.CounterNameFamily, opt => opt.MapFrom(s => s.Counter != null ? s.Counter.NameFamily : null))
             .ForMember(d => d.TypeOfFactorInSamanehMoadian, opt => opt.MapFrom(s => s.TypeOfFactorInSamanehMoadianId))
             .ForMember(d => d.WaybillSate, opt => opt.MapFrom(s => s.State));
 

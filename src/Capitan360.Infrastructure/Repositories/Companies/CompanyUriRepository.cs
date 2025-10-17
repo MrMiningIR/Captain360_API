@@ -1,11 +1,10 @@
-﻿using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Enums;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
-using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -23,7 +22,7 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         return companyUri.Id;
     }
 
-    public async Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyUri?> GetCompanyUriByIdAsync(int companyUriId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyUri> query = dbContext.CompanyUris;
 
@@ -99,5 +98,9 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
             .ToListAsync(cancellationToken);
 
         return (companyUris, totalCount);
+    }
+    public async Task<CompanyUri?> GetUriByTenant(string tennat, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyUris.SingleOrDefaultAsync(x => x.Uri.ToLower().Trim() == tennat.ToLower().Trim(), cancellationToken: cancellationToken);
     }
 }

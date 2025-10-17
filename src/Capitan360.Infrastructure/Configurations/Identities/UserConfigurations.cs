@@ -1,4 +1,5 @@
 ﻿using Capitan360.Domain.Entities.Identities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +9,9 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.HasIndex(x => new { x.PhoneNumber, x.CompanyId })
+            .IsUnique();
+
         builder.Property(x => x.NameFamily)
               .IsRequired()
               .HasMaxLength(100)
@@ -21,7 +25,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.MobileTelegram)
-               .IsRequired()
+
                .HasMaxLength(11)
                .IsUnicode(false)
                .HasColumnType("varchar(11)");
@@ -30,82 +34,83 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
                .IsRequired();
 
         builder.Property(x => x.Tell)
-              .IsRequired()
+
               .HasMaxLength(30)
               .IsUnicode()
               .HasColumnType("nvarchar(30)");
 
         builder.Property(x => x.NationalCode)
-              .IsRequired()
+
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.EconomicCode)
-              .IsRequired()
+
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.NationalId)
-              .IsRequired()
+
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.RegistrationId)
-              .IsRequired()
+
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.Description)
-               .IsRequired()
+
                .HasMaxLength(500)
                .IsUnicode()
                .HasColumnType("nvarchar(500)");
 
-        builder.Property(x => x.Credit)
-               .IsRequired();
+        builder.Property(x => x.Credit);
 
-        builder.Property(x => x.HasCredit)
-               .IsRequired();
+        builder.Property(x => x.HasCredit);
 
-        builder.Property(x => x.Active)
-               .IsRequired();
+        builder.Property(x => x.Active);
 
-        builder.Property(x => x.Baned)
-               .IsRequired();
+        builder.Property(x => x.Baned);
 
         builder.Property(x => x.ActivationCode)
-              .IsRequired()
-              .HasMaxLength(6)
+            .HasMaxLength(6)
               .IsUnicode(false)
               .HasColumnType("char(6)");
 
-        builder.Property(x => x.ActivationCodeExpireTime)
-               .IsRequired();
+        builder.Property(x => x.ActivationCodeExpireTime);
 
         builder.Property(x => x.RecoveryPasswordCode)
-              .IsRequired()
-              .HasMaxLength(6)
+            .HasMaxLength(6)
               .IsUnicode(false)
               .HasColumnType("char(6)");
 
-        builder.Property(x => x.RecoveryPasswordCodeExpireTime)
-               .IsRequired();
+        builder.Property(x => x.RecoveryPasswordCodeExpireTime);
 
-        builder.Property(x => x.IsBikeDelivery)
-            .IsRequired();
+        builder.Property(x => x.IsBikeDelivery);
 
-        builder.Property(x => x.LastAccess)
-               .IsRequired();
+        builder.Property(x => x.LastAccess);
 
         builder.Property(x => x.ActiveSessionId)
-               .IsRequired()
+
                .HasMaxLength(100)
                .IsUnicode()
                .HasColumnType("nvarchar(100)");
+
+        builder.HasMany(u => u.Roles)
+ .WithMany()
+ .UsingEntity<IdentityUserRole<string>>(
+     j => j.HasOne<Role>().WithMany().HasForeignKey(ur => ur.RoleId),
+     j => j.HasOne<User>().WithMany().HasForeignKey(ur => ur.UserId),
+     j =>
+     {
+         j.ToTable("AspNetUserRoles");
+         j.HasKey(ur => new { ur.UserId, ur.RoleId });
+     });
 
         builder.Property(x => x.PermissionVersion)
                .IsRequired()

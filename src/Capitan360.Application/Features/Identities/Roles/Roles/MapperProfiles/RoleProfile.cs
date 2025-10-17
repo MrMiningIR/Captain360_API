@@ -15,15 +15,15 @@ public class RoleProfile : Profile
         CreateMap<CreateRoleCommand, Role>()
             .ForMember(d => d.Id, opt => opt.Ignore())
             .ForMember(d => d.ConcurrencyStamp, opt => opt.Ignore())
-            .ForMember(d => d.RolePermissions, opt => opt.Ignore())
-            .ForMember(d => d.RoleUsers, opt => opt.Ignore())
+
+
             .ForMember(d => d.NormalizedName, opt => opt.MapFrom(s => s.Name != null ? s.Name.Trim().ToUpperInvariant() : null));
 
         CreateMap<UpdateRoleCommand, Role>()
             .ForMember(d => d.Id, opt => opt.Ignore())
             .ForMember(d => d.ConcurrencyStamp, opt => opt.Ignore())
-            .ForMember(d => d.RolePermissions, opt => opt.Ignore())
-            .ForMember(d => d.RoleUsers, opt => opt.Ignore())
+
+
             .ForMember(d => d.Visible, opt => opt.Ignore())
             .ForMember(d => d.NormalizedName, opt => opt.MapFrom(s => s.Name != null ? s.Name.Trim().ToUpperInvariant() : null));
     }

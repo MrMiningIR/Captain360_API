@@ -10,14 +10,14 @@ namespace Capitan360.Api.Controllers
     [ApiController]
     public class HelperController(IIdentityService identityService) : ControllerBase
     {
-        [HttpGet("userKinds")]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<UserKindItemDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<UserKindItemDto>>), StatusCodes.Status400BadRequest)]
-        public ActionResult<ApiResponse<PagedResult<UserKindItemDto>>> GetUserKinds()
-        {
-            var userKinds = identityService.GetUserKindList();
-            return Ok(userKinds);
-        }
+        //[HttpGet("userKinds")]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<UserKindItemDto>>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<UserKindItemDto>>), StatusCodes.Status400BadRequest)]
+        //public ActionResult<ApiResponse<PagedResult<UserKindItemDto>>> GetUserKinds()
+        //{
+        //    var userKinds = identityService.GetUserKindList();
+        //    return Ok(userKinds);
+        //}
 
         [HttpGet("MoadianType")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<MoadianItemDto>>), StatusCodes.Status200OK)]

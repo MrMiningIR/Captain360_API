@@ -144,17 +144,14 @@ public static class ServiceCollectionExtensions
 
         // registering repositories
         service.AddScoped<IPermissionRepository, PermissionRepository>();
-        service.AddScoped<ITokenBlacklistsRepository, TokenBlacklistsRepository>();
-        service.AddScoped<IIdentityRepository, IdentityRepository>();
-        service.AddScoped<IGroupRepository, GroupRepository>();
-        service.AddScoped<IUserGroupRepository, UserGroupRepository>();
+
         service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         service.AddScoped<ITokenRepository, TokenRepository>();
         service.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
 
         service.AddScoped<ICompanyRepository, CompanyRepository>();
         service.AddScoped<IAddressRepository, AddressRepository>();
-        service.AddScoped<ICompanyAddressRepository, CompanyAddressRepository>();
+
         service.AddScoped<ICompanyUriRepository, CompanyUriRepository>();
         service.AddScoped<ICompanySmsPatternsRepository, CompanySmsPatternsRepository>();
         service.AddScoped<ICompanyPreferencesRepository, CompanyPreferencesRepository>();
@@ -171,13 +168,13 @@ public static class ServiceCollectionExtensions
         service.AddScoped<ICompanyInsuranceChargeRepository, CompanyInsuranceChargeRepository>();
         service.AddScoped<ICompanyInsuranceChargePaymentRepository, CompanyInsuranceChargePaymentRepository>();
         service.AddScoped<ICompanyInsuranceChargePaymentContentTypeRepository, CompanyInsuranceChargePaymentContentTypeRepository>();
-        service.AddScoped<IUserCompanyRepository, UserCompanyRepository>();
-        service.AddScoped<IUserPermissionVersionControlRepository, UserPermissionVersionControlRepository>();
-        service.AddScoped<IUserProfileRepository, UserProfileRepository>();
+
         service.AddScoped<ICompanyContentTypeRepository, CompanyContentTypeRepository>();
         service.AddScoped<IUtilsService, UtilsService>();
         service.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
         service.AddScoped<ICompanyPackageTypeRepository, CompanyPackageTypeRepository>();
+        service.AddScoped<IUserRepository, UserRepository>();
+        service.AddScoped<IRoleRepository, RoleRepository>();
 
         // service.AddSingleton<IResponseCacheService, ResponseCacheService>();
 

@@ -22,8 +22,8 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpGet("GetAllPagedPermissions")]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<IPermissionService.PermissionDto>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse<PagedResult<IPermissionService.PermissionDto>>>> GetAllPagedPermissions([FromQuery]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<PermissionDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiResponse<PagedResult<PermissionDto>>>> GetAllPagedPermissions([FromQuery]
             IPermissionService.GetAllMatchingPermissionsQuery query, CancellationToken cancellationToken)
         {
             var response = await permissionService.GetAllMatchingPermissions(query, cancellationToken);
@@ -46,8 +46,8 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpGet("GetPermissionByParentName")]
-        [ProducesResponseType(typeof(ApiResponse<List<IPermissionService.PermissionDto>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse<List<IPermissionService.PermissionDto>>>> GetPermissionByParentName([FromQuery] IPermissionService.GetPermissionsByParentNameQuery query,
+        [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiResponse<List<PermissionDto>>>> GetPermissionByParentName([FromQuery] IPermissionService.GetPermissionsByParentNameQuery query,
             CancellationToken cancellationToken)
         {
             var response = await permissionService.GetPermissionsByParentName(query, cancellationToken);
@@ -55,8 +55,8 @@ namespace Capitan360.Api.Controllers
         }
 
         [HttpGet("GetPermissionByParentCode")]
-        [ProducesResponseType(typeof(ApiResponse<List<IPermissionService.PermissionDto>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse<List<IPermissionService.PermissionDto>>>> GetPermissionByParentCode([FromQuery] IPermissionService.GetPermissionsByParentCodeQuery query,
+        [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiResponse<List<PermissionDto>>>> GetPermissionByParentCode([FromQuery] IPermissionService.GetPermissionsByParentCodeQuery query,
             CancellationToken cancellationToken)
         {
             var response = await permissionService.GetPermissionsByParentCode(query, cancellationToken);

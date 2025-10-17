@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
+using Capitan360.Application.Features.Identities.Dtos;
 using Capitan360.Application.Features.Identities.Permissions.Dtos;
 using Capitan360.Domain.Dtos.TransferObject;
 using FluentValidation;
@@ -86,17 +87,17 @@ public interface IPermissionService
     }
 
 
-    public class PermissionDto
-    {
-        public string Name { get; set; } = default!;
-        public int Id { get; set; }
-        public string DisplayName { get; set; } = default!;
-        public string Parent { get; set; }
-        public string ParentDisplayName { get; set; }
-        public bool Active { get; set; }
-        public Guid PermissionCode { get; set; }
-        public Guid ParentCode { get; set; }
-    }
+    //public class PermissionDto
+    //{
+    //    public string Name { get; set; } = default!;
+    //    public int Id { get; set; }
+    //    public string DisplayName { get; set; } = default!;
+    //    public string Parent { get; set; }
+    //    public string ParentDisplayName { get; set; }
+    //    public bool Active { get; set; }
+    //    public Guid PermissionCode { get; set; }
+    //    public Guid ParentCode { get; set; }
+    //}
 
     public class PermissionProfile : Profile
     {
@@ -107,13 +108,13 @@ public interface IPermissionService
     }
 
     // System Permission Operation
-    ApiResponse<List<PermissionDto>> GetSystemPermissions(Assembly? assembly);
+    ApiResponse<List<PermissionCollectorDto>> GetSystemPermissions(Assembly? assembly);
 
     List<string> GetPermissionsForSystem(Assembly? assembly);
 
-    Task SavePermissionsInSystem(List<PermissionDto> permissionsData, CancellationToken cancellationToken);
+    Task SavePermissionsInSystem(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
 
-    Task DeleteUnAvailablePermissions(List<PermissionDto> permissionsData, CancellationToken cancellationToken);
+    Task DeleteUnAvailablePermissions(List<PermissionCollectorDto> permissionsData, CancellationToken cancellationToken);
 
     Task<ApiResponse<List<Domain.Entities.Identities.Permission>>> GetDbPermissions(CancellationToken cancellationToken);
 

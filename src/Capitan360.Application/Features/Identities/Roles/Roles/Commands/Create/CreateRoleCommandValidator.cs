@@ -6,7 +6,7 @@ public class CreateRoleCommandValidator : AbstractValidator<CreateRoleCommand>
 {
     public CreateRoleCommandValidator()
     {
-        RuleFor(x => x.RoleName)
+        RuleFor(x => x.Name)
             .NotEmpty().WithMessage("نام نقش اجباری است.")
             .MaximumLength(256).WithMessage("حداکثر نام نقش 256 کاراکتر است.");
 

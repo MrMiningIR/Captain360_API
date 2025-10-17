@@ -5,7 +5,6 @@ using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
-using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +21,7 @@ namespace Capitan360.Infrastructure.Seeders
     public class PrimaryInformationSeeder(ApplicationDbContext dbContext,
         IUnitOfWork unitOfWork,
         RoleManager<Role> roleManager,
-        UserManager<User> userManager, 
+        UserManager<User> userManager,
         IPermissionService permissionService,
         ICompanyPreferencesRepository companyPreferencesRepository,
         ICompanyRepository companyRepository) : IPrimaryInformationSeeder
@@ -100,6 +99,25 @@ namespace Capitan360.Infrastructure.Seeders
                 var dbUser = await userManager.FindByNameAsync(username);
                 if (dbUser == null)
                 {
+
+
+                    var company = new Company()
+                    {
+                        CompanyTypeId = 1,
+                        Name = "شرکت پژواک",
+                        Code = "123456",
+                        MobileCounter = "05112345678",
+                        Active = false,
+                        IsParentCompany = true,
+                        CountryId = 1,
+                        ProvinceId = 12,
+                        CityId = 183,
+                        Description = "شرکت اصلی و پایه سیستم است"
+                    };
+
+                    await companyRepository.CreateCompanyAsync(company, cancellationToken);
+
+
                     var user = new User
                     {
                         UserName = phoneNumbers[i],
@@ -107,7 +125,13 @@ namespace Capitan360.Infrastructure.Seeders
                         Email = $"{username}@sample.com",
                         NameFamily = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(username),
                         CompanyTypeId = 1,
-                        Active = true
+                        Active = true,
+                        PermissionVersion = Guid.NewGuid().ToString(),
+                        AccountCodeInDesktopCaptainCargo = "00000",
+                        ActivationCode = "000000",
+                        TypeOfFactorInSamanehMoadianId = (short)MoadianFactorType.Unknown,
+                        CompanyId = company.Id
+
                     };
 
                     var result = await userManager.CreateAsync(user, phoneNumbers[i]);
@@ -116,33 +140,7 @@ namespace Capitan360.Infrastructure.Seeders
                     {
                         await userManager.AddToRoleAsync(user, roleName);
                         // addUserControl Version
-                        await userPermissionVersionControlRepository.SetUserPermissionVersion(user.Id, cancellationToken);
 
-                        var company = new Company()
-                        {
-                            CompanyTypeId = 1,
-                            Name = "شرکت پژواک",
-                            Code = "123456",
-                            MobileCounter = "05112345678",
-                            Active = false,
-                            IsParentCompany = true,
-                            CountryId = 1,
-                            ProvinceId = 12,
-                            CityId = 183,
-                            Description = "شرکت اصلی و پایه سیستم است"
-                        };
-
-                        await companyRepository.CreateCompanyAsync(company, cancellationToken);
-                        var profile = new UserProfile()
-                        {
-                            UserId = user.Id
-                        };
-                        var userCompany =
-                            new UserCompany()
-                            {
-                                CompanyId = company.Id,
-                                UserId = user.Id
-                            };
                         var companyPreferences = new CompanyPreferences()
                         {
                             CompanyId = company.Id,
@@ -152,8 +150,8 @@ namespace Capitan360.Infrastructure.Seeders
                             CaptainCargoName = "SampleName",
                             CaptainCargoCode = "123456789"
                         };
-                        await profileRepository.CreateUserProfile(profile, cancellationToken);
-                        await userCompanyRepository.Create(userCompany, cancellationToken);
+
+
                         await companyPreferencesRepository.CreateCompanyPreferencesAsync(companyPreferences,
                             cancellationToken);
                     }
