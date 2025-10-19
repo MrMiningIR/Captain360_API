@@ -16,7 +16,6 @@ using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.Companies;
 using Microsoft.AspNetCore.Http;
-using Capitan360.Domain.Entities.Addresses;
 
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
 {

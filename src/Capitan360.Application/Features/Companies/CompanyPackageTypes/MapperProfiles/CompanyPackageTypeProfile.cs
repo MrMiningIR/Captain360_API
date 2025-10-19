@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyContentTypes.Commands.UpdateName;
-using Capitan360.Application.Features.Companies.CompanyContentTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateName;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Dtos;

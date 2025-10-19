@@ -2,4 +2,6 @@
 
 public record BackCompanyDomesticWaybillToReadyStateFromDesktopCommand(
     long No,
-    string CompanySenderCaptain360Code);
+    string CompanySenderCaptain360Code,
+    string DateUpdate,
+    string TimeUpdate);

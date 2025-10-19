@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using Capitan360.Application.Features.Companies.CompanyContentTypes.Dtos;
-using Capitan360.Domain.Enums;
+﻿using Capitan360.Application.Features.Companies.CompanyContentTypes.Dtos;
 using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetAll;

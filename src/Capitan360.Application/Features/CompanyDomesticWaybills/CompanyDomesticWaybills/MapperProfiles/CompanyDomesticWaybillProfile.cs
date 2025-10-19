@@ -2,7 +2,7 @@
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.Issue;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.IssueFromDesktop;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Dtos;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.AttachToCompanyManifestFormFromDesktop;
+using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.AddToCompanyManifestFormFromDesktop;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFormDeliveryStateFromDesktop;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFromCompanyManifestFormFromDesktop;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackToReadyStateFromDesktop;
@@ -111,7 +111,7 @@ public class CompanyDomesticWaybillProfile : Profile
             .ForMember(d => d.CompanyReceiverBankId, opt => opt.Ignore())
             .ForMember(d => d.CompanyReceiverResponsibleCustomerId, opt => opt.Ignore());
 
-        CreateMap<AttachCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommand, CompanyDomesticWaybill>()
+        CreateMap<AddCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommand, CompanyDomesticWaybill>()
             .ForMember(d => d.CompanyManifestFormId, opt => opt.Ignore());
 
         CreateMap<BackCompanyDomesticWaybillFormDeliveryStateFromDesktopCommand, CompanyDomesticWaybill>();

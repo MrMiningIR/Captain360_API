@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Capitan360.Application.Extensions;
+using FluentValidation;
 
 namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.ChangeStateToReceivedAtReceiverCompanyFromDesktop;
 

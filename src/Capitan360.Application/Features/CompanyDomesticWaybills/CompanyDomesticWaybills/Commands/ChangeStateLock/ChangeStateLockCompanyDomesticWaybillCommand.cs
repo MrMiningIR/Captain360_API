@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateLock;
+
+public record ChangeStateLockCompanyDomesticWaybillCommand(int Id);

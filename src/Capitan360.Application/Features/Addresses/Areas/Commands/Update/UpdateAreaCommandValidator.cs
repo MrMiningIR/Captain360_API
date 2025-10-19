@@ -1,5 +1,4 @@
-﻿using Capitan360.Application.Features.Addresses.Areas.Commands.Create;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Capitan360.Application.Features.Addresses.Areas.Commands.Update;
 

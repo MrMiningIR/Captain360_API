@@ -1,6 +1,4 @@
-﻿using Capitan360.Domain.Entities.Companies;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 

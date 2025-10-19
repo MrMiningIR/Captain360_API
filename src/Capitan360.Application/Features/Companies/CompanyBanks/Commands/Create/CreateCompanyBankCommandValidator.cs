@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Commands.Create;
 

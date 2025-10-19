@@ -1,7 +1,4 @@
-﻿using System.Linq.Expressions;
-using System.Threading;
-using Capitan360.Domain.Entities.CompanyDomesticWaybills;
-using Capitan360.Domain.Enums;
+﻿using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.CompanyDomesticWaybills;
 using Capitan360.Infrastructure.Persistence;
@@ -9,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyDomesticWaybills;
 
-public class CompanyDomesticWaybillPackageTypeRepository(
-    ApplicationDbContext dbContext, 
-    IUnitOfWork unitOfWork) : ICompanyDomesticWaybillPackageTypeRepository
+public class CompanyDomesticWaybillPackageTypeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyDomesticWaybillPackageTypeRepository
 {
     public async Task<int> IssueCompanyDomesticWaybillPackageTypeAsync(CompanyDomesticWaybillPackageType companyDomesticWaybillPackageType, CancellationToken cancellationToken)
     {

@@ -21,7 +21,6 @@ using Capitan360.Application.Features.Addresses.Addresses.Commands.UpdateActiveS
 using Capitan360.Application.Features.Addresses.Addresses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Addresses.Addresses.Queries.GetByUserId;
 using Capitan360.Application.Features.Addresses.Addresses.Queries.GetAll;
-using System.Net;
 
 namespace Capitan360.Application.Features.Addresses.Addresses.Services;
 

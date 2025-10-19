@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Capitan360.Application.Features.Companies.CompanyBanks.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyBanks.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyBanks.Dtos;

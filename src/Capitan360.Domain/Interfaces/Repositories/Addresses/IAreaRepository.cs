@@ -1,6 +1,5 @@
 ﻿using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Domain.Interfaces.Repositories.Addresses;
 

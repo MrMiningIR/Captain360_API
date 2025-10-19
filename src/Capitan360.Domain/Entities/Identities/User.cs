@@ -18,21 +18,21 @@ public class User : IdentityUser
 
     public string AccountCodeInDesktopCaptainCargo { get; set; } = default!;
 
-    public string? MobileTelegram { get; set; }
+    public string MobileTelegram { get; set; } = default!;
 
     public short TypeOfFactorInSamanehMoadianId { get; set; }
 
-    public string? Tell { get; set; }
+    public string Tell { get; set; } = default!;
 
-    public string? NationalCode { get; set; }
+    public string NationalCode { get; set; } = default!;
 
-    public string? EconomicCode { get; set; }
+    public string EconomicCode { get; set; } = default!;
 
-    public string? NationalId { get; set; }
+    public string NationalId { get; set; } = default!;
 
-    public string? RegistrationId { get; set; }
+    public string RegistrationId { get; set; } = default!;
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = default!;
 
     public long Credit { get; set; }
 
@@ -42,18 +42,19 @@ public class User : IdentityUser
 
     public bool Baned { get; set; }
 
-    public string? ActivationCode { get; set; }
+    public string ActivationCode { get; set; } = default!;
 
     public DateTime ActivationCodeExpireTime { get; set; }
 
-    public string? RecoveryPasswordCode { get; set; }
+    public string RecoveryPasswordCode { get; set; } = default!;
+
     public DateTime RecoveryPasswordCodeExpireTime { get; set; }
 
     public bool IsBikeDelivery { get; set; }
 
     public DateTime LastAccess { get; set; }
 
-    public string? ActiveSessionId { get; set; }
+    public string ActiveSessionId { get; set; } = default!;
 
     public string PermissionVersion { get; set; } = default!;
 
