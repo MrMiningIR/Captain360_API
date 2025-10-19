@@ -33,7 +33,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(x => x.TypeOfFactorInSamanehMoadianId)
                .IsRequired();
 
-        builder.Property(x => x.Tell)
+    builder.Property(x => x.Tell)
 
               .HasMaxLength(30)
               .IsUnicode()

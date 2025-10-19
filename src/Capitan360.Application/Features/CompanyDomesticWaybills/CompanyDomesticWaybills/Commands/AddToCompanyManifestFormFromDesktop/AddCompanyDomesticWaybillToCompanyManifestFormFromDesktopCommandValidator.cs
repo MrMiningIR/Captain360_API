@@ -1,11 +1,11 @@
 ﻿using Capitan360.Application.Extensions;
 using FluentValidation;
 
-namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.AttachToCompanyManifestFormFromDesktop;
+namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.AddToCompanyManifestFormFromDesktop;
 
-public class AttachCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommandValidator : AbstractValidator<AttachCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommand>
+public class AddCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommandValidator : AbstractValidator<AddCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommand>
 {
-    public AttachCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommandValidator()
+    public AddCompanyDomesticWaybillToCompanyManifestFormFromDesktopCommandValidator()
     {
         RuleFor(x => x.No)
             .GreaterThan(0).WithMessage("شماره بارنامه باید بزرگتر از صفر باشد");

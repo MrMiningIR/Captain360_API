@@ -14,7 +14,6 @@ using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Microsoft.AspNetCore.Http;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Queries.GetByCompanyId;
-using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Features.Companies.CompanyContentTypes.Services;
 

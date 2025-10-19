@@ -1,8 +1,6 @@
 ﻿using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Dtos;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Capitan360.Domain.Interfaces.Repositories.CompanyDomesticWaybills;
 

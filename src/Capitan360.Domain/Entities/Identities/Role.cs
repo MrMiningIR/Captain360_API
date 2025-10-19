@@ -7,6 +7,4 @@ public class Role : IdentityRole
     public string PersianName { get; set; } = default!;
 
     public bool Visible { get; set; }
-
-
 }

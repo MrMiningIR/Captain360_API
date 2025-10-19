@@ -19,10 +19,10 @@ public class PackageTypeConfiguration : BaseEntityConfiguration<PackageType>
                .IsRequired();
 
         builder.Property(x => x.Name)
-                   .IsRequired()
-                   .HasMaxLength(30)
-                   .IsUnicode()
-                   .HasColumnType("nvarchar(30)");
+               .IsRequired()
+               .HasMaxLength(30)
+               .IsUnicode()
+               .HasColumnType("nvarchar(30)");
 
         builder.Property(x => x.Active)
                .IsRequired()

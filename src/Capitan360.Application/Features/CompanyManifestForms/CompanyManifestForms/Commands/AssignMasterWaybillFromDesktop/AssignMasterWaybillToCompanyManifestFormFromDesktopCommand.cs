@@ -7,4 +7,6 @@ public record AssignMasterWaybillToCompanyManifestFormFromDesktopCommand(
     decimal MasterWaybillWeight,
     string MasterWaybillAirline,
     string MasterWaybillFlightNo,
-    string MasterWaybillFlightDate);
+    string MasterWaybillFlightDate,
+    string DateUpdate,
+    string TimeUpdate);

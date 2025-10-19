@@ -1,5 +1,4 @@
-﻿using Capitan360.Domain.Entities.Companies;
-using Capitan360.Infrastructure.Configurations.BaseEntities;
+﻿using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Capitan360.Domain.Entities.CompanyDomesticPaths;

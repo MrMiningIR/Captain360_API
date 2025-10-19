@@ -1,5 +1,4 @@
 ﻿using Capitan360.Domain.Entities.CompanyDomesticWaybills;
-using Capitan360.Domain.Enums;
 using Capitan360.Infrastructure.Configurations.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

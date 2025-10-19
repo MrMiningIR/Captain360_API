@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using Capitan360.Application.Features.Companies.CompanyBanks.Dtos;
-using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetAll;
-using Capitan360.Domain.Enums;
+﻿using Capitan360.Application.Features.Companies.CompanyBanks.Dtos;
 using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Queries.GetAll;

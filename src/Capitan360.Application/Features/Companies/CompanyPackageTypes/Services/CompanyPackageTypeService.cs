@@ -10,7 +10,6 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetA
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.AspNetCore.Http;
