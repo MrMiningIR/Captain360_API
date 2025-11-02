@@ -18,7 +18,4 @@ public class CompanyDomesticPathCharge : BaseEntity
     public bool ContentTypeChargeBaseNormal { get; set; }
 
     public ICollection<CompanyDomesticPathChargeContentType> CompanyDomesticPathChargeContentTypes { get; set; } = [];
-
-
-
 }

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Capitan360.Application.Extensions;
+using FluentValidation;
 
 namespace Capitan360.Application.Features.CompanyManifestForms.CompanyManifestForms.Commands.AssignMasterWaybillFromDesktop;
 
@@ -28,5 +29,11 @@ public class AssignMasterWaybillToCompanyManifestFormFromDesktopCommandValidator
         RuleFor(x => x.MasterWaybillFlightNo)
            .NotNull().WithMessage("شماره پرواز شرکت فرستنده نمی تواند خالی باشد است.")
            .MaximumLength(50).WithMessage("شماره پرواز شرکت فرستنده نمی‌تواند بیشتر از 50 کاراکتر باشد");
+
+        RuleFor(x => x.DateUpdate)
+            .IsValidPersianDate("تاریخ به روز رسانی");
+
+        RuleFor(x => x.TimeUpdate)
+            .IsValidTime("ساعت به روز رسانی");
     }
 }

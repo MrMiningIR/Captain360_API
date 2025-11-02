@@ -14,6 +14,7 @@ using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWay
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Queries.GetByCompanyDomesticWaybillId;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Queries.GetById;
 using Capitan360.Domain.Entities.CompanyDomesticWaybills;
+using Capitan360.Domain.Entities.Companies;
 
 namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Services;
 
@@ -87,22 +88,22 @@ public class CompanyDomesticWaybillPackageTypeService(
         var companyContentTypes = await companyContentTypeRepository.GetCompanyContentTypeByCompanyIdAsync(companyDomesticWaybill.CompanySenderId, cancellationToken);
         var companyPackageTypes = await companyPackageTypeRepository.GetCompanyPackageTypeByCompanyIdAsync(companyDomesticWaybill.CompanySenderId, cancellationToken);
 
-        IssueCompanyDomesticWaybillPackageTypeCommand ssueCompanyDomesticWaybillPackageTypeCommand = new IssueCompanyDomesticWaybillPackageTypeCommand
-        {
-            CompanyContentTypeId = companyContentTypes.Count(item => item.Name.ToLower() == command.UserInsertedContentName.Trim().ToLower()) > 0 ?
-                                   companyContentTypes.First(item => item.Name.ToLower() == command.UserInsertedContentName.Trim().ToLower()).Id :
-                                   companyContentTypes.First(item => item.Order == 1).Id,
-            CompanyPackageTypeId = companyPackageTypes.Count(item => item.Name.ToLower() == command.UserInsertedPackageName.Trim().ToLower()) > 0 ?
-                                   companyPackageTypes.First(item => item.Name.ToLower() == command.UserInsertedPackageName.Trim().ToLower()).Id :
-                                   companyPackageTypes.First(item => item.Order == 1).Id,
-            CompanyDomesticWaybillId = command.CompanyDomesticWaybillId,
-            CountDimension = command.CountDimension,
-            DeclaredValue = command.DeclaredValue,
-            DimensionalWeight = command.DimensionalWeight,
-            Dimensions = command.Dimensions,
-            GrossWeight = command.GrossWeight,
-            UserInsertedContentName = command.UserInsertedContentName,
-        };
+        //IssueCompanyDomesticWaybillPackageTypeCommand issueCompanyDomesticWaybillPackageTypeCommand = new IssueCompanyDomesticWaybillPackageTypeCommand
+        //{
+        //    CompanyContentTypeId = companyContentTypes.Count(item => item.Name.ToLower() == command.UserInsertedContentName.Trim().ToLower()) > 0 ?
+        //                           companyContentTypes.First(item => item.Name.ToLower() == command.UserInsertedContentName.Trim().ToLower()).Id :
+        //                           companyContentTypes.First(item => item.Order == 1).Id,
+        //    CompanyPackageTypeId = companyPackageTypes.Count(item => item.Name.ToLower() == command.UserInsertedPackageName.Trim().ToLower()) > 0 ?
+        //                           companyPackageTypes.First(item => item.Name.ToLower() == command.UserInsertedPackageName.Trim().ToLower()).Id :
+        //                           companyPackageTypes.First(item => item.Order == 1).Id,
+        //    CompanyDomesticWaybillId = command.CompanyDomesticWaybillId,
+        //    CountDimension = command.CountDimension,
+        //    DeclaredValue = command.DeclaredValue,
+        //    DimensionalWeight = command.DimensionalWeight,
+        //    Dimensions = command.Dimensions,
+        //    GrossWeight = command.GrossWeight,
+        //    UserInsertedContentName = command.UserInsertedContentName,
+        //};
 
         var companyDomesticWaybillPackageTypeFromDesktop = mapper.Map<CompanyDomesticWaybillPackageType>(command) ?? null;
         if (companyDomesticWaybillPackageTypeFromDesktop == null)

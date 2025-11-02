@@ -2,4 +2,6 @@
 
 public record BackCompanyDomesticWaybillFormDeliveryStateFromDesktopCommand(
     long No,
-    string CompanyReceiverCaptain360Code);
+    string CompanyReceiverCaptain360Code,
+    string DateUpdate,
+    string TimeUpdate);

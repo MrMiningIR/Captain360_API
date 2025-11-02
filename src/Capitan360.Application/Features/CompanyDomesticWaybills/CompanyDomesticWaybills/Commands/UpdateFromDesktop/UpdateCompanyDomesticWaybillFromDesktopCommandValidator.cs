@@ -202,12 +202,6 @@ public class UpdateCompanyDomesticWaybillFromDesktopCommandValidator : AbstractV
            .NotNull().WithMessage("توضیحات فرستنده نمی تواند خالی باشد است.")
            .MaximumLength(500).WithMessage("توضیحات فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
-        RuleFor(x => x.DateUpdate)
-           .IsValidPersianDate("تاریخ ویرایش");
-
-        RuleFor(x => x.TimeUpdate)
-            .IsValidTime("ساعت ویرایش");
-
         RuleFor(x => x)
             .Must(x => x.WeightCount == (x.CompanyDomesticWaybillPackageTypes?.Count ?? 0))
             .WithMessage("تعداد بسته‌ها باید برابر با وزن شمارشی باشد");
@@ -235,6 +229,12 @@ public class UpdateCompanyDomesticWaybillFromDesktopCommandValidator : AbstractV
         RuleFor(x => x)
             .Must(x => x.DimensionalWeight == (x.CompanyDomesticWaybillPackageTypes?.Sum(dp => dp.DimensionalWeight) ?? 0))
             .WithMessage("وزن ابعادی بسته‌ها باید برابر با وزن شمارشی باشد");
+
+        RuleFor(x => x.DateUpdate)
+            .IsValidPersianDate("تاریخ به روز رسانی");
+
+        RuleFor(x => x.TimeUpdate)
+            .IsValidTime("ساعت به روز رسانی");
     }
 }
 

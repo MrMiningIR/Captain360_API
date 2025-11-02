@@ -24,10 +24,10 @@ public class UpdateCompanyManifestFormFromDesktopCommandValidator : AbstractVali
            .MaximumLength(500).WithMessage("توضیحات چاپ شرکت فرستنده نمی‌تواند بیشتر از 500 کاراکتر باشد");
 
         RuleFor(x => x.DateUpdate)
-            .IsValidPersianDate("تاریخ ویرایش");
+            .IsValidPersianDate("تاریخ به روز رسانی");
 
         RuleFor(x => x.TimeUpdate)
-            .IsValidTime("ساعت ویرایش");
+            .IsValidTime("ساعت به روز رسانی");
 
     }
 }

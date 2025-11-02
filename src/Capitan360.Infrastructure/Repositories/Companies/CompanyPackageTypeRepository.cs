@@ -7,6 +7,12 @@ using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Capitan360.Domain.Entities.PackageTypes;
+using Capitan360.Domain.Dtos.TransferObject;
+using Capitan360.Domain.Enums;
+using NetTopologySuite.Index.HPRtree;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
