@@ -129,7 +129,13 @@ namespace Capitan360.Infrastructure.Seeders
                         AccountCodeInDesktopCaptainCargo = "00000",
                         ActivationCode = "000000",
                         TypeOfFactorInSamanehMoadianId = (short)MoadianFactorType.Unknown,
-                        CompanyId = company.Id
+                        CompanyId = company.Id,
+                        RecoveryPasswordCode = "",
+                        ActiveSessionId = "",
+                        Description = "",
+                        Tell = phoneNumbers[i],
+                        EconomicCode = ""
+
 
                     };
 

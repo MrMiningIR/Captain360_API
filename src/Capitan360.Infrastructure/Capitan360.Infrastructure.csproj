@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Repositories\ContentTypes\" />
     <Folder Include="Repositories\Cache\" />
   </ItemGroup>
