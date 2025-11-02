@@ -1,13 +1,14 @@
-﻿using Capitan360.Domain.Enums;
+﻿using Capitan360.Application.Features.Identities.Roles.Roles.Dtos;
 
 namespace Capitan360.Application.Features.Identities.Users.Users.Dtos;
 
 public class UserDto
 {
+    public string UserId { get; set; }
     public int CompanyId { get; set; }
     public string? CompanyName { get; set; }
     public int CompanyTypeId { get; set; }
-    public int RoleId { get; set; }
+    public string? RoleId { get; set; }
     public string? RoleName { get; set; }
     public string NameFamily { get; set; } = default!;
     public string AccountCodeInDesktopCaptainCargo { get; set; } = default!;
@@ -15,8 +16,9 @@ public class UserDto
     public string ConfirmPassword { get; set; } = default!;
     public string Mobile { get; set; } = default!;
     public string MobileTelegram { get; set; } = default!;
+    public string PhoneNumber { get; set; } = default!;
     public short TypeOfFactorInSamanehMoadianId { get; set; }
-    public MoadianFactorType? TypeOfFactorInSamanehMoadian { get; set; }
+
     public string Tell { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string NationalCode { get; set; } = default!;
@@ -36,4 +38,7 @@ public class UserDto
     public DateTime ActivationCodeExpireTime { get; set; }
     public string RecoveryPasswordCode { get; set; } = default!;
     public DateTime RecoveryPasswordCodeExpireTime { get; set; }
+    public bool IsParentCompany { get; set; }
+
+    public ICollection<RoleDto>? Roles { get; set; } = [];
 }

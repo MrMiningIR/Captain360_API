@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.CompanyUris.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyUris.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyUris.Commands.Update;
@@ -10,11 +9,12 @@ using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
-using Capitan360.Domain.Interfaces;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyUris.Services;
 
@@ -30,6 +30,7 @@ public class CompanyUriService(
     public async Task<ApiResponse<int>> CreateCompanyUriAsync(CreateCompanyUriCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateCompanyUri is Called with {@CreateCompanyUriCommand}", command);
+        bool existedUri = false;
 
         var company = await companyRepository.GetCompanyByIdAsync(command.CompanyId, false, false, cancellationToken);
         if (company == null)
@@ -42,8 +43,14 @@ public class CompanyUriService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
+
+
         if (await companyUriRepository.CheckExistCompanyUriUriAsync(command.Uri, null, cancellationToken))
-            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "URI شرکت تکراری است");
+        {
+            existedUri = true;
+
+            // return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "URI شرکت تکراری است");
+        }
 
         var companyUri = mapper.Map<CompanyUri>(command) ?? null;
         if (companyUri == null)
@@ -53,7 +60,7 @@ public class CompanyUriService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyUri created successfully with {@CompanyUri}", companyUri);
-        return ApiResponse<int>.Created(companyUriId, "URI شرکت با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(companyUriId, existedUri ? "URI شرکت با موفقیت ایجاد شد - URI شرکت تکراری است" : "URI شرکت با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteCompanyUriAsync(DeleteCompanyUriCommand command, CancellationToken cancellationToken)
@@ -222,7 +229,7 @@ public class CompanyUriService(
             query.PageSize,
             query.SortDirection,
             cancellationToken);
-        
+
         var companyUriDtos = mapper.Map<IReadOnlyList<CompanyUriDto>>(companyUris) ?? Array.Empty<CompanyUriDto>();
         if (companyUriDtos == null)
             return ApiResponse<PagedResult<CompanyUriDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");

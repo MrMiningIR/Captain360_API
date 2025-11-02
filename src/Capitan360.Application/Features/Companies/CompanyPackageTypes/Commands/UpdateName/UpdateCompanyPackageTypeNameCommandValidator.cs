@@ -6,8 +6,7 @@ public class UpdateCompanyPackageTypeNameCommandValidator : AbstractValidator<Up
 {
     public UpdateCompanyPackageTypeNameCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه بسته بندی بار باید بزرگتر از صفر باشد");
+
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("نام الزامی است.")

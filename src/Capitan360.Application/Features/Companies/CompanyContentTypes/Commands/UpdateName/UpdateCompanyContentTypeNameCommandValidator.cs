@@ -6,8 +6,7 @@ public class UpdateCompanyContentTypeNameCommandValidator : AbstractValidator<Up
 {
     public UpdateCompanyContentTypeNameCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("شناسه محتوی بار باید بزرگتر از صفر باشد");
+
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("نام الزامی است.")

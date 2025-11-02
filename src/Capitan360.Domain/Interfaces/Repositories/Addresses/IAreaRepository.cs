@@ -1,6 +1,5 @@
 ﻿using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace Capitan360.Domain.Interfaces.Repositories.Addresses;
 
@@ -25,4 +24,15 @@ public interface IAreaRepository
     Task DeleteAreaAsync(int areaId, CancellationToken cancellationToken);
 
     Task<(IReadOnlyList<Area>, int)> GetAllAreasAsync(string searchPhrase, string? sortBy, int parentId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<Area>> GetAllCities(CancellationToken cancellationToken);
+
+    Task<(IReadOnlyList<Area>, int)> GetAllProvince(string searchPhrase, int pageSize, int pageNumber,
+    string? sortBy, SortDirection sortDirection, bool ignorePageSize, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<Area>> GetDistrictAreasByCityIdAsync(int parentId, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<Area>, int)> GetAllCity(string searchPhrase, int pageSize, int pageNumber,
+string? sortBy, SortDirection sortDirection, int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken);
 }

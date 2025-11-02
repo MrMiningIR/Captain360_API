@@ -2,14 +2,14 @@
 using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.Companies.Commands.Create;
 using Capitan360.Application.Features.Companies.Companies.Commands.Delete;
-using Capitan360.Application.Features.Companies.Companies.Commands.UpdateActiveState;
 using Capitan360.Application.Features.Companies.Companies.Commands.Update;
+using Capitan360.Application.Features.Companies.Companies.Commands.UpdateActiveState;
 using Capitan360.Application.Features.Companies.Companies.Dtos;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetAll;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetById;
 using Capitan360.Application.Features.Companies.Companies.Services;
-using Microsoft.AspNetCore.Mvc;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;
 
@@ -18,9 +18,11 @@ namespace Capitan360.Api.Controllers;
 [PermissionFilter("بخش شرکت ها", "D")]
 public class CompaniesController(ICompanyService companyService, IUserContext userContext) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetAllCompanies")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyDto>>), StatusCodes.Status403Forbidden)]
     [PermissionFilter("دریافت لیست شرکت ها", "D1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyDto>>>> GetAllCompanies(
         [FromQuery] GetAllCompanyQuery getAllCompanyQuery, CancellationToken cancellationToken)
@@ -29,7 +31,8 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+
+    [HttpGet("GetCompanyById/{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
 
@@ -41,9 +44,12 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost]
+    [HttpPost("CreateCompany")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
     [PermissionFilter("ایجاد شرکت", "D3")]
     public async Task<ActionResult<ApiResponse<int>>> CreateCompany(
         [FromBody] CreateCompanyCommand companyCommand, CancellationToken cancellationToken)
@@ -64,8 +70,7 @@ public class CompaniesController(ICompanyService companyService, IUserContext us
         var response = await companyService.DeleteCompanyAsync(new DeleteCompanyCommand(id), cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
-
-    [HttpPut("{id}")]
+    [HttpPut("UpdateCompany/{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
 

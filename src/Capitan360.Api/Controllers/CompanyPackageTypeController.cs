@@ -3,6 +3,8 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveDown;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveUp;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateActiveState;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateDescription;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateName;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetById;
@@ -16,9 +18,11 @@ namespace Capitan360.Api.Controllers;
 [PermissionFilter("بخش بسته بندی شرکت", "L")]
 public class CompanyPackageTypeController(ICompanyPackageTypeService companyPackageTypeService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetAllCompanyPackageTypes")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPackageTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPackageTypeDto>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPackageTypeDto>>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPackageTypeDto>>), StatusCodes.Status403Forbidden)]
     [PermissionFilter("لیست بسته بندی شرکت", "L1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyPackageTypeDto>>>> GetAllCompanyPackageTypes(
         [FromQuery] GetAllCompanyPackageTypesQuery allCompanyPackageTypesQuery, CancellationToken cancellationToken)
@@ -27,9 +31,12 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetCompanyPackageTypeById/{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyPackageTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyPackageTypeDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyPackageTypeDto>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyPackageTypeDto>), StatusCodes.Status403Forbidden)]
+
 
     [PermissionFilter("دریافت بسته بندی شرکت", "L2")]
     public async Task<ActionResult<ApiResponse<CompanyPackageTypeDto>>> GetCompanyPackageTypeById(
@@ -41,6 +48,9 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
 
     [HttpPost("MoveUpCompanyPackageType")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter("تغییر چیدمان - بالا", "L4")]
     public async Task<ActionResult<ApiResponse<int>>> MoveUpCompanyPackageType(
@@ -52,6 +62,9 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
 
     [HttpPost("MoveDownCompanyPackageType")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter("تغییر چیدمان - پایین", "L5")]
     public async Task<ActionResult<ApiResponse<int>>> MoveDownCompanyPackageType(
@@ -61,19 +74,20 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
         return StatusCode(response.StatusCode, response);
     }
 
-    //[HttpPut("UpdateCompanyPackageTypeNameAndDescription/{id}")]
-    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
-    //
-    //[PermissionFilter("آپدیت نام", "L6")]
-    //public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeNameAndDescription([FromRoute] int id,
-    //[FromBody] UpdateCompanyPackageTypeNameAndDescriptionCommand command, CancellationToken cancellationToken)
-    //{
-    //    command.Id = id;
-    //    var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAsync(command, cancellationToken);
-    //    return StatusCode(response.StatusCode, response);
-    //}
+    [HttpPut("UpdateCompanyPackageTypeName/{id}")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
+
+    [PermissionFilter("آپدیت نام", "L6")]
+    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeName([FromRoute] int id,
+    [FromBody] UpdateCompanyPackageTypeNameCommand command, CancellationToken cancellationToken)
+    {
+        command.Id = id;
+        var response = await companyPackageTypeService.UpdateCompanyPackageTypeNameAsync(command, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
 
     [HttpPost("ChangeCompanyPackageTypeActiveStatus")]
     [PermissionFilter("تغییر وضعیت بسته بندی مخصوص شرکت", "L7")]
@@ -85,4 +99,20 @@ public class CompanyPackageTypeController(ICompanyPackageTypeService companyPack
         var response = await companyPackageTypeService.SetCompanyPackageTypeActivityStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
+
+    [HttpPut("UpdateCompanyPackageTypeDescription/{id}")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
+
+    [PermissionFilter("آپدیت توضیحات", "L8")]
+    public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPackageTypeDescription([FromRoute] int id,
+[FromBody] UpdateCompanyPackageTypeDescriptionCommand command, CancellationToken cancellationToken)
+    {
+        command.Id = id;
+        var response = await companyPackageTypeService.UpdateCompanyPackageTypeDescriptionAsync(command, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
 }

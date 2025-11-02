@@ -24,7 +24,7 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
         IQueryable<User> query = dbContext.Users;
 
         if (loadData)
-            query = query.Include(item => item.Company);
+            query = query.Include(item => item.Company).Include(x => x.Roles);
 
         if (!tracked)
             query = query.AsNoTracking();
@@ -70,13 +70,9 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
                                                                    int hasCredit, int baned, int active, int isBikeDelivery, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
     {
         var baseQuery = dbContext.Users.AsNoTracking();
-        if (!string.IsNullOrEmpty(roleId))
-        {
-            baseQuery = dbContext.Users.Join(dbContext.UserRoles, user => user.Id, userRole => userRole.RoleId,
-              (user, userRole) => new { User = user, UserRole = userRole }).Where(x => x.UserRole.RoleId == roleId) as IQueryable<User>;
 
 
-        }
+
         searchPhrase = searchPhrase.Trim().ToLower();
 
 
@@ -86,8 +82,14 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
                            item.NationalId.ToLower().Contains(searchPhrase) || item.RegistrationId.ToLower().Contains(searchPhrase) ||
                            item.EconomicCode.ToLower().Contains(searchPhrase) || item.EconomicCode.ToLower().Contains(searchPhrase));
 
+
+        if (!string.IsNullOrEmpty(roleId))
+            baseQuery = baseQuery.Where(role => role.Roles.Any(x => x.Id == roleId));
+
+
+
         if (loadData)
-            baseQuery = baseQuery.Include(item => item.Company);
+            baseQuery = baseQuery.Include(x => x.Roles).Include(item => item.Company);
 
         if (companyId != 0)
         {
@@ -100,10 +102,15 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
         }
 
 
-        if (typeOfFactorInSamanehMoadianId != -1)
+
+        baseQuery = typeOfFactorInSamanehMoadianId switch
         {
-            baseQuery = baseQuery.Where(item => item.TypeOfFactorInSamanehMoadianId == typeOfFactorInSamanehMoadianId);
-        }
+            1 or 2 or 3 => baseQuery.Where(item => item.TypeOfFactorInSamanehMoadianId == typeOfFactorInSamanehMoadianId),
+            _ => baseQuery
+        };
+
+
+
 
         baseQuery = hasCredit switch
         {

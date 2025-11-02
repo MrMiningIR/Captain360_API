@@ -137,42 +137,56 @@ public class UserPermissionService(ILogger<UserPermissionService> logger,
         if (user is null)
         {
             return ApiResponse<List<string>>.Error(400, "کاربر معتبر نیست");
+
+
+
         }
-        var (currentPermissionsResult, _) = await userPermissionRepository.GetAllUserPermissions(command.UserId!, 100, 1, cancellationToken);
-        if (!command.PermissionIds.Any())
+
+        await userPermissionRepository.RemoveAllPermissionsFromUser(command.UserId!, cancellationToken);
+
+
+        if (command.PermissionIds.Any())
         {
-            if (currentPermissionsResult.Any())
-            {
-                await userPermissionRepository.RemovePermissionsFromUser(currentPermissionsResult.ToList(), cancellationToken);
-            }
+
+            await userPermissionRepository.AssignPermissionsToUser(command.PermissionIds, command.UserId!, cancellationToken);
         }
-        else
-        {
-            if (currentPermissionsResult.Any())
-            {
-                List<string> mustBeAddedPermissionIds = command.PermissionIds.Except(currentPermissionsResult.Select(x => x.PermissionId.ToString())
-                    .ToList()).ToList();
 
-                List<string> mustBeRemovedPermissionIds = currentPermissionsResult.Select(x => x.PermissionId.ToString()).ToList()
-                    .Except(command.PermissionIds).ToList();
 
-                if (mustBeAddedPermissionIds.Any())
-                {
+        //var (currentPermissionsResult, _) = await userPermissionRepository.GetAllUserPermissions(command.UserId!, 100, 1, cancellationToken);
+        //if (!command.PermissionIds.Any())
+        //{
+        //    if (currentPermissionsResult.Any())
+        //    {
+        //        await userPermissionRepository.RemovePermissionsFromUser(currentPermissionsResult.ToList(), cancellationToken);
+        //    }
+        //}
+        //else
+        //{
+        //    if (currentPermissionsResult.Any())
+        //    {
+        //        List<string> mustBeAddedPermissionIds = command.PermissionIds.Except(currentPermissionsResult.Select(x => x.PermissionId.ToString())
+        //            .ToList()).ToList();
 
-                    await userPermissionRepository.AssignPermissionsToUser(mustBeAddedPermissionIds, command.UserId!, cancellationToken);
-                }
+        //        List<string> mustBeRemovedPermissionIds = currentPermissionsResult.Select(x => x.PermissionId.ToString()).ToList()
+        //            .Except(command.PermissionIds).ToList();
 
-                if (mustBeRemovedPermissionIds.Any())
-                {
+        //        if (mustBeAddedPermissionIds.Any())
+        //        {
 
-                    await userPermissionRepository.RemovePermissionsFromUser(mustBeRemovedPermissionIds, command.UserId!, cancellationToken);
-                }
-            }
-            else
-            {
-                await userPermissionRepository.AssignPermissionsToUser(command.PermissionIds, command.UserId!, cancellationToken);
-            }
-        }
+        //            await userPermissionRepository.AssignPermissionsToUser(mustBeAddedPermissionIds, command.UserId!, cancellationToken);
+        //        }
+
+        //        if (mustBeRemovedPermissionIds.Any())
+        //        {
+
+        //            await userPermissionRepository.RemovePermissionsFromUser(mustBeRemovedPermissionIds, command.UserId!, cancellationToken);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        await userPermissionRepository.AssignPermissionsToUser(command.PermissionIds, command.UserId!, cancellationToken);
+        //    }
+        //}
 
 
 

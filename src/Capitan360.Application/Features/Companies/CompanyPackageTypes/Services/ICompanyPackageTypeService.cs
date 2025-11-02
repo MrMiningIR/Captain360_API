@@ -3,6 +3,7 @@ using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.Mov
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.MoveUp;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateActiveState;
+using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateDescription;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Commands.UpdateName;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Queries.GetAll;
@@ -28,4 +29,7 @@ public interface ICompanyPackageTypeService
     Task<ApiResponse<IReadOnlyList<CompanyPackageTypeDto>>> GetCompanyPackageTypeByCompanyIdAsync(GetCompanyPackageTypeByCompanyIdQuery query, CancellationToken cancellationToken);
 
     Task<ApiResponse<CompanyPackageTypeDto>> GetCompanyPackageTypeByIdAsync(GetCompanyPackageTypeByIdQuery query, CancellationToken cancellationToken);
+
+    Task<ApiResponse<int>> UpdateCompanyPackageTypeDescriptionAsync(UpdateCompanyPackageTypeDescriptionCommand command,
+    CancellationToken cancellationToken);
 }

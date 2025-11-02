@@ -9,8 +9,8 @@ public class UserPermissionProfile : Profile
     public UserPermissionProfile()
     {
         CreateMap<UserPermission, UserPermissionDto>()
-         .ForMember(d => d.UserNameFamily, opt => opt.MapFrom(s => s.User != null ? s.User.NameFamily : null))
-         .ForMember(d => d.PermissionDisplayName, opt => opt.MapFrom(s => s.Permission != null ? s.Permission.DisplayName : null));
+         .ForMember(d => d.PermissionName, opt => opt.MapFrom(s => s.User != null ? s.User.NameFamily : null))
+         .ForMember(d => d.DisplayPermissionName, opt => opt.MapFrom(s => s.Permission != null ? s.Permission.DisplayName : null));
 
         CreateMap<UserPermissionDto, UserPermission>()
             .ForMember(d => d.User, opt => opt.Ignore())

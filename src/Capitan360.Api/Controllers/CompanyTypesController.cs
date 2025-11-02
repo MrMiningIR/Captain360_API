@@ -15,7 +15,7 @@ namespace Capitan360.Api.Controllers
     [ApiController]
     public class CompanyTypesController(ICompanyTypeService companyTypeService) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("GetAllCompanyTypes")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyTypeDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyTypeDto>>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyTypeDto>>>> GetAllCompanyTypes([FromQuery] GetAllCompanyTypesQuery getAllCompanyTypesQuery, CancellationToken cancellationToken)
@@ -24,7 +24,7 @@ namespace Capitan360.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetCompanyTypeById/{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanyTypeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanyTypeDto>), StatusCodes.Status400BadRequest)]
 
@@ -34,21 +34,21 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost]
+        [HttpPost("CreateCompanyType")]
         public async Task<IActionResult> CreateCompanyType(CreateCompanyTypeCommand command, CancellationToken cancellationToken)
         {
             var companyTypeId = await companyTypeService.CreateCompanyTypeAsync(command, cancellationToken);
             return CreatedAtAction(nameof(GetCompanyTypeById), new { id = companyTypeId }, null);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteCompanyType/{id}")]
         public async Task<IActionResult> DeleteCompanyType([FromRoute] int id, CancellationToken cancellationToken)
         {
             await companyTypeService.DeleteCompanyTypeAsync(new DeleteCompanyTypeCommand(id), cancellationToken);
             return NoContent();
         }
 
-        [HttpPatch]
+        [HttpPatch("UpdateCompanyType")]
         public async Task<IActionResult> UpdateCompanyType(UpdateCompanyTypeCommand command, CancellationToken cancellationToken)
         {
             await companyTypeService.UpdateCompanyTypeAsync(command, cancellationToken);

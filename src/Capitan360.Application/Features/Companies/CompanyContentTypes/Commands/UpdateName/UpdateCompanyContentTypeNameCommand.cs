@@ -3,5 +3,5 @@
 public record UpdateCompanyContentTypeNameCommand(
     string Name)
 {
-    public int Id { get; set; }
+    public int Id { get; set; } = 0;
 }

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Capitan360.Application.Features.Companies.UserCompany.Commands.Create;
+using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
 
@@ -6,8 +7,8 @@ public class CreateUserCompanyCommandValidator : AbstractValidator<CreateUserCom
 {
     public CreateUserCompanyCommandValidator()
     {
-        // 1. FullName: نباید خالی باشد، حداقل 5 کاراکتر، حداکثر 100 کاراکتر
-        RuleFor(x => x.FullName)
+        // 1. NameFamily: نباید خالی باشد، حداقل 5 کاراکتر، حداکثر 100 کاراکتر
+        RuleFor(x => x.NameFamily)
             .NotEmpty().WithMessage("نام کامل نمی‌تواند خالی باشد.")
             .MinimumLength(5).WithMessage("نام کامل باید حداقل 5 کاراکتر باشد.")
             .MaximumLength(100).WithMessage("نام کامل باید حداکثر 100 کاراکتر باشد.");
@@ -34,12 +35,12 @@ public class CreateUserCompanyCommandValidator : AbstractValidator<CreateUserCom
             .Equal(x => x.Password).WithMessage("تایید پسورد با پسورد اصلی مطابقت ندارد.")
             .When(x => !string.IsNullOrEmpty(x.ConfirmPassword));  // فقط اگر ConfirmPassword وارد شده باشد، چک شود
 
-        //6.MoadianFactorType: باید یکی از مقادیر enum باشد (1, 2 یا 3)، و اجباری
-        // اگر پراپرتی را به نوع enum تغییر دهید(public MoadianFactorType MoadianFactorType { get; set; }):
-        RuleFor(x => x.MoadianFactorType).IsInEnum().WithMessage("نوع فاکتور موادیان باید یکی از مقادیر مجاز باشد.");
+        //6.TypeOfFactorInSamanehMoadianId: باید یکی از مقادیر enum باشد (1, 2 یا 3)، و اجباری
+        // اگر پراپرتی را به نوع enum تغییر دهید(public TypeOfFactorInSamanehMoadianId TypeOfFactorInSamanehMoadianId { get; set; }):
+        RuleFor(x => x.TypeOfFactorInSamanehMoadianId).IsInEnum().WithMessage("نوع فاکتور موادیان باید یکی از مقادیر مجاز باشد.");
 
         // اگر پراپرتی int است:
-        //RuleFor(x => x.MoadianFactorType)
+        //RuleFor(x => x.TypeOfFactorInSamanehMoadianId)
         //        .NotEmpty().WithMessage("نوع فاکتور موادیان الزامی است.")  // برای int، NotEmpty کار نمی‌کند، پس از GreaterThan استفاده می‌کنیم
         //        .InclusiveBetween(1, 3).WithMessage("نوع فاکتور موادیان باید یکی از مقادیر 1, 2 یا 3 باشد.");
 

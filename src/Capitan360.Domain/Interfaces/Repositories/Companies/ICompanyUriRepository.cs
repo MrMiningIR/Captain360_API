@@ -6,6 +6,7 @@ namespace Capitan360.Domain.Interfaces.Repositories.Companies;
 public interface ICompanyUriRepository
 {
     Task<bool> CheckExistCompanyUriUriAsync(string companyUriUri, int? currentCompanyUriId, CancellationToken cancellationToken);
+    Task<CompanyUri?> CheckExistCompanyUriByUriAndCompanyId(string companyUriUri, int companyId, CancellationToken cancellationToken);
 
     Task<int> CreateCompanyUriAsync(CompanyUri companyUri, CancellationToken cancellationToken);
 

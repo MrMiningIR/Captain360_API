@@ -9,13 +9,13 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 
     public UpdateUserCommandValidator()
     {
-        RuleFor(x => x.FullName)
+        RuleFor(x => x.NameFamily)
             .NotEmpty()
-            .WithMessage("FullName is required")
+            .WithMessage("NameFamily is required")
             .MaximumLength(100)
-            .WithMessage("FullName must not exceed 100 characters")
+            .WithMessage("NameFamily must not exceed 100 characters")
             .MinimumLength(5)
-            .WithMessage("FullName must be at least 5 characters");
+            .WithMessage("NameFamily must be at least 5 characters");
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
@@ -25,9 +25,9 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 
 
 
-        RuleFor(x => x.MoadianFactorType)
+        RuleFor(x => x.TypeOfFactorInSamanehMoadianId)
             .Must(moadianType => Enum.IsDefined(typeof(MoadianFactorType), moadianType))
-            .WithMessage($"Invalid MoadianFactorType. Valid values are: {string.Join(", ", Enum.GetValues(typeof(MoadianFactorType)))}");
+            .WithMessage($"Invalid TypeOfFactorInSamanehMoadianId. Valid values are: {string.Join(", ", Enum.GetValues(typeof(MoadianFactorType)))}");
 
 
         RuleFor(x => x.Email)

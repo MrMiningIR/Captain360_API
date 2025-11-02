@@ -1,13 +1,12 @@
-﻿using Capitan360.Domain.Interfaces;
+﻿using Capitan360.Domain.Dtos.TransferObject;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Entities.PackageTypes;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Entities.PackageTypes;
-using Capitan360.Domain.Dtos.TransferObject;
-using Capitan360.Domain.Enums;
-using NetTopologySuite.Index.HPRtree;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -40,7 +39,7 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
         return await dbContext.CompanyPackageTypes.CountAsync(item => item.CompanyId == companyId, cancellationToken);
     }
 
-    public async Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyPackageType?> GetCompanyPackageTypeByIdAsync(int companyPackageTypeId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyPackageType> query = dbContext.CompanyPackageTypes;
 
@@ -57,9 +56,9 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
     {
         IQueryable<CompanyPackageType> query = dbContext.CompanyPackageTypes.Include(item => item.Company)
                                                                             .AsNoTracking();
-        
+
         return await query.Where(item => item.CompanyId == companyId)
-                          .OrderBy(item=> item.Order)
+                          .OrderBy(item => item.Order)
                           .ToListAsync(cancellationToken);
     }
 
@@ -107,7 +106,7 @@ public class CompanyPackageTypeRepository(ApplicationDbContext dbContext, IUnitO
                                                      .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
-            baseQuery = baseQuery.Include(item => item.Company);
+            baseQuery = baseQuery.Include(item => item.Company).Include(x => x.PackageType);
 
         if (companyId != 0)
         {

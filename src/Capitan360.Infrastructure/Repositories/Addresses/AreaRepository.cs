@@ -21,7 +21,7 @@ public class AreaRepository(
 
     public async Task<bool> CheckExistCountryPersianNameAsync(string counteryPersianName, int? currentCountryId, CancellationToken cancellationToken)
     {
-        return await dbContext.Areas.AnyAsync(item => item.PersianName.ToLower() == counteryPersianName.Trim().ToLower() && (currentCountryId == null || item.Id  != currentCountryId), cancellationToken);
+        return await dbContext.Areas.AnyAsync(item => item.PersianName.ToLower() == counteryPersianName.Trim().ToLower() && (currentCountryId == null || item.Id != currentCountryId), cancellationToken);
     }
 
     public async Task<bool> CheckExistCountryEnglishNameAsync(string counteryEnglishName, int? currentCountryId, CancellationToken cancellationToken)
@@ -106,5 +106,96 @@ public class AreaRepository(
             .ToListAsync(cancellationToken);
 
         return (Areas, totalCount);
+    }
+
+    public async Task<IReadOnlyList<Area>> GetAllCities(CancellationToken cancellationToken)
+    {
+        return await dbContext.Areas.Where(x => x.LevelId == 3).ToListAsync(cancellationToken);
+    }
+
+    public async Task<(IReadOnlyList<Area>, int)> GetAllProvince(string searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
+    bool ignorePageSize, CancellationToken cancellationToken)
+    {
+        searchPhrase = searchPhrase.Trim().ToLower();
+
+        var baseQuery = dbContext.Areas.AsNoTracking()
+            .Where(x => x.ParentId != null && x.ParentId == 1)
+            .Include(item => item.Parent)
+            .Where(item => searchPhrase == null ||
+                        (item.PersianName.ToLower().Contains(searchPhrase) ||
+                         item.Code.ToLower().Contains(searchPhrase)));
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        if (sortBy != null)
+        {
+            var columnsSelector = new Dictionary<string, Expression<Func<Area, object>>>
+ {
+     { nameof(Area.PersianName), item => item.PersianName },
+     { nameof(Area.Code), item => item.Code },
+     { nameof(Area.LevelId), item => item.LevelId }
+ };
+
+            var selectedColumn = columnsSelector[sortBy];
+            baseQuery = sortDirection == SortDirection.Ascending
+                ? baseQuery.OrderBy(selectedColumn)
+                : baseQuery.OrderByDescending(selectedColumn);
+        }
+
+
+        var areas = !ignorePageSize ? await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync(cancellationToken) : await baseQuery.ToListAsync(cancellationToken);
+
+        return (areas, totalCount);
+    }
+    public async Task<IReadOnlyList<Area>> GetDistrictAreasByCityIdAsync(int parentId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Areas.AsNoTracking().Where(x => x.ParentId == parentId && x.LevelId == 4)
+            .ToListAsync(cancellationToken);
+    }
+    public async Task<(IReadOnlyList<Area>, int)> GetAllCity(string searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection,
+    int provinceId, bool ignorePageSize, CancellationToken cancellationToken)
+    {
+        searchPhrase = searchPhrase.Trim().ToLower();
+
+        var baseQuery = dbContext.Areas.AsNoTracking()
+            .Where(x => x.ParentId != null && x.ParentId == provinceId)
+            .Include(item => item.Parent)
+            .Where(item => searchPhrase == null ||
+                        (item.PersianName.ToLower().Contains(searchPhrase) ||
+                         item.Code.ToLower().Contains(searchPhrase)));
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        if (sortBy != null)
+        {
+            var columnsSelector = new Dictionary<string, Expression<Func<Area, object>>>
+{
+    { nameof(Area.PersianName), item => item.PersianName },
+    { nameof(Area.Code), item => item.Code },
+    { nameof(Area.LevelId), item => item.LevelId }
+};
+
+            var selectedColumn = columnsSelector[sortBy];
+            baseQuery = sortDirection == SortDirection.Ascending
+                ? baseQuery.OrderBy(selectedColumn)
+                : baseQuery.OrderByDescending(selectedColumn);
+        }
+
+
+        var areas = !ignorePageSize ? await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync(cancellationToken) : await baseQuery.ToListAsync(cancellationToken);
+
+        return (areas, totalCount);
+    }
+    public async Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken)
+    {
+        return await dbContext.Areas
+            .Where(item => item.ParentId == parentId)
+            .ToListAsync(cancellationToken);
     }
 }

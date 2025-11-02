@@ -6,7 +6,6 @@ using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Index.HPRtree;
 using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
@@ -30,9 +29,9 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int companyId, int? currentCompanyContentTypeId,  CancellationToken cancellationToken)
+    public async Task<bool> CheckExistCompanyContentTypeNameAsync(string companyContentTypeName, int companyId, int? currentCompanyContentTypeId, CancellationToken cancellationToken)
     {
-        return await dbContext.CompanyContentTypes.AnyAsync(item => item.Name.ToLower() == companyContentTypeName.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyContentTypeId == null || item.Id != currentCompanyContentTypeId) , cancellationToken);
+        return await dbContext.CompanyContentTypes.AnyAsync(item => item.Name.ToLower() == companyContentTypeName.Trim().ToLower() && item.CompanyId == companyId && (currentCompanyContentTypeId == null || item.Id != currentCompanyContentTypeId), cancellationToken);
     }
 
     public async Task<int> GetCountCompanyContentTypeAsync(int companyId, CancellationToken cancellationToken)
@@ -57,9 +56,9 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
     {
         IQueryable<CompanyContentType> query = dbContext.CompanyContentTypes.Include(item => item.Company)
                                                                             .AsNoTracking();
-        
+
         return await query.Where(item => item.CompanyId == companyId)
-                          .OrderBy(item=> item.Order)
+                          .OrderBy(item => item.Order)
                           .ToListAsync(cancellationToken);
     }
 
@@ -107,7 +106,7 @@ public class CompanyContentTypeRepository(ApplicationDbContext dbContext, IUnitO
                                                      .Where(item => item.Name.ToLower().Contains(searchPhrase));
 
         if (loadData)
-            baseQuery = baseQuery.Include(item => item.Company);
+            baseQuery = baseQuery.Include(item => item.Company).Include(x => x.ContentType);
 
         if (companyId != 0)
         {

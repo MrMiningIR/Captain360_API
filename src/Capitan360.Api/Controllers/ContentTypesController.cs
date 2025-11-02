@@ -1,16 +1,16 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Microsoft.AspNetCore.Mvc;
-using Capitan360.Application.Features.ContentTypes.Dtos;
 using Capitan360.Application.Features.ContentTypes.Commands.Create;
-using Capitan360.Application.Features.ContentTypes.Commands.Update;
+using Capitan360.Application.Features.ContentTypes.Commands.Delete;
 using Capitan360.Application.Features.ContentTypes.Commands.MoveDown;
 using Capitan360.Application.Features.ContentTypes.Commands.MoveUp;
+using Capitan360.Application.Features.ContentTypes.Commands.Update;
 using Capitan360.Application.Features.ContentTypes.Commands.UpdateActiveState;
-using Capitan360.Application.Features.ContentTypes.Commands.Delete;
+using Capitan360.Application.Features.ContentTypes.Dtos;
 using Capitan360.Application.Features.ContentTypes.Queries.GetAll;
 using Capitan360.Application.Features.ContentTypes.Queries.GetById;
 using Capitan360.Application.Features.ContentTypes.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;
 
@@ -19,9 +19,11 @@ namespace Capitan360.Api.Controllers;
 [PermissionFilter("بخش محتوی", "Q")]
 public class ContentTypesController(IContentTypeService contentTypeService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetAllContentTypes")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<ContentTypeDto>>), StatusCodes.Status401Unauthorized)]
     [PermissionFilter("لیست محتوی", "Q1")]
     public async Task<ActionResult<ApiResponse<PagedResult<ContentTypeDto>>>> GetAllContentTypes(
         [FromQuery] GetAllContentTypesQuery query, CancellationToken cancellationToken)
@@ -30,7 +32,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetContentTypeById/{id}")]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status404NotFound)]
@@ -42,7 +44,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost]
+    [HttpPost("CreateContentType")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [PermissionFilter("ساخت محتویی جدید", "Q3")]
@@ -52,6 +54,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
         var response = await contentTypeService.CreateContentTypeAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
+
 
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
@@ -65,7 +68,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("UpdateContentType/{id}")]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<ContentTypeDto>), StatusCodes.Status404NotFound)]
@@ -79,7 +82,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost("MoveUpContent")]
+    [HttpPost("MoveUpContentType")]
     [PermissionFilter("تغییر ترتیب - بالا", "Q6")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
@@ -90,7 +93,7 @@ public class ContentTypesController(IContentTypeService contentTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost("MoveDownContent")]
+    [HttpPost("MoveDownContentType")]
     [PermissionFilter("تغییر ترتیب - پایین", "Q7")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]

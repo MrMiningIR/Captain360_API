@@ -1,6 +1,6 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
+using Capitan360.Application.Features.Companies.UserCompany.Commands.Create;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserById;
 using Capitan360.Application.Features.Identities.Identities.Commands.ChangePassword;
 using Capitan360.Application.Features.Identities.Identities.Commands.ChangeUserActivity;

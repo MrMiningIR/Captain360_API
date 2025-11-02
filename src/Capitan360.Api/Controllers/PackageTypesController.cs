@@ -1,16 +1,16 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Microsoft.AspNetCore.Mvc;
-using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Application.Features.PackageTypes.Commands.Create;
-using Capitan360.Application.Features.PackageTypes.Commands.Update;
+using Capitan360.Application.Features.PackageTypes.Commands.Delete;
 using Capitan360.Application.Features.PackageTypes.Commands.MoveDown;
 using Capitan360.Application.Features.PackageTypes.Commands.MoveUp;
+using Capitan360.Application.Features.PackageTypes.Commands.Update;
 using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
-using Capitan360.Application.Features.PackageTypes.Commands.Delete;
+using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
 using Capitan360.Application.Features.PackageTypes.Queries.GetById;
 using Capitan360.Application.Features.PackageTypes.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Capitan360.Api.Controllers;
 
@@ -19,9 +19,11 @@ namespace Capitan360.Api.Controllers;
 [PermissionFilter(displayName: "بخش بسته بندی", "U")]
 public class PackageTypesController(IPackageTypeService packageTypeService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetAllPackageTypes")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageTypeDto>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageTypeDto>>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageTypeDto>>), StatusCodes.Status401Unauthorized)]
     [PermissionFilter(displayName: "لیست بسته بندی", "U1")]
     public async Task<ActionResult<ApiResponse<PagedResult<PackageTypeDto>>>> GetAllPackageTypes(
         [FromQuery] GetAllPackageTypesQuery query, CancellationToken cancellationToken)
@@ -30,10 +32,11 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetPackageTypeById/{id}")]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status403Forbidden)]
     [PermissionFilter(displayName: "دریافت بسته بندی", "U2")]
     public async Task<ActionResult<ApiResponse<PackageTypeDto>>> GetPackageTypeById(
         [FromRoute] int id, CancellationToken cancellationToken)
@@ -42,8 +45,10 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost]
+    [HttpPost("CreatePackageType")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
     [PermissionFilter(displayName: "افزودن بسته بندی", "U3")]
     public async Task<ActionResult<ApiResponse<int>>> CreatePackageType(
@@ -66,11 +71,13 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("UpdatePackageType/{id}")]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<PackageTypeDto>), StatusCodes.Status401Unauthorized)]
     [PermissionFilter(displayName: "آپدیت بسته بندی", "U5")]
+
     public async Task<ActionResult<ApiResponse<PackageTypeDto>>> UpdatePackageType([FromRoute] int id,
         [FromBody] UpdatePackageTypeCommand updatePackageTypeCommand, CancellationToken cancellationToken)
     {
@@ -80,7 +87,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost("MoveUpPackage")]
+    [HttpPost("MoveUpPackageType")]
     [PermissionFilter("تغییر ترتیب - بالا", "U6")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
@@ -91,7 +98,7 @@ public class PackageTypesController(IPackageTypeService packageTypeService) : Co
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost("MoveDownPackage")]
+    [HttpPost("MoveDownPackageType")]
     [PermissionFilter("تغییر ترتیب - بالا", "U7")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]

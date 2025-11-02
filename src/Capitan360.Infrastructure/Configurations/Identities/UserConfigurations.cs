@@ -19,13 +19,13 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
               .HasColumnType("nvarchar(100)");
 
         builder.Property(x => x.AccountCodeInDesktopCaptainCargo)
-               .IsRequired()
+                .HasDefaultValue("")
                .HasMaxLength(50)
                .IsUnicode()
                .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.MobileTelegram)
-
+            .HasDefaultValue("")
                .HasMaxLength(11)
                .IsUnicode(false)
                .HasColumnType("varchar(11)");
@@ -34,37 +34,37 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
                .IsRequired();
 
         builder.Property(x => x.Tell)
-
+             .HasDefaultValue("")
               .HasMaxLength(30)
               .IsUnicode()
               .HasColumnType("nvarchar(30)");
 
         builder.Property(x => x.NationalCode)
-
+             .HasDefaultValue("")
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.EconomicCode)
-
+             .HasDefaultValue("")
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.NationalId)
-
+             .HasDefaultValue("")
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.RegistrationId)
-
+             .HasDefaultValue("")
               .HasMaxLength(50)
               .IsUnicode()
               .HasColumnType("nvarchar(50)");
 
         builder.Property(x => x.Description)
-
+             .HasDefaultValue("")
                .HasMaxLength(500)
                .IsUnicode()
                .HasColumnType("nvarchar(500)");
@@ -96,7 +96,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(x => x.LastAccess);
 
         builder.Property(x => x.ActiveSessionId)
-
+             .HasDefaultValue("")
                .HasMaxLength(100)
                .IsUnicode()
                .HasColumnType("nvarchar(100)");

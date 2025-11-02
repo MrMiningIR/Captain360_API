@@ -1,18 +1,20 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Create;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Delete;
 using Capitan360.Application.Features.Addresses.Areas.Commands.Update;
 using Capitan360.Application.Features.Addresses.Areas.Dtos;
-using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
-using Capitan360.Domain.Interfaces;
-using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.Addresses;
-using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetAllChildren;
-using Microsoft.AspNetCore.Http;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetCity;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
+using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Addresses.Areas.Services;
 
@@ -311,5 +313,58 @@ public class AreaService(
             return ApiResponse<AreaDto>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
         return ApiResponse<AreaDto>.Ok(updatedAreaDto, item + " با موفقیت به‌روزرسانی شد");
+    }
+    public async Task<ApiResponse<PagedResult<ProvinceAreaDto>>> GetAllProvince(GetProvinceAreaQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetAllProvince is Called");
+        if (query.PageSize <= 0 || query.PageNumber <= 0)
+            return ApiResponse<PagedResult<ProvinceAreaDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+
+        var (areas, totalCount) = await areaRepository.GetAllProvince(
+            query.SearchPhrase, query.PageSize, query.PageNumber, query.SortBy,
+            query.SortDirection, query.IgnorePageSize, cancellationToken);
+
+        var provinceDtos = mapper.Map<IReadOnlyList<ProvinceAreaDto>>(areas) ?? Array.Empty<ProvinceAreaDto>();
+        logger.LogInformation("Retrieved {Count} Provinces", provinceDtos.Count);
+
+        var data = new PagedResult<ProvinceAreaDto>(provinceDtos, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<ProvinceAreaDto>>.Ok(data, "GetAllProvince retrieved successfully");
+    }
+    public async Task<ApiResponse<List<AreaItemDto>>> GetDistricts(int cityId, CancellationToken cancellationToken)
+    {
+        if (cityId <= 0)
+            return ApiResponse<List<AreaItemDto>>.Error(400, "شناسه شهر صحیح نیست");
+
+        var districts = await areaRepository.GetDistrictAreasByCityIdAsync(cityId, cancellationToken);
+        var mappedDistricts = mapper.Map<List<AreaItemDto>>(districts);
+        if (mappedDistricts is null)
+            return ApiResponse<List<AreaItemDto>>.Error(400, "خطای تبدیل");
+
+        return ApiResponse<List<AreaItemDto>>.Ok(mappedDistricts);
+    }
+
+    public async Task<ApiResponse<PagedResult<CityAreaDto>>> GetAllCityByProvinceId(GetCityAreaQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetAllCityByProvinceId is Called");
+        if (query.PageSize <= 0 || query.PageNumber <= 0)
+            return ApiResponse<PagedResult<CityAreaDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+
+        var (areas, totalCount) = await areaRepository.GetAllCity(
+            query.SearchPhrase, query.PageSize, query.PageNumber, query.SortBy,
+            query.SortDirection, query.ProvinceId, query.IgnorePageSize, cancellationToken);
+
+        var provinceDtos = mapper.Map<IReadOnlyList<CityAreaDto>>(areas) ?? Array.Empty<CityAreaDto>();
+        logger.LogInformation("Retrieved {Count} Cities", provinceDtos.Count);
+
+        var data = new PagedResult<CityAreaDto>(provinceDtos, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<CityAreaDto>>.Ok(data, "GetAllCityByProvinceId retrieved successfully");
+    }
+    public async Task<ApiResponse<IReadOnlyList<AreaDto>>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetAreasByParentId is Called with ParentId: {ParentId}", parentId);
+        var areas = await areaRepository.GetAreasByParentIdAsync(parentId, cancellationToken);
+        var areaDtos = mapper.Map<IReadOnlyList<AreaDto>>(areas) ?? Array.Empty<AreaDto>();
+        logger.LogInformation("Retrieved {Count} areas for ParentId: {ParentId}", areaDtos.Count, parentId);
+        return ApiResponse<IReadOnlyList<AreaDto>>.Ok(areaDtos, "Areas retrieved successfully");
     }
 }

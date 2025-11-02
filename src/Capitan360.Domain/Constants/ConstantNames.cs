@@ -155,4 +155,6 @@ public static class ConstantNames
     public const string UserHasNoAccessMessage = "کاربر دسترسی معتبری ندارد";
     public const string UserAlreadyLoggined = "کاربر دیگری با مشخصات ورود شما وارد شده است. مجدد وارد شوید.";
     public const string IdentifierHeaderName = "IdentifierHeader";
+    public const string SampleName = "مدیرکل";
+
 }

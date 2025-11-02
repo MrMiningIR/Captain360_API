@@ -11,6 +11,7 @@ public interface IUserPermissionRepository
     Task<List<int>> AssignPermissionsToUser(List<string> permissionIds, string userId, CancellationToken cancellationToken);
 
     Task<List<int>> RemovePermissionsFromUser(List<string> permissionIds, string userId, CancellationToken cancellationToken);
+    Task RemoveAllPermissionsFromUser(string userId, CancellationToken cancellationToken);
 
     Task<List<string>> GetUserPermissionsByUserId(string userId, CancellationToken cancellationToken);
 
@@ -21,4 +22,7 @@ public interface IUserPermissionRepository
     Task<(IReadOnlyList<UserPermission>, int total)> GetAllUserPermissions(string userId, int pageSize, int pageNumber, CancellationToken cancellationToken);
 
     Task<UserPermission?> GetUserPermissionByPermissionIdAndUserId(string userId, int permissionId, CancellationToken cancellationToken);
+
+    Task<List<string>> GetUserPermissionsIdByUserId(string userId, CancellationToken cancellationToken);
+
 }

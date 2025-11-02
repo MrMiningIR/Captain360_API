@@ -1,6 +1,6 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
+using Capitan360.Application.Features.Companies.UserCompany.Commands.Create;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
@@ -19,7 +19,8 @@ namespace Capitan360.Api.Controllers
         [ProducesResponseType(typeof(ApiResponse<PagedResult<UserDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<UserDto>>), StatusCodes.Status400BadRequest)]
         [PermissionFilter("لیست کاربران", "B1")]
-        public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>> GetUsers([FromQuery] GetUsersByCompanyQuery query, CancellationToken cancellationToken,
+        public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>>
+            GetUsers([FromQuery] GetUsersQuery query, CancellationToken cancellationToken,
          [FromRoute] int companyId = 0)
         {
             query.CompanyId = companyId;

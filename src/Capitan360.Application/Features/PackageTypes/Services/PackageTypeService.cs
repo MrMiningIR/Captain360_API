@@ -1,10 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Create;
-using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Delete;
-using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
-using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Application.Features.PackageTypes.Commands.Create;
 using Capitan360.Application.Features.PackageTypes.Commands.Delete;
@@ -15,7 +10,6 @@ using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
 using Capitan360.Application.Features.PackageTypes.Dtos;
 using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
 using Capitan360.Application.Features.PackageTypes.Queries.GetById;
-using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
@@ -73,7 +67,7 @@ public class PackageTypeService(
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("PackageType created successfully with {@PackageType}", packageType);
-        return ApiResponse<int>.Created(packageTypeId, "بسته بندی با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(packageTypeId, "بسته بندی با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeletePackageTypeAsync(DeletePackageTypeCommand command, CancellationToken cancellationToken)

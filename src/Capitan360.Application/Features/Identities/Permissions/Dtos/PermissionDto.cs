@@ -2,6 +2,7 @@
 
 public class PermissionDto
 {
+    public int Id { get; set; }
     public Guid PermissionCode { get; set; }
     public string Name { get; set; } = default!;
     public string DisplayName { get; set; } = default!;
@@ -11,14 +12,3 @@ public class PermissionDto
     public string ParentDisplayName { get; set; } = default!;
 }
 
-//public class PermissionDto
-//{
-//    public string Name { get; set; } = default!;
-//    public int Id { get; set; }
-//    public string DisplayName { get; set; } = default!;
-//    public string Parent { get; set; }
-//    public string ParentDisplayName { get; set; }
-//    public bool Active { get; set; }
-//    public Guid PermissionCode { get; set; }
-//    public Guid ParentCode { get; set; }
-//}

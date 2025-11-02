@@ -1,5 +1,6 @@
 ﻿using Capitan360.Application.Attributes.Authorization;
 using Capitan360.Application.Common;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.Create;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.Delete;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.MoveDown;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.MoveUp;
@@ -64,16 +65,16 @@ public class AddressesController(IAddressService addressService) : ControllerBas
         return StatusCode(response.StatusCode, response);
     }
 
-    //[HttpPost("AddAddress")]
-    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
-    //[PermissionFilter("افزودن آدرس", "A5")]
-    //public async Task<ActionResult<ApiResponse<int>>> AddAddress([FromBody] AddNewAddressToCompanyCommand addNewAddressToCompanyCommand, CancellationToken cancellationToken)
-    //{
-    //
-    //    var response = await addressService.AddNewAddressToCompanyAsync(addNewAddressToCompanyCommand, cancellationToken);
-    //    return StatusCode(response.StatusCode, response);
-    //}
+    [HttpPost("AddAddress")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [PermissionFilter("افزودن آدرس", "A5")]
+    public async Task<ActionResult<ApiResponse<int>>> AddAddress([FromBody] CreateAddressCommand addNewAddressToCompanyCommand, CancellationToken cancellationToken)
+    {
+
+        var response = await addressService.CreateAddressAsync(addNewAddressToCompanyCommand, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
 
     [HttpPost("MoveUpAddress")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.Companies.Commands.Create;
 using Capitan360.Application.Features.Companies.Companies.Commands.Delete;
 using Capitan360.Application.Features.Companies.Companies.Commands.Update;
@@ -8,15 +7,16 @@ using Capitan360.Application.Features.Companies.Companies.Commands.UpdateActiveS
 using Capitan360.Application.Features.Companies.Companies.Dtos;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetAll;
 using Capitan360.Application.Features.Companies.Companies.Queries.GetById;
-using Capitan360.Domain.Interfaces;
 using Capitan360.Application.Features.Identities.Identities.Services;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Interfaces.Repositories.ContentTypes;
 using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
-using Capitan360.Domain.Interfaces.Repositories.Addresses;
-using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Enums;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.Companies.Services;
 
@@ -52,7 +52,7 @@ public class CompanyService(
 
         if (await companyRepository.CheckExistCompanyCodeAsync(command.Code, null, cancellationToken))
             return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "کد شرکت تکراری است");
-        
+
         if (command.IsParentCompany && await companyRepository.CheckExistCompanyIsParentAsync(command.CompanyTypeId, null, cancellationToken))
             return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "برای هر نوع بار تنها یک شرکت مادر داریم");
 
@@ -184,7 +184,7 @@ public class CompanyService(
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("Company created successfully with {@Company}", company);
-        return ApiResponse<int>.Created(companyId, "شرکت با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(companyId, "شرکت با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteCompanyAsync(DeleteCompanyCommand command, CancellationToken cancellationToken)
@@ -235,7 +235,7 @@ public class CompanyService(
     {
         logger.LogInformation("UpdateCompany is Called with {@UpdateCompanyCommand}", command);
 
-        var company = await companyRepository.GetCompanyByIdAsync(command.Id, false, true,  cancellationToken);
+        var company = await companyRepository.GetCompanyByIdAsync(command.Id, false, true, cancellationToken);
         if (company is null)
             return ApiResponse<CompanyDto>.Error(StatusCodes.Status404NotFound, "شرکت نامعتبر است");
 

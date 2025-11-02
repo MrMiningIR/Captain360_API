@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
 
-public class GetUsersByCompanyQueryValidator : AbstractValidator<GetUsersByCompanyQuery>
+public class GetUsersByCompanyQueryValidator : AbstractValidator<GetUsersQuery>
 {
     private readonly int[] _allowPageSizes = [5, 10, 15, 30];
 

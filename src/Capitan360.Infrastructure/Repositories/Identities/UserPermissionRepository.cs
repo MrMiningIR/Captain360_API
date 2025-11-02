@@ -69,6 +69,17 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
         return convertedList;
     }
 
+    public async Task RemoveAllPermissionsFromUser(string userId, CancellationToken cancellationToken)
+    {
+        var userPermissions = await GetUserPermissionsIdByUserId(userId, cancellationToken);
+
+        if (userPermissions.Any())
+        {
+            await RemovePermissionsFromUser(userPermissions, userId, cancellationToken);
+        }
+
+    }
+
     public async Task<List<string>> GetUserPermissionsByUserId(string userId, CancellationToken cancellationToken)
     {
         return await dbContext.UserPermissions.AsNoTracking()
@@ -76,7 +87,12 @@ public class UserPermissionRepository(ApplicationDbContext dbContext, IUnitOfWor
             .Where(x => x.UserId == userId && x.Permission.Active)
             .Select(x => x.Permission.Name).ToListAsync(cancellationToken);
     }
-
+    public async Task<List<string>> GetUserPermissionsIdByUserId(string userId, CancellationToken cancellationToken)
+    {
+        return await dbContext.UserPermissions.AsNoTracking()
+            .Where(x => x.UserId == userId && x.Permission!.Active)
+            .Select(x => x.PermissionId.ToString()).ToListAsync(cancellationToken);
+    }
 
     public async Task<int> RemovePermissionFromUser(UserPermission userPermission, CancellationToken cancellationToken)
     {

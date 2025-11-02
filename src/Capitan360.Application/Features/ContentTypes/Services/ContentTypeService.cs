@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Delete;
-using Capitan360.Application.Features.Companies.CompanyTypes.Commands.Update;
-using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
-using Capitan360.Application.Features.Companies.CompanyTypes.Queries.GetById;
 using Capitan360.Application.Features.ContentTypes.Commands.Create;
 using Capitan360.Application.Features.ContentTypes.Commands.Delete;
 using Capitan360.Application.Features.ContentTypes.Commands.MoveDown;
@@ -14,19 +10,10 @@ using Capitan360.Application.Features.ContentTypes.Dtos;
 using Capitan360.Application.Features.ContentTypes.Queries.GetAll;
 using Capitan360.Application.Features.ContentTypes.Queries.GetById;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Application.Features.PackageTypes.Commands.Create;
-using Capitan360.Application.Features.PackageTypes.Commands.MoveDown;
-using Capitan360.Application.Features.PackageTypes.Commands.MoveUp;
-using Capitan360.Application.Features.PackageTypes.Commands.Update;
-using Capitan360.Application.Features.PackageTypes.Commands.UpdateActiveState;
-using Capitan360.Application.Features.PackageTypes.Dtos;
-using Capitan360.Application.Features.PackageTypes.Queries.GetAll;
 using Capitan360.Domain.Entities.ContentTypes;
-using Capitan360.Domain.Entities.PackageTypes;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Interfaces.Repositories.ContentTypes;
-using Capitan360.Domain.Interfaces.Repositories.PackageTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -80,7 +67,7 @@ public class ContentTypeService(
         await unitOfWork.CommitTransactionAsync(cancellationToken);
 
         logger.LogInformation("ContentType created successfully with {@ContentType}", contentType);
-        return ApiResponse<int>.Created(contentTypeId, "محتوی بار با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(contentTypeId, "محتوی بار با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteContentTypeAsync(DeleteContentTypeCommand command, CancellationToken cancellationToken)
@@ -241,8 +228,7 @@ public class ContentTypeService(
             cancellationToken);
 
         var contentTypeDtos = mapper.Map<IReadOnlyList<ContentTypeDto>>(contentTypes) ?? Array.Empty<ContentTypeDto>();
-        if (contentTypeDtos == null)
-            return ApiResponse<PagedResult<ContentTypeDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
+
 
         logger.LogInformation("Retrieved {Count} contenttypes", contentTypeDtos.Count);
 

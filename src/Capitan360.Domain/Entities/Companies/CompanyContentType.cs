@@ -1,6 +1,6 @@
 ﻿using Capitan360.Domain.Entities.BaseEntities;
-using Capitan360.Domain.Entities.ContentTypes;
 using Capitan360.Domain.Entities.CompanyDomesticWaybills;
+using Capitan360.Domain.Entities.ContentTypes;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capitan360.Domain.Entities.Companies;

@@ -1,6 +1,6 @@
 ﻿using Capitan360.Application.Common;
 using Capitan360.Application.Features.Addresses.Areas.Dtos;
-using Capitan360.Application.Features.Companies.UserCompany.Commands.CreateUserCompany;
+using Capitan360.Application.Features.Companies.UserCompany.Commands.Create;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserById;
@@ -35,7 +35,7 @@ public interface IIdentityService
 
 
     // User By Company Operations
-    Task<ApiResponse<PagedResult<UserDto>>> GetUsersByCompany(GetUsersByCompanyQuery query, CancellationToken cancellationToken);
+    Task<ApiResponse<PagedResult<UserDto>>> GetUsersByCompany(GetUsersQuery query, CancellationToken cancellationToken);
     Task<ApiResponse<UserDto>> GetUserByCompany(GetUserByCompanyQuery query,
         CancellationToken cancellationToken);
     Task<ApiResponse<UserDto>> GetUserById(GetUserByIdQuery query,

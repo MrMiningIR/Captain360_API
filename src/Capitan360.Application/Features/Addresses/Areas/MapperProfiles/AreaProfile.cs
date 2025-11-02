@@ -47,7 +47,9 @@ public class AreaProfile : Profile
             .ForMember(d => d.CompanyDomesticWaybillDestinationCities, o => o.Ignore())
             .ForMember(d => d.CompanyDomesticWaybillDestinationMunicipalAreas, o => o.Ignore())
             ;
-
+        CreateMap<Area, ProvinceAreaDto>();
+        CreateMap<Area, CityAreaDto>();
+        CreateMap<Area, AreaItemDto>();
         CreateMap<UpdateAreaCommand, Area>()
             .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
             .ForMember(d => d.ParentId, o => o.Ignore())

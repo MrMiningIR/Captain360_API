@@ -3,6 +3,8 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.CompanyUris.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyUris.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyUris.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.UpdateActiveState;
+using Capitan360.Application.Features.Companies.CompanyUris.Commands.UpdateCaptain360UriState;
 using Capitan360.Application.Features.Companies.CompanyUris.Dtos;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyUris.Queries.GetById;
@@ -17,9 +19,11 @@ namespace Capitan360.Api.Controllers;
 [PermissionFilter(displayName: "بخش لینک شرکت", "P")]
 public class CompanyUrisController(ICompanyUriService companyUriService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetAllCompanyUris")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyUriDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyUriDto>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyUriDto>>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyUriDto>>), StatusCodes.Status403Forbidden)]
     [PermissionFilter(displayName: "لیست لینک شرکت", "P1")]
     public async Task<ActionResult<ApiResponse<PagedResult<CompanyUriDto>>>> GetAllCompanyUris(
         [FromQuery] GetAllCompanyUrisQuery query, CancellationToken cancellationToken)
@@ -28,9 +32,11 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetCompanyUriById/{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter(displayName: "دریافت لینک شرکت", "P2")]
     public async Task<ActionResult<ApiResponse<CompanyUriDto>>> GetCompanyUriById(
@@ -40,9 +46,11 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost]
+    [HttpPost("CreateCompanyUri")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
     [PermissionFilter(displayName: "افزودن لینک شرکت", "P3")]
 
     public async Task<ActionResult<ApiResponse<int>>> CreateCompanyUri(
@@ -52,9 +60,11 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("DeleteCompanyUri/{id}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter(displayName: "حذف لینک شرکت", "P4")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompanyUri(
@@ -64,9 +74,11 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("{id}")]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [HttpPut("UpdateCompanyUri/{id}")]
+    [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyUriDto>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter(displayName: "آپدیت لینک شرکت", "P5")]
 
@@ -75,6 +87,32 @@ public class CompanyUrisController(ICompanyUriService companyUriService) : Contr
     {
         updateCompanyUriCommand.Id = id;
         var response = await companyUriService.UpdateCompanyUriAsync(updateCompanyUriCommand, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+
+    [HttpPost("ChangeCompanyUriActiveStatus")]
+    [PermissionFilter("تغییر وضعیت uri شرکت", "P6")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
+
+    public async Task<ActionResult<ApiResponse<int>>> ChangeCompanyUriActiveStatus([FromBody] UpdateActiveStateCompanyUriCommand command, CancellationToken cancellationToken)
+    {
+        var response = await companyUriService.SetCompanyUriActivityStatusAsync(command, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+    [HttpPost("ChangeCaptain360UriActiveStatus")]
+    [PermissionFilter("تغییر وضعیت uri360 شرکت", "P7")]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
+
+    public async Task<ActionResult<ApiResponse<int>>> ChangeCaptain360UriActiveStatus([FromBody] UpdateCaptain360UriStateCompanyUriCommand command, CancellationToken cancellationToken)
+    {
+        var response = await companyUriService.SetCompanyUriCaptain360UriStatusAsync(command, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

@@ -15,6 +15,13 @@ public class CompanyUriRepository(ApplicationDbContext dbContext, IUnitOfWork un
         return await dbContext.CompanyUris.AnyAsync(item => item.Uri.ToLower() == companyUriUri.Trim().ToLower() && (currentCompanyUriId == null || item.Id != currentCompanyUriId), cancellationToken);
     }
 
+    public async Task<CompanyUri?> CheckExistCompanyUriByUriAndCompanyId(string companyUriUri, int companyId, CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyUris.SingleOrDefaultAsync(
+            x => x.Uri.ToLower().Trim() == companyUriUri.ToLower().Trim() && x.CompanyId == companyId,
+            cancellationToken);
+    }
+
     public async Task<int> CreateCompanyUriAsync(CompanyUri companyUri, CancellationToken cancellationToken)
     {
         dbContext.CompanyUris.Add(companyUri);

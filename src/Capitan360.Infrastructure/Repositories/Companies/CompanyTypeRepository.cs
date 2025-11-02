@@ -1,10 +1,10 @@
-﻿using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Enums;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -27,7 +27,7 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return companyType.Id;
     }
 
-    public async Task<CompanyType?> GetCompanyTypeByIdAsync(int companyTypeId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyType?> GetCompanyTypeByIdAsync(int companyTypeId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyType> query = dbContext.CompanyTypes;
 
@@ -55,10 +55,11 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyType, object>>>
         {
             { nameof(CompanyType.TypeName), item => item.TypeName},
-            { nameof(CompanyType.DisplayName), item => item.DisplayName}
+            { nameof(CompanyType.DisplayName), item => item.DisplayName},
+            { nameof(CompanyType.Id), item => item.Id},
         };
 
-        sortBy ??= nameof(CompanyType.TypeName);
+        sortBy ??= nameof(CompanyType.Id);
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending

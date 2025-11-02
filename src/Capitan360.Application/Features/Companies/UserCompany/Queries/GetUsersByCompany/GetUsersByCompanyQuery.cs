@@ -3,9 +3,10 @@ using System.ComponentModel;
 
 namespace Capitan360.Application.Features.Companies.UserCompany.Queries.GetUsersByCompany;
 
-public record GetUsersByCompanyQuery(
+public record GetUsersQuery(
 
     [property: DefaultValue(0)] int CompanyType = 0,
+    [property: DefaultValue(1)] int CompanyId = 0,
     [property: DefaultValue(0)] int ModaianFactorTypeId = 0,
     [property: DefaultValue(0)] int HasCredit = 0,
     [property: DefaultValue(0)] int Banned = 0,
@@ -22,5 +23,7 @@ public record GetUsersByCompanyQuery(
 
 )
 {
-    public int CompanyId { get; set; } = 0;
+
+    public int CompanyId { get; set; } = CompanyId;
 };
+

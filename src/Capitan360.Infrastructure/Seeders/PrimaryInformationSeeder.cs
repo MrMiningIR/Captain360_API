@@ -8,7 +8,6 @@ using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 using System.Reflection;
 
 namespace Capitan360.Infrastructure.Seeders
@@ -107,7 +106,7 @@ namespace Capitan360.Infrastructure.Seeders
                         Name = "شرکت پژواک",
                         Code = "123456",
                         MobileCounter = "05112345678",
-                        Active = false,
+                        Active = true,
                         IsParentCompany = true,
                         CountryId = 1,
                         ProvinceId = 12,
@@ -123,7 +122,7 @@ namespace Capitan360.Infrastructure.Seeders
                         UserName = phoneNumbers[i],
                         PhoneNumber = phoneNumbers[i],
                         Email = $"{username}@sample.com",
-                        NameFamily = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(username),
+                        NameFamily = ConstantNames.SampleName,
                         CompanyTypeId = 1,
                         Active = true,
                         PermissionVersion = Guid.NewGuid().ToString(),

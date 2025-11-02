@@ -22,10 +22,10 @@ public class GetAllCompanyQueryValidator : AbstractValidator<GetAllCompanyQuery>
             .GreaterThanOrEqualTo(0).WithMessage("شناسه شهر باید بزرگتر یا مساوی صفر باشد");
 
         RuleFor(x => x.IsParentCompany)
-            .InclusiveBetween(-1, 1).WithMessage("وضعیت شرکت می تواند یکی از حالت شرکت اصلی، شرکت زیر مجموعه و یا همه باشد.");
+            .InclusiveBetween(0, 2).WithMessage("وضعیت شرکت می تواند یکی از حالت شرکت اصلی، شرکت زیر مجموعه و یا همه باشد.");
 
         RuleFor(x => x.Active)
-            .InclusiveBetween(-1, 1).WithMessage("وضعیت فعالیت شرکت می تواند یکی از حالت فعال، غیر فعال و یا همه باشد.");
+            .InclusiveBetween(0, 2).WithMessage("وضعیت فعالیت شرکت می تواند یکی از حالت فعال، غیر فعال و یا همه باشد.");
 
         RuleFor(r => r.PageNumber)
             .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
