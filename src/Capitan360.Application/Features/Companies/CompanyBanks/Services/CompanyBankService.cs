@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.CompanyBanks.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyBanks.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyBanks.Commands.MoveDown;
@@ -11,11 +10,12 @@ using Capitan360.Application.Features.Companies.CompanyBanks.Dtos;
 using Capitan360.Application.Features.Companies.CompanyBanks.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyBanks.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyBanks.Queries.GetById;
-using Capitan360.Domain.Interfaces;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
 {
@@ -61,7 +61,7 @@ namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("CompanyBank created successfully with {@CompanyBank}", companyBank);
-            return ApiResponse<int>.Created(CompanyBankId, "محتوی بار با موفقیت ایجاد شد"); 
+            return ApiResponse<int>.Ok(CompanyBankId, "محتوی بار با موفقیت ایجاد شد");
         }
 
         public async Task<ApiResponse<int>> DeleteCompanyBankAsync(DeleteCompanyBankCommand command, CancellationToken cancellationToken)
@@ -188,7 +188,7 @@ namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
         {
             logger.LogInformation("UpdateCompanyBank is Called with {@UpdateCompanyBankCommand}", command);
 
-            var companyBank = await companyBankRepository.GetCompanyBankByIdAsync(command.Id, false, true,  cancellationToken);
+            var companyBank = await companyBankRepository.GetCompanyBankByIdAsync(command.Id, false, true, cancellationToken);
             if (companyBank is null)
                 return ApiResponse<CompanyBankDto>.Error(StatusCodes.Status404NotFound, "URI بانک نامعتبر است");
 
@@ -255,7 +255,7 @@ namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
                 query.PageSize,
                 query.SortDirection,
                 cancellationToken);
-            
+
             var companyBankDto = mapper.Map<IReadOnlyList<CompanyBankDto>>(companyBanks) ?? Array.Empty<CompanyBankDto>();
             if (companyBankDto == null)
                 return ApiResponse<PagedResult<CompanyBankDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
