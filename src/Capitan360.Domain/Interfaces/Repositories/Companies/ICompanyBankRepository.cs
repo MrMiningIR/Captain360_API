@@ -23,7 +23,7 @@ public interface ICompanyBankRepository
 
     Task MoveDownCompanyBankAsync(int companyBankId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string searchPhrase, string? sortBy, int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
     Task<CompanyBank?> GetCompanyBankByCodeAsync(string companyBankCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken);
 }

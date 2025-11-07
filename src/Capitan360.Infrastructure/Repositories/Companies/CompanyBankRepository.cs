@@ -1,10 +1,10 @@
-﻿using System.Linq.Expressions;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -32,7 +32,7 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return companyBank.Id;
     }
 
-    public async Task<CompanyBank?> GetCompanyBankByIdAsync(int companyBankId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyBank?> GetCompanyBankByIdAsync(int companyBankId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyBank> query = dbContext.CompanyBanks;
 
@@ -91,7 +91,9 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string searchPhrase, string? sortBy, int companyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<CompanyBank>, int)> GetAllCompanyBanksAsync(string searchPhrase, string? sortBy,
+        int companyId, int active, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection,
+        CancellationToken cancellationToken)
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyBanks.AsNoTracking()
@@ -104,6 +106,12 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
         {
             baseQuery = baseQuery.Where(item => item.CompanyId == companyId);
         }
+        baseQuery = active switch
+        {
+            1 => baseQuery.Where(item => item.Active),
+            0 => baseQuery.Where(item => !item.Active),
+            _ => baseQuery
+        };
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -127,7 +135,7 @@ public class CompanyBankRepository(ApplicationDbContext dbContext, IUnitOfWork u
         return (Banks, totalCount);
     }
 
-    public async Task<CompanyBank?> GetCompanyBankByCodeAsync(string companyBankCode, int companyId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyBank?> GetCompanyBankByCodeAsync(string companyBankCode, int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyBank> query = dbContext.CompanyBanks;
 

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Commands.Update;
@@ -8,11 +7,12 @@ using Capitan360.Application.Features.Companies.CompanyCommissionses.Dtos;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetById;
-using Capitan360.Domain.Interfaces;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
 
@@ -73,7 +73,7 @@ public class CompanyCommissionsService(
         await companyCommissionsRepository.DeleteCompanyCommissionsAsync(companyCommissions.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("CompanyCommissions Deleted successfully with {@Id}", command.Id);
+        logger.LogInformation("CompanyCommissions Deleted successfully with {@Id}", command.Id);
         return ApiResponse<int>.Ok(command.Id, "کمیسیون با موفقیت حذف شد");
     }
 
@@ -154,7 +154,7 @@ public class CompanyCommissionsService(
             query.PageSize,
             query.SortDirection,
             cancellationToken);
-        
+
         var companyCommissionsDtos = mapper.Map<IReadOnlyList<CompanyCommissionsDto>>(companyCommissions) ?? Array.Empty<CompanyCommissionsDto>();
         if (companyCommissionsDtos == null)
             return ApiResponse<PagedResult<CompanyCommissionsDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
@@ -180,7 +180,7 @@ public class CompanyCommissionsService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
             return ApiResponse<CompanyCommissionsDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyCommissions = await companyCommissionsRepository.GetCompanyCommissionsByCompanyIdAsync(query.CompanyId, cancellationToken);
+        var companyCommissions = await companyCommissionsRepository.GetCompanyCommissionsByCompanyIdAsync(query.CompanyId, false, false, cancellationToken);
         if (companyCommissions is null)
             return ApiResponse<CompanyCommissionsDto>.Error(StatusCodes.Status404NotFound, "کمیسیون یافت نشد");
 

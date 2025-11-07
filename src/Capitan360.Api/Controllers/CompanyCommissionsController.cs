@@ -5,7 +5,7 @@ using Capitan360.Application.Features.Companies.CompanyCommissionses.Commands.De
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Commands.Update;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Dtos;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetAll;
-using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetById;
+using Capitan360.Application.Features.Companies.CompanyCommissionses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +17,11 @@ namespace Capitan360.Api.Controllers
 
     public class CompanyCommissionsController(ICompanyCommissionsService companyCommissionsService) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("GetAllCompanyCommissions")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyCommissionsDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyCommissionsDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyCommissionsDto>>), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyCommissionsDto>>), StatusCodes.Status401Unauthorized)]
         [PermissionFilter("دریافت لیست کمیسیسون", "E1")]
 
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyCommissionsDto>>>> GetAllCompanyCommissions([FromQuery] GetAllCompanyCommissionsQuery getAllCompanyCommissionsQuery, CancellationToken cancellationToken)
@@ -28,20 +30,24 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetCompanyCommissionsById/{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status403Forbidden)]
 
         [PermissionFilter("دریافت کمیسیسون", "E2")]
         public async Task<ActionResult<ApiResponse<CompanyCommissionsDto>>> GetCompanyCommissionsById([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var response = await companyCommissionsService.GetCompanyCommissionsByIdAsync(new GetCompanyCommissionsByIdQuery(id), cancellationToken);
+            var response = await companyCommissionsService.GetCompanyCommissionsByCompanyIdAsync(new GetCompanyCommissionsByCompanyIdQuery(id), cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost]
+        [HttpPost("CreateCompanyCommissions")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
         [PermissionFilter("ایجاد کمیسیون", "E3")]
         public async Task<ActionResult<ApiResponse<int>>> CreateCompanyCommissions(CreateCompanyCommissionsCommand command, CancellationToken cancellationToken)
         {
@@ -49,7 +55,7 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteCompanyCommissions/{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
 
@@ -60,9 +66,11 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [HttpPut("UpdateCompanyCommissions/{id}")]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyCommissionsDto>), StatusCodes.Status403Forbidden)]
 
         [PermissionFilter("آپدیت کمیسیون", "E5")]
         public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyCommissions([FromRoute] int id, UpdateCompanyCommissionsCommand updateCompanyCommissionsCommand, CancellationToken cancellationToken)

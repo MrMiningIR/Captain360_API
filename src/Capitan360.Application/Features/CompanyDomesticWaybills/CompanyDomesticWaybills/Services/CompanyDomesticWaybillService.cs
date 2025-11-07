@@ -1,38 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-using System.Reflection.Metadata;
-using AutoMapper;
+﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.Issue;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybillPackageTypes.Commands.IssueFromDesktop;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFormDeliveryState;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFormDeliveryStateFromDesktop;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFormReceivedAtSenderCompanyState;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFromCompanyManifestForm;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFromCompanyManifestFormFromDesktop;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackFromDistributionState;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackToReadyStateFromDesktop;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.BackToReayState;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToCollection;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToDelivery;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToDeliveryFromDesktop;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToDistribution;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.ChangeStateToReceivedAtSenderCompany;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.Issue;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.IssueFromDesktop;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.Update;
-using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Commands.UpdateFromDesktop;
 using Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Dtos;
-using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Application.Utils;
-using Capitan360.Domain;
 using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.CompanyDomesticPaths;
 using Capitan360.Domain.Entities.CompanyDomesticWaybills;
 using Capitan360.Domain.Entities.CompanyInsurances;
-using Capitan360.Domain.Entities.CompanyManifestForms;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
@@ -45,7 +22,6 @@ using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
 using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Capitan360.Application.Features.CompanyDomesticWaybills.CompanyDomesticWaybills.Services;
 
@@ -80,7 +56,7 @@ public class CompanyDomesticWaybillService(
         if (companySender == null)
             return ApiResponse<CompanyDomesticWaybillDto>.Error(StatusCodes.Status404NotFound, "شرکت فرستنده معتبر نیست");
 
-        var companySenderCommissions = await companyCommissionsRepository.GetCompanyCommissionsByCompanyIdAsync(companyDomesticWaybill.CompanySenderId, cancellationToken);
+        var companySenderCommissions = await companyCommissionsRepository.GetCompanyCommissionsByCompanyIdAsync(companyDomesticWaybill.CompanySenderId, false, false, cancellationToken);
         if (companySenderCommissions == null)
             return ApiResponse<CompanyDomesticWaybillDto>.Error(StatusCodes.Status404NotFound, "اطلاعات هزینه ای معتبر نیست");
 
@@ -246,7 +222,7 @@ public class CompanyDomesticWaybillService(
         if (sourceRegionMunicipalities.Item2 < 1)
             return ApiResponse<CompanyDomesticWaybillDto>.Error(StatusCodes.Status404NotFound, "منطقه شهری مبدا تعریف نشده است");
 
-        var companySenderCommissions = await companyCommissionsRepository.GetCompanyCommissionsByCompanyIdAsync(companySender.Id, cancellationToken);
+        var companySenderCommissions = await companyCommissionsRepository.GetCompanyCommissionsByCompanyIdAsync(companySender.Id, false, false, cancellationToken);
         if (companySenderCommissions == null)
             return ApiResponse<CompanyDomesticWaybillDto>.Error(StatusCodes.Status404NotFound, "اطلاعات هزینه ای معتبر نیست");
 
@@ -454,7 +430,7 @@ public class CompanyDomesticWaybillService(
                      {
                          CompanyDomesticWaybillId = issueCompanyDomesticWaybill.Id,
                          DimensionalWeight = item.DimensionalWeight,
-                         CompanyContentTypeId = companyContentTypes.Count(itemContentType => itemContentType.Name.ToLower() ==  item.UserInsertedContentName.Trim().ToLower()) > 0 ?
+                         CompanyContentTypeId = companyContentTypes.Count(itemContentType => itemContentType.Name.ToLower() == item.UserInsertedContentName.Trim().ToLower()) > 0 ?
                                                 companyContentTypes.First(itemContentType => itemContentType.Name.ToLower() == item.UserInsertedContentName.Trim().ToLower()).Id :
                                                 companyContentTypes.First().Id,
                          CompanyPackageTypeId = companyPackageTypes.Count(itemPackageType => itemPackageType.Name.ToLower() == item.UserInsertedPackageName.Trim().ToLower()) > 0 ?
@@ -464,7 +440,7 @@ public class CompanyDomesticWaybillService(
                          DeclaredValue = item.DeclaredValue,
                          Dimensions = item.Dimensions,
                          GrossWeight = item.GrossWeight,
-                         UserInsertedContentName = companyContentTypes.Count(itemContentType => itemContentType.Name.ToLower() == item.UserInsertedContentName.Trim().ToLower()) > 0 ? 
+                         UserInsertedContentName = companyContentTypes.Count(itemContentType => itemContentType.Name.ToLower() == item.UserInsertedContentName.Trim().ToLower()) > 0 ?
                                                   "" : item.UserInsertedContentName,
                      }).ToList();
 

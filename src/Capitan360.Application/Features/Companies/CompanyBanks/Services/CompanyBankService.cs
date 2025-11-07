@@ -249,7 +249,7 @@ namespace Capitan360.Application.Features.Companies.CompanyBanks.Services
             var (companyBanks, totalCount) = await companyBankRepository.GetAllCompanyBanksAsync(
                 query.SearchPhrase,
                 query.SortBy,
-                query.CompanyId,
+                query.CompanyId, query.Active,
                 true,
                 query.PageNumber,
                 query.PageSize,

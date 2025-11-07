@@ -13,5 +13,6 @@ public interface ICompanyCommissionsRepository
 
     Task<(IReadOnlyList<CompanyCommissions>, int)> GetAllCompanyCommissionsAsync(string searchPhrase, string? sortBy, int CompanyTypeId, int CompanyId, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
 
-    Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, CancellationToken cancellationToken);
+    Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool loadData, bool tracked,
+        CancellationToken cancellationToken);
 }

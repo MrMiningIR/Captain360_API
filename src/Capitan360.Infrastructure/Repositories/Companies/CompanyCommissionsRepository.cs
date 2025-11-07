@@ -17,7 +17,7 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
         return companyCommissions.Id;
     }
 
-    public async Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int companyCommissionsId, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByIdAsync(int companyCommissionsId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions;
 
@@ -27,7 +27,7 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(item =>item.Id == companyCommissionsId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Id == companyCommissionsId, cancellationToken);
     }
 
     public async Task DeleteCompanyCommissionsAsync(int companyCommissionsId)
@@ -42,13 +42,13 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
                                                     .Where(item => item.Company!.Name.ToLower().Contains(searchPhrase));
 
         if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
-            baseQuery = baseQuery.Include(item =>item.Company);
+            baseQuery = baseQuery.Include(item => item.Company);
 
         if (CompanyTypeId != 0)
-            baseQuery = baseQuery.Where(item =>item.Company!.CompanyTypeId == CompanyTypeId);
+            baseQuery = baseQuery.Where(item => item.Company!.CompanyTypeId == CompanyTypeId);
 
         if (CompanyId != 0)
-            baseQuery = baseQuery.Where(item =>item.CompanyId == CompanyId);
+            baseQuery = baseQuery.Where(item => item.CompanyId == CompanyId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -72,11 +72,20 @@ public class CompanyCommissionsRepository(ApplicationDbContext dbContext, IUnitO
         return (companyCommissions, totalCount);
     }
 
-    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
+    public async Task<CompanyCommissions?> GetCompanyCommissionsByCompanyIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions.Include(item => item.Company)
-                                                                           .AsNoTracking();
+        IQueryable<CompanyCommissions> query = dbContext.CompanyCommissions;
 
-        return await query.SingleOrDefaultAsync(item =>item.CompanyId == companyId, cancellationToken);
+        if (loadData)
+            query = query.Include(item => item.Company);
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.CompanyId == companyId, cancellationToken);
+
+
+
+
     }
 }

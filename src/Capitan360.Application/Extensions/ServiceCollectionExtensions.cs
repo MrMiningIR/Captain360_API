@@ -3,6 +3,7 @@ using Capitan360.Application.Features.Addresses.Addresses.Services;
 using Capitan360.Application.Features.Addresses.Areas.MapperProfiles;
 using Capitan360.Application.Features.Addresses.Areas.Services;
 using Capitan360.Application.Features.Companies.Companies.Services;
+using Capitan360.Application.Features.Companies.CompanyBanks.Services;
 using Capitan360.Application.Features.Companies.CompanyCommissionses.Services;
 using Capitan360.Application.Features.Companies.CompanyContentTypes.Services;
 using Capitan360.Application.Features.Companies.CompanyPackageTypes.Services;
@@ -60,6 +61,7 @@ public static class ServiceCollectionExtensions
         service.AddScoped<PermissionCollectorService>();
         service.AddScoped<IUserPermissionService, UserPermissionService>();
         service.AddScoped<IRoleService, RoleService>();
+        service.AddScoped<ICompanyBankService, CompanyBankService>();
 
         service.AddHttpContextAccessor();
 

@@ -175,6 +175,7 @@ public static class ServiceCollectionExtensions
         service.AddScoped<ICompanyPackageTypeRepository, CompanyPackageTypeRepository>();
         service.AddScoped<IUserRepository, UserRepository>();
         service.AddScoped<IRoleRepository, RoleRepository>();
+        service.AddScoped<ICompanyBankRepository, CompanyBankRepository>();
 
         // service.AddSingleton<IResponseCacheService, ResponseCacheService>();
 
