@@ -1,0 +1,3 @@
+﻿namespace Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Queries.GetCompanyInsuranceChargeById;
+
+public record GetCompanyInsuranceChargeByIdQuery(int Id);

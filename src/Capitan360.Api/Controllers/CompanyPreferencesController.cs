@@ -16,9 +16,11 @@ namespace Capitan360.Api.Controllers
     [PermissionFilter("بخش ترجیحات شرکت", "M")]
     public class CompanyPreferencesController(ICompanyPreferencesService companyPreferencesService) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("GetAllCompanyPreferences")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPreferencesDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPreferencesDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPreferencesDto>>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<CompanyPreferencesDto>>), StatusCodes.Status403Forbidden)]
         [PermissionFilter("دریافت ترجیحات شرکت ها", "M1")]
         public async Task<ActionResult<ApiResponse<PagedResult<CompanyPreferencesDto>>>> GetAllCompanyPreferences([FromQuery] GetAllCompanyPreferencesQuery getAllCompanyPreferencesQuery, CancellationToken cancellationToken)
         {
@@ -26,9 +28,11 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetCompanyPreferencesById/{id}")]
         [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status403Forbidden)]
 
         [PermissionFilter("دریافت ترجیح شرکت", "M2")]
         public async Task<ActionResult<ApiResponse<CompanyPreferencesDto>>> GetCompanyPreferencesById([FromRoute] int id, CancellationToken cancellationToken)
@@ -37,9 +41,11 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost]
+        [HttpPost("CreateCompanyPreferences")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
         [PermissionFilter("ایجاد ترجیح", "M3")]
         public async Task<ActionResult<ApiResponse<int>>> CreateCompanyPreferences(CreateCompanyPreferencesCommand command, CancellationToken cancellationToken)
         {
@@ -47,7 +53,7 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteCompanyPreferencesAsync/{id}")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
 
@@ -58,9 +64,11 @@ namespace Capitan360.Api.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+        [HttpPut("UpdateCompanyPreferences/{id}")]
+        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ApiResponse<CompanyPreferencesDto>), StatusCodes.Status401Unauthorized)]
 
         [PermissionFilter("آپدیت ترجیح", "M5")]
         public async Task<ActionResult<ApiResponse<int>>> UpdateCompanyPreferences([FromRoute] int id, UpdateCompanyPreferencesCommand updateCompanyPreferencesCommand, CancellationToken cancellationToken)

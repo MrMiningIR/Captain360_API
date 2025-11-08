@@ -3,6 +3,9 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Commands.Create;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Commands.Delete;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Commands.Update;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Queries.GetAllCompanyInsuranceCharges;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsuranceCharges.Queries.GetCompanyInsuranceChargeById;
+using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Dtos;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.CompanyInsurances;
 using Capitan360.Domain.Enums;
@@ -172,60 +175,60 @@ public class CompanyInsuranceChargeService(
         return ApiResponse<List<int>>.Created(insertedCompanyInsuranceChargeId, "CompanyDomesticPathStructPrices و MunicipalAreas با موفقیت ایجاد شدند");
     }
 
-    //public async Task<ApiResponse<PagedResult<CompanyInsuranceChargeDto>>> GetAllCompanyInsuranceCharges(GetAllCompanyInsuranceChargesQuery query, CancellationToken cancellationToken)
-    //{
-    //    logger.LogInformation("GetAllCompanyInsuranceCharges is Called");
-    //
-    //    if (query.PageSize <= 0 || query.PageNumber <= 0)
-    //        return ApiResponse<PagedResult<CompanyInsuranceChargeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
-    //
-    //    var (companyInsuranceCharges, totalCount) = await companyInsuranceChargeRepository.GetAllCompanyInsuranceCharges(
-    //        query.SearchPhrase,
-    //        query.CompanyInsuranceId,
-    //        query.PageSize,
-    //        query.PageNumber,
-    //        query.SortBy,
-    //        query.SortDirection,
-    //        cancellationToken);
-    //
-    //    var companyInsuranceChargeDto = mapper.Map<IReadOnlyList<CompanyInsuranceChargeDto>>(companyInsuranceCharges)
-    //                                    ?? Array.Empty<CompanyInsuranceChargeDto>();
-    //    logger.LogInformation("Retrieved {Count} company insurance charges", companyInsuranceChargeDto.Count);
-    //
-    //    var data = new PagedResult<CompanyInsuranceChargeDto>(companyInsuranceChargeDto, totalCount, query.PageSize, query.PageNumber);
-    //    return ApiResponse<PagedResult<CompanyInsuranceChargeDto>>.Ok(data, "CompanyInsuranceCharges retrieved successfully");
-    //
-    //    //logger.LogInformation("GetAllCompanyDomesticPathStructQuery is Called");
-    //    //if (query.PageSize <= 0 || query.PageNumber <= 0)
-    //    //    return ApiResponse<PagedResult<CompanyDomesticPathStructPriceDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
-    //
-    //    //var (items, totalCount) = await companyDomesticPathStructPricesRepository.GetMatchingAllCompanyDomesticPathStructPrice(
-    //    //    query.SearchPhrase, query.CompanyDomesticPathId, query.PathStruct, query.PageSize, query.PageNumber,
-    //    //    query.SortBy, query.SortDirection, cancellationToken);
-    //
-    //    //var priceDtos = mapper.Map<IReadOnlyList<CompanyDomesticPathStructPriceDto>>(items) ?? Array.Empty<CompanyDomesticPathStructPriceDto>();
-    //
-    //    //logger.LogInformation("Retrieved {Count} company domestic path struct items", priceDtos.Count);
-    //
-    //    //var data = new PagedResult<CompanyDomesticPathStructPriceDto>(priceDtos, totalCount, query.PageSize, query.PageNumber);
-    //    //return ApiResponse<PagedResult<CompanyDomesticPathStructPriceDto>>.Ok(data, "Company domestic path struct items retrieved successfully");
-    //}
+    public async Task<ApiResponse<PagedResult<CompanyInsuranceChargeDto>>> GetAllCompanyInsuranceCharges(GetAllCompanyInsuranceChargesQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetAllCompanyInsuranceCharges is Called");
 
-    //public async Task<ApiResponse<CompanyInsuranceChargeDto>> GetCompanyInsuranceChargeByIdAsync(GetCompanyInsuranceChargeByIdQuery query, CancellationToken cancellationToken)
-    //{
-    //    logger.LogInformation("GetCompanyInsuranceChargeById is Called with ID: {Id}", query.Id);
-    //
-    //    if (query.Id <= 0)
-    //        return ApiResponse<CompanyInsuranceChargeDto>.Error(400, "شناسه شارژ بیمه شرکت باید بزرگ‌تر از صفر باشد");
-    //
-    //    var companyInsuranceCharge = await companyInsuranceChargeRepository.GetCompanyInsuranceChargeById(query.Id, cancellationToken);
-    //    if (companyInsuranceCharge == null)
-    //        return ApiResponse<CompanyInsuranceChargeDto>.Error(400, $"شارژ بیمه شرکت با شناسه {query.Id} یافت نشد");
-    //
-    //    var result = mapper.Map<CompanyInsuranceChargeDto>(companyInsuranceCharge);
-    //    logger.LogInformation("CompanyInsuranceCharge retrieved successfully with ID: {Id}", query.Id);
-    //    return ApiResponse<CompanyInsuranceChargeDto>.Ok(result, "CompanyInsuranceCharge retrieved successfully");
-    //}
+        if (query.PageSize <= 0 || query.PageNumber <= 0)
+            return ApiResponse<PagedResult<CompanyInsuranceChargeDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+
+        var (companyInsuranceCharges, totalCount) = await companyInsuranceChargeRepository.GetAllCompanyInsuranceCharges(
+            query.SearchPhrase,
+            query.CompanyInsuranceId,
+            query.PageSize,
+            query.PageNumber,
+            query.SortBy,
+            query.SortDirection,
+            cancellationToken);
+
+        var companyInsuranceChargeDto = mapper.Map<IReadOnlyList<CompanyInsuranceChargeDto>>(companyInsuranceCharges)
+                                        ?? Array.Empty<CompanyInsuranceChargeDto>();
+        logger.LogInformation("Retrieved {Count} company insurance charges", companyInsuranceChargeDto.Count);
+
+        var data = new PagedResult<CompanyInsuranceChargeDto>(companyInsuranceChargeDto, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<CompanyInsuranceChargeDto>>.Ok(data, "CompanyInsuranceCharges retrieved successfully");
+
+        //logger.LogInformation("GetAllCompanyDomesticPathStructQuery is Called");
+        //if (query.PageSize <= 0 || query.PageNumber <= 0)
+        //    return ApiResponse<PagedResult<CompanyDomesticPathStructPriceDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+
+        //var (items, totalCount) = await companyDomesticPathStructPricesRepository.GetMatchingAllCompanyDomesticPathStructPrice(
+        //    query.SearchPhrase, query.CompanyDomesticPathId, query.PathStruct, query.PageSize, query.PageNumber,
+        //    query.SortBy, query.SortDirection, cancellationToken);
+
+        //var priceDtos = mapper.Map<IReadOnlyList<CompanyDomesticPathStructPriceDto>>(items) ?? Array.Empty<CompanyDomesticPathStructPriceDto>();
+
+        //logger.LogInformation("Retrieved {Count} company domestic path struct items", priceDtos.Count);
+
+        //var data = new PagedResult<CompanyDomesticPathStructPriceDto>(priceDtos, totalCount, query.PageSize, query.PageNumber);
+        //return ApiResponse<PagedResult<CompanyDomesticPathStructPriceDto>>.Ok(data, "Company domestic path struct items retrieved successfully");
+    }
+
+    public async Task<ApiResponse<CompanyInsuranceChargeDto>> GetCompanyInsuranceChargeByIdAsync(GetCompanyInsuranceChargeByIdQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetCompanyInsuranceChargeById is Called with ID: {Id}", query.Id);
+
+        if (query.Id <= 0)
+            return ApiResponse<CompanyInsuranceChargeDto>.Error(400, "شناسه شارژ بیمه شرکت باید بزرگ‌تر از صفر باشد");
+
+        var companyInsuranceCharge = await companyInsuranceChargeRepository.GetCompanyInsuranceChargeById(query.Id, cancellationToken);
+        if (companyInsuranceCharge == null)
+            return ApiResponse<CompanyInsuranceChargeDto>.Error(400, $"شارژ بیمه شرکت با شناسه {query.Id} یافت نشد");
+
+        var result = mapper.Map<CompanyInsuranceChargeDto>(companyInsuranceCharge);
+        logger.LogInformation("CompanyInsuranceCharge retrieved successfully with ID: {Id}", query.Id);
+        return ApiResponse<CompanyInsuranceChargeDto>.Ok(result, "CompanyInsuranceCharge retrieved successfully");
+    }
 
     public async Task<ApiResponse<object>> DeleteCompanyInsuranceChargeAsync(DeleteCompanyInsuranceChargeCommand command, CancellationToken cancellationToken)
     {

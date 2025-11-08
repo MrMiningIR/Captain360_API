@@ -44,7 +44,6 @@
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceChargePayments\NewFolder\" />
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\MapperProfiles\" />
     <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\Dtos\" />
-    <Folder Include="Features\CompanyInsurances\CompanyInsuranceCharges\Queries\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\MapperProfiles\" />
     <Folder Include="Features\CompanyDomesticWaybills\CompanyDomesticWaybillPackageTypes\Queries\" />
     <Folder Include="Features\Identities\Old\MapperProfiles\" />

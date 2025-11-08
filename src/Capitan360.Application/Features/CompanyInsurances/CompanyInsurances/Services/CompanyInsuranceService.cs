@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Commands.Create;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Commands.Delete;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Commands.Update;
@@ -9,12 +8,13 @@ using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Dtos;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetAll;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetByCompanyId;
 using Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Queries.GetById;
-using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.CompanyInsurances;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.CompanyInsurances.CompanyInsurances.Services;
 
@@ -56,7 +56,7 @@ public class CompanyInsuranceService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyInsurance created successfully with {@CompanyInsurance}", companyInsurance);
-        return ApiResponse<int>.Created(companyInsuranceId, "شرکت بیمه با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(companyInsuranceId, "شرکت بیمه با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteCompanyInsuranceAsync(DeleteCompanyInsuranceCommand command, CancellationToken cancellationToken)
