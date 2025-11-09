@@ -7,6 +7,7 @@ using Capitan360.Application.Features.Addresses.Areas.Dtos;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetAllChildren;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetCity;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetMunicipalArea;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.Addresses;
@@ -366,5 +367,22 @@ public class AreaService(
         var areaDtos = mapper.Map<IReadOnlyList<AreaDto>>(areas) ?? Array.Empty<AreaDto>();
         logger.LogInformation("Retrieved {Count} areas for ParentId: {ParentId}", areaDtos.Count, parentId);
         return ApiResponse<IReadOnlyList<AreaDto>>.Ok(areaDtos, "Areas retrieved successfully");
+    }
+
+    public async Task<ApiResponse<PagedResult<MunicipalAreaDto>>> GetMunicipalAreaByParentId(GetMunicipalAreaQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("GetAllProvince is Called");
+        if (query.PageSize <= 0 || query.PageNumber <= 0)
+            return ApiResponse<PagedResult<MunicipalAreaDto>>.Error(400, "اندازه صفحه یا شماره صفحه نامعتبر است");
+
+        var (areas, totalCount) = await areaRepository.GetMunicipalAreaByParentId(query.ParentId,
+            query.SearchPhrase, query.PageSize, query.PageNumber, query.SortBy,
+            query.SortDirection, query.IgnorePageSize, cancellationToken);
+
+        var provinceDtos = mapper.Map<IReadOnlyList<MunicipalAreaDto>>(areas) ?? Array.Empty<MunicipalAreaDto>();
+        logger.LogInformation("Retrieved {Count} Provinces", provinceDtos.Count);
+
+        var data = new PagedResult<MunicipalAreaDto>(provinceDtos, totalCount, query.PageSize, query.PageNumber);
+        return ApiResponse<PagedResult<MunicipalAreaDto>>.Ok(data, "GeMunicipalAreaDto retrieved successfully");
     }
 }

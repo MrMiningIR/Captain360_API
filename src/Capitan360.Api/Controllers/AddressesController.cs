@@ -19,9 +19,11 @@ namespace Capitan360.Api.Controllers;
 [PermissionFilter("بخش آدرس", "A")]
 public class AddressesController(IAddressService addressService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetAllAddresses")]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<AddressDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<AddressDto>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<AddressDto>>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<AddressDto>>), StatusCodes.Status403Forbidden)]
     [PermissionFilter("لیست آدرس ها", "A1")]
     public async Task<ActionResult<PagedResult<AddressDto>>> GetAllAddresses([FromQuery] GetAllAddressQuery getAllAddressQuery, CancellationToken cancellationToken)
     {
@@ -30,9 +32,11 @@ public class AddressesController(IAddressService addressService) : ControllerBas
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetAddressById/{id}")]
     [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter("گرفتن آدرس", "A2")]
     public async Task<ActionResult<AddressDto>> GetAddressById([FromRoute] int id, CancellationToken cancellationToken)
@@ -41,9 +45,11 @@ public class AddressesController(IAddressService addressService) : ControllerBas
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("DeleteAddress/{id}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
 
     [PermissionFilter("حذف آدرس", "A3")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteAddress([FromRoute] int id, CancellationToken cancellationToken)
@@ -52,9 +58,11 @@ public class AddressesController(IAddressService addressService) : ControllerBas
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("UpdateAddress/{id}")]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<CompanyDto>), StatusCodes.Status401Unauthorized)]
 
     [PermissionFilter("آپدیت آدرس", "A4")]
     public async Task<ActionResult<ApiResponse<AddressDto>>> UpdateAddress([FromRoute] int id, UpdateAddressCommand updateAddressCommand, CancellationToken cancellationToken)
@@ -68,6 +76,8 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [HttpPost("AddAddress")]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status401Unauthorized)]
     [PermissionFilter("افزودن آدرس", "A5")]
     public async Task<ActionResult<ApiResponse<int>>> AddAddress([FromBody] CreateAddressCommand addNewAddressToCompanyCommand, CancellationToken cancellationToken)
     {
@@ -79,6 +89,8 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [HttpPost("MoveUpAddress")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 
     [PermissionFilter("تغیر چیدمان- بالا", "A6")]
     public async Task<ActionResult<ApiResponse<object>>> MoveUpAddress(MoveUpAddressCommand moveAddressUpCommand, CancellationToken cancellationToken)
@@ -91,6 +103,8 @@ public class AddressesController(IAddressService addressService) : ControllerBas
     [PermissionFilter("تغیر چیدمان- پایین", "A7")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<object>>> MoveDownAddress(MoveDownAddressCommand moveAddressDownCommand, CancellationToken cancellationToken)
     {
         var response = await addressService.MoveDownAddressAsync(moveAddressDownCommand, cancellationToken);

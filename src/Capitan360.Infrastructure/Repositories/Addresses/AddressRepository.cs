@@ -128,6 +128,8 @@ public class AddressRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
                                                           item.Tel1.ToLower().Contains(searchPhrase) || item.Tel2.ToLower().Contains(searchPhrase) || item.Zipcode.ToLower().Contains(searchPhrase) ||
                                                           item.Description.ToLower().Contains(searchPhrase));
 
+
+        baseQuery = baseQuery.Where(x => x.IsCompanyAddress);
         if (companyId != null)
             baseQuery = baseQuery.Where(x => x.CompanyId == companyId);
 

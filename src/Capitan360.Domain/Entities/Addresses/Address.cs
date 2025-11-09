@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Capitan360.Domain.Entities.BaseEntities;
+﻿using Capitan360.Domain.Entities.BaseEntities;
 using Capitan360.Domain.Entities.Companies;
 using Capitan360.Domain.Entities.Identities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capitan360.Domain.Entities.Addresses;
 
@@ -50,4 +50,6 @@ public class Address : BaseEntity
     public bool Active { get; set; }
 
     public int Order { get; set; }
+
+    public bool IsCompanyAddress { get; set; }
 }

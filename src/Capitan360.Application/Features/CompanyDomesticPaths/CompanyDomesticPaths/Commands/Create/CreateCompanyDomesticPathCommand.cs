@@ -5,6 +5,7 @@ public record CreateCompanyDomesticPathCommand(
     int Active,
     string Description,
     string DescriptionForSearch,
+
     int SourceCountryId,
     int SourceProvinceId,
     int SourceCityId,

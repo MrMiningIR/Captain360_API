@@ -6,6 +6,7 @@ using Capitan360.Application.Features.Addresses.Areas.Dtos;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetAllChildren;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetById;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetCity;
+using Capitan360.Application.Features.Addresses.Areas.Queries.GetMunicipalArea;
 using Capitan360.Application.Features.Addresses.Areas.Queries.GetProvince;
 using Capitan360.Application.Features.Addresses.Areas.Services;
 using Capitan360.Application.Features.Identities.Identities.Services;
@@ -37,7 +38,15 @@ namespace Capitan360.Api.Controllers
             var response = await areaService.GetAllProvince(getProvinceAreaQuery, cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
-
+        [HttpGet("GetMunicipalAreaByParentId")]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<MunicipalAreaDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<MunicipalAreaDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ApiResponse<PagedResult<MunicipalAreaDto>>>> GetMunicipalAreaByParentId(
+           [FromQuery] GetMunicipalAreaQuery getMunicipalAreaQuery, CancellationToken cancellationToken)
+        {
+            var response = await areaService.GetMunicipalAreaByParentId(getMunicipalAreaQuery, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
         [HttpGet("GetDistrictsByCityId")]
         [ProducesResponseType(typeof(ApiResponse<List<AreaItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<List<AreaItemDto>>), StatusCodes.Status400BadRequest)]

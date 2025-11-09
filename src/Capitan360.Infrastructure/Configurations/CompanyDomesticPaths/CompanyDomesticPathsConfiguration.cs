@@ -53,16 +53,16 @@ public class CompanyDomesticPathsConfiguration : BaseEntityConfiguration<Company
                .HasColumnType("nvarchar(500)");
 
         builder.Property(x => x.EntranceFee)
-               .IsRequired()
                .HasColumnType("bigint");
+        //.IsRequired()
 
         builder.Property(x => x.EntranceFeeWeight)
-               .IsRequired()
                .HasColumnType("decimal(10,2)");
+        // .IsRequired()
 
         builder.Property(x => x.EntranceFeeType)
-               .IsRequired()
                .HasColumnType("smallint");
+        //       .IsRequired()
 
         builder.Property(x => x.ExitStampBillMinWeightIsFixed)
                .IsRequired()

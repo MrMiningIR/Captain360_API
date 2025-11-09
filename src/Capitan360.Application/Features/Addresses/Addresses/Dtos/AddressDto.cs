@@ -25,4 +25,5 @@ public class AddressDto
     public string Description { get; set; } = default!;
     public bool Active { get; set; }
     public int Order { get; set; }
+    public bool IsCompanyAddress { get; set; }
 }

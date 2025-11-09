@@ -35,4 +35,5 @@ public interface IAreaRepository
 string? sortBy, SortDirection sortDirection, int provinceId, bool ignorePageSize, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<Area>> GetAreasByParentIdAsync(int? parentId, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<Area>, int)> GetMunicipalAreaByParentId(int parentId, string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, bool ignorePageSize, CancellationToken cancellationToken);
 }

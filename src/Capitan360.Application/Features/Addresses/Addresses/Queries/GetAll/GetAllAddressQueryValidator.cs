@@ -12,8 +12,8 @@ public class GetAllAddressQueryValidator : AbstractValidator<GetAllAddressQuery>
     public GetAllAddressQueryValidator()
     {
         RuleFor(x => x)
-            .Must(c => (c.CompanyId.HasValue) ^ !string.IsNullOrWhiteSpace(c.UserId))
-            .WithMessage("آدرس باید مربوط به شرکت یا کاربر باشد");
+            .Must(c => c.CompanyId.HasValue || !string.IsNullOrWhiteSpace(c.UserId))
+            .WithMessage("درخواست معتبر نیست");
 
         RuleFor(x => x.CompanyId!.Value)
             .GreaterThan(0)

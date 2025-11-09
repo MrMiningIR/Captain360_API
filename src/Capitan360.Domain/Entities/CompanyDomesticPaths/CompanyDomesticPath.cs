@@ -41,11 +41,11 @@ public class CompanyDomesticPath : BaseEntity
 
     public string DescriptionForSearch { get; set; } = default!;
 
-    public long EntranceFee { get; set; }
+    public long? EntranceFee { get; set; }
 
-    public decimal EntranceFeeWeight { get; set; }
+    public decimal? EntranceFeeWeight { get; set; }
 
-    public int EntranceFeeType { get; set; }
+    public int? EntranceFeeType { get; set; }
 
     public bool ExitStampBillMinWeightIsFixed { get; set; }
 

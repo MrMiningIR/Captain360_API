@@ -5,22 +5,22 @@ using Capitan360.Application.Features.Addresses.Addresses.Commands.Delete;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.MoveDown;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.MoveUp;
 using Capitan360.Application.Features.Addresses.Addresses.Commands.Update;
+using Capitan360.Application.Features.Addresses.Addresses.Commands.UpdateActiveState;
 using Capitan360.Application.Features.Addresses.Addresses.Dtos;
+using Capitan360.Application.Features.Addresses.Addresses.Queries.GetAll;
+using Capitan360.Application.Features.Addresses.Addresses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Addresses.Addresses.Queries.GetById;
+using Capitan360.Application.Features.Addresses.Addresses.Queries.GetByUserId;
 using Capitan360.Application.Features.Identities.Identities.Services;
 using Capitan360.Domain.Entities.Addresses;
+using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
 using Capitan360.Domain.Interfaces;
 using Capitan360.Domain.Interfaces.Repositories.Addresses;
 using Capitan360.Domain.Interfaces.Repositories.Companies;
+using Capitan360.Domain.Interfaces.Repositories.Identities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Capitan360.Domain.Entities.Companies;
-using Capitan360.Domain.Interfaces.Repositories.Identities;
-using Capitan360.Domain.Enums;
-using Capitan360.Application.Features.Addresses.Addresses.Commands.UpdateActiveState;
-using Capitan360.Application.Features.Addresses.Addresses.Queries.GetByCompanyId;
-using Capitan360.Application.Features.Addresses.Addresses.Queries.GetByUserId;
-using Capitan360.Application.Features.Addresses.Addresses.Queries.GetAll;
 
 namespace Capitan360.Application.Features.Addresses.Addresses.Services;
 
@@ -82,13 +82,14 @@ public class AddressService(
             return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
         address.Order = existingCount + 1;
+        address.IsCompanyAddress = true;
 
         var addressId = await addressRepository.CreateAddressAsync(address, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Address created successfully with {@Address}", address);
-        return ApiResponse<int>.Created(addressId, "آدرس با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(addressId, "آدرس با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteAddressAsync(DeleteAddressCommand command, CancellationToken cancellationToken)

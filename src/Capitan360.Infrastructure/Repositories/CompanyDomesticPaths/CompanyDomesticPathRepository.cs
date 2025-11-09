@@ -61,8 +61,8 @@ public class CompanyDomesticPathRepository(ApplicationDbContext dbContext, IUnit
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyDomesticPaths.AsNoTracking()
-                                                      .Where(cdp => cdp.SourceCity!.PersianName.ToLower().Contains(searchPhrase) || cdp.SourceCity!.EnglishName!.ToLower().Contains(searchPhrase) ||
-                                                                    cdp.DestinationCountry!.PersianName.ToLower().Contains(searchPhrase) || cdp.DestinationCountry!.EnglishName!.ToLower().Contains(searchPhrase));
+                                                      .Where(cdp => (cdp.SourceCity != null && (cdp.SourceCity.PersianName.ToLower().Contains(searchPhrase) || (cdp.SourceCity.EnglishName != null && cdp.SourceCity.EnglishName.ToLower().Contains(searchPhrase)))) ||
+                                                                    (cdp.DestinationCountry != null && (cdp.DestinationCountry.PersianName.ToLower().Contains(searchPhrase) || (cdp.DestinationCountry.EnglishName != null && cdp.DestinationCountry.EnglishName.ToLower().Contains(searchPhrase)))));
 
         baseQuery = baseQuery.Where(pt => pt.CompanyId == companyId);
 
@@ -108,11 +108,11 @@ public class CompanyDomesticPathRepository(ApplicationDbContext dbContext, IUnit
 
         var columnsSelector = new Dictionary<string, Expression<Func<CompanyDomesticPath, object>>>
         {
-            { nameof(CompanyDomesticPath.SourceCity.PersianName), cdp => cdp.SourceCity!.PersianName},
-            { nameof(CompanyDomesticPath.DestinationCity.PersianName), cdp => cdp.DestinationCity!.PersianName},
+            { "SourceCityName", cdp => cdp.SourceCity != null ? cdp.SourceCity.PersianName : string.Empty},
+            { "DestinationCityName", cdp => cdp.DestinationCity != null ? cdp.DestinationCity.PersianName : string.Empty},
         };
 
-        sortBy ??= nameof(CompanyDomesticPath.DestinationCity.PersianName);
+        sortBy ??= "DestinationCityName";
 
         var selectedColumn = columnsSelector[sortBy];
         baseQuery = sortDirection == SortDirection.Ascending
@@ -135,7 +135,7 @@ public class CompanyDomesticPathRepository(ApplicationDbContext dbContext, IUnit
                                                       .Include(item => item.DestinationCity)
                                                       .Where(cdp => cdp.CompanyId == companyId);
 
-        baseQuery = baseQuery.OrderBy(cdp => cdp.DestinationCity!.PersianName);
+        baseQuery = baseQuery.OrderBy(cdp => cdp.DestinationCity != null ? cdp.DestinationCity.PersianName : string.Empty);
 
         var companyDomesticPaths = await baseQuery.ToListAsync(cancellationToken);
 

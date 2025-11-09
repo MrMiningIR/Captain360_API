@@ -49,6 +49,7 @@ public class AreaProfile : Profile
             ;
         CreateMap<Area, ProvinceAreaDto>();
         CreateMap<Area, CityAreaDto>();
+        CreateMap<Area, MunicipalAreaDto>();
         CreateMap<Area, AreaItemDto>();
         CreateMap<UpdateAreaCommand, Area>()
             .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
