@@ -3,6 +3,10 @@ using Capitan360.Application.Common;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Update;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateInternationalAirlineCargoState;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateIssueDomesticWaybillState;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateShowInSearchEngineState;
+using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.UpdateWebServiceSearchEngineState;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetById;
@@ -75,6 +79,47 @@ namespace Capitan360.Api.Controllers
         {
             updateCompanyPreferencesCommand.Id = id;
             var response = await companyPreferencesService.UpdateCompanyPreferencesAsync(updateCompanyPreferencesCommand, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPost("SetCompanyIssueDomesticWaybill")]
+        [PermissionFilter("تغییر صدور بارنامه داخلی", "M6")]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult<ApiResponse<int>>> SetCompanyIssueDomesticWaybill([FromBody] UpdateIssueDomesticWaybillStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
+        {
+            var response = await companyPreferencesService.SetCompanyIssueDomesticWaybillStatusAsync(command, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+        [HttpPost("SetCompanyShowInSearchEngine")]
+        [PermissionFilter("تغییر نمایش در موتور جستجو", "M7")]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult<ApiResponse<int>>> SetCompanyShowInSearchEngine([FromBody] UpdateShowInSearchEngineStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
+        {
+            var response = await companyPreferencesService.SetCompanyShowInSearchEngineStatusAsync(command, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+        [HttpPost("SetCompanyWebServiceSearchEngine")]
+        [PermissionFilter("تغییر نمایش در وب سرویس موتور جستجو", "M8")]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult<ApiResponse<int>>> SetCompanyWebServiceSearchEngine([FromBody] UpdateWebServiceSearchEngineStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
+        {
+            var response = await companyPreferencesService.SetCompanyWebServiceSearchEngineStatusAsync(command, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+        [HttpPost("SetCompanyInternationalAirline")]
+        [PermissionFilter("تغییر وضعیت بار بین المللی", "M9")]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult<ApiResponse<int>>> SetCompanyInternationalAirline([FromBody] UpdateInternationalAirlineCargoStateCompanyPreferencesCommand command, CancellationToken cancellationToken)
+        {
+            var response = await companyPreferencesService.SetCompanyInternationalAirlineCargoStatusAsync(command, cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
     }

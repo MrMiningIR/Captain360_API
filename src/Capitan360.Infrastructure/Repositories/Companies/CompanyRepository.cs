@@ -1,10 +1,10 @@
-﻿using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Enums;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -40,7 +40,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         return companyEntity.Id;
     }
 
-    public async Task<Company?> GetCompanyByIdAsync(int companyId, bool loadData, bool tracked,CancellationToken cancellationToken)
+    public async Task<Company?> GetCompanyByIdAsync(int companyId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<Company> query = dbContext.Companies;
 
@@ -66,7 +66,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
                                             .Where(item => item.Name.ToLower().Contains(searchPhrase) ||
                                                            item.Code.ToLower().Contains(searchPhrase));
         if (loadData || true)//چون CompanyTypeName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
-            baseQuery = baseQuery.Include(item => item.CompanyType);
+            baseQuery = baseQuery.Include(item => item.CompanyType).Include(x => x.CompanyPreferences);
 
         if (companyTypeId != 0)
             baseQuery = baseQuery.Where(item => item.CompanyTypeId == companyTypeId);
@@ -115,7 +115,7 @@ public class CompanyRepository(ApplicationDbContext dbContext, IUnitOfWork unitO
         return (companies, totalCount);
     }
 
-    public async Task<Company?> GetCompanyByCodeAsync(string companyCode, bool loadData, bool tracked,  CancellationToken cancellationToken)
+    public async Task<Company?> GetCompanyByCodeAsync(string companyCode, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<Company> query = dbContext.Companies;
 

@@ -17,7 +17,11 @@ public class CompanyProfile : Profile
             )
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.PersianName : null))
             .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province != null ? src.Province.PersianName : null))
-            .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City != null ? src.City.PersianName : null));
+            .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City != null ? src.City.PersianName : null))
+            .ForMember(dest => dest.DisplayInSearchEngine, opt => opt.MapFrom(src => src.CompanyPreferences.ActiveShowInSearchEngine))
+            .ForMember(dest => dest.InternationalAirLine, opt => opt.MapFrom(src => src.CompanyPreferences.ActiveInternationalAirlineCargo))
+            .ForMember(dest => dest.IssueDomesticWayBill, opt => opt.MapFrom(src => src.CompanyPreferences.ActiveIssueDomesticWaybill))
+            .ForMember(dest => dest.DisplayInSearchEngineWebService, opt => opt.MapFrom(src => src.CompanyPreferences.ActiveInWebServiceSearchEngine));
 
         CreateMap<CompanyDto, Company>()
             .ForMember(dest => dest.CompanyType, opt => opt.Ignore())

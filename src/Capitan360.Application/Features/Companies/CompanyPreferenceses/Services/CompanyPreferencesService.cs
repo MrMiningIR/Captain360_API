@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
-using Microsoft.Extensions.Logging;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Create;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Delete;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Commands.Update;
@@ -12,11 +11,12 @@ using Capitan360.Application.Features.Companies.CompanyPreferenceses.Dtos;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetAll;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetByCompanyId;
 using Capitan360.Application.Features.Companies.CompanyPreferenceses.Queries.GetById;
-using Capitan360.Domain.Interfaces;
 using Capitan360.Application.Features.Identities.Identities.Services;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Capitan360.Application.Features.Companies.CompanyPreferenceses.Services;
 
@@ -126,7 +126,7 @@ public class CompanyPreferencesService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
+        companyPreferences.ActiveIssueDomesticWaybill = !companyPreferences.ActiveIssueDomesticWaybill;
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyPreferences issue domesticWaybill status updated successfully with {@Id}", command.Id);
@@ -152,7 +152,7 @@ public class CompanyPreferencesService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
+        companyPreferences.ActiveShowInSearchEngine = !companyPreferences.ActiveShowInSearchEngine;
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyPreferences show in search engine status updated successfully with {@Id}", command.Id);
@@ -178,7 +178,7 @@ public class CompanyPreferencesService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId))
             return ApiResponse<int>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        companyPreferences.ActiveInternationalAirlineCargo = !companyPreferences.ActiveInternationalAirlineCargo;
+        companyPreferences.ActiveInWebServiceSearchEngine = !companyPreferences.ActiveInWebServiceSearchEngine;
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyPreferences web service search engine status updated successfully with {@Id}", command.Id);
@@ -262,7 +262,7 @@ public class CompanyPreferencesService(
             query.PageSize,
             query.SortDirection,
             cancellationToken);
-        
+
         var companyPreferencesDtos = mapper.Map<IReadOnlyList<CompanyPreferencesDto>>(companyPreferences) ?? Array.Empty<CompanyPreferencesDto>();
         if (companyPreferencesDtos == null)
             return ApiResponse<PagedResult<CompanyPreferencesDto>>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");

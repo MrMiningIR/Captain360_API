@@ -17,4 +17,8 @@ public class CompanyDto
     public int CityId { get; set; }
     public string? CityName { get; set; }
     public string Description { get; set; } = default!;
+    public bool IssueDomesticWayBill { get; set; }
+    public bool DisplayInSearchEngine { get; set; }
+    public bool DisplayInSearchEngineWebService { get; set; }
+    public bool InternationalAirLine { get; set; }
 }
