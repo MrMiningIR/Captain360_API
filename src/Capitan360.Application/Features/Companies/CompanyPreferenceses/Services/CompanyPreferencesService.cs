@@ -85,7 +85,7 @@ public class CompanyPreferencesService(
     {
         logger.LogInformation("SetCompanyInternationalAirlineCargoStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
             return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
@@ -111,7 +111,7 @@ public class CompanyPreferencesService(
     {
         logger.LogInformation("SetCompanyIssueDomesticWaybillStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
             return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
@@ -137,7 +137,7 @@ public class CompanyPreferencesService(
     {
         logger.LogInformation("SetCompanyShowInSearchEngineStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
             return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "تنظیمات نامعتبر است");
 
@@ -163,7 +163,7 @@ public class CompanyPreferencesService(
     {
         logger.LogInformation("SetCompanyWebServiceSearchEngineStatus Called with {@Id}", command.Id);
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByIdAsync(command.Id, false, true, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(command.Id, false, true, cancellationToken);
         if (companyPreferences is null)
             return ApiResponse<int>.Error(StatusCodes.Status404NotFound, "کمیسیون نامعتبر است");
 
@@ -288,7 +288,7 @@ public class CompanyPreferencesService(
         if (!user.IsSuperAdmin() && !user.IsSuperManager(company.CompanyTypeId) && !user.IsManager(company.Id))
             return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status403Forbidden, "مجوز این فعالیت را ندارید");
 
-        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(query.CompanyId, cancellationToken);
+        var companyPreferences = await companyPreferencesRepository.GetCompanyPreferencesByCompanyIdAsync(query.CompanyId, false, false, cancellationToken);
         if (companyPreferences is null)
             return ApiResponse<CompanyPreferencesDto>.Error(StatusCodes.Status404NotFound, "تنظیمات یافت نشد");
 

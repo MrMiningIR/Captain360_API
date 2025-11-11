@@ -1,10 +1,10 @@
-﻿using Capitan360.Domain.Interfaces;
-using Capitan360.Domain.Entities.Companies;
+﻿using Capitan360.Domain.Entities.Companies;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.Companies;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Enums;
-using Capitan360.Domain.Interfaces.Repositories.Companies;
 
 namespace Capitan360.Infrastructure.Repositories.Companies;
 
@@ -17,7 +17,7 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
         return companyPreferences.Id;
     }
 
-    public async Task<CompanyPreferences?> GetCompanyPreferencesByIdAsync(int companyPreferencesId, bool loadData, bool tracked,CancellationToken cancellationToken)
+    public async Task<CompanyPreferences?> GetCompanyPreferencesByIdAsync(int companyPreferencesId, bool loadData, bool tracked, CancellationToken cancellationToken)
     {
         IQueryable<CompanyPreferences> query = dbContext.CompanyPreferences;
 
@@ -27,7 +27,7 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
         if (!tracked)
             query = query.AsNoTracking();
 
-        return await query.SingleOrDefaultAsync(item =>item.Id == companyPreferencesId, cancellationToken);
+        return await query.SingleOrDefaultAsync(item => item.Id == companyPreferencesId, cancellationToken);
     }
 
     public async Task DeleteCompanyPreferencesAsync(int companyPreferencesId)
@@ -44,13 +44,13 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
                                                                    item.CaptainCargoName.ToLower().Contains(searchPhrase));
 
         if (loadData || true)//چون CompanyName توی لیست مرتب سازی میاد برای همین باید همیشه لود دیتا انجام شود
-            baseQuery = baseQuery.Include(item =>item.Company);
+            baseQuery = baseQuery.Include(item => item.Company);
 
         if (CompanyTypeId != 0)
-            baseQuery = baseQuery.Where(item =>item.Company!.CompanyTypeId == CompanyTypeId);
+            baseQuery = baseQuery.Where(item => item.Company!.CompanyTypeId == CompanyTypeId);
 
         if (CompanyId != 0)
-            baseQuery = baseQuery.Where(item =>item.CompanyId == CompanyId);
+            baseQuery = baseQuery.Where(item => item.CompanyId == CompanyId);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
@@ -74,11 +74,17 @@ public class CompanyPreferencesRepository(ApplicationDbContext dbContext, IUnitO
         return (companyPreferences, totalCount);
     }
 
-    public async Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, CancellationToken cancellationToken)
+    public async Task<CompanyPreferences?> GetCompanyPreferencesByCompanyIdAsync(int companyId, bool loadData,
+        bool tracked, CancellationToken cancellationToken)
     {
-        IQueryable<CompanyPreferences> query = dbContext.CompanyPreferences.Include(item => item.Company)
-                                                                           .AsNoTracking();
+        IQueryable<CompanyPreferences> query = dbContext.CompanyPreferences;
 
-        return await query.SingleOrDefaultAsync(item =>item.CompanyId == companyId, cancellationToken);
+        if (loadData)
+            query = query.Include(item => item.Company);
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        return await query.SingleOrDefaultAsync(item => item.CompanyId == companyId, cancellationToken);
     }
 }
