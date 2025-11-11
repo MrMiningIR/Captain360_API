@@ -10,6 +10,8 @@ namespace Capitan360.Infrastructure.Repositories.Companies;
 
 public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork unitOfWork) : ICompanyTypeRepository
 {
+    private ICompanyTypeRepository _companyTypeRepositoryImplementation;
+
     public async Task<bool> CheckExistCompanyTypeNameAsync(string companyTypeName, int? currentCompanyTypeId, CancellationToken cancellationToken)
     {
         return await dbContext.CompanyTypes.AnyAsync(item => item.TypeName.ToLower() == companyTypeName.Trim().ToLower() && (currentCompanyTypeId == null || item.Id != currentCompanyTypeId), cancellationToken);
@@ -72,5 +74,10 @@ public class CompanyTypeRepository(ApplicationDbContext dbContext, IUnitOfWork u
             .ToListAsync(cancellationToken);
 
         return (companyTypes, totalCount);
+    }
+
+    public async Task<List<CompanyType>> GetAllCompanyTypes(CancellationToken cancellationToken)
+    {
+        return await dbContext.CompanyTypes.AsNoTracking().ToListAsync(cancellationToken);
     }
 }

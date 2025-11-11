@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Capitan360.Application.Common;
 using Capitan360.Application.Features.Addresses.Areas.Dtos;
+using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.Create;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
@@ -57,6 +58,7 @@ public class IdentityService(
     IUserPermissionRepository userPermissionRepository,
     IAreaRepository areaRepository,
     IUserRepository userRepository,
+    ICompanyTypeRepository companyTypeRepository,
     IMultiTenantContextAccessor<TenantInfo> tenantContext,
     ICompanyUriRepository companyUriRepository
 
@@ -104,6 +106,9 @@ public class IdentityService(
         user.PermissionVersion = Guid.NewGuid().ToString();
         user.TypeOfFactorInSamanehMoadianId = (short)command.TypeOfFactorInSamanehMoadianId;
         user.CompanyTypeId = userCompany.CompanyTypeId;
+        user.PhoneNumber = command.PhoneNumber;
+        EnsureUserStringDefaults(user);
+
         var result = await userRepository.CreateUserAsync(user, command.Password, role, cancellationToken);
         if (result.Result is { Succeeded: false })
             return ApiResponse<string>.Error(400, string.Join(", ", result.Result.Errors.Select(x => x.Description)));
@@ -115,6 +120,21 @@ public class IdentityService(
         await unitOfWork.CommitTransactionAsync(cancellationToken);
         logger.LogInformation("User created successfully with ID: {Id}", user.Id);
         return ApiResponse<string>.Created(user.Id, "User created successfully");
+    }
+
+    private static void EnsureUserStringDefaults(User user)
+    {
+
+        user.AccountCodeInDesktopCaptainCargo ??= string.Empty;
+        user.MobileTelegram ??= string.Empty;
+        user.NationalCode ??= string.Empty;
+        user.EconomicCode ??= string.Empty;
+        user.NationalId ??= string.Empty;
+        user.RegistrationId ??= string.Empty;
+        user.ActivationCode ??= string.Empty;
+        user.RecoveryPasswordCode ??= string.Empty;
+        user.ActiveSessionId ??= string.Empty;
+
     }
 
     public async Task<ApiResponse<string>> UpdateUser(UpdateUserCommand command,
@@ -486,8 +506,10 @@ public class IdentityService(
             throw new ValidationException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
+
+
         var (users, totalCount) = await userRepository.GetAllUsersAsync(query.SearchPhrase, query.SortBy, query.CompanyId,
-            query.CompanyType, query.RoleId, query.ModaianFactorTypeId, query.HasCredit
+            !user.IsSuperAdmin() ? user.CompanyType : query.CompanyType, query.RoleId, query.ModaianFactorTypeId, query.HasCredit
             , query.Banned, query.Active, query.IsBike, true, query.PageNumber, query.PageSize, query.SortDirection,
             cancellationToken);
 
@@ -798,5 +820,18 @@ public class IdentityService(
 
         logger.LogInformation("SetUserActivityStatus Updated successfully with ID: {Id}", command.UserId);
         return ApiResponse<string>.Ok($"SetUserActivityStatus  was succeeded : {command.UserId}");
+    }
+
+    public async Task<ApiResponse<List<CompanyTypeDto>>> GetAllCompanyTypes(CancellationToken cancellationToken)
+    {
+        var companyTypes = await companyTypeRepository.GetAllCompanyTypes(cancellationToken);
+
+        var companyTypesDto = companyTypes.Select(x => new CompanyTypeDto()
+        {
+            Id = x.Id,
+            DisplayName = x.DisplayName
+        }).ToList();
+
+        return new ApiResponse<List<CompanyTypeDto>>(200, "CompanyTypes", companyTypesDto);
     }
 }

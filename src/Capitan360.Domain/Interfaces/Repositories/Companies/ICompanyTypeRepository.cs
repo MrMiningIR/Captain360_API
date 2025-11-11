@@ -15,7 +15,8 @@ public interface ICompanyTypeRepository
 
     Task DeleteCompanyTypeAsync(int companyTypeId);
 
-    Task<(IReadOnlyList<CompanyType>, int)> GetAllCompanyTypesAsync(string searchPhrase ,string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<(IReadOnlyList<CompanyType>, int)> GetAllCompanyTypesAsync(string searchPhrase, string? sortBy, bool loadData, int pageNumber, int pageSize, SortDirection sortDirection, CancellationToken cancellationToken);
+    Task<List<CompanyType>> GetAllCompanyTypes(CancellationToken cancellationToken);
 }
 
 

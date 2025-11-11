@@ -1,5 +1,6 @@
 ﻿using Capitan360.Application.Common;
 using Capitan360.Application.Features.Addresses.Areas.Dtos;
+using Capitan360.Application.Features.Companies.CompanyTypes.Dtos;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.Create;
 using Capitan360.Application.Features.Companies.UserCompany.Commands.UpdateUserCompany;
 using Capitan360.Application.Features.Companies.UserCompany.Queries.GetUserByCompany;
@@ -57,8 +58,5 @@ public interface IIdentityService
     Task<ApiResponse<string>> ChangePassword(ChangePasswordCommand command);
     Task<ApiResponse<string>> SetUserActivityStatus(ChangeUserActivityCommand command, CancellationToken cancellationToken);
 
-
-
-
-
+    Task<ApiResponse<List<CompanyTypeDto>>> GetAllCompanyTypes(CancellationToken cancellationToken);
 }
