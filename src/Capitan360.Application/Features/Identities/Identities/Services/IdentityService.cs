@@ -151,12 +151,12 @@ public class IdentityService(
 
         if (existUserById.UserName != command.PhoneNumber)
         {
-            var existingUser = await userManager.Users
-                        .FirstOrDefaultAsync(u => u.PhoneNumber == command.PhoneNumber && u.Id != existUserById.Id, cancellationToken);
-
-            if (existingUser != null)
+            // Check if phone number already exists in the same company
+            var phoneExists = await userRepository.CheckExistUserMobileAsync(command.PhoneNumber, existUserById.CompanyId, existUserById.Id, cancellationToken);
+            
+            if (phoneExists)
             {
-                return ApiResponse<string>.Error(400, $"شماره تلفن قبلاً توسط کاربر دیگری استفاده شده است.");
+                return ApiResponse<string>.Error(400, $"شماره تلفن قبلاً توسط کاربر دیگری در این شرکت استفاده شده است.");
             }
         }
 
@@ -218,6 +218,12 @@ public class IdentityService(
             return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
         }
 
+        // First, get CompanyId from URI
+        var companyUri = await companyUriRepository.GetUriByTenant(tenantInfo.Identifier, cancellationToken);
+        if (companyUri is null)
+            return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
+
+        // Now use tenant-aware FindByNameAsync (it will filter by CompanyId automatically)
         var checkUser = await userManager.FindByNameAsync(query.PhoneNumber);
 
         if (checkUser == null)
@@ -225,21 +231,16 @@ public class IdentityService(
             return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
         }
 
-        var checkUri =
-            await companyUriRepository.CheckExistCompanyUriByUriAndCompanyId(tenantInfo.Identifier, checkUser.CompanyId,
-                cancellationToken);
-
-        if (checkUri is null)
+        // Verify the user belongs to the company from URI
+        if (checkUser.CompanyId != companyUri.CompanyId)
+        {
             return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
-
-        //var companyUri = await companyUriRepository.GetUriByTenant(tenantInfo.Identifier, cancellationToken);
-
-        //if (companyUri is null || !companyUri.Active)
-        //    return ApiResponse<LoginResponse>.Error(401, "نام کاریری یا رمز عبور صحیح نیست");
+        }
 
         logger.LogInformation("LoginUser Function Called with PhoneNumber: {PhoneNumber}", query.PhoneNumber);
 
-        var user = await userRepository.GetUserByMobileAndCompanyIdAsync(query.PhoneNumber, checkUri.CompanyId, true, true, cancellationToken);
+        // Load user with full data (including Company and Roles)
+        var user = await userRepository.GetUserByMobileAndCompanyIdAsync(query.PhoneNumber, companyUri.CompanyId, true, true, cancellationToken);
 
         if (user == null)
         {

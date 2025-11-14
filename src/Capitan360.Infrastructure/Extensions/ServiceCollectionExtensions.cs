@@ -1,4 +1,5 @@
 ﻿using Capitan360.Application.Features.Identities.Identities.CustomIdentityErrorDescriber;
+using Capitan360.Application.Features.Identities.Identities.Validators.User;
 using Capitan360.Domain.Constants;
 using Capitan360.Domain.Entities.Identities;
 using Capitan360.Domain.Interfaces;
@@ -55,7 +56,7 @@ public static class ServiceCollectionExtensions
 
 
 
-        // Identity Configuration
+        // Identity Configuration with Multi-Tenant support
         service.AddIdentity<User, Capitan360.Domain.Entities.Identities.Role>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -70,10 +71,12 @@ public static class ServiceCollectionExtensions
                 options.Lockout.AllowedForNewUsers = true;
 
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders().AddErrorDescriber<CustomIdentityErrorDescriberMessage>(); ;
-        //  .AddUserValidator<CustomUserValidator>();
-        // Add User Custom Validator
+            .AddEntityFrameworkStores<ApplicationDbContext>()  // Register RoleStore and other stores
+            .AddUserStore<CompanyAwareUserStore>()             // Override UserStore with tenant-aware version
+            .AddUserManager<CompanyAwareUserManager>()         // Override UserManager
+            .AddDefaultTokenProviders()
+            .AddErrorDescriber<CustomIdentityErrorDescriberMessage>()
+            .AddUserValidator<CustomUserValidator>();
 
 
 

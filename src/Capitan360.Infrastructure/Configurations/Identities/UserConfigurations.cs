@@ -9,8 +9,14 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.HasIndex(x => new { x.PhoneNumber, x.CompanyId })
-            .IsUnique();
+        //builder.HasIndex(x => new { x.PhoneNumber, x.CompanyId })
+        //    .IsUnique();
+
+        // Composite unique index for multi-tenant username (NormalizedUserName + CompanyId)
+        // Note: The existing UserNameIndex unique constraint should be removed in migration
+        builder.HasIndex(x => new { x.NormalizedUserName, x.CompanyId })
+            .IsUnique()
+            .HasFilter("[NormalizedUserName] IS NOT NULL");
 
         builder.Property(x => x.NameFamily)
               .IsRequired()
