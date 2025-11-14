@@ -145,11 +145,8 @@ public class UserRepository(ApplicationDbContext dbContext, UserManager<User> us
         var columnsSelector = new Dictionary<string, Expression<Func<User, object>>>
         {
             { nameof(User.NameFamily), item => item.NameFamily },
-            {  nameof(User.PhoneNumber), item => item.PhoneNumber! },
-            {  nameof(User.MobileTelegram), item => item.MobileTelegram },
-            {  nameof(User.Credit), item => item.Credit },
-            {  nameof(User.Active), item => item.Active },
-            {  nameof(User.Baned), item => item.Baned}
+            {  nameof(User.Tell), item => item.Tell }
+
         };
 
         sortBy ??= nameof(User.NameFamily);

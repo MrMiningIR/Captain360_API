@@ -8,11 +8,7 @@ public class GetAllUserQueryValidator : AbstractValidator<GetAllUserQuery>
     private int[] _allowPageSizes = [5, 10, 15, 30];
     private string[] _allowedSortByColumnNames = [
         nameof(UserDto.NameFamily),
-        nameof(UserDto.Mobile),
-        nameof(UserDto.MobileTelegram),
-        nameof(UserDto.Credit),
-        nameof(UserDto.Active),
-        nameof(UserDto.Baned)];
+        nameof(UserDto.Tell)];
 
     public GetAllUserQueryValidator()
     {
@@ -36,7 +32,7 @@ public class GetAllUserQueryValidator : AbstractValidator<GetAllUserQuery>
 
         RuleFor(x => x.TypeOfFactorInSamanehMoadianId)
             .InclusiveBetween(-1, 2).WithMessage("وضعیت سامانه مودیان کاربر می تواند یکی از حقیقی، حقوقی، نا مشخص و یا همه باشد.");
-        
+
         RuleFor(r => r.PageNumber)
             .GreaterThanOrEqualTo(1).WithMessage("شماره صفحه باید بزرگتر یا مساوی یک باشد");
 

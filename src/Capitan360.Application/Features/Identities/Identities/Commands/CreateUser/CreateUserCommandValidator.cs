@@ -11,34 +11,34 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {
         RuleFor(x => x.NameFamily)
             .NotEmpty()
-            .WithMessage("NameFamily is required")
+            .WithMessage("نام و نام خانوادگی الزامی است")
             .MaximumLength(100)
-            .WithMessage("NameFamily must not exceed 100 characters")
+            .WithMessage("نام و نام خانوادگی نباید بیش از ۱۰۰ کاراکتر باشد")
             .MinimumLength(5)
-            .WithMessage("NameFamily must be at least 5 characters");
+            .WithMessage("نام و نام خانوادگی باید حداقل ۵ کاراکتر باشد");
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
-            .WithMessage("PhoneNumber is required")
+            .WithMessage("شماره تلفن الزامی است")
             .Matches(@"^\d{11}$")
-            .WithMessage("PhoneNumber must be 11 digits");
+            .WithMessage("شماره تلفن باید ۱۱ رقم باشد");
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .WithMessage("Password is required")
+            .WithMessage("رمز عبور الزامی است")
             .MinimumLength(6)
-            .WithMessage("Password must be at least 6 characters")
+            .WithMessage("رمز عبور باید حداقل ۶ کاراکتر باشد")
             .Matches(@"[A-Za-z0-9]+")
-            .WithMessage("Password must contain only letters or numbers");
+            .WithMessage("رمز عبور باید فقط شامل حروف و اعداد باشد");
 
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password)
-            .WithMessage("Passwords do not match");
+            .WithMessage("رمز عبور و تکرار آن مطابقت ندارند");
 
         RuleFor(dto => dto.TypeOfFactorInSamanehMoadianId)
             .Must(moadianType => Enum.IsDefined(typeof(MoadianFactorType), moadianType))
             .When(x => x.TypeOfFactorInSamanehMoadianId != 0)
-            .WithMessage($"Invalid TypeOfFactorInSamanehMoadianId. Valid values are: {string.Join(", ", Enum.GetValues(typeof(MoadianFactorType)))}");
+            .WithMessage($"نوع مودیان انتخاب‌شده معتبر نیست. گزینه‌های مجاز: {string.Join(", ", Enum.GetValues(typeof(MoadianFactorType)))}");
 
 
         RuleFor(x => x.Email)
