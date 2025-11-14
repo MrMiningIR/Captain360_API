@@ -153,7 +153,7 @@ public class IdentityService(
         {
             // Check if phone number already exists in the same company
             var phoneExists = await userRepository.CheckExistUserMobileAsync(command.PhoneNumber, existUserById.CompanyId, existUserById.Id, cancellationToken);
-            
+
             if (phoneExists)
             {
                 return ApiResponse<string>.Error(400, $"شماره تلفن قبلاً توسط کاربر دیگری در این شرکت استفاده شده است.");

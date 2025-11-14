@@ -9,7 +9,7 @@ public class GetUserByCompanyQueryValidator : AbstractValidator<GetUserByCompany
     {
         RuleFor(x => x.CompanyId)
             .GreaterThan(0)
-            .WithMessage("شناسه کمپانی نمبتواند خالی باشد");
+            .WithMessage("شناسه شرکت نمبتواند خالی باشد");
 
 
         RuleFor(x => x.UserId)

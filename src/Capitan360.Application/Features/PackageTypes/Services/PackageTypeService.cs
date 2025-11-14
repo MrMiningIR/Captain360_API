@@ -209,7 +209,9 @@ public class PackageTypeService(
 
     public async Task<ApiResponse<PagedResult<PackageTypeDto>>> GetAllPackageTypesAsync(GetAllPackageTypesQuery query, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GetAllPackageTypes is Called");
+
+        logger.LogInformation("GetAllPackageTypes is Called with {@GetAllPackageTypesQuery}", query);
+
 
         var user = userContext.GetCurrentUser();
         if (user == null)

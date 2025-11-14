@@ -1,10 +1,10 @@
-﻿using Capitan360.Domain.Interfaces;
+﻿using Capitan360.Domain.Entities.CompanyInsurances;
+using Capitan360.Domain.Enums;
+using Capitan360.Domain.Interfaces;
+using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
 using Capitan360.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Capitan360.Domain.Enums;
-using Capitan360.Domain.Entities.CompanyInsurances;
-using Capitan360.Domain.Interfaces.Repositories.CompanyInsurances;
 
 namespace Capitan360.Infrastructure.Repositories.CompanyInsurances;
 
@@ -59,7 +59,10 @@ public class CompanyInsuranceRepository(ApplicationDbContext dbContext, IUnitOfW
     {
         searchPhrase = searchPhrase.Trim().ToLower();
         var baseQuery = dbContext.CompanyInsurances.AsNoTracking()
-                                                   .Where(item => item.Code.ToLower().Contains(searchPhrase) || item.Name.ToLower().Contains(searchPhrase) || item.Description.ToLower().Contains(searchPhrase));
+                                                   .Where(item => item.Code.ToLower().Contains(searchPhrase)
+                                                                  || item.Name.ToLower().Contains(searchPhrase)
+                                                                  || item.Description.ToLower().Contains(searchPhrase)
+                                                                  || item.CaptainCargoCode.ToLower().Contains(searchPhrase));
 
         if (loadData)
             baseQuery = baseQuery.Include(item => item.Company);

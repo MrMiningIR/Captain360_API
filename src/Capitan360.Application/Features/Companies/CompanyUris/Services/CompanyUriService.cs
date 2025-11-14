@@ -30,7 +30,7 @@ public class CompanyUriService(
     public async Task<ApiResponse<int>> CreateCompanyUriAsync(CreateCompanyUriCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("CreateCompanyUri is Called with {@CreateCompanyUriCommand}", command);
-        bool existedUri = false;
+
 
         var company = await companyRepository.GetCompanyByIdAsync(command.CompanyId, false, false, cancellationToken);
         if (company == null)
@@ -47,9 +47,8 @@ public class CompanyUriService(
 
         if (await companyUriRepository.CheckExistCompanyUriUriAsync(command.Uri, null, cancellationToken))
         {
-            existedUri = true;
 
-            // return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "URI شرکت تکراری است");
+            return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "URI شرکت تکراری است");
         }
 
         var companyUri = mapper.Map<CompanyUri>(command) ?? null;
@@ -60,7 +59,7 @@ public class CompanyUriService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyUri created successfully with {@CompanyUri}", companyUri);
-        return ApiResponse<int>.Ok(companyUriId, existedUri ? "URI شرکت با موفقیت ایجاد شد - URI شرکت تکراری است" : "URI شرکت با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(companyUriId, "URI شرکت با موفقیت ایجاد شد");
     }
 
     public async Task<ApiResponse<int>> DeleteCompanyUriAsync(DeleteCompanyUriCommand command, CancellationToken cancellationToken)
