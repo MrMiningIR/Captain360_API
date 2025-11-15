@@ -33,7 +33,9 @@ public class CompanyDomesticPathReceiverCompanyProfile : Profile
 
         CreateMap<UpdateCompanyDomesticPathReceiverCompanyCommand, CompanyDomesticPathReceiverCompany>()
             .ForMember(e => e.CompanyDomesticPath, o => o.Ignore())
+            .ForMember(e => e.CompanyDomesticPathId, o => o.Ignore())
             .ForMember(e => e.MunicipalArea, o => o.Ignore())
+            .ForMember(e => e.MunicipalAreaId, o => o.Ignore())
             .ForMember(e => e.ReceiverCompany, o => o.Ignore())
             .ForMember(e => e.ConcurrencyToken, o => o.Ignore())
             .ForMember(e => e.Id, o => o.Ignore());

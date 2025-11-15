@@ -127,7 +127,7 @@ public class AreaRepository(
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        if (!string.IsNullOrEmpty(sortBy))
         {
             var columnsSelector = new Dictionary<string, Expression<Func<Area, object>>>
  {
@@ -169,7 +169,7 @@ public class AreaRepository(
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        if (!string.IsNullOrEmpty(sortBy))
         {
             var columnsSelector = new Dictionary<string, Expression<Func<Area, object>>>
 {
@@ -217,7 +217,7 @@ public class AreaRepository(
         baseQuery = baseQuery.Where(x => x.ParentId == parentId && x.LevelId == 4);
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-        if (sortBy != null)
+        if (!string.IsNullOrEmpty(sortBy))
         {
             var columnsSelector = new Dictionary<string, Expression<Func<Area, object>>>
 {

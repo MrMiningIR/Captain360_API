@@ -62,13 +62,13 @@ IAreaRepository areaRepository)
         var companyDomesticPathReceiverCompany = mapper.Map<CompanyDomesticPathReceiverCompany>(command) ?? null;
         if (companyDomesticPathReceiverCompany == null)
             return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
-        
+
         var companyDomesticPathReceiversId = await companyDomesticPathReceiverCompanyRepository.CreateCompanyDomesticPathCompanyReceiverAsync(companyDomesticPathReceiverCompany, cancellationToken);
-        
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("CompanyDomesticPathReceiverCompany created successfully with {@CompanyDomesticPathReceiverCompany}", companyDomesticPathReceiverCompany);
-        return ApiResponse<int>.Created(companyDomesticPathReceiversId, "نماینده مسیر با موفقیت ایجاد شد");
+        return ApiResponse<int>.Ok(companyDomesticPathReceiversId, "نماینده مسیر با موفقیت ایجاد شد");
     }
 
     public async Task DeleteCompanyDomesticPathReceiverCompanyAsync(DeleteCompanyDomesticPathReceiverCompanyCommand command, CancellationToken cancellationToken)

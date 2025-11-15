@@ -65,7 +65,7 @@ public class CompanyDomesticPathService(
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var (destinationCityRegionMunicipalities, totalCount) = await areaRepository.GetMunicipalAreaByParentId(command.DestinationCityId, "", 100, 1, "", SortDirection.Descending, true, cancellationToken);
+        var (destinationCityRegionMunicipalities, totalCount) = await areaRepository.GetMunicipalAreaByParentId(command.DestinationCityId, "", 100, 1, null, SortDirection.Descending, true, cancellationToken);
         if (totalCount == 0)
             return ApiResponse<int>.Error(StatusCodes.Status409Conflict, "اطلاعات مناطق شهری مقصد نامعتبر است");
 
@@ -78,6 +78,7 @@ public class CompanyDomesticPathService(
             if (companyDomesticPathReceiverCompany == null)
                 return ApiResponse<int>.Error(StatusCodes.Status500InternalServerError, "مشکل در عملیات تبدیل");
 
+            companyDomesticPathReceiverCompany.CompanyDomesticPathId = companyDomesticPathsId;
             await companyDomesticPathReceiverCompanyRepository.CreateCompanyDomesticPathCompanyReceiverAsync(companyDomesticPathReceiverCompany, cancellationToken);
         }
 

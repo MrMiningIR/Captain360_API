@@ -2,6 +2,7 @@
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Create;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Commands.Update;
 using Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.Dtos;
+using Capitan360.Domain.Entities.Addresses;
 using Capitan360.Domain.Entities.CompanyDomesticPaths;
 
 namespace Capitan360.Application.Features.CompanyDomesticPaths.CompanyDomesticPaths.MapperProfiles;
@@ -55,5 +56,21 @@ public class CompanyDomesticPathProfile : Profile
             .ForMember(dest => dest.CompanyDomesticPathStructPriceMunicipalAreas, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyDomesticPathChargeContentTypes, opt => opt.Ignore())
             .ForMember(dest => dest.ConcurrencyToken, opt => opt.Ignore());
+
+        CreateMap<Area, CompanyDomesticPathReceiverCompany>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyDomesticPathId, opt => opt.Ignore())
+            .ForMember(dest => dest.CompanyDomesticPath, opt => opt.Ignore())
+            .ForMember(dest => dest.MunicipalAreaId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.MunicipalArea, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceiverCompanyId, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceiverCompany, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceiverCompanyUserInsertedCode, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceiverCompanyUserInsertedName, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceiverCompanyUserInsertedTelephone, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceiverCompanyUserInsertedAddress, opt => opt.Ignore())
+            .ForMember(dest => dest.DescriptionForPrint1, opt => opt.MapFrom(src => string.Empty))
+            .ForMember(dest => dest.DescriptionForPrint2, opt => opt.MapFrom(src => string.Empty))
+            .ForMember(dest => dest.DescriptionForPrint3, opt => opt.MapFrom(src => string.Empty));
     }
 }
